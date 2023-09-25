@@ -1,4 +1,5 @@
-import httpRequest from './http-request';
+import { AxiosResponse } from 'axios';
+import httpRequest, { ResponseData } from './http-request';
 
 class BaseService {
   endPoint: string;
@@ -8,23 +9,27 @@ class BaseService {
   }
 
   get = (params) => {
-    return httpRequest.get(this.endPoint, params);
+    return httpRequest.get(this.endPoint, params).then((res) => res.data);
   };
 
   getById = (id, params) => {
-    return httpRequest.get(`${this.endPoint}/${id}`, params);
+    return httpRequest
+      .get(`${this.endPoint}/${id}`, params)
+      .then((res) => res.data);
   };
 
   create = (data) => {
-    return httpRequest.post(this.endPoint, data);
+    return httpRequest.post(this.endPoint, data).then((res) => res.data);
   };
 
   update = (id, data) => {
-    return httpRequest.put(`${this.endPoint}/${id}`, data);
+    return httpRequest
+      .put(`${this.endPoint}/${id}`, data)
+      .then((res) => res.data);
   };
 
   remove = (id) => {
-    return httpRequest.delete(`${this.endPoint}/${id}`);
+    return httpRequest.delete(`${this.endPoint}/${id}`).then((res) => res.data);
   };
 }
 

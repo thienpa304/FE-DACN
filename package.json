@@ -1,10 +1,10 @@
 {
-  "name": "tokyo-free-white-react-admin-dashboard",
-  "version": "2.0.0",
-  "title": "Tokyo Free White React Typescript Admin Dashboard",
-  "description": "This free and open source admin dashboard template is built for React and it’s bootstrapped from Facebook’s create-react-app. All NPM dependencies are up to date and it contains multiple fully customized components based on the popular frontend components framework, Material-UI.",
+  "name": "FE_DACN",
+  "version": "1.0.0",
+  "title": "UI For Client",
+  "description": "",
   "author": {
-    "name": "BloomUI.com",
+    "name": "thienpham@gmail.com",
     "url": "https://bloomui.com"
   },
   "private": false,
@@ -19,6 +19,7 @@
     "@types/react": "^18.2.21",
     "@types/react-dom": "17.0.13",
     "apexcharts": "3.35.3",
+    "axios": "^1.5.0",
     "clsx": "1.1.1",
     "date-fns": "2.28.0",
     "history": "5.3.0",
@@ -30,6 +31,8 @@
     "react-custom-scrollbars-2": "4.4.0",
     "react-dom": "17.0.2",
     "react-helmet-async": "1.3.0",
+    "react-hook-form": "^7.46.2",
+    "react-query": "^3.39.3",
     "react-redux": "^8.1.2",
     "react-router": "6.3.0",
     "react-router-dom": "6.3.0",

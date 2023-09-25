@@ -2,10 +2,9 @@ import { Suspense, lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
 
-import SidebarLayout from 'src/layouts/SidebarLayout';
-import BaseLayout from 'src/layouts/BaseLayout';
-
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import BaseLayout from './modules/app/layouts/BaseLayout';
+import SidebarLayout from './modules/app/layouts/SidebarLayout';
 
 const Loader = (Component) => (props) =>
   (
@@ -14,6 +13,12 @@ const Loader = (Component) => (props) =>
     </Suspense>
   );
 
+// User
+
+const Login = Loader(lazy(() => import('src/modules/auth/components/Login')));
+const Register = Loader(
+  lazy(() => import('src/modules/auth/components/Register'))
+);
 // Pages
 
 const Overview = Loader(lazy(() => import('src/modules/overview')));
@@ -72,6 +77,14 @@ const routes: RouteObject[] = [
             element: <Messenger />
           }
         ]
+      },
+      {
+        path: 'login',
+        element: <Login />
+      },
+      {
+        path: 'register',
+        element: <Register />
       },
       {
         path: 'status',

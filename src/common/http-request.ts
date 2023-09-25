@@ -1,4 +1,9 @@
-import Axios from 'axios';
+import Axios, { AxiosResponse } from 'axios';
+export interface ResponseData<K = unknown> {
+  data: K;
+  status: number;
+  message: string;
+}
 
 const headerRequest = () => {
   const header: any = {
@@ -11,9 +16,17 @@ const headerRequest = () => {
   }
   return header;
 };
+Axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
 export default Axios.create({
-  baseURL: process.env.URL_API,
+  baseURL: process.env.REACT_APP_URL_API,
   headers: {
     ...headerRequest()
   }
