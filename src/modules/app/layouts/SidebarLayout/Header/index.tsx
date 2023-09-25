@@ -9,7 +9,8 @@ import {
   IconButton,
   Tooltip,
   styled,
-  useTheme
+  useTheme,
+  Link
 } from '@mui/material';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { SidebarContext } from 'src/contexts/SidebarContext';
@@ -18,6 +19,8 @@ import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import HeaderButtons from './Buttons';
 import HeaderUserbox from './Userbox';
 import HeaderMenu from './Menu';
+import { useAppSelector } from 'src/redux/hooks';
+import { selectUser } from 'src/modules/app/appSlice';
 
 const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
   ({ theme, showSidebar }) => `
@@ -40,6 +43,7 @@ const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
 
 function Header({ showSidebar }) {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
+  const { userId } = useAppSelector(selectUser);
   const theme = useTheme();
 
   return (
@@ -69,11 +73,17 @@ function Header({ showSidebar }) {
         alignItems="center"
         spacing={2}
       >
-        <HeaderMenu />
+        {/* <HeaderMenu /> */}
       </Stack>
       <Box display="flex" alignItems="center">
         <HeaderButtons />
-        <HeaderUserbox />
+        {userId ? (
+          <HeaderUserbox />
+        ) : (
+          <Link href="/login" variant="body2">
+            {'Sign In'}
+          </Link>
+        )}
         {showSidebar && (
           <Box
             component="span"

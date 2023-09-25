@@ -22,6 +22,9 @@ import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
+import { selectUser } from 'src/modules/app/appSlice';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import useSignOutHook from 'src/modules/auth/hooks/useSignOutHook';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -59,10 +62,12 @@ const UserBoxDescription = styled(Typography)(
 );
 
 function HeaderUserbox() {
+  const { email } = useAppSelector(selectUser);
+  const signOut = useSignOutHook();
   const user = {
-    name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg',
-    jobtitle: 'Project Manager'
+    name: email.replace(/@.*/, ''),
+    avatar: '/static/images/avatars/avatar-empty.jpeg',
+    jobtitle: 'Admin'
   };
 
   const ref = useRef<any>(null);
@@ -76,6 +81,9 @@ function HeaderUserbox() {
     setOpen(false);
   };
 
+  const handleSignOut = (): void => {
+    signOut();
+  };
   return (
     <>
       <UserBoxButton color="secondary" ref={ref} onClick={handleOpen}>
@@ -135,7 +143,7 @@ function HeaderUserbox() {
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>
-          <Button color="primary" fullWidth>
+          <Button color="primary" fullWidth onClick={handleSignOut}>
             <LockOpenTwoToneIcon sx={{ mr: 1 }} />
             Sign out
           </Button>

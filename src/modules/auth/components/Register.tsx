@@ -11,20 +11,21 @@ import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import FormControl from 'src/components/FormControl';
 import TextField from 'src/components/TextField';
-import useRegisterUser from '../hooks/useRegisterUser';
-import { UserRegister } from '../model';
+import useRegister from '../hooks/useRegisterHook';
+import { RegisterRequest } from '../model';
+import { LoadingButton } from '@mui/lab';
 
 const defaultTheme = createTheme();
 
 export default function Register() {
-  const { onRegister } = useRegisterUser();
+  const { onRegister, isLoading } = useRegister();
   const {
     control,
     handleSubmit,
     formState: { errors }
-  } = useForm<UserRegister>({});
+  } = useForm<RegisterRequest>({});
 
-  const handleRegister = (data: UserRegister) => {
+  const handleRegister = (data: RegisterRequest) => {
     onRegister(data);
   };
 
@@ -88,14 +89,15 @@ export default function Register() {
               autoComplete="current-password"
             />
 
-            <Button
+            <LoadingButton
               onClick={handleSubmit(handleRegister)}
+              loading={isLoading}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
-            </Button>
+            </LoadingButton>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

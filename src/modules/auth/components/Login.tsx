@@ -7,22 +7,30 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
+import FormControl from 'src/components/FormControl';
+import { LoadingButton } from '@mui/lab';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { LoginRequest } from '../model';
+import { useForm } from 'react-hook-form';
+import useLogin from '../hooks/useLoginHook';
 
 const defaultTheme = createTheme();
 
 export default function Login() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password')
-    });
+  const { isLoading, onLogin } = useLogin();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<LoginRequest>({});
+
+  const handleLogin = (data: LoginRequest) => {
+    onLogin(data);
   };
 
   return (
@@ -43,23 +51,25 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
+          <Box component="form" noValidate sx={{ mt: 1 }}>
+            <FormControl
+              element={<TextField />}
+              control={control}
+              errors={errors}
               margin="normal"
               required
               fullWidth
               id="email"
               label="Email Address"
+              pattern="email"
               name="email"
               autoComplete="email"
               autoFocus
             />
-            <TextField
+            <FormControl
+              element={<TextField />}
+              control={control}
+              errors={errors}
               margin="normal"
               required
               fullWidth
@@ -73,14 +83,15 @@ export default function Login() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button
-              type="submit"
+            <LoadingButton
+              onClick={handleSubmit(handleLogin)}
+              loading={isLoading}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
-            </Button>
+            </LoadingButton>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -88,7 +99,7 @@ export default function Login() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

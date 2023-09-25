@@ -4,14 +4,15 @@ import { ResponseData } from 'src/common/http-request';
 import useToast from 'src/modules/app/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { RegisterService } from '../authService';
-import { User, UserRegister } from '../model';
-const useRegisterUser = () => {
+import { RegisterResponse, RegisterRequest } from '../model';
+
+const useRegister = () => {
   const toast = useToast();
   const navigate = useNavigate();
-  const { mutate: onRegister } = useMutation<
-    ResponseData<User>,
-    AxiosError<ResponseData<User>>,
-    UserRegister
+  const { mutate: onRegister, isLoading } = useMutation<
+    ResponseData<RegisterResponse>,
+    AxiosError<ResponseData<RegisterResponse>>,
+    RegisterRequest
   >(RegisterService.create, {
     onSuccess: (res) => {
       if (res.status === 200 && res.data.userId) {
@@ -25,8 +26,9 @@ const useRegisterUser = () => {
   });
 
   return {
-    onRegister
+    onRegister,
+    isLoading
   };
 };
 
-export default useRegisterUser;
+export default useRegister;
