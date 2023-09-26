@@ -21,6 +21,7 @@ import HeaderUserbox from './Userbox';
 import HeaderMenu from './Menu';
 import { useAppSelector } from 'src/redux/hooks';
 import { selectUser } from 'src/modules/app/appSlice';
+import Logo from 'src/components/LogoSign';
 
 const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
   ({ theme, showSidebar }) => `
@@ -69,11 +70,12 @@ function Header({ showSidebar }) {
     >
       <Stack
         direction="row"
-        divider={<Divider orientation="vertical" flexItem />}
+        // divider={<Divider orientation="vertical" flexItem />}
         alignItems="center"
         spacing={2}
       >
-        {/* <HeaderMenu /> */}
+        <Logo />
+        <HeaderMenu />
       </Stack>
       <Box display="flex" alignItems="center">
         <HeaderButtons />

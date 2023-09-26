@@ -92,8 +92,8 @@ function HeaderMenu() {
             to="/components/buttons"
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
-              primary="Buttons"
+              primaryTypographyProps={{ noWrap: true, variant: 'h5' }}
+              primary="Việc làm"
             />
           </ListItem>
           <ListItem
@@ -103,8 +103,8 @@ function HeaderMenu() {
             to="/components/forms"
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
-              primary="Forms"
+              primaryTypographyProps={{ noWrap: true, variant: 'h5' }}
+              primary="Danh sách công ty"
             />
           </ListItem>
           <ListItem
@@ -114,10 +114,10 @@ function HeaderMenu() {
             onClick={handleOpen}
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
+              primaryTypographyProps={{ noWrap: true, variant: 'h5' }}
               primary={
                 <Box display="flex" alignItems="center">
-                  Others
+                  Hồ sơ và CV
                   <Box display="flex" alignItems="center" pl={0.3}>
                     <ExpandMoreTwoToneIcon fontSize="small" />
                   </Box>
