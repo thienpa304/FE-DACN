@@ -47,11 +47,11 @@ function Sidebar() {
           left: 0,
           top: 0,
           background:
-            theme.palette.mode === 'dark'
+            theme.palette.mode === 'light'
               ? alpha(lighten(theme.header.background, 0.1), 0.5)
               : darken(theme.colors.alpha.black[100], 0.5),
           boxShadow:
-            theme.palette.mode === 'dark' ? theme.sidebar.boxShadow : 'none'
+            theme.palette.mode === 'light' ? theme.sidebar.boxShadow : 'none'
         }}
       >
         <Scrollbar>
@@ -93,7 +93,7 @@ function Sidebar() {
         <SidebarWrapper
           sx={{
             background:
-              theme.palette.mode === 'dark'
+              theme.palette.mode === 'light'
                 ? theme.colors.alpha.white[100]
                 : darken(theme.colors.alpha.black[100], 0.5)
           }}
