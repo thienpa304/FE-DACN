@@ -8,13 +8,18 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import FormControl from 'src/components/FormControl';
 import TextField from 'src/components/TextField';
+import { Role } from 'src/modules/users/model';
 import useRegister from '../hooks/useRegisterHook';
 import { RegisterRequest } from '../model';
 
 export default function Register() {
   const { onRegister, isLoading } = useRegister();
+  const [params] = useSearchParams();
+  let role = params.get('role') as Role;
+  if (!Object.values(Role).includes(role)) role = Role.EMPLOYEE;
   const {
     control,
     handleSubmit,
@@ -22,7 +27,10 @@ export default function Register() {
   } = useForm<RegisterRequest>({});
 
   const handleRegister = (data: RegisterRequest) => {
-    onRegister(data);
+    onRegister({
+      ...data,
+      role: role || Role.EMPLOYEE
+    });
   };
 
   return (
@@ -40,7 +48,7 @@ export default function Register() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Sign up with {role.toLowerCase()}
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
           <FormControl

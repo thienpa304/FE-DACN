@@ -2,7 +2,7 @@ import { AlertColor } from '@mui/material';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'src/redux/store';
-import { LoginResponse } from '../auth/model';
+import { Role, User } from '../users/model';
 
 export interface SnackBarState {
   massage: string;
@@ -12,7 +12,7 @@ export interface SnackBarState {
 }
 interface AppState {
   snackbar: SnackBarState;
-  user: Partial<LoginResponse>;
+  user: Partial<User>;
   accessToken?: string;
 }
 
@@ -24,7 +24,9 @@ const initialState: AppState = {
     duration: 5000,
     type: 'success'
   },
-  user: {},
+  user: {
+    role: Role.EMPLOYEE
+  },
   accessToken: null
 };
 
@@ -35,7 +37,7 @@ export const AppSlice = createSlice({
     setSnackbar: (state, action: PayloadAction<Partial<SnackBarState>>) => {
       state.snackbar = { ...state.snackbar, ...action.payload };
     },
-    setUser: (state, action: PayloadAction<Partial<LoginResponse>>) => {
+    setUser: (state, action: PayloadAction<Partial<User>>) => {
       state.user = { ...state.snackbar, ...action.payload };
     },
     setAccessToken: (state, action: PayloadAction<string>) => {

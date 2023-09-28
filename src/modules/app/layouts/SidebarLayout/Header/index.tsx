@@ -1,27 +1,26 @@
 import { useContext } from 'react';
 
+import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
+import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import {
   Box,
-  alpha,
-  Stack,
-  lighten,
-  Divider,
   IconButton,
+  Link,
+  Stack,
   Tooltip,
+  alpha,
+  lighten,
   styled,
-  useTheme,
-  Link
+  useTheme
 } from '@mui/material';
-import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { SidebarContext } from 'src/contexts/SidebarContext';
-import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 
-import HeaderButtons from './Buttons';
-import HeaderUserbox from './Userbox';
-import HeaderMenu from './Menu';
-import { useAppSelector } from 'src/redux/hooks';
-import { selectUser } from 'src/modules/app/appSlice';
 import Logo from 'src/components/LogoSign';
+import HeaderButtons from './Buttons';
+import HeaderMenu from './Menu';
+import HeaderUserbox from './Userbox';
+import { useAppUser } from 'src/modules/app/hooks';
+import { Role } from 'src/modules/users/model';
 
 const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
   ({ theme, showSidebar }) => `
@@ -44,7 +43,7 @@ const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
 
 function Header({ showSidebar }) {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
-  const { userId } = useAppSelector(selectUser);
+  const { userId } = useAppUser();
   const theme = useTheme();
 
   return (
@@ -74,7 +73,7 @@ function Header({ showSidebar }) {
         alignItems="center"
         spacing={2}
       >
-        <Logo />
+        {!showSidebar && <Logo />}
         <HeaderMenu />
       </Stack>
       <Box display="flex" alignItems="center">
@@ -82,9 +81,18 @@ function Header({ showSidebar }) {
         {userId ? (
           <HeaderUserbox />
         ) : (
-          <Link href="/login" variant="body2">
-            {'Sign In'}
-          </Link>
+          <>
+            <Link href="/login" variant="body2">
+              {'Sign In'}
+            </Link>
+            <Link
+              href={`/register?role=${Role.EMPLOYER}`}
+              variant="body2"
+              marginLeft={3}
+            >
+              For Employers
+            </Link>
+          </>
         )}
         {showSidebar && (
           <Box

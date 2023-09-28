@@ -5,6 +5,8 @@ import { RouteObject } from 'react-router';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import BaseLayout from './modules/app/layouts/BaseLayout';
 import SidebarLayout from './modules/app/layouts/SidebarLayout';
+import AuthProvider from './modules/auth/components/AuthProvider';
+import { Role } from './modules/users/model';
 
 const Loader = (Component) => (props) =>
   (
@@ -119,7 +121,11 @@ const routes: RouteObject[] = [
   },
   {
     path: 'dashboards',
-    element: <SidebarLayout />,
+    element: (
+      <AuthProvider role={[Role.ADMIN, Role.EMPLOYER]}>
+        <SidebarLayout />
+      </AuthProvider>
+    ),
     children: [
       {
         path: '',
@@ -137,7 +143,11 @@ const routes: RouteObject[] = [
   },
   {
     path: 'management',
-    element: <SidebarLayout />,
+    element: (
+      <AuthProvider role={[Role.ADMIN, Role.EMPLOYER]}>
+        <SidebarLayout />
+      </AuthProvider>
+    ),
     children: [
       {
         path: '',
@@ -168,7 +178,11 @@ const routes: RouteObject[] = [
   },
   {
     path: '/components',
-    element: <SidebarLayout />,
+    element: (
+      <AuthProvider role={[Role.ADMIN, Role.EMPLOYER]}>
+        <SidebarLayout />
+      </AuthProvider>
+    ),
     children: [
       {
         path: '',

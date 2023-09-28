@@ -1,3 +1,5 @@
+import { Role } from 'src/modules/users/model';
+
 export type LoginRequest = {
   email: string;
   password: string;
@@ -5,6 +7,7 @@ export type LoginRequest = {
 
 export type RegisterRequest = LoginRequest & {
   confirmPassword: string;
+  role: Role;
 };
 
 export type RegisterResponse = LoginRequest & {

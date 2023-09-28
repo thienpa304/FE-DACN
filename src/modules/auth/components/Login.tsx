@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import FormControl from 'src/components/FormControl';
 import useLogin from '../hooks/useLoginHook';
 import { LoginRequest } from '../model';
+import { Role } from 'src/modules/users/model';
 
 export default function Login() {
   const { isLoading, onLogin } = useLogin();
@@ -88,8 +89,8 @@ export default function Login() {
           </LoadingButton>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
+              <Link href={`/register?role=${Role.EMPLOYER}`} variant="body2">
+                For Employers
               </Link>
             </Grid>
             <Grid item>
