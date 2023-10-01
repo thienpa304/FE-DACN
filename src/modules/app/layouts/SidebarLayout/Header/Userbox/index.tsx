@@ -62,12 +62,12 @@ const UserBoxDescription = styled(Typography)(
 );
 
 function HeaderUserbox() {
-  const { email } = useAppSelector(selectUser);
+  const { email, role } = useAppSelector(selectUser);
   const signOut = useSignOutHook();
   const user = {
     name: email.replace(/@.*/, ''),
     avatar: '/static/images/avatars/avatar-empty.jpeg',
-    jobtitle: 'Admin'
+    jobtitle: `${role.toLowerCase()}`
   };
 
   const ref = useRef<any>(null);

@@ -25,7 +25,7 @@ const initialState: AppState = {
     type: 'success'
   },
   user: {
-    role: Role.ADMIN
+    role: Role.EMPLOYEE
   },
   accessToken: null
 };
