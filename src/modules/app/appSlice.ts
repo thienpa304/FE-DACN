@@ -38,7 +38,10 @@ export const AppSlice = createSlice({
       state.snackbar = { ...state.snackbar, ...action.payload };
     },
     setUser: (state, action: PayloadAction<Partial<User>>) => {
-      state.user = action.payload;
+      state.user = { ...state.user, ...action.payload };
+    },
+    resetUser: (state) => {
+      state.user = {};
     },
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
@@ -46,7 +49,8 @@ export const AppSlice = createSlice({
   }
 });
 
-export const { setSnackbar, setAccessToken, setUser } = AppSlice.actions;
+export const { setSnackbar, setAccessToken, setUser, resetUser } =
+  AppSlice.actions;
 
 export const selectSnackbar = (state: RootState) => state.app.snackbar;
 export const selectUser = (state: RootState) => state.app.user;
