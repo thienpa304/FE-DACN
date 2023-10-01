@@ -13,7 +13,7 @@ const AuthAppProvider: React.FC<Props> = ({ children }) => {
   const { profile } = useProfileHook();
 
   useEffect(() => {
-    setUserApp(profile);
+    setUserApp({ role: Role.EMPLOYEE, ...profile });
   }, [profile]);
   return children;
 };
