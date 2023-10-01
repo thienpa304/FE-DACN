@@ -106,7 +106,7 @@ function Sidebar() {
                   width: 52
                 }}
               >
-                <Logo />
+                {/* <Logo /> */}
               </Box>
             </Box>
             <Divider

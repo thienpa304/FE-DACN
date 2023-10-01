@@ -12,7 +12,8 @@ const useProfileHook = () => {
   >(['useProfile'], ProfileService.get);
 
   return {
-    profile: data?.data
+    profile: data?.data,
+    isLoading
   };
 };
 

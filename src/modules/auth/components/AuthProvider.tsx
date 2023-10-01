@@ -9,7 +9,7 @@ interface Props {
 }
 const AuthProvider: React.FC<Props> = ({ children, role }) => {
   const { role: roleApp } = useAppUser();
-  if (!role.includes(roleApp)) return <Navigate to="/" replace />;
+  if (roleApp && !role.includes(roleApp)) return <Navigate to="/" replace />;
   return children;
 };
 
