@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { ProfileService } from '../../auth/authService';
 import { ResponseData } from 'src/common';
-import { User } from 'src/modules/users/model';
+import { Role, User } from 'src/modules/users/model';
 import { AxiosError } from 'axios';
 
 const useProfileHook = () => {
-  const { isLoading, error, data } = useQuery<
-    ResponseData<User>,
-    AxiosError<ResponseData<User>>
-  >(['useProfile'], ProfileService.get);
+  const [data, setData] = useState<Partial<User>>();
 
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const getProfile = () => {
+    ProfileService.get()
+      .then((res) => setData(res.data))
+      .catch((error) => {
+        if (error?.response?.status === 401) setData({ role: Role.EMPLOYEE });
+      });
+  };
   return {
-    profile: data?.data,
-    isLoading
+    profile: data
   };
 };
 

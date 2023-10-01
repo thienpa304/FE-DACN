@@ -16,7 +16,22 @@ const headerRequest = () => {
   }
   return header;
 };
-Axios.interceptors.response.use(
+
+const httpRequest = Axios.create({
+  baseURL: process.env.REACT_APP_URL_API,
+  headers: {
+    ...headerRequest()
+  }
+});
+httpRequest.interceptors.request.use(
+  function (config) {
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+httpRequest.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -25,9 +40,4 @@ Axios.interceptors.response.use(
   }
 );
 
-export default Axios.create({
-  baseURL: process.env.REACT_APP_URL_API,
-  headers: {
-    ...headerRequest()
-  }
-});
+export default httpRequest;

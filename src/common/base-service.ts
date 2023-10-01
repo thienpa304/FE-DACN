@@ -8,7 +8,7 @@ class BaseService {
     this.endPoint = endPoint;
   }
 
-  get = (params) => {
+  get = (params = {}) => {
     return httpRequest.get(this.endPoint, params).then((res) => res.data);
   };
 
