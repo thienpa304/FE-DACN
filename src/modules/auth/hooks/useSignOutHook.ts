@@ -1,12 +1,11 @@
-import React from 'react';
-import { setAccessToken, setUser } from 'src/modules/app/appSlice';
-import { useAppDispatch } from 'src/redux/hooks';
+import { useAppUser } from 'src/modules/app/hooks';
 
 const useSignOutHook = () => {
-  const dispatch = useAppDispatch();
+  const { setAccessTokenApp, setUserApp } = useAppUser();
   const signOut = () => {
-    dispatch(setUser({}));
-    dispatch(setAccessToken(null));
+    setUserApp({});
+    setAccessTokenApp(null);
+    localStorage.clear();
   };
   return signOut;
 };

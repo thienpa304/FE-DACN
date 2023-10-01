@@ -83,6 +83,7 @@ function HeaderUserbox() {
 
   const handleSignOut = (): void => {
     signOut();
+    setOpen(false);
   };
   return (
     <>

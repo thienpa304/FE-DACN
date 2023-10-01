@@ -25,7 +25,7 @@ const initialState: AppState = {
     type: 'success'
   },
   user: {
-    role: Role.EMPLOYEE
+    role: Role.ADMIN
   },
   accessToken: null
 };
@@ -38,7 +38,7 @@ export const AppSlice = createSlice({
       state.snackbar = { ...state.snackbar, ...action.payload };
     },
     setUser: (state, action: PayloadAction<Partial<User>>) => {
-      state.user = { ...state.snackbar, ...action.payload };
+      state.user = action.payload;
     },
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;

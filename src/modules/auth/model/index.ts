@@ -1,4 +1,4 @@
-import { Role } from 'src/modules/users/model';
+import { Role, User } from 'src/modules/users/model';
 
 export type LoginRequest = {
   email: string;
@@ -15,7 +15,6 @@ export type RegisterResponse = LoginRequest & {
 };
 
 export type LoginResponse = {
-  userId: string;
-  email: string;
+  userData: User;
   access_token: string;
 };
