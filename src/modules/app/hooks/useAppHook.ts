@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
   SnackBarState,
   resetUser,
+  selectAccessToken,
   selectSnackbar,
   selectUser,
   setAccessToken,
@@ -13,6 +14,7 @@ import { Role, User } from 'src/modules/users/model';
 
 const useApp = () => {
   const user = useAppSelector(selectUser);
+  const accessToken = useAppSelector(selectAccessToken);
   const snackbar = useAppSelector(selectSnackbar);
   const dispatch = useAppDispatch();
   // user
@@ -43,6 +45,7 @@ const useApp = () => {
 
   return {
     user,
+    accessToken,
     isAdmin,
     isEmployee,
     isEmployer,

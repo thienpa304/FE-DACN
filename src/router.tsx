@@ -81,6 +81,25 @@ const routes: RouteObject[] = [
         ]
       },
       {
+        // route for employee
+        path: '/employee',
+        element: (
+          <AuthRouteProvider role={[Role.EMPLOYEE]}>
+            <SidebarLayout showSidebar={false} />
+          </AuthRouteProvider>
+        ),
+        children: [
+          {
+            path: 'profile',
+            element: <UserProfile />
+          },
+          {
+            path: 'form',
+            element: <Forms />
+          }
+        ]
+      },
+      {
         path: 'login',
         element: <Login />
       },
@@ -120,43 +139,42 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'dashboards',
+    // route for employer
+    path: 'employer',
     element: (
-      <AuthRouteProvider role={[Role.ADMIN, Role.EMPLOYER]}>
+      <AuthRouteProvider role={[Role.EMPLOYER]}>
         <SidebarLayout />
       </AuthRouteProvider>
     ),
     children: [
       {
-        path: '',
-        element: <Navigate to="crypto" replace />
-      },
-      {
-        path: 'crypto',
-        element: <Crypto />
-      },
-      {
-        path: 'messenger',
-        element: <Messenger />
+        path: 'profile',
+        children: [
+          {
+            path: '',
+            element: <Navigate to="details" replace />
+          },
+          {
+            path: 'details',
+            element: <UserProfile />
+          },
+          {
+            path: 'settings',
+            element: <UserSettings />
+          }
+        ]
       }
     ]
   },
   {
-    path: 'management',
+    // route for admin
+    path: 'admin',
     element: (
-      <AuthRouteProvider role={[Role.ADMIN, Role.EMPLOYER]}>
+      <AuthRouteProvider role={[Role.ADMIN]}>
         <SidebarLayout />
       </AuthRouteProvider>
     ),
     children: [
-      {
-        path: '',
-        element: <Navigate to="transactions" replace />
-      },
-      {
-        path: 'transactions',
-        element: <Transactions />
-      },
       {
         path: 'profile',
         children: [

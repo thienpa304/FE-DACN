@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Role, User } from 'src/modules/users/model';
 import { getAccessToken } from 'src/utils/localStorage';
-import { ProfileService } from '../../auth/authService';
+import { ProfileService } from '../userService';
 
 const useProfileHook = () => {
   const [data, setData] = useState<Partial<User>>();
 
   useEffect(() => {
     if (getAccessToken()) getProfile();
-    else setData({role: Role.EMPLOYEE})
   }, []);
 
   const getProfile = () => {

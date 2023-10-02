@@ -8,8 +8,8 @@ interface Props {
   role: Role[];
 }
 const AuthRouteProvider: React.FC<Props> = ({ children, role }) => {
-  const { user } = useApp();
-  if (user.role && !role.includes(user.role))
+  const { user, accessToken } = useApp();
+  if (!role.includes(user.role) && (user.userId || !accessToken))
     return <Navigate to="/" replace />;
   return children;
 };

@@ -32,6 +32,8 @@ import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwo
 import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
 import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
+import { useApp } from 'src/modules/app/hooks';
+import { Role } from 'src/modules/users/model';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -178,6 +180,10 @@ const SubMenuWrapper = styled(Box)(
 
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
+  const {
+    user: { role = Role.EMPLOYEE }
+  } = useApp();
+  const rolePath = role?.toLowerCase();
 
   return (
     <>
@@ -273,7 +279,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/management/profile/details"
+                  to={`/${rolePath}/profile/details`}
                   startIcon={<AccountCircleTwoToneIcon />}
                 >
                   User Profile
@@ -284,7 +290,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/management/profile/settings"
+                  to={`/${rolePath}/profile/settings`}
                   startIcon={<DisplaySettingsTwoToneIcon />}
                 >
                   Account Settings

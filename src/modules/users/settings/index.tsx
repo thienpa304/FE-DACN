@@ -1,6 +1,5 @@
 import { useState, ChangeEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
-import PageHeader from './PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { Container, Tabs, Tab, Grid } from '@mui/material';
 import Footer from 'src/components/Footer';
@@ -38,9 +37,7 @@ function ManagementUserSettings() {
       <Helmet>
         <title>User Settings - Applications</title>
       </Helmet>
-      <PageTitleWrapper>
-        <PageHeader />
-      </PageTitleWrapper>
+      <PageTitleWrapper></PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid
           container

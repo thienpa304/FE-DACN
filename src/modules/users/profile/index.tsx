@@ -1,34 +1,38 @@
+import { useState, ChangeEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
+import PageTitleWrapper from 'src/components/PageTitleWrapper';
+import { Container, Tabs, Tab, Grid, Typography } from '@mui/material';
 import Footer from 'src/components/Footer';
+import { styled } from '@mui/material/styles';
+import InfoAccountTab from './InfoAccountTab';
+import InfoCompanyTab from './InfoCompanyTab';
 
-import { Grid, Container } from '@mui/material';
+const TabsWrapper = styled(Tabs)(
+  () => `
+    .MuiTabs-scrollableX {
+      overflow-x: auto !important;
+    }
+`
+);
 
-import ProfileCover from './ProfileCover';
-import RecentActivity from './RecentActivity';
-import Feed from './Feed';
-import PopularTags from './PopularTags';
-import MyCards from './MyCards';
-import Addresses from './Addresses';
+function ManagementUserSettings() {
+  const [currentTab, setCurrentTab] = useState<string>('info_account');
 
-function ManagementUserProfile() {
-  const user = {
-    savedCards: 7,
-    name: 'Catherine Pike',
-    coverImg: '/static/images/placeholders/covers/5.jpg',
-    avatar: '/static/images/avatars/4.jpg',
-    description:
-      "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage",
-    jobtitle: 'Web Developer',
-    location: 'Barcelona, Spain',
-    followers: '465'
+  const tabs = [
+    { value: 'info_account', label: 'Thông tin tài khoản' },
+    { value: 'info_company', label: 'Thông tin công ty' }
+  ];
+
+  const handleTabsChange = (event: ChangeEvent<{}>, value: string): void => {
+    setCurrentTab(value);
   };
 
   return (
     <>
       <Helmet>
-        <title>User Details - Management</title>
+        <title>User Settings - Applications</title>
       </Helmet>
-      <Container sx={{ mt: 3 }} maxWidth="lg">
+      <Container maxWidth="lg" sx={{ marginTop: 4 }}>
         <Grid
           container
           direction="row"
@@ -36,23 +40,23 @@ function ManagementUserProfile() {
           alignItems="stretch"
           spacing={3}
         >
-          <Grid item xs={12} md={8}>
-            <ProfileCover user={user} />
+          <Grid item xs={12}>
+            <TabsWrapper
+              onChange={handleTabsChange}
+              value={currentTab}
+              variant="scrollable"
+              scrollButtons="auto"
+              textColor="primary"
+              indicatorColor="primary"
+            >
+              {tabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              ))}
+            </TabsWrapper>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <RecentActivity />
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <Feed />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <PopularTags />
-          </Grid>
-          <Grid item xs={12} md={7}>
-            <MyCards />
-          </Grid>
-          <Grid item xs={12} md={5}>
-            <Addresses />
+          <Grid item xs={12}>
+            {currentTab === 'info_account' && <InfoAccountTab />}
+            {currentTab === 'info_company' && <InfoCompanyTab />}
           </Grid>
         </Grid>
       </Container>
@@ -61,4 +65,4 @@ function ManagementUserProfile() {
   );
 }
 
-export default ManagementUserProfile;
+export default ManagementUserSettings;

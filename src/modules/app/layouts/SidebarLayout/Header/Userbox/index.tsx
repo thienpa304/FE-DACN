@@ -25,6 +25,7 @@ import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 import { selectUser } from 'src/modules/app/appSlice';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import useSignOutHook from 'src/modules/auth/hooks/useSignOutHook';
+import { useApp } from 'src/modules/app/hooks';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -62,12 +63,15 @@ const UserBoxDescription = styled(Typography)(
 );
 
 function HeaderUserbox() {
-  const { email, role } = useAppSelector(selectUser);
+  const {
+    user: { email, role }
+  } = useApp();
   const signOut = useSignOutHook();
+  const rolePath = role.toLowerCase();
   const user = {
     name: email.replace(/@.*/, ''),
     avatar: '/static/images/avatars/avatar-empty.jpeg',
-    jobtitle: `${role.toLowerCase()}`
+    jobtitle: `${rolePath}`
   };
 
   const ref = useRef<any>(null);
@@ -125,11 +129,11 @@ function HeaderUserbox() {
         </MenuUserBox>
         <Divider sx={{ mb: 0 }} />
         <List sx={{ p: 1 }} component="nav">
-          <ListItem button to="/management/profile/details" component={NavLink}>
+          <ListItem button to={`/${rolePath}/profile`} component={NavLink}>
             <AccountBoxTwoToneIcon fontSize="small" />
             <ListItemText primary="My Profile" />
           </ListItem>
-          <ListItem button to="/dashboards/messenger" component={NavLink}>
+          {/* <ListItem button to="/dashboards/messenger" component={NavLink}>
             <InboxTwoToneIcon fontSize="small" />
             <ListItemText primary="Messenger" />
           </ListItem>
@@ -140,7 +144,7 @@ function HeaderUserbox() {
           >
             <AccountTreeTwoToneIcon fontSize="small" />
             <ListItemText primary="Account Settings" />
-          </ListItem>
+          </ListItem> */}
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>

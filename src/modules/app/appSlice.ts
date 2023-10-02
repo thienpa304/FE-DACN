@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'src/redux/store';
 import { Role, User } from '../users/model';
+import { getAccessToken } from 'src/utils/localStorage';
 
 export interface SnackBarState {
   massage: string;
@@ -27,7 +28,7 @@ const initialState: AppState = {
   user: {
     role: null
   },
-  accessToken: null
+  accessToken: getAccessToken()
 };
 
 export const AppSlice = createSlice({

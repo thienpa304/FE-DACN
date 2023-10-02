@@ -2,7 +2,7 @@ import { alpha, createTheme, lighten, darken } from '@mui/material';
 import '@mui/lab/themeAugmentation';
 
 const themeColors = {
-  primary: '#28A745',
+  primary: '#FFA500',
   secondary: '#6E759F',
   success: '#57CA22',
   warning: '#FFA319',
@@ -326,12 +326,12 @@ export const PureLightTheme = createTheme({
     MuiBackdrop: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha(darken(themeColors.primaryAlt, 0.4), 0.2),
-          backdropFilter: 'blur(2px)',
+          // backgroundColor: alpha(darken(themeColors.primaryAlt, 0.4), 0.2),
+          // backdropFilter: 'blur(2px)',
 
           '&.MuiBackdrop-invisible': {
-            backgroundColor: 'transparent',
-            backdropFilter: 'blur(2px)'
+            // backgroundColor: 'transparent',
+            // backdropFilter: 'blur(2px)'
           }
         }
       }

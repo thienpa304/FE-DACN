@@ -7,13 +7,13 @@ export const getRulesByPattern = (
   required?: boolean
 ) => {
   let rule: RegisterOptions = {};
-  if (required) rule.required = `Please enter ${label}`;
+  if (required) rule.required = `Vui lòng nhập ${label}`;
   if (pattern === 'phone')
     rule.pattern = {
       value: regexPhoneNumber,
-      message: `Phone number is not valid`
+      message: `Số điện thoại không hợp lệ`
     };
   if (pattern === 'email')
-    rule.pattern = { value: regexEmail, message: `Email is not valid` };
+    rule.pattern = { value: regexEmail, message: `Email không hợp lệ` };
   return rule;
 };

@@ -1,16 +1,20 @@
+import { DatePickerProps } from '@mui/lab';
 import { TextFieldProps } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { Controller } from 'react-hook-form';
 import { getRulesByPattern } from 'src/utils';
+import { Option, PropsSelectInput } from '../SelectInput';
 
-type Props = TextFieldProps & {
-  control: any;
-  element: ReactElement;
-  children: ReactElement;
-  pattern: string;
-  name: string;
-  errors: any;
-};
+type Props = TextFieldProps &
+  DatePickerProps<any> & {
+    control: any;
+    element: ReactElement;
+    children: ReactElement;
+    pattern: string;
+    name: string;
+    errors: any;
+    options?: Option[];
+  };
 const FormControl: React.FC<Partial<Props>> = ({
   control,
   name,
