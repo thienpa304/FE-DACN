@@ -33,7 +33,9 @@ const InfoAccountTab = () => {
   } = useForm<User>({
     defaultValues: {
       ...user,
-      dob: dayjs(user.dob, 'DD-MM-YYYY').toISOString(),
+      dob: dayjs(user.dob).isValid()
+        ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
+        : null,
       sex: GENDER.find((item) => item.label === user.sex).value
     }
   });
@@ -45,20 +47,14 @@ const InfoAccountTab = () => {
       <CardHeader title="Thông tin tài khoản" />
       <Divider />
       <CardContent>
-        <Grid container>
+        <Grid
+          container
+          spacing={3}
+          sx={{ flexDirection: { xs: 'column-reverse', md: 'row' }, marginTop: 1 }}
+        >
           <Grid item xs={12} md={8}>
-            <Box
-              component="form"
-              sx={{
-                '& .MuiTextField-root, .MuiFormControl-root': {
-                  m: 1,
-                  width: '40ch'
-                }
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <div>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
                 <FormControl
                   element={<TextField />}
                   control={control}
@@ -68,6 +64,8 @@ const InfoAccountTab = () => {
                   label="Họ và tên"
                   name="name"
                 />
+              </Grid>
+              <Grid item xs={12} md={6}>
                 <FormControl
                   element={<DatePicker />}
                   control={control}
@@ -77,6 +75,8 @@ const InfoAccountTab = () => {
                   label="Ngày sinh"
                   name="dob"
                 />
+              </Grid>
+              <Grid item xs={12} md={6}>
                 <FormControl
                   element={<TextField />}
                   control={control}
@@ -86,6 +86,8 @@ const InfoAccountTab = () => {
                   label="Địa chỉ"
                   name="address"
                 />
+              </Grid>
+              <Grid item xs={12} md={6}>
                 <FormControl
                   element={<TextField />}
                   control={control}
@@ -96,6 +98,8 @@ const InfoAccountTab = () => {
                   name="phone"
                   pattern="phone"
                 />
+              </Grid>
+              <Grid item xs={12} md={6}>
                 <FormControl
                   element={<SelectInput />}
                   options={GENDER}
@@ -106,15 +110,15 @@ const InfoAccountTab = () => {
                   label="Giới tính"
                   name="sex"
                 />
-              </div>
-            </Box>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} md={4}>
             <AvatarUpload />
           </Grid>
         </Grid>
 
-        <Grid container justifyContent={'end'}>
+        <Grid container justifyContent={'end'} marginTop={2}>
           <Button
             color="success"
             onClick={handleSubmit(handleSaveProfile)}
