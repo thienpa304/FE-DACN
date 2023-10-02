@@ -1,17 +1,20 @@
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
-import useToast from 'src/modules/app/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { RegisterService } from '../authService';
 import { RegisterResponse, RegisterRequest } from '../model';
-import { useAppUser } from 'src/modules/app/hooks';
+import { useApp } from 'src/modules/app/hooks';
 
 const useRegister = () => {
-  const toast = useToast();
-  const { userId } = useAppUser();
+  const { toast } = useApp();
+  const {
+    user: { userId }
+  } = useApp();
+
   const navigate = useNavigate();
   if (userId) navigate('/');
+
   const { mutate: onRegister, isLoading } = useMutation<
     ResponseData<RegisterResponse>,
     AxiosError<ResponseData<RegisterResponse>>,

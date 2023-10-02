@@ -1,7 +1,7 @@
-import { useAppUser } from 'src/modules/app/hooks';
+import { useApp } from 'src/modules/app/hooks';
 
 const useSignOutHook = () => {
-  const { setAccessTokenApp, resetUserApp } = useAppUser();
+  const { setAccessTokenApp, resetUserApp } = useApp();
   const signOut = () => {
     resetUserApp();
     setAccessTokenApp(null);

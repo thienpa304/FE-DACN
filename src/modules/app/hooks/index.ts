@@ -1,4 +1,3 @@
-import useAppUser from '../../auth/hooks/useAppUserHook';
-import useToast from './useToast';
+import useApp from './useAppHook';
 
-export { useAppUser, useToast };
+export { useApp };

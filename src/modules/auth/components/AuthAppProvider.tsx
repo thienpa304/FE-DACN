@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
-import { Navigate } from 'react-router';
-import { useAppUser } from 'src/modules/app/hooks';
-import { Role } from 'src/modules/users/model';
+import { useApp } from 'src/modules/app/hooks';
 import useProfileHook from '../../users/hooks/useProfileHook';
 
 interface Props {
   children: React.ReactElement;
 }
 const AuthAppProvider: React.FC<Props> = ({ children }) => {
-  const { setUserApp } = useAppUser();
+  const { setUserApp } = useApp();
 
   const { profile } = useProfileHook();
 

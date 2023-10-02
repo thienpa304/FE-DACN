@@ -19,7 +19,7 @@ import Logo from 'src/components/LogoSign';
 import HeaderButtons from './Buttons';
 import HeaderMenu from './Menu';
 import HeaderUserbox from './Userbox';
-import { useAppUser } from 'src/modules/app/hooks';
+import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
 
 const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
@@ -43,7 +43,9 @@ const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
 
 function Header({ showSidebar }) {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
-  const { userId } = useAppUser();
+  const {
+    user: { userId }
+  } = useApp();
   const theme = useTheme();
 
   return (

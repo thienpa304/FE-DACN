@@ -1,22 +1,23 @@
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
-import { Navigate } from 'react-router-dom';
-import { ResponseData } from 'src/common/http-request';
-import useToast from 'src/modules/app/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
-import { LoginService } from '../authService';
-import { LoginResponse, LoginRequest } from '../model';
-import { useAppDispatch } from 'src/redux/hooks';
-import { setAccessToken, setUser } from 'src/modules/app/appSlice';
-import { useAppUser } from 'src/modules/app/hooks';
+import { ResponseData } from 'src/common/http-request';
+import { useApp } from 'src/modules/app/hooks';
 import { localStorage } from 'src/utils';
+import { LoginService } from '../authService';
+import { LoginRequest, LoginResponse } from '../model';
 
 const useLogin = () => {
-  const toast = useToast();
-  const { setUserApp, setAccessTokenApp, userId } = useAppUser();
-  const navigate = useNavigate();
+  const { toast } = useApp();
+  const {
+    setUserApp,
+    setAccessTokenApp,
+    user: { userId }
+  } = useApp();
 
+  const navigate = useNavigate();
   if (userId) navigate('/');
+
   const { mutate: onLogin, isLoading } = useMutation<
     ResponseData<LoginResponse>,
     AxiosError<ResponseData<LoginResponse>>,

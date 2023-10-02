@@ -1,12 +1,15 @@
 import { Alert, Snackbar as Toast } from '@mui/material';
-import useToast from '../hooks/useToast';
+import { useApp } from '../hooks';
 
 const Snackbar = () => {
-  const { duration, massage, open, type, close } = useToast();
+  const {
+    snackbar: { duration, massage, open, type },
+    toast
+  } = useApp();
 
   return (
-    <Toast open={open} autoHideDuration={duration} onClose={close}>
-      <Alert onClose={close} severity={type} sx={{ width: '100%' }}>
+    <Toast open={open} autoHideDuration={duration} onClose={toast.close}>
+      <Alert onClose={toast.close} severity={type} sx={{ width: '100%' }}>
         {massage}
       </Alert>
     </Toast>
