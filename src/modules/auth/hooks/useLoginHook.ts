@@ -30,7 +30,7 @@ const useLogin = () => {
         setUserApp(userData);
         setAccessTokenApp(access_token);
         localStorage.setAccessToken(access_token);
-        navigate('/');
+        location.replace('/');
       } else toast.error({ massage: res.message });
     },
     onError: (error) => {
