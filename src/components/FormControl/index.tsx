@@ -13,6 +13,7 @@ type Props = TextFieldProps &
     pattern: string;
     name: string;
     errors: any;
+    show: boolean;
     options?: Option[];
   };
 const FormControl: React.FC<Partial<Props>> = ({
@@ -23,9 +24,11 @@ const FormControl: React.FC<Partial<Props>> = ({
   pattern,
   errors,
   label,
+  show = true,
   required,
   ...props
 }) => {
+  if (!show) return <></>;
   return (
     <Controller
       name={name}

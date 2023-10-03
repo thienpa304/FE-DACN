@@ -17,7 +17,7 @@ import FormControl from 'src/components/FormControl';
 import DatePicker from 'src/components/DatePicker';
 import TextField from 'src/components/TextField';
 import SelectInput from 'src/components/SelectInput';
-import { GENDER } from 'src/constants/enum';
+import { DEGREE, GENDER } from 'src/constants/option';
 import useMutateProfile from '../hooks/useMutateProfileHook';
 import { useApp } from 'src/modules/app/hooks';
 import dayjs from 'dayjs';
@@ -25,7 +25,7 @@ import AvatarUpload from './AvatarUpload';
 
 const InfoAccountTab = () => {
   const { onSaveProfile } = useMutateProfile();
-  const { user } = useApp();
+  const { user, isEmployee } = useApp();
   const {
     control,
     handleSubmit,
@@ -33,7 +33,7 @@ const InfoAccountTab = () => {
   } = useForm<User>({
     defaultValues: {
       ...user,
-      dob: dayjs(user.dob).isValid()
+      dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
         ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
         : null,
       sex: GENDER.find((item) => item.label === user.sex).value
@@ -44,13 +44,16 @@ const InfoAccountTab = () => {
   };
   return (
     <Card>
-      <CardHeader title="Thông tin tài khoản" />
+      <CardHeader title="Thông tin cá nhân" />
       <Divider />
       <CardContent>
         <Grid
           container
           spacing={3}
-          sx={{ flexDirection: { xs: 'column-reverse', md: 'row' }, marginTop: 1 }}
+          sx={{
+            flexDirection: { xs: 'column-reverse', md: 'row' },
+            marginTop: 1
+          }}
         >
           <Grid item xs={12} md={8}>
             <Grid container spacing={2}>
@@ -109,6 +112,19 @@ const InfoAccountTab = () => {
                   id="sex"
                   label="Giới tính"
                   name="sex"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl
+                  element={<SelectInput />}
+                  options={DEGREE}
+                  control={control}
+                  errors={errors}
+                  required
+                  show={isEmployee}
+                  id="degree"
+                  label="Học vấn"
+                  name="degree"
                 />
               </Grid>
             </Grid>

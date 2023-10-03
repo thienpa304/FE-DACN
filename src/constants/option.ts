@@ -1,3 +1,5 @@
+import { Degree } from 'src/interfaces/enum';
+
 export const GENDER = [
   {
     value: 0,
@@ -12,3 +14,8 @@ export const GENDER = [
     label: 'Nữ'
   }
 ];
+
+export const DEGREE = Object.values(Degree).map((item) => ({
+  value: item,
+  label: item
+}));

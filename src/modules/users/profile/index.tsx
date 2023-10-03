@@ -19,7 +19,7 @@ function ManagementUserSettings() {
   const [currentTab, setCurrentTab] = useState<string>('info_account');
 
   const tabs = [
-    { value: 'info_account', label: 'Thông tin tài khoản' },
+    { value: 'info_account', label: 'Thông tin cá nhân' },
     { value: 'info_company', label: 'Thông tin công ty' }
   ];
 
