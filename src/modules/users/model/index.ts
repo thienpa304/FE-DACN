@@ -1,3 +1,5 @@
+import { Degree } from 'src/interfaces/enum';
+
 export enum Role {
   ADMIN = 'ADMIN',
   EMPLOYEE = 'EMPLOYEE',
@@ -13,4 +15,5 @@ export type User = {
   name: string;
   phone: string;
   avatar: string;
+  degree: Degree;
 };

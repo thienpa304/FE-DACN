@@ -6,6 +6,7 @@ import Footer from 'src/components/Footer';
 import { styled } from '@mui/material/styles';
 import InfoAccountTab from './InfoAccountTab';
 import InfoCompanyTab from './InfoCompanyTab';
+import { useApp } from 'src/modules/app/hooks';
 
 const TabsWrapper = styled(Tabs)(
   () => `
@@ -16,11 +17,11 @@ const TabsWrapper = styled(Tabs)(
 );
 
 function ManagementUserSettings() {
+  const { isEmployer } = useApp();
   const [currentTab, setCurrentTab] = useState<string>('info_account');
-
   const tabs = [
-    { value: 'info_account', label: 'Thông tin cá nhân' },
-    { value: 'info_company', label: 'Thông tin công ty' }
+    { value: 'info_account', label: 'Thông tin cá nhân', show: true },
+    { value: 'info_company', label: 'Thông tin công ty', show: isEmployer }
   ];
 
   const handleTabsChange = (event: ChangeEvent<{}>, value: string): void => {
@@ -49,9 +50,12 @@ function ManagementUserSettings() {
               textColor="primary"
               indicatorColor="primary"
             >
-              {tabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ))}
+              {tabs.map((tab) => {
+                if (!tab.show) return <></>;
+                return (
+                  <Tab key={tab.value} label={tab.label} value={tab.value} />
+                );
+              })}
             </TabsWrapper>
           </Grid>
           <Grid item xs={12}>

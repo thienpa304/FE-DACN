@@ -268,7 +268,7 @@ function SidebarMenu() {
           component="div"
           subheader={
             <ListSubheader component="div" disableSticky>
-              Accounts
+              Tài khoản
             </ListSubheader>
           }
         >
@@ -282,10 +282,10 @@ function SidebarMenu() {
                   to={`/${rolePath}/profile/details`}
                   startIcon={<AccountCircleTwoToneIcon />}
                 >
-                  User Profile
+                  Quản lí hồ sơ
                 </Button>
               </ListItem>
-              <ListItem component="div">
+              {/* <ListItem component="div">
                 <Button
                   disableRipple
                   component={RouterLink}
@@ -295,7 +295,7 @@ function SidebarMenu() {
                 >
                   Account Settings
                 </Button>
-              </ListItem>
+              </ListItem> */}
               {/* <ListItem component="div">
                 <Button
                   disableRipple

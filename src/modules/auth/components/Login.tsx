@@ -45,7 +45,7 @@ export default function Login() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Đăng nhập
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
           <FormControl
@@ -56,7 +56,7 @@ export default function Login() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Địa chỉ email"
             pattern="email"
             name="email"
             autoComplete="email"
@@ -70,14 +70,14 @@ export default function Login() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Mật khẩu"
             type="password"
             id="password"
             autoComplete="current-password"
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            label="Nhớ mật khẩu"
           />
           <LoadingButton
             onClick={handleSubmit(handleLogin)}
@@ -86,17 +86,17 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign In
+            Đăng nhập
           </LoadingButton>
           <Grid container>
             <Grid item xs>
               <Link href={`/register?role=${Role.EMPLOYER}`} variant="body2">
-                For Employers
+                Dành cho NTD
               </Link>
             </Grid>
             <Grid item>
               <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+                {'Bạn chưa có tài khoản? Đăng ký'}
               </Link>
             </Grid>
           </Grid>

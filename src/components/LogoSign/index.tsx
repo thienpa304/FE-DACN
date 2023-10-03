@@ -19,14 +19,16 @@ const LogoWrapper = styled(Link)(
         font-weight: ${theme.typography.fontWeightBold};
 `
 );
-
+const ImgWrapper = styled('img')(
+  ({ theme }) => `
+        width: 150px;
+        height: ${theme.header.height}
+`
+);
 function Logo() {
   return (
     <LogoWrapper to="/">
-      <img
-        width={180}
-        src="	https://static.topcv.vn/v4/image/logo/topcv-logo-6.png"
-      />
+      <ImgWrapper src="https://thuvienvector.com/upload/images/items/vector-logo-truong-dai-hoc-bach-khoa-hcm-file-cdr-coreldraw-ai-217.webp" />
     </LogoWrapper>
   );
 }

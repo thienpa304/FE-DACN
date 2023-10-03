@@ -36,7 +36,7 @@ const InfoAccountTab = () => {
       dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
         ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
         : null,
-      sex: GENDER.find((item) => item.label === user.sex).value
+      sex: GENDER.find((item) => item.label === user.sex)?.value
     }
   });
   const handleSaveProfile = (data) => {

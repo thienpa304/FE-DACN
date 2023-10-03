@@ -48,7 +48,7 @@ export default function Register() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up with {role.toLowerCase()}
+          Đăng ký với {role.toLowerCase()}
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
           <FormControl
@@ -59,7 +59,7 @@ export default function Register() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Địa chỉ email"
             name="email"
             pattern="email"
             autoComplete="email"
@@ -73,7 +73,7 @@ export default function Register() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Mật khẩu"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -86,7 +86,7 @@ export default function Register() {
             required
             fullWidth
             name="confirmPassword"
-            label="Confirm Password"
+            label="Nhập lại mật khẩu"
             type="password"
             id="confirm-password"
             autoComplete="current-password"
@@ -99,17 +99,17 @@ export default function Register() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
+            Đăng kí
           </LoadingButton>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
-                Forgot password?
+                Quên mật khẩu?
               </Link>
             </Grid>
             <Grid item>
               <Link href="/login" variant="body2">
-                {'Sign In'}
+                Đăng nhập
               </Link>
             </Grid>
           </Grid>

@@ -18,13 +18,11 @@ const headerRequest = () => {
 };
 
 const httpRequest = Axios.create({
-  baseURL: process.env.REACT_APP_URL_API,
-  headers: {
-    ...headerRequest()
-  }
+  baseURL: process.env.REACT_APP_URL_API
 });
 httpRequest.interceptors.request.use(
   function (config) {
+    config.headers = headerRequest();
     return config;
   },
   function (error) {

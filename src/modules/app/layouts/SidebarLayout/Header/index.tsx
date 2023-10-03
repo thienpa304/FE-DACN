@@ -76,7 +76,7 @@ function Header({ showSidebar }) {
         spacing={2}
       >
         {!showSidebar && <Logo />}
-        <HeaderMenu />
+        {/* <HeaderMenu /> */}
       </Stack>
       <Box display="flex" alignItems="center">
         <HeaderButtons />
@@ -85,14 +85,17 @@ function Header({ showSidebar }) {
         ) : (
           <>
             <Link href="/login" variant="body2">
-              {'Sign In'}
+              Đăng nhập/
+            </Link>
+            <Link href="/register" variant="body2">
+              Đăng kí
             </Link>
             <Link
               href={`/register?role=${Role.EMPLOYER}`}
               variant="body2"
-              marginLeft={3}
+              marginLeft={2}
             >
-              For Employers
+              Dành cho NTD
             </Link>
           </>
         )}
