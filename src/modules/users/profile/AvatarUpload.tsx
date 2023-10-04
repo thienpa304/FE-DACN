@@ -1,8 +1,8 @@
-import { Avatar, Box, Grid, IconButton, styled } from '@mui/material';
 import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
+import { Avatar, Box, Grid, IconButton, styled } from '@mui/material';
 
-import React from 'react';
-import { useApp } from 'src/modules/app/hooks';
+import React, { useState } from 'react';
+import { UploadService } from 'src/common/upload-image';
 const Input = styled('input')({
   display: 'none'
 });
@@ -31,7 +31,12 @@ const ButtonUploadWrapper = styled(Box)(
 `
 );
 const AvatarUpload = () => {
-  const { user } = useApp();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files[0];
+    setSelectedImage(URL.createObjectURL(file));
+    UploadService(file);
+  };
   return (
     <Grid
       container
@@ -42,8 +47,7 @@ const AvatarUpload = () => {
       <Box position={'relative'}>
         <Avatar
           variant="rounded"
-          alt={user.name}
-          src={user.avatar}
+          src={selectedImage}
           sx={{ width: 150, height: 150 }}
         />
         <ButtonUploadWrapper>
@@ -52,6 +56,7 @@ const AvatarUpload = () => {
             id="icon-button-file"
             name="icon-button-file"
             type="file"
+            onChange={handleChangeImage}
           />
           <label htmlFor="icon-button-file">
             <IconButton component="span" color="primary">
