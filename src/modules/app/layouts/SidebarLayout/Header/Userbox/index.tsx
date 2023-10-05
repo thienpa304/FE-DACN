@@ -131,7 +131,7 @@ function HeaderUserbox() {
         <List sx={{ p: 1 }} component="nav">
           <ListItem button to={`/${rolePath}/profile`} component={NavLink}>
             <AccountBoxTwoToneIcon fontSize="small" />
-            <ListItemText primary="Quản lí hồ sơ" />
+            <ListItemText primary="Hồ sơ cá nhân" />
           </ListItem>
           {/* <ListItem button to="/dashboards/messenger" component={NavLink}>
             <InboxTwoToneIcon fontSize="small" />

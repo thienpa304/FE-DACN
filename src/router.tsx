@@ -15,12 +15,29 @@ const Loader = (Component) => (props) =>
     </Suspense>
   );
 
+// Recruitment
+
+const RecruitmentCreate = Loader(
+  lazy(() => import('src/modules/recruitment/create'))
+);
+
+const RecruitmentList = Loader(
+  lazy(() => import('src/modules/recruitment/list'))
+);
+
+// Candidate
+
+const CandidateProfile = Loader(
+  lazy(() => import('src/modules/candidate/profile'))
+);
+
 // User
 
 const Login = Loader(lazy(() => import('src/modules/auth/components/Login')));
 const Register = Loader(
   lazy(() => import('src/modules/auth/components/Register'))
 );
+
 // Pages
 
 const Overview = Loader(lazy(() => import('src/modules/overview')));
@@ -157,10 +174,36 @@ const routes: RouteObject[] = [
           {
             path: 'details',
             element: <UserProfile />
+          }
+        ]
+      },
+      {
+        path: 'recruitment',
+        children: [
+          {
+            path: '',
+            element: <Navigate to="create" replace />
           },
           {
-            path: 'settings',
-            element: <UserSettings />
+            path: 'create',
+            element: <RecruitmentCreate />
+          },
+          {
+            path: 'list',
+            element: <RecruitmentList />
+          }
+        ]
+      },
+      {
+        path: 'candidate',
+        children: [
+          {
+            path: '',
+            element: <Navigate to="profile" replace />
+          },
+          {
+            path: 'profile',
+            element: <CandidateProfile />
           }
         ]
       }
