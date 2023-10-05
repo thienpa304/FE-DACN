@@ -62,7 +62,6 @@ const InfoAccountTab = () => {
                   element={<TextField />}
                   control={control}
                   errors={errors}
-                  required
                   id="name"
                   label="Họ và tên"
                   name="name"
@@ -73,7 +72,6 @@ const InfoAccountTab = () => {
                   element={<DatePicker />}
                   control={control}
                   errors={errors}
-                  required
                   id="dob"
                   label="Ngày sinh"
                   name="dob"
@@ -84,7 +82,6 @@ const InfoAccountTab = () => {
                   element={<TextField />}
                   control={control}
                   errors={errors}
-                  required
                   id="address"
                   label="Địa chỉ"
                   name="address"
@@ -95,7 +92,6 @@ const InfoAccountTab = () => {
                   element={<TextField />}
                   control={control}
                   errors={errors}
-                  required
                   id="phone"
                   label="Số điện thoại"
                   name="phone"
@@ -108,7 +104,6 @@ const InfoAccountTab = () => {
                   options={GENDER}
                   control={control}
                   errors={errors}
-                  required
                   id="sex"
                   label="Giới tính"
                   name="sex"
@@ -120,7 +115,6 @@ const InfoAccountTab = () => {
                   options={DEGREE}
                   control={control}
                   errors={errors}
-                  required
                   show={isEmployee}
                   id="degree"
                   label="Học vấn"
