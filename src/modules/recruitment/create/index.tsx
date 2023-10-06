@@ -29,7 +29,7 @@ function RecruitmentCreate() {
   return (
     <>
       <FormProvider {...methods}>
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
           <Grid
             container
             direction="row"
