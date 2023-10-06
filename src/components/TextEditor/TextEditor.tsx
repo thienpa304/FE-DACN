@@ -2,9 +2,23 @@ import { convertFromHTML, convertToHTML } from 'draft-convert';
 import { EditorState } from 'draft-js';
 import React, { useEffect, useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
-
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import './TextEditor.css';
+
+const TextEditorWrapper = styled(Box)(({ theme }) => ({
+  '& .wrapper-class .editor-class': {
+    minHeight: 200,
+    cursor: 'text',
+    borderRadius: 6,
+    padding: 6,
+    border: `1px solid ${theme.colors.alpha.black[30]}`,
+    '&:focus-within': {
+      border: `2px solid ${theme.colors.primary.main}`
+    }
+  }
+}));
+
 type Props = {
   value?: any;
   onChange?: any;
@@ -19,7 +33,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange }) => {
   }, [editorState]);
 
   return (
-    <div className="App">
+    <TextEditorWrapper>
       <Editor
         editorState={editorState}
         onEditorStateChange={setEditorState}
@@ -27,7 +41,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange }) => {
         editorClassName="editor-class"
         toolbarClassName="toolbar-class"
       />
-    </div>
+    </TextEditorWrapper>
   );
 };
 

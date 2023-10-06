@@ -14,14 +14,14 @@ const LogoWrapper = styled(Link)(
         color: ${theme.palette.text.primary};
         display: flex;
         text-decoration: none;
-        width: 180px;
+        width: 100px;
         margin: 0 auto;
         font-weight: ${theme.typography.fontWeightBold};
 `
 );
 const ImgWrapper = styled('img')(
   ({ theme }) => `
-        width: 150px;
+        width: 100px;
         height: ${theme.header.height}
 `
 );

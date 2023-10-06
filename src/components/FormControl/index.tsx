@@ -28,6 +28,8 @@ const FormControl: React.FC<Partial<Props>> = ({
   required,
   ...props
 }) => {
+  const labelRequired = <>{label} *</>;
+
   if (!show) return <></>;
   return (
     <Controller
@@ -38,7 +40,7 @@ const FormControl: React.FC<Partial<Props>> = ({
         React.cloneElement(element || children, {
           ...field,
           ...props,
-          label,
+          label: required ? labelRequired : label,
           error: errors && !!errors[name],
           helperText: errors && errors[name] ? errors[name].message : ''
         })
