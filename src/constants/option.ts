@@ -15,7 +15,18 @@ export const GENDER = [
   }
 ];
 
-export const DEGREE = Object.values(Degree).map((item) => ({
-  value: item,
-  label: item
+export const ISMARRIED = [
+  {
+    value: 1,
+    label: 'Đã kết hôn'
+  },
+  {
+    value: 0,
+    label: 'Độc thân'
+  },
+];
+
+export const DEGREE = Object.keys(Degree).map((key) => ({
+  value: key,
+  label: Degree[key]
 }));

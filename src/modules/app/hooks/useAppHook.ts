@@ -8,7 +8,7 @@ import {
   selectUser,
   setAccessToken,
   setSnackbar,
-  setUser
+  setUser,
 } from '../appSlice';
 import { Role, User } from 'src/modules/users/model';
 
