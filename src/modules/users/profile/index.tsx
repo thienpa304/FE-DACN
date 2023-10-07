@@ -33,7 +33,7 @@ function ManagementUserSettings() {
       <Helmet>
         <title>User Settings - Applications</title>
       </Helmet>
-      <Container maxWidth="lg" sx={{ marginTop: 4 }}>
+      <Container maxWidth="md" sx={{ marginTop: 4 }}>
         <Grid
           container
           direction="row"
