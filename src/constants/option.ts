@@ -23,7 +23,7 @@ export const ISMARRIED = [
   {
     value: 0,
     label: 'Độc thân'
-  },
+  }
 ];
 
 export const DEGREE = Object.keys(Degree).map((key) => ({
