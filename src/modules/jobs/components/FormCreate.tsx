@@ -15,7 +15,7 @@ import Footer from 'src/components/Footer';
 import FormControl from 'src/components/FormControl';
 import TextEditor from 'src/components/TextEditor';
 import TextField from 'src/components/TextField';
-import useMutateJob from '../../hooks/useMutateJob';
+import useMutateJob from '../hooks/useMutateJob';
 import SelectInput from 'src/components/SelectInput';
 import {
   DEGREE,
@@ -25,7 +25,7 @@ import {
   WORKING_FORM
 } from 'src/constants/option';
 
-function RecruitmentCreate() {
+function FormCreate() {
   const { onSaveData } = useMutateJob();
   const methods = useForm({
     defaultValues: {
@@ -350,4 +350,4 @@ function RecruitmentCreate() {
   );
 }
 
-export default RecruitmentCreate;
+export default FormCreate;

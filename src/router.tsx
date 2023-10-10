@@ -18,11 +18,11 @@ const Loader = (Component) => (props) =>
 // Recruitment
 
 const RecruitmentCreate = Loader(
-  lazy(() => import('src/modules/jobs/components/create'))
+  lazy(() => import('src/pages/recruitment-create'))
 );
 
 const RecruitmentList = Loader(
-  lazy(() => import('src/modules/jobs/components/list'))
+  lazy(() => import('src/pages/recruitment-list'))
 );
 
 // Candidate

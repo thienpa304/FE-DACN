@@ -7,9 +7,9 @@ import {
   Grid,
   Button
 } from '@mui/material';
-import useQueryJob from '../../hooks/useQueryJob';
-import RecruitmentTable from './Table';
 import { Link } from 'react-router-dom';
+import TablePost from 'src/modules/jobs/components/TablePost';
+import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 
 const RecruitmentList = () => {
   const { jobs } = useQueryJob();
@@ -35,7 +35,7 @@ const RecruitmentList = () => {
             />
             <Divider />
             <CardContent>
-              <RecruitmentTable data={jobs || []} />
+              <TablePost data={jobs || []} />
             </CardContent>
           </Card>
         </Grid>

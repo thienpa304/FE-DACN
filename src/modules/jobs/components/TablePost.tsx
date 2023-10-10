@@ -48,7 +48,7 @@ const columns: GridColDef[] = [
   }
 ];
 
-export default function TableJobs({ data }) {
+export default function TablePost({ data }) {
   return (
     <Box sx={{ height: '75vh', width: '100%' }}>
       <TableData rows={data} columns={columns} />
