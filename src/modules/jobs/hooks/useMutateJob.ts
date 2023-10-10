@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { JobService } from '../recruitmentService';
+import { JobService } from '../jobService';
 import { Job } from '../model';
 import { useNavigate } from 'react-router';
 

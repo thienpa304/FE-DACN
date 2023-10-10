@@ -7,7 +7,7 @@ import {
   Grid,
   Button
 } from '@mui/material';
-import useQueryJob from '../hooks/useQueryJob';
+import useQueryJob from '../../hooks/useQueryJob';
 import RecruitmentTable from './Table';
 import { Link } from 'react-router-dom';
 

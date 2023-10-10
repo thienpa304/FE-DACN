@@ -15,7 +15,7 @@ import Footer from 'src/components/Footer';
 import FormControl from 'src/components/FormControl';
 import TextEditor from 'src/components/TextEditor';
 import TextField from 'src/components/TextField';
-import useMutateJob from '../hooks/useMutateJob';
+import useMutateJob from '../../hooks/useMutateJob';
 import SelectInput from 'src/components/SelectInput';
 import {
   DEGREE,
