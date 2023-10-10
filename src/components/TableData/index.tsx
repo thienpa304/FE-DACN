@@ -38,7 +38,6 @@ const TableData: React.FC<DataGridProps> = ({ rows, columns, ...props }) => {
         }
       }}
       pageSizeOptions={[10]}
-      checkboxSelection
       disableRowSelectionOnClick
       {...props}
     />

@@ -15,17 +15,34 @@ import Footer from 'src/components/Footer';
 import FormControl from 'src/components/FormControl';
 import TextEditor from 'src/components/TextEditor';
 import TextField from 'src/components/TextField';
+import useMutateJob from '../hooks/useMutateJob';
+import SelectInput from 'src/components/SelectInput';
+import {
+  DEGREE,
+  EXPERIENCE,
+  GENDER,
+  POSITION_LEVEL,
+  WORKING_FORM
+} from 'src/constants/option';
 
 function RecruitmentCreate() {
+  const { onSaveData } = useMutateJob();
   const methods = useForm({
     defaultValues: {
-      description: ''
+      jobDescription: '',
+      jobRequirements: '',
+      benefits: ''
     }
   });
   const {
     control,
-    formState: { errors }
+    formState: { errors },
+    handleSubmit
   } = methods;
+
+  const handleSave = (data) => {
+    onSaveData(data);
+  };
   return (
     <>
       <FormProvider {...methods}>
@@ -53,10 +70,10 @@ function RecruitmentCreate() {
                         control={control}
                         errors={errors}
                         required
-                        id="name"
+                        id="jobTitle"
                         label="Chức danh"
                         placeholder="Vị trí hiển thị đăng tuyển"
-                        name="name"
+                        name="jobTitle"
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -64,49 +81,58 @@ function RecruitmentCreate() {
                         element={<TextField />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="profession"
                         label="Nghề nghiệp"
-                        name="dob"
+                        name="profession"
+                        required
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        element={<SelectInput />}
+                        options={WORKING_FORM}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="employmentType"
                         label="Hình thức làm việc"
-                        name="dob"
+                        name="employmentType"
+                        required
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        options={DEGREE}
+                        element={<SelectInput />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="degree"
                         label="Bằng cấp"
-                        name="dob"
+                        name="degree"
+                        required
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        options={EXPERIENCE}
+                        element={<SelectInput />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="experience"
                         label="Kinh nghiệm"
-                        name="dob"
+                        name="experience"
+                        required
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        options={POSITION_LEVEL}
+                        element={<SelectInput />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="positionLevel"
                         label="Cấp bậc"
-                        name="dob"
+                        name="positionLevel"
+                        required
                       />
                     </Grid>
                     <Grid item xs={6} md={2}>
@@ -114,9 +140,10 @@ function RecruitmentCreate() {
                         element={<TextField />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="minAge"
                         label="Độ tuổi tối thiểu"
-                        name="dob"
+                        name="minAge"
+                        type="number"
                       />
                     </Grid>
                     <Grid item xs={6} md={2}>
@@ -124,19 +151,22 @@ function RecruitmentCreate() {
                         element={<TextField />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="maxAge"
                         label="Độ tuổi tối đa"
-                        name="dob"
+                        type="number"
+                        name="maxAge"
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        options={GENDER}
+                        element={<SelectInput />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="sex"
                         label="Yêu cầu giới tính"
-                        name="dob"
+                        name="sex"
+                        required
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -144,9 +174,11 @@ function RecruitmentCreate() {
                         element={<TextField />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="numberofVacancies"
                         label="Số lượng tuyển"
-                        name="dob"
+                        name="numberofVacancies"
+                        required
+                        type="number"
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -154,9 +186,10 @@ function RecruitmentCreate() {
                         element={<TextField />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="trialPeriod"
                         label="Thời giai thử việc"
-                        name="dob"
+                        name="trialPeriod"
+                        type="number"
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -164,9 +197,45 @@ function RecruitmentCreate() {
                         element={<DatePicker />}
                         control={control}
                         errors={errors}
-                        id="dob"
+                        id="applicationDeadline"
                         label="Hạn nộp hồ sơ"
-                        name="dob"
+                        name="applicationDeadline"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="minSalary"
+                        label="Mức lương tối thiểu"
+                        name="minSalary"
+                        type="number"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="maxSalary"
+                        label="Mức lương tối đa"
+                        type="number"
+                        name="maxSalary"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="workAddress"
+                        label="Địa chỉ làm việc"
+                        name="workAddress"
+                        required
                       />
                     </Grid>
                   </Grid>
@@ -178,9 +247,80 @@ function RecruitmentCreate() {
                     element={<TextEditor />}
                     control={control}
                     errors={errors}
-                    id="description"
-                    name="description"
+                    id="jobDescription"
+                    name="jobDescription"
                   />
+                  <Typography variant="h6" marginBottom={2} marginTop={2}>
+                    Yêu cầu công việc
+                  </Typography>
+                  <FormControl
+                    element={<TextEditor />}
+                    control={control}
+                    errors={errors}
+                    id="jobRequirements"
+                    name="jobRequirements"
+                  />
+                  <Typography variant="h6" marginBottom={2} marginTop={2}>
+                    Quyền lợi
+                  </Typography>
+                  <FormControl
+                    element={<TextEditor />}
+                    control={control}
+                    errors={errors}
+                    id="benefits"
+                    name="benefits"
+                  />
+                  <Typography variant="h6" marginBottom={2} marginTop={2}>
+                    Thông tin người liên hệ
+                  </Typography>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={4}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="name"
+                        label="Họ và tên"
+                        name="name"
+                        required
+                      />
+                    </Grid>{' '}
+                    <Grid item xs={12} md={4}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="email"
+                        label="Email"
+                        name="email"
+                        required
+                        pattern="email"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        required
+                        id="phone"
+                        label="Điện thoại"
+                        name="phone"
+                        pattern="phone"
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        required
+                        id="contactAddress"
+                        label="Địa chỉ liên hệ"
+                        name="contactAddress"
+                      />
+                    </Grid>
+                  </Grid>
                 </CardContent>
                 <CardActions>
                   <Grid
@@ -189,7 +329,12 @@ function RecruitmentCreate() {
                     marginBottom={1}
                     marginRight={1}
                   >
-                    <Button color="success" variant="contained" size="small">
+                    <Button
+                      onClick={handleSubmit(handleSave)}
+                      color="success"
+                      variant="contained"
+                      size="small"
+                    >
                       Tạo
                     </Button>
                   </Grid>
