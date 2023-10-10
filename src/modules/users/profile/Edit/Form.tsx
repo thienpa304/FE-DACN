@@ -11,14 +11,11 @@ import SelectInput from 'src/components/SelectInput';
 import { User } from '../../model';
 import { DEGREE, GENDER, ISMARRIED } from 'src/constants/option';
 import dayjs from 'dayjs';
-// import useMutateProfile from "../hooks/useMutateProfileHook";
-// import useMutateCompany from "../hooks/useMutateCompanyHook";
 import useMutateUserData from '../../hooks/useMutateUserHook';
 
 export function UserForm(props) {
     const { close, user } = props;
-    // const { onSaveProfile } = useMutateProfile()
-    const { onSaveData } = useMutateUserData("Profile");
+    const { onSaveData, isLoading } = useMutateUserData("Profile");
     const isEmployee = user.role === "EMPLOYEE";
 
     const degree = DEGREE.find((item) => item.label === user.degree);
@@ -39,19 +36,18 @@ export function UserForm(props) {
         }
     });
 
-    const confirm = () => {
-        close()
-        setTimeout(() => {
-            window.location.reload();
-        }, 800);
-    }
-
-    const handleSaveProfile = (data) => {
+    const handleSaveProfile = async (data) => {
+        // debugger;
         const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
         // const formattedMarried = data.isMarried.toString() === '1';
         const newData = { ...data, dob: formattedDob };
+
+        console.log(isLoading)
         onSaveData(newData);
-        confirm();
+        setTimeout(() => {
+            window.location.reload()
+        }, 1000)
+        console.log(isLoading)
     };
 
     return (
@@ -69,7 +65,6 @@ export function UserForm(props) {
                             name="name"
                         />
                     </Grid>
-
                     <Grid item xs={12} sm={6}>
                         <FormControl
                             element={<TextField />}
@@ -82,7 +77,6 @@ export function UserForm(props) {
                             name="email"
                         />
                     </Grid>
-
                     <Grid item xs={12} md={6}>
                         <FormControl
                             element={<TextField />}
@@ -95,7 +89,6 @@ export function UserForm(props) {
                             pattern="phone"
                         />
                     </Grid>
-
                     <Grid item xs={12} md={6}>
                         <FormControl
                             element={<TextField />}
@@ -107,7 +100,6 @@ export function UserForm(props) {
                             name="address"
                         />
                     </Grid>
-
                     <Grid item xs={12} sm={6}>
                         <FormControl
                             element={<DatePicker />}
@@ -132,7 +124,6 @@ export function UserForm(props) {
                             name="sex"
                         />
                     </Grid>
-
                     <Grid item xs={12} sm={6}>
                         <FormControl
                             element={<SelectInput />}
@@ -158,7 +149,6 @@ export function UserForm(props) {
 
 export function CompanyForm(props) {
     const { close, user } = props;
-    // const { onSaveCompany } = useMutateCompany();
     const { onSaveData } = useMutateUserData("Company")
 
     const confirm = () => {
@@ -182,6 +172,7 @@ export function CompanyForm(props) {
         onSaveData(data);
         confirm();
     };
+
     return (
         <Box sx={{ p: 3 }}>
             <Grid container mb={4} >
@@ -197,7 +188,6 @@ export function CompanyForm(props) {
                             name="companyName"
                         />
                     </Grid>
-
                     <Grid item xs={12} sm={6}>
                         <FormControl
                             element={<TextField />}
@@ -209,7 +199,6 @@ export function CompanyForm(props) {
                             name="companyLocation"
                         />
                     </Grid>
-
                     <Grid item xs={12} sm={6}>
                         <FormControl
                             element={<TextField />}
@@ -221,7 +210,6 @@ export function CompanyForm(props) {
                             name="careerField"
                         />
                     </Grid>
-
                     <Grid item xs={12} sm={6}>
                         <FormControl
                             element={<TextField />}

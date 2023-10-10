@@ -7,5 +7,3 @@ export enum Degree {
   doctor = 'Tiến sĩ',
   other = 'Khác'
 }
-
-

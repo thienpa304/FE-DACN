@@ -4,7 +4,6 @@ import InfoTab from "./Content";
 
 export default function UserInfo() {
     const { user, isEmployee } = useApp();
-
     const UserData = user => [
         { label: "Họ và tên", value: user.name },
         { label: "Giới tính", value: user.sex },
@@ -14,7 +13,6 @@ export default function UserInfo() {
         { label: "Địa chỉ", value: user.address },
         ...(isEmployee ? [{ label: "Học vấn", value: user.degree }] : []),
     ];
-
     return (
         <InfoTab
             user={user}

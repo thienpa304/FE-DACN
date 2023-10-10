@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -10,37 +10,75 @@ import {
 } from "@mui/material";
 
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
+import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import IconButton from '@mui/material/IconButton';
 import { useApp } from 'src/modules/app/hooks';
-import { UploadService } from 'src/common/upload-image';
-// import useMutateProfile from '../hooks/useMutateProfileHook';
+import { UploadAvatar, GetAvatar, RemoveAvatar } from 'src/common/upload-image';
 import useMutateUserData from '../../hooks/useMutateUserHook';
+import { useForm } from 'react-hook-form';
+import { User } from '../../model';
+import FormControl from 'src/components/FormControl';
 
 const Input = styled("input")({
     display: 'none'
 });
 
+const ButtonText = styled(Typography)({
+    fontWeight: 700,
+    fontSize: 15,
+    textTransform: 'none'
+});
+
 export default function Cover() {
     const { user } = useApp();
-    const { onSaveData } = useMutateUserData("Profile");
+    const [save, setSave] = useState(true)
+    const [avatar, setAvatar] = useState(null);
+    const [file, setFile] = useState(null);
 
-    const [image, setImage] = useState(user.avatar);
+    useEffect(() => {
+        getAvatar()
+    }, [])
 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage(imageUrl);
-            UploadService(file);
-            onSaveData(file)
+    async function getAvatar() {
+        let url = await GetAvatar(user);
+        setAvatar(url)
+    }
+
+    const handleImageUpload = (e) => {
+        const image = e.target.files[0];
+        if (image) {
+            const imageUrl = URL.createObjectURL(image);
+            setAvatar(imageUrl);
+            setFile(image)
+            setSave(false)
         }
     };
 
-    const handleImageDelete = () => {
-        setImage(null);
+
+    async function handleSaveAvatar(data) {
+        await UploadAvatar(file, user)
+        const url = await GetAvatar(user)
+        setAvatar(url)
+        setSave(true)
+        // const newData = { ...data, avatar: url }
+        // onSaveData(newData)
+    }
+
+    async function handleImageDelete() {
+        await RemoveAvatar(user)
+        setAvatar(null);
     };
+
+    const {
+        control,
+        handleSubmit,
+    } = useForm<User>({
+        defaultValues: {
+            ...user
+        }
+    });
 
 
     return (
@@ -63,65 +101,79 @@ export default function Cover() {
                             alignItems="center"
                             rowGap={0.5}
                         >
-                            <label htmlFor="upload-avatar">
+                            <label htmlFor="avatar">
                                 <IconButton component="label" sx={{ borderRadius: 10 }}>
                                     <Avatar
                                         alt={user.name}
-                                        src={image}
+                                        src={avatar}
                                         sx={{
                                             width: 120,
                                             height: 120,
                                             bgcolor: "#a0b9cfc2",
                                         }}
                                     />
-                                    <Input
-                                        id="upload-avatar"
-                                        name="upload-avatar"
-                                        type="file"
-                                        accept="image/*"
+                                    <FormControl
+                                        element={<Input
+                                            type="file"
+                                            accept="image/*"
+                                        />}
+                                        control={control}
+                                        name="avatar"
+                                        id="avatar"
                                         onChange={handleImageUpload}
                                     />
                                 </IconButton>
                             </label>
-                            <label htmlFor="upload-avatar">
+
+                            {!avatar && <label htmlFor="avatar">
                                 <Button
                                     component="label"
                                     size="small"
                                     startIcon={<AddPhotoAlternateOutlinedIcon />}
                                     sx={{ color: 'grey.600' }}
                                 >
-                                    <Input
-                                        id="upload-avatar"
-                                        name="upload-avatar"
-                                        type="file"
-                                        accept="image/*"
+                                    <FormControl
+                                        element={<Input
+                                            type="file"
+                                            accept="image/*"
+                                        />}
+                                        control={control}
+                                        name="avatar"
+                                        id="avatar"
                                         onChange={handleImageUpload}
                                     />
-                                    <Typography
-                                        fontWeight={700}
-                                        fontSize={15}
-                                        textTransform="none"
-                                    >
+                                    <ButtonText>
                                         Upload
-                                    </Typography>
+                                    </ButtonText>
                                 </Button>
-                            </label>
-                            {image && (
-                                <Button
-                                    component="label"
-                                    onClick={handleImageDelete}
-                                    size="small"
-                                    startIcon={<ClearIcon />}
-                                    sx={{ color: 'grey.600' }}
-                                >
-                                    <Typography
-                                        fontWeight={700}
-                                        fontSize={15}
-                                        textTransform="none"
+                            </label>}
+
+                            {avatar && (
+                                <>
+                                    {!save && (<Button
+                                        component="label"
+                                        onClick={handleSubmit(handleSaveAvatar)}
+                                        size="small"
+                                        startIcon={<TaskAltIcon />}
+                                        sx={{ color: 'grey.600' }}
                                     >
-                                        Delete
-                                    </Typography>
-                                </Button>
+                                        <ButtonText>
+                                            Save
+                                        </ButtonText>
+                                    </Button>)}
+
+                                    <Button
+                                        component="label"
+                                        onClick={handleImageDelete}
+                                        size="small"
+                                        startIcon={<DoNotDisturbOnOutlinedIcon />}
+                                        sx={{ color: 'grey.600' }}
+                                    >
+                                        <ButtonText>
+                                            Delete
+                                        </ButtonText>
+                                    </Button>
+                                </>
                             )}
                         </Box>
                     </Grid>

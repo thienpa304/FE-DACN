@@ -26,7 +26,6 @@ const useMutateUserData = (obj) => {
             toast.error({ massage: error.response.data.message });
         },
     });
-
     return {
         onSaveData,
         isLoading,
