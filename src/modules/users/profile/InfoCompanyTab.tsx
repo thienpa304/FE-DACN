@@ -1,5 +1,5 @@
-import { useApp } from "src/modules/app/hooks";
-import InfoTab from "./Information/Content";
+import { useApp } from 'src/modules/app/hooks';
+import InfoTab from './Information/Content';
 import BusinessIcon from '@mui/icons-material/Business';
 
 export default function CompanyTab() {
@@ -16,7 +16,7 @@ export default function CompanyTab() {
       data={CompanyData(user)}
       title="Thông tin công ty"
       editIcon={<BusinessIcon color="primary" sx={{ fontSize: 60 }} />}
-      openForm={"Company"}
+      openForm={'Company'}
     />
   );
 };

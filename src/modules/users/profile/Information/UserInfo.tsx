@@ -1,6 +1,6 @@
-import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
+import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
 import { useApp } from 'src/modules/app/hooks';
-import InfoTab from "./Content";
+import InfoTab from './Content';
 
 export default function UserInfo() {
     const { user, isEmployee } = useApp();

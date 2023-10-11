@@ -436,6 +436,7 @@ export const PureLightTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          borderRadius: 6,
           '& .MuiInputAdornment-positionEnd.MuiInputAdornment-outlined': {
             paddingRight: 6
           },
@@ -575,6 +576,7 @@ export const PureLightTheme = createTheme({
         root: {
           fontWeight: 'bold',
           textTransform: 'none',
+          borderRadius: 6,
           paddingLeft: 16,
           paddingRight: 16,
 

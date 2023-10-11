@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import {
-    Box,
-    Typography,
-    Avatar,
-    Button,
-    Container,
-    Grid,
-    styled,
-} from "@mui/material";
+  Box,
+  Typography,
+  Avatar,
+  Button,
+  Container,
+  Grid,
+  styled
+} from '@mui/material';
 
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
@@ -21,8 +21,8 @@ import { useForm } from 'react-hook-form';
 import { User } from '../../model';
 import FormControl from 'src/components/FormControl';
 
-const Input = styled("input")({
-    display: 'none'
+const Input = styled('input')({
+  display: 'none'
 });
 
 const ButtonText = styled(Typography)({
