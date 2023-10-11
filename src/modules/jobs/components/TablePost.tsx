@@ -15,16 +15,18 @@ const renderJobTitle = (data) => {
   return (
     <>
       <Grid container alignItems={'center'}>
-        <Box marginRight={1}>
+        <Grid item xs={2}>
           <Tooltip title="Xem trực tiếp">
             <IconButton size="small" onClick={handleLinkToDetail}>
               <RemoveRedEyeIcon sx={{ width: 18, height: 18, color: 'gray' }} />
             </IconButton>
           </Tooltip>
-        </Box>
-        <LinkText to={`/employer/recruitment/list/${data.id}`}>
-          {data.value}
-        </LinkText>
+        </Grid>
+        <Grid item xs={10}>
+          <LinkText to={`/employer/recruitment/list/${data.id}`}>
+            {data.value}
+          </LinkText>
+        </Grid>
       </Grid>
     </>
   );
