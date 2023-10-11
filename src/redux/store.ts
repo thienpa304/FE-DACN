@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { appReducer } from 'src/modules/app';
+import { jobReducer } from 'src/modules/jobs';
 
 export const store = configureStore({
   reducer: {
-    app: appReducer
+    app: appReducer,
+    job: jobReducer
   }
 });
 

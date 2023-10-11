@@ -4,16 +4,17 @@ import { ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { JobService } from '../jobService';
 
-const useQueryJob = () => {
+const useQueryJobById = (id) => {
+  if (!id) return {};
   const { data, isLoading } = useQuery<
-    ResponseData<Job[]>,
-    AxiosError<ResponseData<Job[]>>
-  >('job-getList', JobService.get);
+    ResponseData<Job>,
+    AxiosError<ResponseData<Job>>
+  >('job-getById', async () => JobService.getById(id));
 
   return {
-    jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],
+    data: data?.data,
     isLoading
   };
 };
 
-export default useQueryJob;
+export default useQueryJobById;

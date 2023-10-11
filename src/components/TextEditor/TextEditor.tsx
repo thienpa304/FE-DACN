@@ -24,19 +24,25 @@ type Props = {
   onChange?: any;
 };
 const TextEditor: React.FC<Props> = ({ value, onChange }) => {
-  const editorDataState = EditorState.createWithContent(convertFromHTML(value));
-  const [editorState, setEditorState] = useState(editorDataState);
-
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   useEffect(() => {
-    let html = convertToHTML(editorState.getCurrentContent());
+    const editorDataStates = EditorState.createWithContent(
+      convertFromHTML(value)
+    );
+    setEditorState(editorDataStates);
+  }, [value]);
+
+  const handleSetEditorState = (value) => {
+    setEditorState(value);
+    let html = convertToHTML(value.getCurrentContent());
     onChange(html);
-  }, [editorState]);
+  };
 
   return (
     <TextEditorWrapper>
       <Editor
         editorState={editorState}
-        onEditorStateChange={setEditorState}
+        onEditorStateChange={handleSetEditorState}
         wrapperClassName="wrapper-class"
         editorClassName="editor-class"
         toolbarClassName="toolbar-class"

@@ -5,6 +5,7 @@ import {
   PositionLevel,
   Sex
 } from 'src/interfaces/enum';
+import { Company } from 'src/modules/users/model';
 
 export type Job = {
   postId: number;
@@ -24,11 +25,12 @@ export type Job = {
   sex: Sex;
   numberofVacancies: number;
   trialPeriod: number;
-  applicationDeadline: Date;
+  applicationDeadline: string;
   minSalary: number;
   maxSalary: number;
   skills: string;
   jobDescription: string;
   jobRequirements: string;
   benefits: string;
+  employer: Company;
 };

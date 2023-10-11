@@ -6,14 +6,14 @@ import { JobService } from '../jobService';
 import { Job } from '../model';
 import { useNavigate } from 'react-router';
 
-const useMutateJob = () => {
+const useMutateJobById = () => {
   const { toast } = useApp();
   const navigate = useNavigate();
-  const { mutate: onSaveData, isLoading } = useMutation<
+  const { mutate: onSaveDataById, isLoading } = useMutation<
     ResponseData<Job>,
     AxiosError<ResponseData<Job>>,
-    Job
-  >(JobService.create, {
+    [id: string, data: Job]
+  >(([id, data]) => JobService.update(id, data), {
     onSuccess: (res) => {
       if (res.status === 200) {
         toast.success({ massage: res.message });
@@ -28,9 +28,9 @@ const useMutateJob = () => {
   });
 
   return {
-    onSaveData,
+    onSaveDataById,
     isLoading
   };
 };
 
-export default useMutateJob;
+export default useMutateJobById;
