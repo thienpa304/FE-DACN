@@ -2,16 +2,14 @@ import { useApp } from 'src/modules/app/hooks';
 import InfoTab from './Information/Content';
 import BusinessIcon from '@mui/icons-material/Business';
 
-const CompanyTab = () => {
+export default function CompanyTab() {
   const { user } = useApp();
-
-  const CompanyData = (user) => [
-    { label: 'Tên công ty', value: user.companyName },
-    { label: 'Địa chỉ công ty', value: user.companyLocation },
-    { label: 'Lĩnh vực', value: user.careerField },
-    { label: 'Mã số thuế', value: user.taxCode }
+  const CompanyData = user => [
+    { label: "Tên công ty", value: user.companyName },
+    { label: "Địa chỉ công ty", value: user.companyLocation },
+    { label: "Lĩnh vực", value: user.careerField },
+    { label: "Mã số thuế", value: user.taxCode },
   ];
-
   return (
     <InfoTab
       user={user}
@@ -22,5 +20,3 @@ const CompanyTab = () => {
     />
   );
 };
-
-export default CompanyTab;

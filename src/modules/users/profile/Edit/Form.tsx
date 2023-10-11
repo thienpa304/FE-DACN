@@ -6,16 +6,13 @@ import SelectInput from 'src/components/SelectInput';
 import { User } from '../../model';
 import { DEGREE, GENDER, ISMARRIED } from 'src/constants/option';
 import dayjs from 'dayjs';
-// import useMutateProfile from "../hooks/useMutateProfileHook";
-// import useMutateCompany from "../hooks/useMutateCompanyHook";
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import TextField from 'src/components/TextField';
 
 export function UserForm(props) {
   const { close, user } = props;
-  // const { onSaveProfile } = useMutateProfile()
-  const { onSaveData } = useMutateUserData('Profile');
-  const isEmployee = user.role === 'EMPLOYEE';
+  const { onSaveData } = useMutateUserData("Profile");
+  const isEmployee = user.role === "EMPLOYEE";
 
   const degree = DEGREE.find((item) => item.label === user.degree);
   const mappedDegree = degree ? degree.value : 'other';
@@ -35,25 +32,22 @@ export function UserForm(props) {
     }
   });
 
-  const confirm = () => {
-    close();
-    setTimeout(() => {
-      window.location.reload();
-    }, 800);
-  };
-
-  const handleSaveProfile = (data) => {
+  const handleSaveProfile = async (data) => {
+    // debugger;
     const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
     // const formattedMarried = data.isMarried.toString() === '1';
     const newData = { ...data, dob: formattedDob };
+
     onSaveData(newData);
-    confirm();
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
   };
 
   return (
     <Box sx={{ p: 3 }}>
-      <Grid container mb={4}>
-        <Grid container item spacing={3}>
+      <Grid container mb={4} >
+        <Grid container item spacing={3} >
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<TextField />}
@@ -65,7 +59,6 @@ export function UserForm(props) {
               name="name"
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<TextField />}
@@ -78,7 +71,6 @@ export function UserForm(props) {
               name="email"
             />
           </Grid>
-
           <Grid item xs={12} md={6}>
             <FormControl
               element={<TextField />}
@@ -91,7 +83,6 @@ export function UserForm(props) {
               pattern="phone"
             />
           </Grid>
-
           <Grid item xs={12} md={6}>
             <FormControl
               element={<TextField />}
@@ -103,7 +94,6 @@ export function UserForm(props) {
               name="address"
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<DatePicker />}
@@ -113,6 +103,7 @@ export function UserForm(props) {
               id="dob"
               label="Ngày sinh"
               name="dob"
+
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -127,7 +118,6 @@ export function UserForm(props) {
               name="sex"
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<SelectInput />}
@@ -144,17 +134,8 @@ export function UserForm(props) {
         </Grid>
       </Grid>
       <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
-        <Button
-          color="success"
-          onClick={handleSubmit(handleSaveProfile)}
-          variant="contained"
-          sx={{ width: 120 }}
-        >
-          Xác nhận
-        </Button>
-        <Button onClick={() => close()} variant="outlined" sx={{ width: 120 }}>
-          Hủy
-        </Button>
+        <Button color="success" onClick={handleSubmit(handleSaveProfile)} variant="contained" sx={{ width: 120 }}>Xác nhận</Button>
+        <Button onClick={() => close()} variant="outlined" sx={{ width: 120 }}>Hủy</Button>
       </Box>
     </Box>
   );
@@ -162,15 +143,7 @@ export function UserForm(props) {
 
 export function CompanyForm(props) {
   const { close, user } = props;
-  // const { onSaveCompany } = useMutateCompany();
-  const { onSaveData } = useMutateUserData('Company');
-
-  const confirm = () => {
-    close();
-    setTimeout(() => {
-      window.location.reload();
-    }, 800);
-  };
+  const { onSaveData } = useMutateUserData("Company")
 
   const {
     control,
@@ -184,7 +157,9 @@ export function CompanyForm(props) {
 
   const handleSaveCompany = (data) => {
     onSaveData(data);
-    confirm();
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
   };
   return (
     <Box sx={{ p: 3 }}>

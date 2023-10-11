@@ -24,9 +24,10 @@ const InputData = styled(Grid)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily
 }));
 
-const InfoTab = ({ user, data, title, editIcon, openForm }) => {
-  const [open, setOpen] = useState(false);
-  const [infoData, setInfoData] = useState(data);
+export default function InfoTab(props) {
+    const { user, data, title, editIcon, openForm } = props
+    const [open, setOpen] = useState(false);
+    const [infoData, setInfoData] = useState(data);
 
   const handleEdit = () => setOpen(true);
 
@@ -93,5 +94,3 @@ const InfoTab = ({ user, data, title, editIcon, openForm }) => {
     </Box>
   );
 };
-
-export default InfoTab;
