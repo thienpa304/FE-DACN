@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import Logo from 'src/components/LogoSign';
 import Hero from './Hero';
+import UrgentJob from './components/UrgentJob'
 
 const OverviewWrapper = styled(Box)(
   () => `
@@ -15,7 +16,11 @@ const OverviewWrapper = styled(Box)(
 );
 
 function Overview() {
-  return <OverviewWrapper>Welcome to app</OverviewWrapper>;
+  return (
+    <OverviewWrapper>
+      Welcome to app
+      <UrgentJob />
+    </OverviewWrapper>);
 }
 
 export default Overview;
