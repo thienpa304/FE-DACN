@@ -9,14 +9,14 @@ import {
   Grid,
   Typography
 } from '@mui/material';
+import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import DatePicker from 'src/components/DatePicker';
 import Footer from 'src/components/Footer';
 import FormControl from 'src/components/FormControl';
+import SelectInput from 'src/components/SelectInput';
 import TextEditor from 'src/components/TextEditor';
 import TextField from 'src/components/TextField';
-import useMutateJob from '../hooks/useMutateJob';
-import SelectInput from 'src/components/SelectInput';
 import {
   DEGREE,
   EXPERIENCE,
@@ -24,24 +24,43 @@ import {
   POSITION_LEVEL,
   WORKING_FORM
 } from 'src/constants/option';
+import useMutateJob from '../hooks/useMutateJob';
+import useQueryJobById from '../hooks/useQueryJobById';
+import useMutateJobById from '../hooks/useMutateJobById';
 
-function FormCreate() {
+const defaultValues = {
+  jobDescription: '',
+  jobRequirements: '',
+  benefits: ''
+};
+type Props = {
+  title?: string;
+  selectedId?: string;
+};
+const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
+  const { onSaveDataById } = useMutateJobById();
+  // fetch data by selectedId
+  const { data: defaultData } = useQueryJobById(selectedId);
+
   const methods = useForm({
-    defaultValues: {
-      jobDescription: '',
-      jobRequirements: '',
-      benefits: ''
-    }
+    defaultValues
   });
   const {
     control,
+    reset,
     formState: { errors },
     handleSubmit
   } = methods;
 
+  // reset Data if selected is true
+  useEffect(() => {
+    reset({ ...defaultData });
+  }, [defaultData]);
+
   const handleSave = (data) => {
-    onSaveData(data);
+    if (selectedId) onSaveDataById([selectedId, data]);
+    else onSaveData(data);
   };
   return (
     <>
@@ -57,7 +76,7 @@ function FormCreate() {
           >
             <Grid item xs={12}>
               <Card>
-                <CardHeader title="Tạo Tin Tuyển Dụng" />
+                <CardHeader title={title || 'Tạo Tin Tuyển Dụng'} />
                 <Divider />
                 <CardContent>
                   <Typography variant="h6" marginBottom={2}>
@@ -335,7 +354,7 @@ function FormCreate() {
                       variant="contained"
                       size="small"
                     >
-                      Tạo
+                      {selectedId ? 'Lưu' : 'Tạo'}
                     </Button>
                   </Grid>
                 </CardActions>
@@ -348,6 +367,6 @@ function FormCreate() {
       <Footer />
     </>
   );
-}
+};
 
 export default FormCreate;

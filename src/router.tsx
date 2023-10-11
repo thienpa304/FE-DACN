@@ -24,7 +24,7 @@ const RecruitmentCreate = Loader(
 const RecruitmentList = Loader(
   lazy(() => import('src/pages/recruitment-list'))
 );
-
+const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
 // Candidate
 
 const CandidateProfile = Loader(
@@ -41,6 +41,7 @@ const Register = Loader(
 // Pages
 
 const Overview = Loader(lazy(() => import('src/modules/overview')));
+const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
 
 // Dashboards
 
@@ -76,6 +77,10 @@ const routes: RouteObject[] = [
           {
             path: '',
             element: <Overview />
+          },
+          {
+            path: '/job/:id',
+            element: <JobDetail />
           },
           {
             path: 'messenger',
@@ -177,6 +182,10 @@ const routes: RouteObject[] = [
           {
             path: 'list',
             element: <RecruitmentList />
+          },
+          {
+            path: 'list/:id',
+            element: <RecruitmentEdit />
           }
         ]
       },

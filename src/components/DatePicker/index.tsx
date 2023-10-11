@@ -8,7 +8,6 @@ export default function DatePicker(props) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePickerMui
         format="DD/MM/YYYY"
-        maxDate={dayjs()}
         {...props}
         value={props.value ? dayjs(props.value) : null}
         slotProps={{ textField: { size: 'small', fullWidth: true } }}
