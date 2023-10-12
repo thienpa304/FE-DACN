@@ -31,9 +31,9 @@ function JobCard({ job }) {
   };
 
   return (
-    <Card sx={{ minHeight: 160 }}>
+    <Card sx={{ minHeight: 160, bgcolor: '#F2F5F9' }}>
       <CardHeader
-        sx={{ py: 1, color: 'grey.700' }}
+        sx={{ py: 1, color: '#191717' }}
         action={
           <IconButton color="primary" onClick={handleFavorite}>
             {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
@@ -48,7 +48,7 @@ function JobCard({ job }) {
           R
         </Avatar>
         <Box display="flex" flexDirection="column" gap={1}>
-          <Typography fontWeight={700} fontSize={12} color="grey.600">
+          <Typography fontWeight={700} fontSize={12} color="#7D7C7C">
             {job.contactAddress}
           </Typography>
           <Box display="flex">
@@ -89,17 +89,8 @@ function UrgentHiringJob() {
             <ScheduleIcon color="primary" sx={{ fontSize: 40 }} />
             <Typography variant="h3">Việc làm tuyển gấp</Typography>
           </Box>
-          <Link
-            href="#"
-            underline="hover"
-            color="secondary"
-            fontWeight={700}
-            onClick={() => setShowAllJobs(true)}
-          >
-            Xem thêm
-          </Link>
         </Box>
-        <Container sx={{ pt: 2, mb: 4, bgcolor: '#EEF2FF' }}>
+        <Container sx={{ pt: 2, mb: 4, bgcolor: '#ffff' }}>
           <Grid container mb={4} spacing={2}>
             {jobsToShow.map((job, index) => (
               <Grid key={index} item xs={12}>
