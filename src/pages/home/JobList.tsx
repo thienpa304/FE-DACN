@@ -8,9 +8,8 @@ import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 function JobList() {
   const { jobs } = useQueryJob();
   const [isFavorite, setIsFavorite] = useState(false);
-  const [showAllJobs, setShowAllJobs] = useState(false);
   const initialJobsToShow = 12;
-  const jobsToShow = showAllJobs ? jobs : jobs.slice(0, initialJobsToShow);
+  const jobsToShow = jobs.slice(0, initialJobsToShow);
 
   const handleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -24,11 +23,10 @@ function JobList() {
             <Typography variant="h3">Việc làm tuyển gấp</Typography>
           </Box>
           <Link
-            href="#"
+            href="/urgent-hiring-job"
             underline="hover"
             color="secondary"
             fontWeight={700}
-            onClick={() => setShowAllJobs(true)}
           >
             Xem thêm
           </Link>
