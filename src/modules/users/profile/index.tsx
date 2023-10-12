@@ -1,6 +1,5 @@
 import { useState, ChangeEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
-import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { Container, Tabs, Tab, Grid, Typography } from '@mui/material';
 import Footer from 'src/components/Footer';
 import { styled } from '@mui/material/styles';
@@ -16,7 +15,7 @@ const TabsWrapper = styled(Tabs)(
 `
 );
 
-function ManagementUserSettings() {
+export default function ManagementUserSettings() {
   const { isEmployer } = useApp();
   const [currentTab, setCurrentTab] = useState<string>('info_account');
   const tabs = [
@@ -49,6 +48,7 @@ function ManagementUserSettings() {
               scrollButtons="auto"
               textColor="primary"
               indicatorColor="primary"
+              sx={{ borderBottom: 2, borderColor: "grey.300", mb: -2 }}
             >
               {tabs.map((tab) => {
                 if (!tab.show) return <></>;
@@ -68,5 +68,3 @@ function ManagementUserSettings() {
     </>
   );
 }
-
-export default ManagementUserSettings;
