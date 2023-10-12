@@ -5,6 +5,7 @@ import {
   Container,
   Typography,
   Card,
+  CardHeader,
   CardContent,
   Avatar
 } from '@mui/material';
@@ -20,6 +21,10 @@ import LinkText from 'src/components/LinkText';
 function JobCard({ job }) {
   return (
     <Card sx={{ minHeight: 160, border: 1, borderColor: '#98E4FF' }}>
+      <CardHeader
+        sx={{ pt: 1.5, pb: 0, color: '#ce8b0e' }}
+        title={job.jobTitle}
+      />
       <CardContent sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
         <Grid container gap={2}>
           <Grid item xs={2}>
