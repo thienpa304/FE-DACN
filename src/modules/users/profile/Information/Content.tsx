@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -26,8 +26,15 @@ const InputData = styled(Grid)(({ theme }) => ({
 
 export default function InfoTab(props) {
   const { user, data, title, editIcon, openForm } = props;
+
   const [open, setOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(user);
   const [infoData, setInfoData] = useState(data);
+
+  useEffect(() => {
+    setCurrentUser(user);
+    setInfoData(data);
+  }, [user, data]);
 
   const handleEdit = () => setOpen(true);
 
@@ -39,9 +46,9 @@ export default function InfoTab(props) {
 
   const myForm =
     openForm === 'User' ? (
-      <UserForm close={handleClose} user={user} />
+      <UserForm close={handleClose} user={currentUser} />
     ) : (
-      <CompanyForm close={handleClose} user={user} />
+      <CompanyForm close={handleClose} user={currentUser} />
     );
 
   return (

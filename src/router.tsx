@@ -42,6 +42,9 @@ const Register = Loader(
 
 const Home = Loader(lazy(() => import('src/pages/home')));
 const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
+const UrgentHiringJob = Loader(
+  lazy(() => import('src/pages/urgent-hiring-job'))
+);
 
 // Applications
 
@@ -72,6 +75,10 @@ const routes: RouteObject[] = [
           {
             path: '',
             element: <Home />
+          },
+          {
+            path: '/urgent-hiring-job',
+            element: <UrgentHiringJob />
           },
           {
             path: '/job/:id',
