@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Grid,
@@ -7,7 +7,8 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Avatar
+  Avatar,
+  Pagination
 } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
@@ -89,12 +90,26 @@ function JobCard({ job }) {
 }
 
 function UrgentHiringJob() {
+  const [currentPage, setCurrentPage] = useState(1);
+
   const { jobs } = useQueryJob();
-  const initialJobsToShow = 12;
-  const jobsToShow = jobs.slice(0, initialJobsToShow);
+  const jobsPerPage = 10;
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentPageJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  const pageNumbers = [];
+
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
-    <Container maxWidth="md" sx={{ py: 5 }}>
+    <Container maxWidth="md" sx={{ py: 3 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -106,13 +121,13 @@ function UrgentHiringJob() {
           <Typography variant="h3">Việc làm tuyển gấp</Typography>
         </Box>
       </Box>
-      <Container sx={{ py: 2, bgcolor: '#fbfeff' }}>
-        <Typography fontSize={15} mb={3}>
+      <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff' }}>
+        <Typography fontSize={15} mb={2}>
           <span style={{ color: '#ce8b0e' }}>{jobs.length}</span> việc làm đang
           tuyển dụng
         </Typography>
-        <Grid container mb={4} spacing={2}>
-          {jobsToShow.map((job, index) => (
+        <Grid container spacing={2}>
+          {currentPageJobs.map((job, index) => (
             <Grid key={index} item xs={12}>
               <LinkText to={`/job/${job?.postId}`}>
                 <JobCard key={index} job={job} />
@@ -121,6 +136,16 @@ function UrgentHiringJob() {
           ))}
         </Grid>
       </Container>
+      <Pagination
+        count={totalPages}
+        page={currentPage}
+        onChange={(event, page) => handlePageChange(page)}
+        color="secondary"
+        variant="outlined"
+        shape="rounded"
+        size="large"
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      />
     </Container>
   );
 }
