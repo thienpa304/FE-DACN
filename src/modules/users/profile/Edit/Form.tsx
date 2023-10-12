@@ -11,8 +11,8 @@ import TextField from 'src/components/TextField';
 
 export function UserForm(props) {
   const { close, user } = props;
-  const { onSaveData } = useMutateUserData("Profile");
-  const isEmployee = user.role === "EMPLOYEE";
+  const { onSaveData } = useMutateUserData('Profile');
+  const isEmployee = user.role === 'EMPLOYEE';
 
   const degree = DEGREE.find((item) => item.label === user.degree);
   const mappedDegree = degree ? degree.value : 'other';
@@ -40,14 +40,14 @@ export function UserForm(props) {
 
     onSaveData(newData);
     setTimeout(() => {
-      window.location.reload()
-    }, 1000)
+      window.location.reload();
+    }, 1000);
   };
 
   return (
     <Box sx={{ p: 3 }}>
-      <Grid container mb={4} >
-        <Grid container item spacing={3} >
+      <Grid container mb={4}>
+        <Grid container item spacing={3}>
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<TextField />}
@@ -103,7 +103,6 @@ export function UserForm(props) {
               id="dob"
               label="Ngày sinh"
               name="dob"
-
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -134,8 +133,17 @@ export function UserForm(props) {
         </Grid>
       </Grid>
       <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
-        <Button color="success" onClick={handleSubmit(handleSaveProfile)} variant="contained" sx={{ width: 120 }}>Xác nhận</Button>
-        <Button onClick={() => close()} variant="outlined" sx={{ width: 120 }}>Hủy</Button>
+        <Button
+          color="success"
+          onClick={handleSubmit(handleSaveProfile)}
+          variant="contained"
+          sx={{ width: 120 }}
+        >
+          Xác nhận
+        </Button>
+        <Button onClick={() => close()} variant="outlined" sx={{ width: 120 }}>
+          Hủy
+        </Button>
       </Box>
     </Box>
   );
@@ -143,7 +151,7 @@ export function UserForm(props) {
 
 export function CompanyForm(props) {
   const { close, user } = props;
-  const { onSaveData } = useMutateUserData("Company")
+  const { onSaveData } = useMutateUserData('Company');
 
   const {
     control,
@@ -158,8 +166,8 @@ export function CompanyForm(props) {
   const handleSaveCompany = (data) => {
     onSaveData(data);
     setTimeout(() => {
-      window.location.reload()
-    }, 1000)
+      window.location.reload();
+    }, 1000);
   };
   return (
     <Box sx={{ p: 3 }}>

@@ -71,7 +71,7 @@ function JobCard({ job }) {
   );
 }
 
-function JobList() {
+function UrgentHiringJob() {
   const { jobs } = useQueryJob();
   const [isFavorite, setIsFavorite] = useState(false);
   const [showAllJobs, setShowAllJobs] = useState(false);
@@ -90,7 +90,7 @@ function JobList() {
             <Typography variant="h3">Việc làm tuyển gấp</Typography>
           </Box>
           <Link
-            href="/urgent-hiring-job"
+            href="#"
             underline="hover"
             color="secondary"
             fontWeight={700}
@@ -99,18 +99,18 @@ function JobList() {
             Xem thêm
           </Link>
         </Box>
-        <Box sx={{ pt: 2, mb: 4 }}>
+        <Container sx={{ pt: 2, mb: 4, bgcolor: '#EEF2FF' }}>
           <Grid container mb={4} spacing={2}>
             {jobsToShow.map((job, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
+              <Grid key={index} item xs={12}>
                 <JobCard key={index} job={job} />
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </Container>
       </Box>
     </Container>
   );
 }
 
-export default JobList;
+export default UrgentHiringJob;

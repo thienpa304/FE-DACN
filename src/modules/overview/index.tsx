@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { styled } from '@mui/material/styles';
 import Logo from 'src/components/LogoSign';
-import JobList from './components/JobList'
+import JobList from './components/JobList';
 
 const OverviewWrapper = styled(Box)(
   () => `
@@ -18,7 +18,8 @@ function Overview() {
   return (
     <OverviewWrapper>
       <JobList />
-    </OverviewWrapper>);
+    </OverviewWrapper>
+  );
 }
 
 export default Overview;
