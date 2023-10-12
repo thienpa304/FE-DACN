@@ -1,51 +1,25 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
-  Button,
   Grid,
   Container,
   Typography,
   Card,
-  CardHeader,
-  CardMedia,
   CardContent,
-  CardActions,
-  Avatar,
-  IconButton,
-  ToggleButton,
-  Divider,
-  Link
+  Avatar
 } from '@mui/material';
-
-import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
+import BusinessIcon from '@mui/icons-material/Business';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import CardItemJob from 'src/modules/jobs/components/CardItem';
-import BusinessIcon from '@mui/icons-material/Business';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import LinkText from 'src/components/LinkText';
 
 function JobCard({ job }) {
-  const [isFavorite, setIsFavorite] = useState(false);
-  const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
-
   return (
     <Card sx={{ minHeight: 160, border: 1, borderColor: '#98E4FF' }}>
-      <CardHeader
-        sx={{ pt: 1.5, pb: 0, color: '#ce8b0e' }}
-        // action={
-        //   <IconButton color="primary" onClick={handleFavorite}>
-        //     {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-        //   </IconButton>
-        // }
-        title={job.jobTitle}
-      />
       <CardContent sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
         <Grid container gap={2}>
           <Grid item xs={2}>
@@ -55,7 +29,7 @@ function JobCard({ job }) {
               sx={{
                 bgcolor: '#a0b9cfc2',
                 height: 100,
-                width: 100
+                width: '100%'
               }}
             >
               <BusinessIcon />
@@ -111,14 +85,9 @@ function JobCard({ job }) {
 
 function UrgentHiringJob() {
   const { jobs } = useQueryJob();
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [showAllJobs, setShowAllJobs] = useState(false);
   const initialJobsToShow = 12;
-  const jobsToShow = showAllJobs ? jobs : jobs.slice(0, initialJobsToShow);
+  const jobsToShow = jobs.slice(0, initialJobsToShow);
 
-  const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
       <Box
@@ -127,8 +96,8 @@ function UrgentHiringJob() {
         alignItems="center"
         mb={2}
       >
-        <Box display="flex" justifyContent="space-between" gap={1}>
-          <ScheduleIcon color="primary" sx={{ fontSize: 40 }} />
+        <Box display="flex" justifyContent="space-between">
+          <ScheduleIcon color="secondary" sx={{ fontSize: 40 }} />
           <Typography variant="h3">Việc làm tuyển gấp</Typography>
         </Box>
       </Box>

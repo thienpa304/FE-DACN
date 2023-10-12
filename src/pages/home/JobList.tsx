@@ -5,37 +5,28 @@ import {
   Link,
   Typography,
   Card,
-  CardContent,
-  CardHeader,
   Divider
 } from '@mui/material';
-import { useState } from 'react';
-
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CardItemJob from 'src/modules/jobs/components/CardItem';
 import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 
 function JobList() {
   const { jobs } = useQueryJob();
-  const [isFavorite, setIsFavorite] = useState(false);
   const initialJobsToShow = 12;
   const jobsToShow = jobs.slice(0, initialJobsToShow);
 
-  const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
   return (
     <Container sx={{ py: 3 }}>
-      <Box border={1} borderColor="#98E4FF" borderRadius={1}>
+      <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1 }}>
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          sx={{ bgcolor: '#B6FFFA' }}
-          p={2}
+          sx={{ bgcolor: '#B6FFFA', borderTopRadius: 1, p: 2 }}
         >
-          <Box display="flex" justifyContent="space-between" gap={1}>
-            <ScheduleIcon color="primary" sx={{ fontSize: 35 }} />
+          <Box display="flex" justifyContent="space-between">
+            <ScheduleIcon color="secondary" sx={{ fontSize: 35 }} />
             <Typography fontWeight={700} fontSize={20}>
               Việc làm tuyển gấp
             </Typography>
@@ -64,7 +55,7 @@ function JobList() {
             ))}
           </Grid>
         </Box>
-      </Box>
+      </Card>
     </Container>
   );
 }
