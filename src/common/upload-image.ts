@@ -16,7 +16,12 @@
 // };
 
 import { storage } from './firebase';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
+} from 'firebase/storage';
 
 export async function UploadAvatar(image, user) {
   const imageRef = ref(storage, `users/uid-${user.userId}/avatar.png`);

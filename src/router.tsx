@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
-import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
+import { Navigate } from 'react-router-dom';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import BaseLayout from './modules/app/layouts/BaseLayout';
@@ -40,17 +40,12 @@ const Register = Loader(
 
 // Pages
 
-const Overview = Loader(lazy(() => import('src/modules/overview')));
+const Home = Loader(lazy(() => import('src/pages/home')));
 const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
-
-// Dashboards
-
-const Crypto = Loader(lazy(() => import('src/modules/crypto')));
 
 // Applications
 
 const Messenger = Loader(lazy(() => import('src/modules/messenger')));
-const Transactions = Loader(lazy(() => import('src/modules/transactions')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
 
@@ -76,7 +71,7 @@ const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <Overview />
+            element: <Home />
           },
           {
             path: '/job/:id',

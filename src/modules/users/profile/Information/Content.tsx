@@ -25,9 +25,9 @@ const InputData = styled(Grid)(({ theme }) => ({
 }));
 
 export default function InfoTab(props) {
-    const { user, data, title, editIcon, openForm } = props
-    const [open, setOpen] = useState(false);
-    const [infoData, setInfoData] = useState(data);
+  const { user, data, title, editIcon, openForm } = props;
+  const [open, setOpen] = useState(false);
+  const [infoData, setInfoData] = useState(data);
 
   const handleEdit = () => setOpen(true);
 
@@ -93,4 +93,4 @@ export default function InfoTab(props) {
       </Container>
     </Box>
   );
-};
+}

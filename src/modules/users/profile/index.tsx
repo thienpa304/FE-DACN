@@ -48,7 +48,7 @@ export default function ManagementUserSettings() {
               scrollButtons="auto"
               textColor="primary"
               indicatorColor="primary"
-              sx={{ borderBottom: 2, borderColor: "grey.300", mb: -2 }}
+              sx={{ borderBottom: 2, borderColor: 'grey.300', mb: -2 }}
             >
               {tabs.map((tab) => {
                 if (!tab.show) return <></>;
