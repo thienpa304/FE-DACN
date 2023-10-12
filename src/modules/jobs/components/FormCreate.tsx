@@ -20,7 +20,7 @@ import TextField from 'src/components/TextField';
 import {
   DEGREE,
   EXPERIENCE,
-  GENDER,
+  GENDER_OPTION,
   POSITION_LEVEL,
   WORKING_FORM
 } from 'src/constants/option';
@@ -29,6 +29,11 @@ import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
 
 const defaultValues = {
+  sex: '',
+  positionLevel: '',
+  degree: '',
+  employmentType: '',
+  experience: '',
   jobDescription: '',
   jobRequirements: '',
   benefits: ''
@@ -178,7 +183,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        options={GENDER}
+                        options={GENDER_OPTION}
                         element={<SelectInput />}
                         control={control}
                         errors={errors}
@@ -328,7 +333,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         pattern="phone"
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} md={6}>
                       <FormControl
                         element={<TextField />}
                         control={control}

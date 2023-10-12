@@ -22,7 +22,7 @@ export type Job = {
   positionLevel: PositionLevel;
   minAge: number;
   maxAge: number;
-  sex: Sex;
+  sex: string;
   numberofVacancies: number;
   trialPeriod: number;
   applicationDeadline: string;
