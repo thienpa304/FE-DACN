@@ -5,7 +5,7 @@ import InfoTab from './Content';
 export default function UserInfo() {
   const { user, isEmployee } = useApp();
 
-  const Mydata = [
+  const UserData = [
     { label: 'Họ và tên', value: user.name },
     { label: 'Giới tính', value: user.sex },
     { label: 'Ngày sinh', value: user.dob },
@@ -18,7 +18,7 @@ export default function UserInfo() {
   return (
     <InfoTab
       user={user}
-      data={Mydata}
+      data={UserData}
       title="Thông tin cá nhân"
       editIcon={<ListAltOutlinedIcon color="primary" sx={{ fontSize: 60 }} />}
       openForm="User"

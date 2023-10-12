@@ -16,17 +16,12 @@ export default function SelectInput(props: PropsSelectInput) {
   const { options = [], label } = props;
   return (
     <FormControl fullWidth>
-      <InputLabel size="small" id="demo-simple-select-label">
-        {label}
-      </InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        size="small"
-        {...props}
-      >
-        {options.map((item) => (
-          <MenuItem value={item.value}>{item.label}</MenuItem>
+      <InputLabel size="small">{label}</InputLabel>
+      <Select size="small" {...props}>
+        {options.map((item, idx) => (
+          <MenuItem key={idx} value={item.value}>
+            {item.label}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

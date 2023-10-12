@@ -8,7 +8,7 @@ import {
   Grid,
   styled
 } from '@mui/material';
-
+import CircularProgress from '@mui/material/CircularProgress';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
@@ -25,18 +25,13 @@ const Input = styled('input')({
   display: 'none'
 });
 
-const ButtonText = styled(Typography)({
-  fontWeight: 700,
-  fontSize: 15,
-  textTransform: 'none'
-});
-
 export default function Cover() {
   const { user } = useApp();
   const [currentUser, setCurrentUser] = useState(user);
   const [save, setSave] = useState(true);
   const [avatar, setAvatar] = useState(null);
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setCurrentUser(user);
@@ -52,6 +47,7 @@ export default function Cover() {
   async function getAvatar() {
     let url = await GetAvatar(currentUser);
     setAvatar(url);
+    setSave(true);
   }
 
   const handleImageUpload = (e) => {
@@ -63,19 +59,20 @@ export default function Cover() {
       setSave(false);
     }
   };
-
   async function handleSaveAvatar(data) {
+    setLoading(true);
     await UploadAvatar(file, currentUser);
     const url = await GetAvatar(currentUser);
     setAvatar(url);
     setSave(true);
+    setLoading(false);
     // const newData = { ...data, avatar: url }
     // onSaveData(newData)
   }
 
   async function handleImageDelete() {
-    await RemoveAvatar(currentUser);
     setAvatar(null);
+    await RemoveAvatar(currentUser);
   }
 
   const { control, handleSubmit } = useForm<User>({
@@ -131,7 +128,8 @@ export default function Cover() {
                     component="label"
                     size="small"
                     startIcon={<AddPhotoAlternateOutlinedIcon />}
-                    sx={{ color: 'grey.600' }}
+                    variant="outlined"
+                    color="secondary"
                   >
                     <FormControl
                       element={<Input type="file" accept="image/*" />}
@@ -140,34 +138,42 @@ export default function Cover() {
                       id="avatar"
                       onChange={handleImageUpload}
                     />
-                    <ButtonText>Upload</ButtonText>
+                    Upload
                   </Button>
                 </label>
               )}
 
               {avatar && (
                 <>
-                  {!save && (
+                  {!save && !loading && (
                     <Button
                       component="label"
                       onClick={handleSubmit(handleSaveAvatar)}
                       size="small"
                       startIcon={<TaskAltIcon />}
-                      sx={{ color: 'grey.600' }}
+                      variant="outlined"
+                      color="secondary"
                     >
-                      <ButtonText>Save</ButtonText>
+                      Save
                     </Button>
                   )}
 
-                  <Button
-                    component="label"
-                    onClick={handleImageDelete}
-                    size="small"
-                    startIcon={<DoNotDisturbOnOutlinedIcon />}
-                    sx={{ color: 'grey.600' }}
-                  >
-                    <ButtonText>Delete</ButtonText>
-                  </Button>
+                  {loading ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    save && (
+                      <Button
+                        component="label"
+                        onClick={handleImageDelete}
+                        size="small"
+                        startIcon={<DoNotDisturbOnOutlinedIcon />}
+                        variant="outlined"
+                        color="secondary"
+                      >
+                        Delete
+                      </Button>
+                    )
+                  )}
                 </>
               )}
             </Box>

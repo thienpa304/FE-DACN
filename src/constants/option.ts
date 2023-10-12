@@ -30,7 +30,10 @@ export const ISMARRIED = [
     label: 'Độc thân'
   }
 ];
-
+export const GENDER_OPTION = GENDER.map((item) => ({
+  value: item.label,
+  label: item.label
+}));
 export const DEGREE = Object.keys(Degree).map((key) => ({
   value: Degree[key],
   label: Degree[key]
