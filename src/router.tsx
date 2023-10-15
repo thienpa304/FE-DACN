@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
-import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
+import { Navigate } from 'react-router-dom';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import BaseLayout from './modules/app/layouts/BaseLayout';
@@ -18,13 +18,13 @@ const Loader = (Component) => (props) =>
 // Recruitment
 
 const RecruitmentCreate = Loader(
-  lazy(() => import('src/modules/recruitment/create'))
+  lazy(() => import('src/pages/recruitment-create'))
 );
 
 const RecruitmentList = Loader(
-  lazy(() => import('src/modules/recruitment/list'))
+  lazy(() => import('src/pages/recruitment-list'))
 );
-
+const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
 // Candidate
 
 const CandidateProfile = Loader(
@@ -40,32 +40,17 @@ const Register = Loader(
 
 // Pages
 
-const Overview = Loader(lazy(() => import('src/modules/overview')));
-
-// Dashboards
-
-const Crypto = Loader(lazy(() => import('src/modules/crypto')));
+const Home = Loader(lazy(() => import('src/pages/home')));
+const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
+const UrgentHiringJob = Loader(
+  lazy(() => import('src/pages/urgent-hiring-job'))
+);
 
 // Applications
 
 const Messenger = Loader(lazy(() => import('src/modules/messenger')));
-const Transactions = Loader(lazy(() => import('src/modules/transactions')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
-
-// Components
-
-const Buttons = Loader(lazy(() => import('src/modules/components/Buttons')));
-const Modals = Loader(lazy(() => import('src/modules/components/Modals')));
-const Accordions = Loader(
-  lazy(() => import('src/modules/components/Accordions'))
-);
-const Tabs = Loader(lazy(() => import('src/modules/components/Tabs')));
-const Badges = Loader(lazy(() => import('src/modules/components/Badges')));
-const Tooltips = Loader(lazy(() => import('src/modules/components/Tooltips')));
-const Avatars = Loader(lazy(() => import('src/modules/components/Avatars')));
-const Cards = Loader(lazy(() => import('src/modules/components/Cards')));
-const Forms = Loader(lazy(() => import('src/modules/components/Forms')));
 
 // Status
 
@@ -89,7 +74,15 @@ const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <Overview />
+            element: <Home />
+          },
+          {
+            path: '/urgent-hiring-job',
+            element: <UrgentHiringJob />
+          },
+          {
+            path: '/job/:id',
+            element: <JobDetail />
           },
           {
             path: 'messenger',
@@ -109,11 +102,11 @@ const routes: RouteObject[] = [
           {
             path: 'profile',
             element: <UserProfile />
-          },
-          {
-            path: 'form',
-            element: <Forms />
           }
+          // {
+          //   path: 'form',
+          //   element: <Forms />
+          // }
         ]
       },
       {
@@ -191,6 +184,10 @@ const routes: RouteObject[] = [
           {
             path: 'list',
             element: <RecruitmentList />
+          },
+          {
+            path: 'list/:id',
+            element: <RecruitmentEdit />
           }
         ]
       },
@@ -248,42 +245,6 @@ const routes: RouteObject[] = [
       {
         path: '',
         element: <Navigate to="buttons" replace />
-      },
-      {
-        path: 'buttons',
-        element: <Buttons />
-      },
-      {
-        path: 'modals',
-        element: <Modals />
-      },
-      {
-        path: 'accordions',
-        element: <Accordions />
-      },
-      {
-        path: 'tabs',
-        element: <Tabs />
-      },
-      {
-        path: 'badges',
-        element: <Badges />
-      },
-      {
-        path: 'tooltips',
-        element: <Tooltips />
-      },
-      {
-        path: 'avatars',
-        element: <Avatars />
-      },
-      {
-        path: 'cards',
-        element: <Cards />
-      },
-      {
-        path: 'forms',
-        element: <Forms />
       }
     ]
   }

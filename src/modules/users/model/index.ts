@@ -5,6 +5,7 @@ export enum Role {
   EMPLOYEE = 'EMPLOYEE',
   EMPLOYER = 'EMPLOYER'
 }
+
 export type User = {
   userId: string;
   email: string;
@@ -15,5 +16,13 @@ export type User = {
   name: string;
   phone: string;
   avatar: string;
-  degree: Degree;
+  degree: Degree | string;
+  isMarried: boolean | string;
+};
+
+export type Company = {
+  companyName: string;
+  taxCode: string;
+  companyLocation: string;
+  careerField: string;
 };

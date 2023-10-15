@@ -12,7 +12,8 @@ import {
   Button,
   lighten,
   darken,
-  Tooltip
+  Tooltip,
+  Grid
 } from '@mui/material';
 
 import SidebarMenu from './SidebarMenu';
@@ -56,14 +57,9 @@ function Sidebar() {
       >
         <Scrollbar>
           <Box mt={2}>
-            <Box
-              mx={2}
-              sx={{
-                width: 52
-              }}
-            >
+            <Grid container justifyContent={'center'}>
               <Logo />
-            </Box>
+            </Grid>
           </Box>
           <Divider
             sx={{
@@ -100,14 +96,9 @@ function Sidebar() {
         >
           <Scrollbar>
             <Box mt={3}>
-              <Box
-                mx={2}
-                sx={{
-                  width: 52
-                }}
-              >
-                {/* <Logo /> */}
-              </Box>
+              <Grid container justifyContent={'center'}>
+                <Logo />
+              </Grid>
             </Box>
             <Divider
               sx={{

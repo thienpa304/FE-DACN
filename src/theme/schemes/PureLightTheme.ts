@@ -8,7 +8,7 @@ const themeColors = {
   warning: '#FFA319',
   error: '#FF1943',
   info: '#33C2FF',
-  black: '#223354',
+  black: '#000000',
   white: '#ffffff',
   primaryAlt: '#000C57'
 };
@@ -243,7 +243,7 @@ export const PureLightTheme = createTheme({
     width: '250px'
   },
   header: {
-    height: '80px',
+    height: '60px',
     background: colors.alpha.white[100],
     boxShadow: colors.shadows.cardSm,
     textColor: colors.secondary.main
@@ -436,6 +436,7 @@ export const PureLightTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          borderRadius: 6,
           '& .MuiInputAdornment-positionEnd.MuiInputAdornment-outlined': {
             paddingRight: 6
           },
@@ -575,6 +576,7 @@ export const PureLightTheme = createTheme({
         root: {
           fontWeight: 'bold',
           textTransform: 'none',
+          borderRadius: 6,
           paddingLeft: 16,
           paddingRight: 16,
 

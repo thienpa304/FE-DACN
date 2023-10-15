@@ -12,7 +12,7 @@ class BaseService {
     return httpRequest.get(this.endPoint, params).then((res) => res.data);
   };
 
-  getById = (id, params) => {
+  getById = (id, params = {}) => {
     return httpRequest
       .get(`${this.endPoint}/${id}`, params)
       .then((res) => res.data);
@@ -22,7 +22,7 @@ class BaseService {
     return httpRequest.post(this.endPoint, data).then((res) => res.data);
   };
 
-  update = (id, data) => {
+  update = (id, data = {}) => {
     return httpRequest
       .put(`${this.endPoint}/${id}`, data)
       .then((res) => res.data);
