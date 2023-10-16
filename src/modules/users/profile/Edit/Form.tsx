@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom';
 import { Box, Button, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import DatePicker from 'src/components/DatePicker';
@@ -34,9 +33,7 @@ export function UserForm(props) {
   });
 
   const handleSaveProfile = async (data) => {
-    const userDob = dayjs(data.dob, 'DD-MM-YYYY');
-
-    const formattedDob = userDob.format('DD-MM-YYYY');
+    const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
     // const formattedMarried = data.isMarried.toString() === '1';
     const newData = { ...data, dob: formattedDob };
     onSaveData(newData);
