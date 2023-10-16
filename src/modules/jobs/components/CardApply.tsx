@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Avatar, Box, Card, CardContent, Grid, Button } from '@mui/material';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -6,6 +7,7 @@ import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled } from '@mui/material/styles';
 import { Job } from '../model';
+import ModalApply from './ModalApply';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -32,6 +34,13 @@ type Props = {
   data: Partial<Job>;
 };
 const CardApply: React.FC<Props> = ({ data }) => {
+  const [openFormApply, setOpenFormApply] = useState(false);
+  const onCloseFormApply = () => {
+    setOpenFormApply(false);
+  };
+  const handleOpenFormApply = () => {
+    setOpenFormApply(true);
+  };
   return (
     <Card>
       <CardContent>
@@ -75,12 +84,23 @@ const CardApply: React.FC<Props> = ({ data }) => {
               </Grid>
             </Grid>
             <Box sx={{ marginTop: 2 }}>
-              <Button variant="contained" startIcon={<SendIcon />} color="info">
+              <Button
+                onClick={handleOpenFormApply}
+                variant="contained"
+                startIcon={<SendIcon />}
+                color="info"
+              >
                 Nộp hồ sơ
               </Button>
             </Box>
           </Box>
         </Grid>
+        <ModalApply
+          open={openFormApply}
+          onClose={onCloseFormApply}
+          position={data.jobTitle}
+          company={data?.employer?.companyName}
+        />
       </CardContent>
     </Card>
   );
