@@ -198,9 +198,9 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         element={<TextField />}
                         control={control}
                         errors={errors}
-                        id="numberofVacancies"
+                        id="numberOfVacancies"
                         label="Số lượng tuyển"
-                        name="numberofVacancies"
+                        name="numberOfVacancies"
                         required
                         type="number"
                       />{' '}

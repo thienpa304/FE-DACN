@@ -23,7 +23,7 @@ export type Job = {
   minAge: number;
   maxAge: number;
   sex: string;
-  numberofVacancies: number;
+  numberOfVacancies: number;
   trialPeriod: number;
   applicationDeadline: string;
   minSalary: number;
