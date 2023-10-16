@@ -83,7 +83,7 @@ const JobContent: React.FC<Props> = ({ data }) => {
                 </AvatarWrapper>
               </ListItemAvatar>
               <ListItemText
-                primary={data.numberofVacancies}
+                primary={data.numberOfVacancies}
                 secondary="Số lượng tuyển"
               />
             </ListItem>

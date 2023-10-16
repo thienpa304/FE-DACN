@@ -1,3 +1,4 @@
+import ReactDOM from 'react-dom';
 import { Box, Button, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import DatePicker from 'src/components/DatePicker';
@@ -33,11 +34,11 @@ export function UserForm(props) {
   });
 
   const handleSaveProfile = async (data) => {
-    // debugger;
-    const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
+    const userDob = dayjs(data.dob, 'DD-MM-YYYY')
+
+    const formattedDob = userDob.format('DD-MM-YYYY');
     // const formattedMarried = data.isMarried.toString() === '1';
     const newData = { ...data, dob: formattedDob };
-
     onSaveData(newData);
     setTimeout(() => {
       window.location.reload();
@@ -96,13 +97,14 @@ export function UserForm(props) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl
-              element={<DatePicker />}
+              element={<DatePicker maxDate={dayjs()} />}
               control={control}
               errors={errors}
               fullWidth
               id="dob"
               label="Ngày sinh"
               name="dob"
+              required
             />
           </Grid>
           <Grid item xs={12} sm={6}>
