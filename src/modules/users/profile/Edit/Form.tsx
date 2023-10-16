@@ -34,7 +34,7 @@ export function UserForm(props) {
   });
 
   const handleSaveProfile = async (data) => {
-    const userDob = dayjs(data.dob, 'DD-MM-YYYY')
+    const userDob = dayjs(data.dob, 'DD-MM-YYYY');
 
     const formattedDob = userDob.format('DD-MM-YYYY');
     // const formattedMarried = data.isMarried.toString() === '1';
