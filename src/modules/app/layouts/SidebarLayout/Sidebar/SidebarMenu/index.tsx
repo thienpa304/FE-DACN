@@ -10,7 +10,9 @@ import {
 } from '@mui/material';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { SidebarContext } from 'src/contexts/SidebarContext';
-
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
@@ -164,72 +166,172 @@ const SubMenuWrapper = styled(Box)(
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
   const {
-    user: { role = Role.EMPLOYEE }
+    user: { role = Role.EMPLOYEE },
+    isEmployer,
+    isEmployee,
+    isAdmin
   } = useApp();
   const rolePath = role?.toLowerCase();
 
   return (
     <>
       <MenuWrapper>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Quản lý đăng tuyển
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={`/${rolePath}/recruitment/create`}
-                  startIcon={<BorderColorIcon />}
-                >
-                  Tạo tin tuyển dụng
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={`/${rolePath}/recruitment/list`}
-                  startIcon={<BallotTwoToneIcon />}
-                >
-                  Danh sách tin đăng
-                </Button>
-              </ListItem>
+        {isEmployer && (
+          <>
+            <List
+              component="div"
+              subheader={
+                <ListSubheader component="div" disableSticky>
+                  Quản lý đăng tuyển
+                </ListSubheader>
+              }
+            >
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/recruitment/create`}
+                      startIcon={<BorderColorIcon />}
+                    >
+                      Tạo tin tuyển dụng
+                    </Button>
+                  </ListItem>
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/recruitment/list`}
+                      startIcon={<BallotTwoToneIcon />}
+                    >
+                      Danh sách tin đăng
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
             </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Quản lý ứng viên
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={`/${rolePath}/candidate/profile`}
-                  startIcon={<CheckBoxTwoToneIcon />}
-                >
-                  Hồ sơ ứng tuyển
-                </Button>
-              </ListItem>
+            <List
+              component="div"
+              subheader={
+                <ListSubheader component="div" disableSticky>
+                  Quản lý ứng viên
+                </ListSubheader>
+              }
+            >
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/candidate/profile`}
+                      startIcon={<CheckBoxTwoToneIcon />}
+                    >
+                      Hồ sơ ứng tuyển
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
             </List>
-          </SubMenuWrapper>
-        </List>
+          </>
+        )}
+
+        {isEmployee && (
+          <>
+            <List
+              component="div"
+              subheader={
+                <ListSubheader component="div" disableSticky>
+                  Quản lý hồ sơ
+                </ListSubheader>
+              }
+            >
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/profile/details`}
+                      startIcon={<ReceiptLongIcon />}
+                    >
+                      Hồ sơ của bạn
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+            </List>
+            <List
+              component="div"
+              subheader={
+                <ListSubheader component="div" disableSticky>
+                  Quản lý việc làm
+                </ListSubheader>
+              }
+            >
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/profile/details`}
+                      startIcon={<PlaylistAddCheckCircleIcon />}
+                    >
+                      Việc làm đã ứng tuyển
+                    </Button>
+                  </ListItem>
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/profile/details`}
+                      startIcon={<FavoriteIcon />}
+                    >
+                      Việc làm đã lưu
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+            </List>
+          </>
+        )}
+        {isAdmin && (
+          <>
+            <List
+              component="div"
+              subheader={
+                <ListSubheader component="div" disableSticky>
+                  Quản lý công việc
+                </ListSubheader>
+              }
+            >
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/profile/details`}
+                      startIcon={<AccountCircleTwoToneIcon />}
+                    >
+                      Công việc đăng tuyển
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+            </List>
+          </>
+        )}
+
         <List
           component="div"
           subheader={

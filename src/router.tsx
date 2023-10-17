@@ -95,7 +95,7 @@ const routes: RouteObject[] = [
         path: '/employee',
         element: (
           <AuthRouteProvider role={[Role.EMPLOYEE]}>
-            <SidebarLayout showSidebar={false} />
+            <SidebarLayout />
           </AuthRouteProvider>
         ),
         children: [
