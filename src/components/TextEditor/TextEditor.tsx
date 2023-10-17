@@ -25,11 +25,15 @@ type Props = {
 };
 const TextEditor: React.FC<Props> = ({ value, onChange }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [first, setFirst] = useState(true);
   useEffect(() => {
-    const editorDataStates = EditorState.createWithContent(
-      convertFromHTML(value)
-    );
-    setEditorState(editorDataStates);
+    if (first && value) {
+      const editorDataStates = EditorState.createWithContent(
+        convertFromHTML(value)
+      );
+      setEditorState(editorDataStates);
+      setFirst(false);
+    }
   }, [value]);
 
   const handleSetEditorState = (value) => {

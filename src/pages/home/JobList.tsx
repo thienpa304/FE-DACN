@@ -15,6 +15,13 @@ function JobList() {
   const { jobs } = useQueryJob();
   const initialJobsToShow = 12;
   const jobsToShow = jobs.slice(0, initialJobsToShow);
+  const filteredJobs = jobsToShow.filter((job) => {
+    const applicationDeadline = new Date(job.applicationDeadline);
+    const today = new Date();
+    const dayFromNow = new Date(today);
+    dayFromNow.setDate(today.getDate() + 20);
+    return applicationDeadline <= dayFromNow;
+  });
 
   return (
     <Container sx={{ py: 3 }}>
@@ -48,7 +55,7 @@ function JobList() {
         </Box>
         <Box p={2}>
           <Grid container mb={4} spacing={2}>
-            {jobsToShow.map((job, index) => (
+            {filteredJobs.map((job, index) => (
               <Grid key={index} item xs={12} sm={6} md={4}>
                 <CardItemJob key={index} job={job} />
               </Grid>

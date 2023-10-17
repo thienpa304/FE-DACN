@@ -27,6 +27,7 @@ import {
 import useMutateJob from '../hooks/useMutateJob';
 import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
+import dayjs from 'dayjs';
 
 const defaultValues = {
   sex: '',
@@ -161,24 +162,30 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={6} md={2}>
                       <FormControl
-                        element={<TextField />}
+                        element={
+                          <TextField InputProps={{ inputProps: { min: 0 } }} />
+                        }
                         control={control}
                         errors={errors}
                         id="minAge"
                         label="Độ tuổi tối thiểu"
                         name="minAge"
                         type="number"
+                        pattern="integer"
                       />
                     </Grid>
                     <Grid item xs={6} md={2}>
                       <FormControl
-                        element={<TextField />}
+                        element={
+                          <TextField InputProps={{ inputProps: { min: 0 } }} />
+                        }
                         control={control}
                         errors={errors}
                         id="maxAge"
                         label="Độ tuổi tối đa"
                         type="number"
                         name="maxAge"
+                        pattern="integer"
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -195,7 +202,9 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        element={
+                          <TextField InputProps={{ inputProps: { min: 0 } }} />
+                        }
                         control={control}
                         errors={errors}
                         id="numberOfVacancies"
@@ -203,22 +212,26 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         name="numberOfVacancies"
                         required
                         type="number"
+                        pattern="integer"
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        element={
+                          <TextField InputProps={{ inputProps: { min: 0 } }} />
+                        }
                         control={control}
                         errors={errors}
                         id="trialPeriod"
                         label="Thời giai thử việc"
                         name="trialPeriod"
                         type="number"
+                        pattern="integer"
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<DatePicker />}
+                        element={<DatePicker minDate={dayjs()} />}
                         control={control}
                         errors={errors}
                         id="applicationDeadline"
@@ -229,25 +242,31 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        element={
+                          <TextField InputProps={{ inputProps: { min: 0 } }} />
+                        }
                         control={control}
                         errors={errors}
                         id="minSalary"
                         label="Mức lương tối thiểu"
                         name="minSalary"
                         type="number"
+                        pattern="integer"
                         required
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={<TextField />}
+                        element={
+                          <TextField InputProps={{ inputProps: { min: 0 } }} />
+                        }
                         control={control}
                         errors={errors}
                         id="maxSalary"
                         label="Mức lương tối đa"
                         type="number"
                         name="maxSalary"
+                        pattern="integer"
                         required
                       />
                     </Grid>

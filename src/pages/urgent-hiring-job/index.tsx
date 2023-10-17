@@ -18,6 +18,14 @@ function UrgentHiringJob() {
     setCurrentPage(pageNumber);
   };
 
+  const filteredJobs = currentPageJobs.filter((job) => {
+    const applicationDeadline = new Date(job.applicationDeadline);
+    const today = new Date();
+    const dayFromNow = new Date(today);
+    dayFromNow.setDate(today.getDate() + 20);
+    return applicationDeadline <= dayFromNow;
+  });
+
   return (
     <Container maxWidth="md" sx={{ py: 3 }}>
       <Box
@@ -33,11 +41,11 @@ function UrgentHiringJob() {
       </Box>
       <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff' }}>
         <Typography fontSize={15} mb={2}>
-          <span style={{ color: '#ce8b0e' }}>{jobs.length}</span> việc làm đang
-          tuyển dụng
+          <span style={{ color: '#ce8b0e' }}>{filteredJobs.length}</span> việc
+          làm đang tuyển dụng
         </Typography>
         <Grid container spacing={2}>
-          {currentPageJobs.map((job, index) => (
+          {filteredJobs.map((job, index) => (
             <Grid key={index} item xs={12}>
               <LinkText to={`/job/${job?.postId}`}>
                 <JobCard key={index} job={job} />
