@@ -28,6 +28,7 @@
     "dompurify": "^3.0.6",
     "draft-convert": "^2.1.13",
     "draft-js": "^0.11.7",
+    "draft-js-export-html": "^1.4.1",
     "firebase": "^10.4.0",
     "history": "5.3.0",
     "nprogress": "0.2.0",
