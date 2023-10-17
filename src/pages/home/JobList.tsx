@@ -19,7 +19,7 @@ function JobList() {
     const applicationDeadline = new Date(job.applicationDeadline);
     const today = new Date();
     const tenDaysAgo = new Date(today);
-    tenDaysAgo.setDate(today.getDate() + 10);
+    tenDaysAgo.setDate(today.getDate() + 20);
     return applicationDeadline <= tenDaysAgo;
   });
 

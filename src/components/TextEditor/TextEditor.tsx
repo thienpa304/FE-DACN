@@ -37,7 +37,6 @@ const TextEditor: React.FC<Props> = ({ value, onChange }) => {
   }, [value]);
 
   const handleSetEditorState = (value) => {
-    debugger;
     setEditorState(value);
     let html = convertToHTML(value.getCurrentContent());
     onChange(html);

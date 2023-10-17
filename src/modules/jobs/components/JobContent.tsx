@@ -135,7 +135,7 @@ const JobContent: React.FC<Props> = ({ data }) => {
         Mô tả công việc
       </Typography>
       <Box>
-        <TextParser content={data.jobRequirements} />
+        <TextParser content={data.jobDescription} />
       </Box>
       <Typography variant="h3" noWrap marginBottom={2} marginTop={2}>
         Yêu cầu công việc
