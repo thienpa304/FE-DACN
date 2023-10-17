@@ -21,9 +21,9 @@ function UrgentHiringJob() {
   const filteredJobs = currentPageJobs.filter((job) => {
     const applicationDeadline = new Date(job.applicationDeadline);
     const today = new Date();
-    const tenDaysAgo = new Date(today);
-    tenDaysAgo.setDate(today.getDate() + 20);
-    return applicationDeadline <= tenDaysAgo;
+    const dayFromNow = new Date(today);
+    dayFromNow.setDate(today.getDate() + 20);
+    return applicationDeadline <= dayFromNow;
   });
 
   return (
