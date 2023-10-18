@@ -7,7 +7,7 @@ import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled } from '@mui/material/styles';
 import { Job } from '../model';
-import ModalApply from './ModalApply';
+import ModalApply from '../../application/components/ModalApply';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -97,6 +97,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
         </Grid>
         <ModalApply
           open={openFormApply}
+          postId={data.postId}
           onClose={onCloseFormApply}
           position={data.jobTitle}
           company={data?.employer?.companyName}

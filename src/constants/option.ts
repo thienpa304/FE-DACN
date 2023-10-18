@@ -1,9 +1,17 @@
 import {
+  ApprovalStatus,
   Degree,
   EmploymentType,
   Experience,
   PositionLevel
-} from 'src/interfaces/enum';
+} from 'src/constants/enum';
+import { Color } from 'src/types/mui-type';
+
+type ApprovalStatusOption = {
+  label: ApprovalStatus;
+  value: keyof typeof ApprovalStatus;
+  color: Color;
+};
 
 export const GENDER = [
   {
@@ -30,6 +38,30 @@ export const ISMARRIED = [
     label: 'Độc thân'
   }
 ];
+
+export const APPROVAL_STATUS: ApprovalStatusOption[] = [
+  {
+    value: 'approved',
+    label: ApprovalStatus.approved,
+    color: 'success'
+  },
+  {
+    value: 'pending',
+    label: ApprovalStatus.pending,
+    color: 'warning'
+  },
+  {
+    value: 'rejected',
+    label: ApprovalStatus.rejected,
+    color: 'error'
+  },
+  {
+    value: 'expired',
+    label: ApprovalStatus.expired,
+    color: 'secondary'
+  }
+];
+
 export const GENDER_OPTION = GENDER.map((item) => ({
   value: item.label,
   label: item.label

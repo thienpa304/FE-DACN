@@ -8,7 +8,7 @@ import {
   Button
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import TablePost from 'src/modules/jobs/components/TablePost';
+import TablePost from 'src/pages/recruitment-list/TablePost';
 import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 
 const RecruitmentList = () => {

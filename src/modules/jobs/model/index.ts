@@ -4,7 +4,7 @@ import {
   Experience,
   PositionLevel,
   Sex
-} from 'src/interfaces/enum';
+} from 'src/constants/enum';
 import { Company } from 'src/modules/users/model';
 
 export type Job = {

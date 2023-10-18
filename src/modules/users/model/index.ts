@@ -1,4 +1,10 @@
-import { Degree } from 'src/interfaces/enum';
+import {
+  Degree,
+  EmploymentType,
+  Experience,
+  PositionLevel
+} from 'src/constants/enum';
+import { Application } from 'src/modules/application/model';
 
 export enum Role {
   ADMIN = 'ADMIN',
@@ -26,3 +32,51 @@ export type Company = {
   companyLocation: string;
   careerField: string;
 };
+
+export type Employee = {
+  userId: number;
+
+  isMarried: boolean;
+
+  user: User;
+
+  online_profile: OnlineProfile;
+
+  attached_document: AttachedDocument;
+
+  applications: Application[];
+};
+
+export type OnlineProfile = {
+  userId: number;
+
+  jobTitle: string;
+
+  profession: string;
+
+  currentPosition: PositionLevel;
+
+  desiredPosition: PositionLevel;
+
+  desiredSalary: number;
+
+  degree: Degree;
+
+  workAddress: string;
+
+  experience: Experience;
+
+  employmentType: EmploymentType;
+
+  careerGoal: string;
+
+  skills: string;
+
+  view: number;
+
+  isHidden: boolean;
+
+  employee: Employee;
+};
+
+export type AttachedDocument = {};
