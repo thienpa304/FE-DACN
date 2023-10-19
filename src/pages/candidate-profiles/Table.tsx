@@ -61,12 +61,7 @@ const columns: GridColDef[] = [
     field: 'publishingDate',
     headerName: 'Vị trí ứng tuyển',
     minWidth: 150
-  },
-  {
-    field: 'publishingDate',
-    headerName: 'Thời gian nộp',
-    minWidth: 150
-  },
+  }, 
   {
     field: 'applicationType',
     headerName: 'Loại hồ sơ',
