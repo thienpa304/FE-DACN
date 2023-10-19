@@ -11,7 +11,8 @@ const useQueryCandidateProfiles = () => {
   >('application-getList', CandidateProfilesService.get);
 
   return {
-    data: data?.data?.map((item) => ({ ...item, id: item.application_id })) || [],
+    data:
+      data?.data?.map((item) => ({ ...item, id: item.application_id })) || [],
     isLoading
   };
 };
