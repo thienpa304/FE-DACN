@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const renderJobTitle = (data) => {
         </Grid>
         <Grid item xs={10}>
           <LinkText to={`/employer/recruitment/list/${data.id}`}>
-            {data.value}
+            <TypographyEllipsis> {data.value}</TypographyEllipsis>
           </LinkText>
         </Grid>
       </Grid>
