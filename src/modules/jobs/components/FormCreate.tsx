@@ -65,8 +65,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   }, [defaultData]);
 
   const handleSave = (data) => {
-    if (selectedId) onSaveDataById([selectedId, data]);
-    else onSaveData(data);
+    const formattedDeadline = dayjs(
+      data.applicationDeadline,
+      'DD-MM-YYYY'
+    ).format('DD-MM-YYYY');
+    const newData = { ...data, applicationDeadline: formattedDeadline };
+    if (selectedId) onSaveDataById([selectedId, newData]);
+    else onSaveData(newData);
   };
   return (
     <>

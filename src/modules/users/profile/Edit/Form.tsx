@@ -14,9 +14,12 @@ export function UserForm(props) {
   const { onSaveData } = useMutateUserData('Profile');
   const isEmployee = user.role === 'EMPLOYEE';
 
-  const degree = DEGREE.find((item) => item.label === user.degree);
-  const mappedDegree = degree ? degree.value : 'other';
-
+  // const degree = DEGREE.find((item) => item.label === user.degree);
+  // const mappedDegree = degree ? degree.value : 'other';
+  const DEGREE_OPTION = DEGREE.map((item) => ({
+    value: item.label,
+    label: item.label
+  }));
   const {
     control,
     handleSubmit,
@@ -27,14 +30,13 @@ export function UserForm(props) {
       dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
         ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
         : null,
-      sex: GENDER.find((item) => item.label === user.sex)?.value,
-      degree: mappedDegree
+      sex: GENDER.find((item) => item.label === user.sex)?.value
+      // degree: mappedDegree
     }
   });
 
   const handleSaveProfile = async (data) => {
     const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
-    // const formattedMarried = data.isMarried.toString() === '1';
     const newData = { ...data, dob: formattedDob };
     onSaveData(newData);
     setTimeout(() => {
@@ -119,7 +121,7 @@ export function UserForm(props) {
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<SelectInput />}
-              options={DEGREE}
+              options={DEGREE_OPTION}
               control={control}
               errors={errors}
               fullWidth

@@ -1,5 +1,5 @@
 import { useApp } from 'src/modules/app/hooks';
-import InfoTab from './Information/Content';
+import InfoTab from './Information/InfoTab';
 import BusinessIcon from '@mui/icons-material/Business';
 
 export default function CompanyTab() {
