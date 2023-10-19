@@ -1,18 +1,18 @@
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
   Container,
   Divider,
-  Grid,
-  Button
+  Grid
 } from '@mui/material';
 import { Link } from 'react-router-dom';
+import useQueryJobOwner from 'src/modules/jobs/hooks/useQueryJobOwner';
 import TablePost from 'src/pages/recruitment-list/TablePost';
-import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 
 const RecruitmentList = () => {
-  const { jobs } = useQueryJob();
+  const { jobs } = useQueryJobOwner();
   return (
     <Container maxWidth="xl">
       <Grid

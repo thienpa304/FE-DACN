@@ -1,4 +1,5 @@
 import {
+  ApprovalStatus,
   Degree,
   EmploymentType,
   Experience,
@@ -23,6 +24,7 @@ export type Job = {
   minAge: number;
   maxAge: number;
   sex: string;
+  status: ApprovalStatus;
   numberOfVacancies: number;
   trialPeriod: number;
   applicationDeadline: string;

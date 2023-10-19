@@ -320,10 +320,10 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to={`/${rolePath}/profile/details`}
+                      to={`/${rolePath}/jobs-posting`}
                       startIcon={<AccountCircleTwoToneIcon />}
                     >
-                      Công việc đăng tuyển
+                      Việc đăng tuyển
                     </Button>
                   </ListItem>
                 </List>
