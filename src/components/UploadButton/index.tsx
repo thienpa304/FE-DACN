@@ -8,6 +8,7 @@ import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import LinearPercent from '../LinearPercent';
+import dayjs from 'dayjs';
 
 const VisuallyHiddenInput = styled('input')({
   display: 'none'
@@ -52,8 +53,8 @@ function UploadButton(props: Props) {
     if (!value) {
       alert('Please upload an image first!');
     }
-
-    const storageRef = ref(storage, `/files/${value.name}`);
+    let date = dayjs(new Date()).format('DDMMYYYY');
+    const storageRef = ref(storage, `/files/${value.name}-${date}`);
 
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.

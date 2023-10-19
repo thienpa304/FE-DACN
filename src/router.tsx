@@ -24,11 +24,14 @@ const RecruitmentCreate = Loader(
 const RecruitmentList = Loader(
   lazy(() => import('src/pages/recruitment-list'))
 );
+const RecruitmentListApproval = Loader(
+  lazy(() => import('src/pages/recruitment-approval'))
+);
 const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
 // Candidate
 
-const CandidateProfile = Loader(
-  lazy(() => import('src/modules/candidate/profile'))
+const CandidateProfiles = Loader(
+  lazy(() => import('src/pages/candidate-profiles'))
 );
 
 // User
@@ -208,7 +211,7 @@ const routes: RouteObject[] = [
           },
           {
             path: 'profile',
-            element: <CandidateProfile />
+            element: <CandidateProfiles />
           }
         ]
       }
@@ -239,6 +242,10 @@ const routes: RouteObject[] = [
             element: <UserSettings />
           }
         ]
+      },
+      {
+        path: 'jobs-posting',
+        element: <RecruitmentListApproval />
       }
     ]
   },

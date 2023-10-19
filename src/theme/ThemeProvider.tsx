@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { themeCreator } from './base';
 import { StylesProvider } from '@mui/styles';
-import { Props } from 'src/interfaces/prop-base';
+import { Props } from 'src/types/prop-base';
 
 export const ThemeContext = React.createContext(
   (themeName: string): void => {}

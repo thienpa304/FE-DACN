@@ -48,3 +48,15 @@ export enum PositionLevel {
   Employee = 'Chuyên viên - nhân viên',
   Contributor = 'Cộng tác viên'
 }
+export enum ApprovalStatus {
+  approved = 'Đã duyệt',
+  pending = 'Chờ duyệt',
+  rejected = 'Từ chối',
+  expired = 'Hết hạn'
+}
+
+export enum ApplicationType {
+  online_profile = 'online_profile',
+  attached_document = 'attached_document',
+  cv_enclosed = 'cv_enclosed'
+}

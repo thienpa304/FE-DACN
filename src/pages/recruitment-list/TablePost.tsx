@@ -3,10 +3,12 @@ import { GridColDef } from '@mui/x-data-grid';
 import LinkText from 'src/components/LinkText';
 import TableData from 'src/components/TableData';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Grid } from '@mui/material';
+import { Chip, Grid } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
+import { APPROVAL_STATUS } from 'src/constants';
+
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
@@ -31,30 +33,31 @@ const renderJobTitle = (data) => {
     </>
   );
 };
+
+const renderStatus = (data) => {
+  const color = APPROVAL_STATUS.find((item) => item.label === data.value).color;
+  return (
+    <Chip label={data.value} size="small" color={color} variant="outlined" />
+  );
+};
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
     headerName: 'Tên tin đăng',
-    minWidth: 200,
+    minWidth: 250,
     renderCell: renderJobTitle
   },
   {
-    field: 'posiLevel',
+    field: 'publishingDate',
     headerName: 'Ngày đăng',
-    minWidth: 150,
-    renderCell: () => <></>
-  },
-  {
-    field: 'age',
-    headerName: 'Thời gian nộp',
-    minWidth: 150,
-    renderCell: () => <></>
+    minWidth: 150
   },
   {
     field: 'fullName',
     headerName: 'Lượt nộp',
     minWidth: 100,
     type: 'number',
+    align: 'center',
     renderCell: () => <>0</>
   },
   {
@@ -62,12 +65,14 @@ const columns: GridColDef[] = [
     headerName: 'Lượt xem',
     type: 'number',
     minWidth: 110,
+    align: 'center',
     renderCell: () => <>0</>
   },
   {
-    field: '2222',
+    field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 150
+    minWidth: 150,
+    renderCell: renderStatus
   },
   {
     field: '2232',

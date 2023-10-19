@@ -1,10 +1,11 @@
 import {
+  ApprovalStatus,
   Degree,
   EmploymentType,
   Experience,
   PositionLevel,
   Sex
-} from 'src/interfaces/enum';
+} from 'src/constants/enum';
 import { Company } from 'src/modules/users/model';
 
 export type Job = {
@@ -23,6 +24,7 @@ export type Job = {
   minAge: number;
   maxAge: number;
   sex: string;
+  status: ApprovalStatus;
   numberOfVacancies: number;
   trialPeriod: number;
   applicationDeadline: string;

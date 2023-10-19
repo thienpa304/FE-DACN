@@ -13,6 +13,8 @@ import FormControl from 'src/components/FormControl';
 import TextField from 'src/components/TextField';
 import UploadButton from 'src/components/UploadButton';
 import AddIcon from '@mui/icons-material/Add';
+import useMutateApplyJob from '../hooks/useMutateApplyJob';
+import { ApplicationType } from 'src/constants/enum';
 
 const Title = styled('h3')(() => ({
   fontWeight: 600,
@@ -26,6 +28,7 @@ const SubTitle = styled('div')(({ theme }) => ({
 }));
 
 type Props = {
+  postId: number;
   open: boolean;
   position: string;
   company?: string;
@@ -33,8 +36,8 @@ type Props = {
 };
 
 export default function ModalApply(props: Props) {
-  const { open, onClose, position, company } = props;
-  const [urlProfile, setUrlProfile] = useState('');
+  const { onSaveData } = useMutateApplyJob();
+  const { open, onClose, position, company, postId } = props;
 
   const {
     control,
@@ -48,8 +51,11 @@ export default function ModalApply(props: Props) {
     onClose();
   };
   const handleApply = (data) => {
-    console.log(data);
-    onClose();
+    onSaveData({
+      ...data,
+      postId,
+      applicationType: ApplicationType.cv_enclosed
+    });
   };
 
   return (
@@ -68,8 +74,8 @@ export default function ModalApply(props: Props) {
                 control={control}
                 errors={errors}
                 required
-                id="url"
-                name="url"
+                id="CV"
+                name="CV"
                 label="Tải lên hồ sơ có sẵn"
               >
                 <UploadButton />
@@ -88,9 +94,9 @@ export default function ModalApply(props: Props) {
                 control={control}
                 errors={errors}
                 required
-                id="address"
+                id="name"
                 label="Hộ và tên"
-                name="address"
+                name="name"
               />
             </Grid>
             <Grid item xs={12}>
@@ -102,6 +108,7 @@ export default function ModalApply(props: Props) {
                 id="email"
                 label="Email"
                 name="email"
+                pattern="email"
               />
             </Grid>
             <Grid item xs={12}>

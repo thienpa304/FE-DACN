@@ -1,5 +1,5 @@
 import { FC, useState, createContext } from 'react';
-import { Props } from 'src/interfaces/prop-base';
+import { Props } from 'src/types/prop-base';
 type SidebarContext = {
   sidebarToggle: any;
   toggleSidebar: () => void;

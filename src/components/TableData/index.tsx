@@ -9,6 +9,9 @@ const TableDataWrapper = styled(DataGrid)(({ theme }) => ({
     '&:focus-within': {
       outline: 'none'
     }
+  },
+  '& .MuiDataGrid-row:hover': {
+    backgroundColor: 'inherit'
   }
 }));
 const HeaderTitleWrapper = styled(`div`)(({ theme }) => ({
@@ -37,8 +40,9 @@ const TableData: React.FC<DataGridProps> = ({ rows, columns, ...props }) => {
           }
         }
       }}
+      disableColumnSelector
+      rowSelection={false}
       pageSizeOptions={[10]}
-      disableRowSelectionOnClick
       {...props}
     />
   );
