@@ -45,55 +45,62 @@ const CardApply: React.FC<Props> = ({ data }) => {
     <Card>
       <CardContent>
         <Grid container>
-          <AvatarWrapper src="https://cdn1.vieclam24h.vn/images/default/2023/10/02/Logo%20ISO-1_169621842571.jpg" />
-          <Box>
-            <SubTitle>{data?.employer?.companyName}</SubTitle>
-            <Title>{data.jobTitle}</Title>
-            <Grid container spacing={1}>
-              <Grid item xs={12} md={6}>
-                <Grid container alignItems={'center'}>
-                  <PaidIcon color="primary" sx={{ margin: '0 5px' }} />
-                  <LabelText> Mức lương : </LabelText>
-                  <ValueText>
-                    {data.minSalary} - {data.maxSalary} triệu
-                  </ValueText>
+          <Grid item xs={12} md={2}>
+            <AvatarWrapper src="https://cdn1.vieclam24h.vn/images/default/2023/10/02/Logo%20ISO-1_169621842571.jpg" />
+          </Grid>
+          <Grid item xs={12} md={10}>
+            <Box>
+              <SubTitle>{data?.employer?.companyName}</SubTitle>
+              <Title>{data.jobTitle}</Title>
+              <Grid container spacing={1}>
+                <Grid item xs={12} md={6}>
+                  <Grid container alignItems={'center'}>
+                    <PaidIcon color="primary" sx={{ margin: '0 5px' }} />
+                    <LabelText> Mức lương : </LabelText>
+                    <ValueText>
+                      {data.minSalary} - {data.maxSalary} triệu
+                    </ValueText>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Grid container alignItems={'center'}>
+                    <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
+                    <LabelText> Hạn nộp hồ sơ : </LabelText>
+                    <ValueText> {data.applicationDeadline}</ValueText>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Grid container alignItems={'center'}>
+                    <AccessibilityIcon
+                      color="primary"
+                      sx={{ margin: '0 5px' }}
+                    />
+                    <LabelText> Độ tuổi : </LabelText>
+                    <ValueText>
+                      {data.minAge} - {data.maxAge}
+                    </ValueText>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Grid container alignItems={'center'}>
+                    <LocationOnIcon color="primary" sx={{ margin: '0 5px' }} />
+                    <LabelText> Khu vực ứng tuyển : </LabelText>
+                    <ValueText>{data.contactAddress}</ValueText>
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Grid container alignItems={'center'}>
-                  <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
-                  <LabelText> Hạn nộp hồ sơ : </LabelText>
-                  <ValueText> {data.applicationDeadline}</ValueText>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Grid container alignItems={'center'}>
-                  <AccessibilityIcon color="primary" sx={{ margin: '0 5px' }} />
-                  <LabelText> Độ tuổi : </LabelText>
-                  <ValueText>
-                    {data.minAge} - {data.maxAge}
-                  </ValueText>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Grid container alignItems={'center'}>
-                  <LocationOnIcon color="primary" sx={{ margin: '0 5px' }} />
-                  <LabelText> Khu vực ứng tuyển : </LabelText>
-                  <ValueText>{data.contactAddress}</ValueText>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Box sx={{ marginTop: 2 }}>
-              <Button
-                onClick={handleOpenFormApply}
-                variant="contained"
-                startIcon={<SendIcon />}
-                color="info"
-              >
-                Nộp hồ sơ
-              </Button>
+              <Box sx={{ marginTop: 1 }}>
+                <Button
+                  onClick={handleOpenFormApply}
+                  variant="contained"
+                  startIcon={<SendIcon />}
+                  color="info"
+                >
+                  Nộp hồ sơ
+                </Button>
+              </Box>
             </Box>
-          </Box>
+          </Grid>
         </Grid>
         <ModalApply
           open={openFormApply}
