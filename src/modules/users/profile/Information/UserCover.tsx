@@ -15,7 +15,11 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import IconButton from '@mui/material/IconButton';
 import { useApp } from 'src/modules/app/hooks';
-import { UploadAvatar, GetAvatar, RemoveAvatar } from 'src/common/upload-image';
+import {
+  UploadAvatarByUser,
+  GetAvatarByUser,
+  RemoveAvatarByUser
+} from 'src/common/upload-image';
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import { useForm } from 'react-hook-form';
 import { User } from '../../model';
@@ -27,30 +31,23 @@ const Input = styled('input')({
 
 export default function Cover() {
   const { user } = useApp();
-  const [currentUser, setCurrentUser] = useState(user);
   const [save, setSave] = useState(true);
   const [avatar, setAvatar] = useState(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { onSaveData } = useMutateUserData('Profile');
 
   useEffect(() => {
-    setCurrentUser(user);
+    handleGetAvatar();
   }, [user]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await getAvatar();
-    };
-    fetchData();
-  }, [currentUser]);
-
-  async function getAvatar() {
-    let url = await GetAvatar(currentUser);
-    setAvatar(url);
+  const handleGetAvatar = async () => {
+    const avatarUrl = await GetAvatarByUser(user);
+    setAvatar(avatarUrl);
     setSave(true);
-  }
+  };
 
-  const handleImageUpload = (e) => {
+  const handleUploadAvatar = (e) => {
     const image = e.target.files[0];
     if (image) {
       const imageUrl = URL.createObjectURL(image);
@@ -59,25 +56,27 @@ export default function Cover() {
       setSave(false);
     }
   };
-  async function handleSaveAvatar(data) {
+  const handleSaveAvatar = async (data) => {
     setLoading(true);
-    await UploadAvatar(file, currentUser);
-    const url = await GetAvatar(currentUser);
+    await UploadAvatarByUser(file, user);
+    const url = await GetAvatarByUser(user);
     setAvatar(url);
     setSave(true);
+    const newData = { ...data, avatar: url };
+    onSaveData(newData);
     setLoading(false);
-    // const newData = { ...data, avatar: url }
-    // onSaveData(newData)
-  }
+  };
 
-  async function handleImageDelete() {
+  const handleDeleteAvatar = async (data) => {
     setAvatar(null);
-    await RemoveAvatar(currentUser);
-  }
+    await RemoveAvatarByUser(user);
+    const newData = { ...data, avatar: null };
+    onSaveData(newData);
+  };
 
   const { control, handleSubmit } = useForm<User>({
     defaultValues: {
-      ...currentUser
+      ...user
     }
   });
 
@@ -101,10 +100,10 @@ export default function Cover() {
               alignItems="center"
               rowGap={0.5}
             >
-              <label htmlFor="avatar">
+              <label htmlFor="userAvatar">
                 <IconButton component="label" sx={{ borderRadius: 10 }}>
                   <Avatar
-                    alt={currentUser.name}
+                    alt={user.name}
                     src={avatar}
                     sx={{
                       width: 120,
@@ -115,15 +114,15 @@ export default function Cover() {
                   <FormControl
                     element={<Input type="file" accept="image/*" />}
                     control={control}
-                    name="avatar"
-                    id="avatar"
-                    onChange={handleImageUpload}
+                    name="userAvatar"
+                    id="userAvatar"
+                    onChange={handleUploadAvatar}
                   />
                 </IconButton>
               </label>
 
               {!avatar && (
-                <label htmlFor="avatar">
+                <label htmlFor="userAvatar">
                   <Button
                     component="label"
                     size="small"
@@ -134,9 +133,9 @@ export default function Cover() {
                     <FormControl
                       element={<Input type="file" accept="image/*" />}
                       control={control}
-                      name="avatar"
-                      id="avatar"
-                      onChange={handleImageUpload}
+                      name="userAvatar"
+                      id="userAvatar"
+                      onChange={handleUploadAvatar}
                     />
                     Upload
                   </Button>
@@ -164,7 +163,7 @@ export default function Cover() {
                     save && (
                       <Button
                         component="label"
-                        onClick={handleImageDelete}
+                        onClick={handleSubmit(handleDeleteAvatar)}
                         size="small"
                         startIcon={<DoNotDisturbOnOutlinedIcon />}
                         variant="outlined"
@@ -186,10 +185,10 @@ export default function Cover() {
               sx={{ lineHeight: 200 }}
             >
               <Typography fontSize={18} fontWeight={700} lineHeight={3}>
-                {currentUser.name}
+                {user.name}
               </Typography>
-              <Typography>Phone: {currentUser.phone}</Typography>
-              <Typography>Email: {currentUser.email}</Typography>
+              <Typography>Phone: {user.phone}</Typography>
+              <Typography>Email: {user.email}</Typography>
             </Box>
           </Grid>
         </Grid>

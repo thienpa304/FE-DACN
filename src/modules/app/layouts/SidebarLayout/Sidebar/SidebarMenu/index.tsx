@@ -257,7 +257,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to={`/${rolePath}/profile/details`}
+                      to={`/${rolePath}/online-profile`}
                       startIcon={<ReceiptLongIcon />}
                     >
                       Hồ sơ của bạn
@@ -347,7 +347,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={`/${rolePath}/profile/details`}
+                  to={`/${rolePath}/profile`}
                   startIcon={<AccountCircleTwoToneIcon />}
                 >
                   Hồ sơ cá nhân

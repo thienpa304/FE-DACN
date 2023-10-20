@@ -2,23 +2,16 @@ import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { User } from '../model';
-import { SetProfile, SetCompany } from '../userService';
+import { OnlineProfileService } from '../employeeService';
+import { OnlineProfile } from '../../users/model';
 
-const useMutateUserData = (obj) => {
+const useUpdateOnlineProfile = () => {
   const { toast } = useApp();
-
-  let mutationFunction;
-  {
-    if (obj === 'Company') mutationFunction = SetCompany.create;
-    else if (obj === 'Profile') mutationFunction = SetProfile.create;
-  }
-
-  const { mutate: onSaveData, isLoading } = useMutation<
-    ResponseData<User>,
-    AxiosError<ResponseData<User>>,
-    User
-  >(mutationFunction, {
+  const { mutate: onUpdateData, isLoading } = useMutation<
+    ResponseData<OnlineProfile>,
+    AxiosError<ResponseData<OnlineProfile>>,
+    [id: string, data: OnlineProfile]
+  >((data) => OnlineProfileService.updateAtEndPoint(data), {
     onSuccess: (res) => {
       if (res.status === 200) {
         toast.success({ massage: res.message });
@@ -30,10 +23,11 @@ const useMutateUserData = (obj) => {
       toast.error({ massage: error.response.data.message });
     }
   });
+
   return {
-    onSaveData,
+    onUpdateData,
     isLoading
   };
 };
 
-export default useMutateUserData;
+export default useUpdateOnlineProfile;

@@ -54,6 +54,9 @@ const UrgentHiringJob = Loader(
 const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
+const OnlineProfile = Loader(
+  lazy(() => import('src/modules/employee/onlineProfile'))
+);
 
 // Status
 
@@ -105,7 +108,12 @@ const routes: RouteObject[] = [
           {
             path: 'profile',
             element: <UserProfile />
+          },
+          {
+            path: 'online-profile',
+            element: <OnlineProfile />
           }
+
           // {
           //   path: 'form',
           //   element: <Forms />
