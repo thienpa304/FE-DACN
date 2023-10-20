@@ -23,7 +23,11 @@ import { User } from '../../users/model';
 import { useApp } from 'src/modules/app/hooks';
 import useMutateUserData from '../../users/hooks/useMutateUserHook';
 import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
-import { UploadAvatarByUser, GetAvatarByUser, RemoveAvatarByUser } from 'src/common/upload-image';
+import {
+  UploadAvatarByUser,
+  GetAvatarByUser,
+  RemoveAvatarByUser
+} from 'src/common/upload-image';
 
 const Input = styled('input')({
   display: 'none'
@@ -48,14 +52,19 @@ export default function Personal() {
   const handleSaveProfile = async (data) => {
     setLoading(true);
     if (uploadFile) await UploadAvatarByUser(uploadFile, user);
-    let avatarUrl = "";
+    let avatarUrl = '';
     if (!avatar) await RemoveAvatarByUser(user);
     else avatarUrl = await GetAvatarByUser(user);
 
-    const avatarString = avatarUrl !== "" ? avatarUrl : "";
+    const avatarString = avatarUrl !== '' ? avatarUrl : '';
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
     const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
-    const newData = { ...data, dob: formattedDob, avatar: avatarString, isMarried: isMarried };
+    const newData = {
+      ...data,
+      dob: formattedDob,
+      avatar: avatarString,
+      isMarried: isMarried
+    };
 
     onSaveData(newData);
     setLoading(false);
@@ -124,7 +133,7 @@ export default function Personal() {
         )}
       </Box>
       <Divider />
-      <Grid container sx={{ mt: 1 }} py={2} >
+      <Grid container sx={{ mt: 1 }} py={2}>
         <Grid item xs={2} pr={2}>
           <Box
             display="flex"

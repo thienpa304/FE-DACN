@@ -7,10 +7,12 @@ import { SetProfile, SetCompany } from '../userService';
 
 const useMutateUserData = (obj) => {
   const { toast } = useApp();
-  
+
   let mutationFunction;
-  {if (obj === 'Company') mutationFunction = SetCompany.create;
-  else if (obj === 'Profile') mutationFunction = SetProfile.create}
+  {
+    if (obj === 'Company') mutationFunction = SetCompany.create;
+    else if (obj === 'Profile') mutationFunction = SetProfile.create;
+  }
 
   const { mutate: onSaveData, isLoading } = useMutation<
     ResponseData<User>,

@@ -33,8 +33,8 @@ function UrgentHiringJob() {
       </Box>
       <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff' }}>
         <Typography fontSize={15} mb={2}>
-          <span style={{ color: '#ce8b0e' }}>{jobs.length}</span> việc
-          làm đang tuyển dụng
+          <span style={{ color: '#ce8b0e' }}>{jobs.length}</span> việc làm đang
+          tuyển dụng
         </Typography>
         <Grid container spacing={2}>
           {currentPageJobs.map((job, index) => (

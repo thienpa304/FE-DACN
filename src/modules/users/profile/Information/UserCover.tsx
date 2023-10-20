@@ -15,7 +15,11 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import IconButton from '@mui/material/IconButton';
 import { useApp } from 'src/modules/app/hooks';
-import { UploadAvatarByUser, GetAvatarByUser, RemoveAvatarByUser } from 'src/common/upload-image';
+import {
+  UploadAvatarByUser,
+  GetAvatarByUser,
+  RemoveAvatarByUser
+} from 'src/common/upload-image';
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import { useForm } from 'react-hook-form';
 import { User } from '../../model';
@@ -61,14 +65,14 @@ export default function Cover() {
     const newData = { ...data, avatar: url };
     onSaveData(newData);
     setLoading(false);
-  }
+  };
 
   const handleDeleteAvatar = async (data) => {
     setAvatar(null);
     await RemoveAvatarByUser(user);
     const newData = { ...data, avatar: null };
     onSaveData(newData);
-  }
+  };
 
   const { control, handleSubmit } = useForm<User>({
     defaultValues: {

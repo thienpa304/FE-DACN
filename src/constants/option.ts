@@ -3,7 +3,7 @@ import {
   Degree,
   EmploymentType,
   Experience,
-  PositionLevel,
+  PositionLevel
 } from 'src/constants/enum';
 import professions from './professions';
 import provinces from './provinces';
@@ -100,4 +100,3 @@ export const WORK_AT = provinces.map((item) => ({
   value: item.code,
   label: item.name
 }));
-

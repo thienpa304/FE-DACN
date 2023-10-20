@@ -9,11 +9,11 @@ import AuthRouteProvider from './modules/auth/components/AuthRouteProvider';
 import { Role } from './modules/users/model';
 
 const Loader = (Component) => (props) =>
-(
-  <Suspense fallback={<SuspenseLoader />}>
-    <Component {...props} />
-  </Suspense>
-);
+  (
+    <Suspense fallback={<SuspenseLoader />}>
+      <Component {...props} />
+    </Suspense>
+  );
 
 // Recruitment
 

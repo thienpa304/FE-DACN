@@ -5,7 +5,7 @@ import InfoTab from './InfoTab';
 
 export default function UserInfo() {
   const { user } = useApp();
-  const isMarried = user.isMarried === true ? 'Đã kết hôn' : 'Độc thân'
+  const isMarried = user.isMarried === true ? 'Đã kết hôn' : 'Độc thân';
   const UserData = [
     { label: 'Họ và tên', value: user.name },
     { label: 'Giới tính', value: user.sex },
@@ -13,7 +13,7 @@ export default function UserInfo() {
     { label: 'Email', value: user.email },
     { label: 'Số điện thoại', value: user.phone },
     { label: 'Tình trạng hôn nhân', value: isMarried },
-    { label: 'Địa chỉ', value: user.address },
+    { label: 'Địa chỉ', value: user.address }
   ];
 
   return (

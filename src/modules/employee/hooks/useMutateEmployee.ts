@@ -7,8 +7,8 @@ import { OnlineProfileService } from '../employeeService';
 
 const useMutateUserData = (obj) => {
   const { toast } = useApp();
-  
-    const mutationFunction = OnlineProfileService.create;
+
+  const mutationFunction = OnlineProfileService.create;
 
   const { mutate: onSaveData, isLoading } = useMutation<
     ResponseData<User>,
