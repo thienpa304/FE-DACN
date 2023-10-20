@@ -1,6 +1,4 @@
 import { Box, Container, Grid } from '@mui/material';
-import Cover from '../profile/Information/UserCover';
-import InfoTab from '../profile/Information/UserInfo';
 import Personal from './Personal';
 import General from './General';
 

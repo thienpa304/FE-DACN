@@ -13,7 +13,6 @@ import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternate
 import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
-import useMutateUserData from '../hooks/useMutateUserHook';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
 import DatePicker from 'src/components/DatePicker';
@@ -22,17 +21,21 @@ import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { User } from '../model';
 import { useApp } from 'src/modules/app/hooks';
-import { DEGREE, GENDER, ISMARRIED } from 'src/constants/option';
-import { UploadAvatar, GetAvatar, RemoveAvatar } from 'src/common/upload-image';
+import useProfileHook from '../hooks/useUserHook';
+import useMutateUserData from '../hooks/useMutateUserHook';
+import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
+import { UploadAvatarByUser, GetAvatarByUser, RemoveAvatarByUser, GetAvatarToImage } from 'src/common/upload-image';
 
 const Input = styled('input')({
   display: 'none'
 });
 
 export default function Personal() {
+  // const user = profile;
   const { user } = useApp();
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [avatar, setAvatar] = useState(null);
+  const [userAvatar, setUserAvatar] = useState(null);
   const [storageAvatar, setStorageAvatar] = useState(null);
   const [uploadFile, setUploadFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -40,13 +43,12 @@ export default function Personal() {
 
   const handleEdit = () => setIsReadOnly(false);
 
-  const handleImageGet = async () => {
-    const urlAvatar = await GetAvatar(user);
-    setStorageAvatar(urlAvatar);
-    setAvatar(urlAvatar);
+  const handleGetAvatar = async () => {
+    setStorageAvatar(user.avatar);
+    setAvatar(user.avatar);
   };
 
-  const handleImageUpload = (e) => {
+  const handleUploadAvatar = (e) => {
     const image = e.target.files[0];
     if (image) {
       const imageUrl = URL.createObjectURL(image);
@@ -55,19 +57,15 @@ export default function Personal() {
     }
   };
 
-  const handleImageDelete = () => setAvatar(null);
-
-  const DEGREE_OPTION = DEGREE.map((item) => ({
-    value: item.label,
-    label: item.label
-  }));
+  const handleDeleteAvatar = () => setAvatar(null);
 
   const defaultUserValues = {
     ...user,
     dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
       ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
       : null,
-    sex: GENDER.find((item) => item.label === user.sex)?.value
+    sex: GENDER.find((item) => item.label === user.sex)?.value,
+    isMarried: ISMARRIED.find((item) => item.value === user.isMarried)?.label
   };
 
   const {
@@ -81,17 +79,20 @@ export default function Personal() {
 
   useEffect(() => {
     reset(defaultUserValues);
-    handleImageGet();
+    handleGetAvatar();
   }, [user]);
 
   const handleSaveProfile = async (data) => {
     setLoading(true);
-    if (uploadFile) await UploadAvatar(uploadFile, user);
+    if (uploadFile) await UploadAvatarByUser(uploadFile, user);
     let avatarUrl = null;
-    if (!avatar) await RemoveAvatar(user);
-    else avatarUrl = await GetAvatar(user);
+    if (!avatar) await RemoveAvatarByUser(user);
+    else avatarUrl = await GetAvatarByUser(user);
+    const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
     const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
-    const newData = { ...data, dob: formattedDob, avatar: avatarUrl };
+    const newData = { ...data, dob: formattedDob, avatar: avatarUrl, isMarried: isMarried };
+
+
     onSaveData(newData);
     setLoading(false);
     setIsReadOnly(true);
@@ -143,7 +144,7 @@ export default function Personal() {
               }}
             />
             {!avatar && !isReadOnly && (
-              <label htmlFor="avatar">
+              <label htmlFor="userAvatar">
                 <Button
                   component="label"
                   size="small"
@@ -154,9 +155,10 @@ export default function Personal() {
                   <FormControl
                     element={<Input type="file" accept="image/*" />}
                     control={control}
-                    name="avatar"
-                    id="avatar"
-                    onChange={handleImageUpload}
+                    name="userAvatar"
+                    id="userAvatar"
+                    label="Ảnh đại diện"
+                    onChange={handleUploadAvatar}
                   />
                   Upload
                 </Button>
@@ -175,15 +177,16 @@ export default function Personal() {
                   <FormControl
                     element={<Input type="file" accept="image/*" />}
                     control={control}
-                    name="avatar"
-                    id="avatar"
-                    onChange={handleImageUpload}
+                    name="userAvatar"
+                    id="userAvatar"
+                    label="Ảnh đại diện"
+                    onChange={handleUploadAvatar}
                   />
                   Upload
                 </Button>
                 <Button
                   component="label"
-                  onClick={handleImageDelete}
+                  onClick={handleDeleteAvatar}
                   size="small"
                   startIcon={<DoNotDisturbOnOutlinedIcon />}
                   variant="text"
@@ -280,7 +283,7 @@ export default function Personal() {
             <Grid item xs={12} sm={6}>
               <FormControl
                 element={<SelectInput />}
-                options={DEGREE_OPTION}
+                options={ISMARRIED_OPTION}
                 control={control}
                 errors={errors}
                 fullWidth

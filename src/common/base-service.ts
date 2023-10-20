@@ -27,6 +27,12 @@ class BaseService {
       .put(`${this.endPoint}/${id}`, data)
       .then((res) => res.data);
   };
+  
+  updateAtEndPoint = (data = {}) => {
+    return httpRequest
+      .put(`${this.endPoint}`, data)
+      .then((res) => res.data);
+  };
 
   remove = (id) => {
     return httpRequest.delete(`${this.endPoint}/${id}`).then((res) => res.data);

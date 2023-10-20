@@ -3,8 +3,10 @@ import {
   Degree,
   EmploymentType,
   Experience,
-  PositionLevel
+  PositionLevel,
 } from 'src/constants/enum';
+import professions from './professions';
+import provinces from './provinces';
 import { Color } from 'src/types/mui-type';
 
 type ApprovalStatusOption = {
@@ -30,11 +32,11 @@ export const GENDER = [
 
 export const ISMARRIED = [
   {
-    value: 1,
+    value: true,
     label: 'Đã kết hôn'
   },
   {
-    value: 0,
+    value: false,
     label: 'Độc thân'
   }
 ];
@@ -83,3 +85,19 @@ export const POSITION_LEVEL = Object.keys(PositionLevel).map((key) => ({
   value: PositionLevel[key],
   label: PositionLevel[key]
 }));
+
+export const ISMARRIED_OPTION = ISMARRIED.map((item) => ({
+  value: item.label,
+  label: item.label
+}));
+
+export const PROFESSION = professions.map((item) => ({
+  value: item.code,
+  label: item.name
+}));
+
+export const WORK_AT = provinces.map((item) => ({
+  value: item.code,
+  label: item.name
+}));
+

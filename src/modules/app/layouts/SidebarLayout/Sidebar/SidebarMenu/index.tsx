@@ -136,9 +136,9 @@ const SubMenuWrapper = styled(Box)(
                 background: ${theme.colors.alpha.trueWhite[100]};
                 opacity: 0;
                 transition: ${theme.transitions.create([
-                  'transform',
-                  'opacity'
-                ])};
+    'transform',
+    'opacity'
+  ])};
                 width: 6px;
                 height: 6px;
                 transform: scale(0);
@@ -257,7 +257,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to={`/${rolePath}/profile/details`}
+                      to={`/${rolePath}/online-profile`}
                       startIcon={<ReceiptLongIcon />}
                     >
                       Hồ sơ của bạn
@@ -347,7 +347,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={`/${rolePath}/profile/details`}
+                  to={`/${rolePath}/profile`}
                   startIcon={<AccountCircleTwoToneIcon />}
                 >
                   Hồ sơ cá nhân

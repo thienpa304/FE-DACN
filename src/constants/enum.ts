@@ -19,6 +19,11 @@ export enum Sex {
   Other = 'Khác'
 }
 
+// export enum MaritalStatus {
+//   Married = 'Đã kết hôn',
+//   Single = 'Độc thân',
+// }
+
 export enum EmploymentType {
   FulltimePermanent = 'Toàn thời gian cố định',
   FulltimeTemporary = 'Toàn thời gian tạm thời',

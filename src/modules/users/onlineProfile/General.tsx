@@ -5,302 +5,297 @@ import {
     Grid,
     Typography,
     Container,
-    styled,
     Divider,
-    Avatar
 } from '@mui/material';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
-import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
-import useMutateUserData from '../hooks/useMutateUserHook';
+import LinearProgress from '@mui/material/LinearProgress';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
-import DatePicker from 'src/components/DatePicker';
 import TextField from 'src/components/TextField';
+import Autocomplete from 'src/components/Autocomplete';
 import { useForm } from 'react-hook-form';
-import dayjs from 'dayjs';
-import { User } from '../model';
+import { OnlineProfile, User } from '../model';
 import { useApp } from 'src/modules/app/hooks';
-import { DEGREE, GENDER, ISMARRIED } from 'src/constants/option';
-import { UploadAvatar, GetAvatar, RemoveAvatar } from 'src/common/upload-image';
-
-const Input = styled('input')({
-    display: 'none'
-});
+import useMutateUserData from '../hooks/useMutateUserHook';
+import useMutateOnlineProfileById from '../hooks/useUpdateOnlineProfile';
+import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
+import {
+    EXPERIENCE,
+    POSITION_LEVEL,
+    WORKING_FORM,
+    DEGREE,
+    PROFESSION,
+    WORK_AT
+} from 'src/constants/option';
 
 export default function General() {
-    const { user } = useApp();
-    const [isReadOnly, setIsReadOnly] = useState(true);
-    const [avatar, setAvatar] = useState(null);
-    const [storageAvatar, setStorageAvatar] = useState(null);
-    const [uploadFile, setUploadFile] = useState(null);
+    const { onlineProfile, isLoading } = useQueryOnlineProfile();
     const [loading, setLoading] = useState(false);
-    const { onSaveData } = useMutateUserData('Profile');
+    const [selectedId, setSelectedId] = useState(null);
+    const [isReadOnly, setIsReadOnly] = useState(true);
+    const [professionOptions, setProfessionOptions] = useState([]);
+    const [workAddressOptions, setWorkAddressOptions] = useState([]);
+    const { onSaveData } = useMutateUserData('General');
+    const { onUpdateData } = useMutateOnlineProfileById();
 
     const handleEdit = () => setIsReadOnly(false);
 
-    const handleImageGet = async () => {
-        const urlAvatar = await GetAvatar(user);
-        setStorageAvatar(urlAvatar);
-        setAvatar(urlAvatar);
-    };
-
-    const handleImageUpload = (e) => {
-        const image = e.target.files[0];
-        if (image) {
-            const imageUrl = URL.createObjectURL(image);
-            setAvatar(imageUrl);
-            setUploadFile(image);
-        }
-    };
-
-    const handleImageDelete = () => setAvatar(null);
-
-    const DEGREE_OPTION = DEGREE.map((item) => ({
-        value: item.label,
-        label: item.label
-    }));
-
     const defaultUserValues = {
-        ...user,
-        dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
-            ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
-            : null,
-        sex: GENDER.find((item) => item.label === user.sex)?.value
-    };
+        ...onlineProfile,
+    }
 
     const {
         control,
         reset,
         handleSubmit,
         formState: { errors }
-    } = useForm<User>({
+    } = useForm<OnlineProfile>({
         defaultValues: defaultUserValues
     });
 
     useEffect(() => {
+        setSelectedId(onlineProfile?.userId || null);
+
+        const professionList = onlineProfile?.profession?.split(', ').map((label) =>
+            PROFESSION.find((option) => option.label === label)
+        )
+        const workAddressList = onlineProfile?.workAddress?.split(', ').map((label) =>
+            WORK_AT.find((option) => option.label === label)
+        )
+        setProfessionOptions(professionList || []);
+        setWorkAddressOptions(workAddressList || []);
+
         reset(defaultUserValues);
-        handleImageGet();
-    }, [user]);
+    }, [onlineProfile]);
 
     const handleSaveProfile = async (data) => {
         setLoading(true);
-        if (uploadFile) await UploadAvatar(uploadFile, user);
-        let avatarUrl = null;
-        if (!avatar) await RemoveAvatar(user);
-        else avatarUrl = await GetAvatar(user);
-        const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
-        const newData = { ...data, dob: formattedDob, avatar: avatarUrl };
-        onSaveData(newData);
+        debugger;
+        const professionString = data.profession;
+        const workAddressString = data.workAddress;
+        const newData = { ...data, profession: professionString, workAddress: workAddressString }
+        debugger;
+        if (selectedId) onUpdateData(newData)
+        else onSaveData(newData);
         setLoading(false);
         setIsReadOnly(true);
     };
 
     const handleCancel = () => {
         reset(defaultUserValues);
-        setAvatar(storageAvatar);
         setIsReadOnly(true);
     };
 
     return (
-        <Container>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Box display="flex">
-                    <Typography fontWeight={700} fontSize={22} lineHeight={3}>
-                        Thông tin chung
-                    </Typography>
-                </Box>
-                {isReadOnly && (
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleEdit}
-                        startIcon={<AutoFixHighOutlinedIcon fontSize="large" />}
-                        sx={{ borderRadius: 5 }}
-                    >
-                        <Typography textTransform="none">Chỉnh sửa</Typography>
-                    </Button>
-                )}
-            </Box>
-            <Divider />
-            <Grid sx={{ mt: 1 }} py={2} >
-                <Grid container mb={4} spacing={3}>
-                    <Grid item xs={12}>
-                        <FormControl
-                            element={<TextField />}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="jobTitle"
-                            label="Vị trí mong muốn"
-                            name="jobTitle"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl
-                            element={<TextField />}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="profession"
-                            label="Nghề nghiệp"
-                            name="profession"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<SelectInput />}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="curentPosition"
-                            label="Cấp bậc hiện tại"
-                            name="curentPosition"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<SelectInput />}
-                            options={DEGREE_OPTION}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="desiredPosition"
-                            label="Cấp bậc mong muốn"
-                            name="desiredPosition"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<SelectInput />}
-                            options={DEGREE_OPTION}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="desiredSalary"
-                            label="Mức lương mong muốn"
-                            name="desiredSalary"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<SelectInput />}
-                            options={DEGREE_OPTION}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="degree"
-                            label="Trình độ học vấn"
-                            name="degree"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<SelectInput />}
-                            options={GENDER}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="experience"
-                            label="Số năm kinh nghiệm"
-                            name="experience"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<SelectInput />}
-                            options={DEGREE_OPTION}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="workAddress"
-                            label="Địa chỉ làm việc"
-                            name="workAddress"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<SelectInput />}
-                            options={DEGREE_OPTION}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="employmentType"
-                            label="Hình thức làm việc"
-                            name="employmentType"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl
-                            element={<TextField />}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="careerGoal"
-                            label="Mục tiêu nghề nghiệp"
-                            name="careerGoal"
-                            required
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl
-                            element={<TextField />}
-                            control={control}
-                            errors={errors}
-                            fullWidth
-                            id="skill"
-                            label="Kĩ năng"
-                            name="skill"
-                            disabled={isReadOnly}
-                        />
-                    </Grid>
-                </Grid>
-                {!isReadOnly && (
-                    <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
-                        {loading ? (
-                            <CircularProgress size={20} />
-                        ) : (
-                            <>
-                                <Button
-                                    color="success"
-                                    onClick={handleSubmit(handleSaveProfile)}
-                                    variant="contained"
-                                    sx={{ width: 120 }}
-                                >
-                                    Xác nhận
-                                </Button>
-                                <Button
-                                    onClick={handleCancel}
-                                    variant="outlined"
-                                    sx={{ width: 120 }}
-                                >
-                                    Hủy
-                                </Button>
-                            </>
+        <>
+            {isLoading ?
+                <Box sx={{ width: '100%' }}>
+                    <LinearProgress />
+                </Box> :
+                <Container>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Box display="flex">
+                            <Typography fontWeight={700} fontSize={22} lineHeight={3}>
+                                Thông tin chung
+                            </Typography>
+                        </Box>
+                        {isReadOnly && (
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={handleEdit}
+                                startIcon={<AutoFixHighOutlinedIcon fontSize="large" />}
+                                sx={{ borderRadius: 5 }}
+                            >
+                                <Typography textTransform="none">Chỉnh sửa</Typography>
+                            </Button>
                         )}
                     </Box>
-                )}
-            </Grid>
-        </Container>
+                    <Divider />
+                    <Grid sx={{ mt: 1 }} py={2} >
+                        <Grid container mb={4} spacing={3}>
+                            <Grid item xs={12}>
+                                <FormControl
+                                    element={<TextField />}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="jobTitle"
+                                    label="Vị trí mong muốn"
+                                    name="jobTitle"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl
+                                    element={<Autocomplete />}
+                                    options={PROFESSION}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="profession"
+                                    label="Nghề nghiệp"
+                                    name="profession"
+                                    defaultValue={professionOptions}
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<SelectInput />}
+                                    options={POSITION_LEVEL}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="currentPosition"
+                                    label="Cấp bậc hiện tại"
+                                    name="currentPosition"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<SelectInput />}
+                                    options={POSITION_LEVEL}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="desiredPosition"
+                                    label="Cấp bậc mong muốn"
+                                    name="desiredPosition"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<TextField />}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="desiredSalary"
+                                    label="Mức lương mong muốn"
+                                    name="desiredSalary"
+                                    pattern='integer'
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<SelectInput />}
+                                    options={DEGREE}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="degree"
+                                    label="Trình độ học vấn"
+                                    name="degree"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<SelectInput />}
+                                    options={EXPERIENCE}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="experience"
+                                    label="Số năm kinh nghiệm"
+                                    name="experience"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<Autocomplete />}
+                                    options={WORK_AT}
+                                    control={control}
+                                    errors={errors}
+                                    defaultValue={workAddressOptions}
+                                    fullWidth
+                                    id="workAddress"
+                                    label="Địa chỉ làm việc"
+                                    name="workAddress"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<SelectInput />}
+                                    options={WORKING_FORM}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="employmentType"
+                                    label="Hình thức làm việc"
+                                    name="employmentType"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl
+                                    element={<TextField />}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="careerGoal"
+                                    label="Mục tiêu nghề nghiệp"
+                                    name="careerGoal"
+                                    required
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl
+                                    element={<TextField />}
+                                    control={control}
+                                    errors={errors}
+                                    fullWidth
+                                    id="skills"
+                                    label="Kĩ năng"
+                                    name="skills"
+                                    disabled={isReadOnly}
+                                />
+                            </Grid>
+                        </Grid>
+                        {!isReadOnly && (
+                            <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
+                                {loading ? (
+                                    <CircularProgress size={20} />
+                                ) : (
+                                    <>
+                                        <Button
+                                            color="success"
+                                            onClick={handleSubmit(handleSaveProfile)}
+                                            variant="contained"
+                                            sx={{ width: 120 }}
+                                        >
+                                            Xác nhận
+                                        </Button>
+                                        <Button
+                                            onClick={handleCancel}
+                                            variant="outlined"
+                                            sx={{ width: 120 }}
+                                        >
+                                            Hủy
+                                        </Button>
+                                    </>
+                                )}
+                            </Box>
+                        )}
+                    </Grid>
+                </Container>
+            }
+        </>
     );
 }

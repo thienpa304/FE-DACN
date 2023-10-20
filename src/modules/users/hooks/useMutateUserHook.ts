@@ -3,13 +3,15 @@ import { useMutation } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { User } from '../model';
-import { SetProfile, SetCompany } from '../userService';
+import { SetProfile, SetCompany, OnlineProfileService } from '../userService';
 
 const useMutateUserData = (obj) => {
   const { toast } = useApp();
-
-  const mutationFunction =
-    obj === 'Company' ? SetCompany.create : SetProfile.create;
+  
+  let mutationFunction;
+  {if (obj === 'Company') mutationFunction = SetCompany.create;
+  else if (obj === 'Profile') mutationFunction = SetProfile.create;
+  else mutationFunction = OnlineProfileService.create}
 
   const { mutate: onSaveData, isLoading } = useMutation<
     ResponseData<User>,

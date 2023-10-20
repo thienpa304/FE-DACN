@@ -4,7 +4,7 @@ import DatePicker from 'src/components/DatePicker';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
 import { User } from '../../model';
-import { DEGREE, GENDER, ISMARRIED } from 'src/constants/option';
+import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
 import dayjs from 'dayjs';
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import TextField from 'src/components/TextField';
@@ -12,14 +12,7 @@ import TextField from 'src/components/TextField';
 export function UserForm(props) {
   const { close, user } = props;
   const { onSaveData } = useMutateUserData('Profile');
-  const isEmployee = user.role === 'EMPLOYEE';
 
-  // const degree = DEGREE.find((item) => item.label === user.degree);
-  // const mappedDegree = degree ? degree.value : 'other';
-  const DEGREE_OPTION = DEGREE.map((item) => ({
-    value: item.label,
-    label: item.label
-  }));
   const {
     control,
     handleSubmit,
@@ -30,14 +23,15 @@ export function UserForm(props) {
       dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
         ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
         : null,
-      sex: GENDER.find((item) => item.label === user.sex)?.value
-      // degree: mappedDegree
+      sex: GENDER.find((item) => item.label === user.sex)?.value,
+      isMarried: ISMARRIED.find((item) => item.value === user.isMarried)?.label
     }
   });
 
   const handleSaveProfile = async (data) => {
     const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
-    const newData = { ...data, dob: formattedDob };
+    const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
+    const newData = { ...data, dob: formattedDob, isMarried: isMarried };
     onSaveData(newData);
     setTimeout(() => {
       window.location.reload();
@@ -121,14 +115,13 @@ export function UserForm(props) {
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<SelectInput />}
-              options={DEGREE_OPTION}
+              options={ISMARRIED_OPTION}
               control={control}
               errors={errors}
               fullWidth
-              show={isEmployee}
-              id="degree"
-              label="Học vấn"
-              name="degree"
+              id="isMarried"
+              label="Tình trạng hôn nhân"
+              name="isMarried"
             />
           </Grid>
         </Grid>

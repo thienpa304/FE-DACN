@@ -13,7 +13,7 @@ export enum Role {
 }
 
 export type User = {
-  userId: string;
+  userId: number;
   email: string;
   role: Role;
   dob: string | Date;
@@ -36,7 +36,7 @@ export type Company = {
 export type Employee = {
   userId: number;
 
-  isMarried: boolean;
+  isMarried: boolean | string;
 
   user: User;
 
