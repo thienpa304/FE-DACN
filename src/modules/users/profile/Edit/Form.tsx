@@ -24,7 +24,8 @@ export function UserForm(props) {
         ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
         : null,
       sex: GENDER.find((item) => item.label === user.sex)?.value,
-      isMarried: ISMARRIED.find((item) => item.value === user.isMarried)?.label
+      // isMarried: ISMARRIED.find((item) => item.value === user.isMarried)?.label
+      isMarried: user.isMarried === true ? 'Đã kết hôn' : 'Độc thân'
     }
   });
 

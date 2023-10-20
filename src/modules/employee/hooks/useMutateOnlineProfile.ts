@@ -2,8 +2,8 @@ import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { OnlineProfileService } from '../userService';
-import { OnlineProfile } from '../model';
+import { OnlineProfileService } from '../employeeService';
+import { OnlineProfile } from '../../users/model';
 
 const useUpdateOnlineProfile = () => {
   const { toast } = useApp();

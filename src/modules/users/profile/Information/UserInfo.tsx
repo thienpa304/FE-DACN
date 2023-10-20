@@ -4,9 +4,8 @@ import { ISMARRIED } from 'src/constants/option';
 import InfoTab from './InfoTab';
 
 export default function UserInfo() {
-  const { user, isEmployee } = useApp();
-  debugger;
-  const isMarried = ISMARRIED.find((item) => item.value === user.isMarried)?.label
+  const { user } = useApp();
+  const isMarried = user.isMarried === true ? 'Đã kết hôn' : 'Độc thân'
   const UserData = [
     { label: 'Họ và tên', value: user.name },
     { label: 'Giới tính', value: user.sex },

@@ -15,10 +15,10 @@ import SelectInput from 'src/components/SelectInput';
 import TextField from 'src/components/TextField';
 import Autocomplete from 'src/components/Autocomplete';
 import { useForm } from 'react-hook-form';
-import { OnlineProfile, User } from '../model';
+import { OnlineProfile, User } from '../../users/model';
 import { useApp } from 'src/modules/app/hooks';
-import useMutateUserData from '../hooks/useMutateUserHook';
-import useMutateOnlineProfileById from '../hooks/useUpdateOnlineProfile';
+import useMutateUserData from '../../users/hooks/useMutateUserHook';
+import useUpdateOnlineProfile from '../hooks/useMutateOnlineProfile';
 import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
 import {
     EXPERIENCE,
@@ -37,7 +37,7 @@ export default function General() {
     const [professionOptions, setProfessionOptions] = useState([]);
     const [workAddressOptions, setWorkAddressOptions] = useState([]);
     const { onSaveData } = useMutateUserData('General');
-    const { onUpdateData } = useMutateOnlineProfileById();
+    const { onUpdateData } = useUpdateOnlineProfile();
 
     const handleEdit = () => setIsReadOnly(false);
 
@@ -72,8 +72,18 @@ export default function General() {
     const handleSaveProfile = async (data) => {
         setLoading(true);
         debugger;
-        const professionString = data.profession;
-        const workAddressString = data.workAddress;
+        let professionString: string;
+        if (typeof data.profession === 'string') {
+            professionString = data.profession;
+        } else if (Array.isArray(data.profession)) {
+            professionString = data.profession.map(option => option.label).join(', ');
+        }
+        let workAddressString: string;
+        if (typeof data.workAddress === 'string') {
+            workAddressString = data.workAddress;
+        } else if (Array.isArray(data.workAddress)) {
+            workAddressString = data.workAddress.map(option => option.label).join(', ');
+        }
         const newData = { ...data, profession: professionString, workAddress: workAddressString }
         debugger;
         if (selectedId) onUpdateData(newData)

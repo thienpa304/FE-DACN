@@ -19,33 +19,59 @@ import DatePicker from 'src/components/DatePicker';
 import TextField from 'src/components/TextField';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
-import { User } from '../model';
+import { User } from '../../users/model';
 import { useApp } from 'src/modules/app/hooks';
-import useProfileHook from '../hooks/useUserHook';
-import useMutateUserData from '../hooks/useMutateUserHook';
+import useMutateUserData from '../../users/hooks/useMutateUserHook';
 import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
-import { UploadAvatarByUser, GetAvatarByUser, RemoveAvatarByUser, GetAvatarToImage } from 'src/common/upload-image';
+import { UploadAvatarByUser, GetAvatarByUser, RemoveAvatarByUser } from 'src/common/upload-image';
 
 const Input = styled('input')({
   display: 'none'
 });
 
 export default function Personal() {
-  // const user = profile;
   const { user } = useApp();
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [avatar, setAvatar] = useState(null);
-  const [userAvatar, setUserAvatar] = useState(null);
   const [storageAvatar, setStorageAvatar] = useState(null);
   const [uploadFile, setUploadFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const { onSaveData } = useMutateUserData('Profile');
 
+  useEffect(() => {
+    reset(defaultUserValues);
+    handleGetAvatar();
+  }, [user]);
+
   const handleEdit = () => setIsReadOnly(false);
 
+  const handleSaveProfile = async (data) => {
+    setLoading(true);
+    if (uploadFile) await UploadAvatarByUser(uploadFile, user);
+    let avatarUrl = "";
+    if (!avatar) await RemoveAvatarByUser(user);
+    else avatarUrl = await GetAvatarByUser(user);
+
+    const avatarString = avatarUrl !== "" ? avatarUrl : "";
+    const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
+    const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
+    const newData = { ...data, dob: formattedDob, avatar: avatarString, isMarried: isMarried };
+
+    onSaveData(newData);
+    setLoading(false);
+    setIsReadOnly(true);
+  };
+
+  const handleCancel = () => {
+    reset(defaultUserValues);
+    setAvatar(storageAvatar);
+    setIsReadOnly(true);
+  };
+
   const handleGetAvatar = async () => {
-    setStorageAvatar(user.avatar);
-    setAvatar(user.avatar);
+    const avatarUrl = await GetAvatarByUser(user);
+    setStorageAvatar(avatarUrl);
+    setAvatar(avatarUrl);
   };
 
   const handleUploadAvatar = (e) => {
@@ -65,7 +91,7 @@ export default function Personal() {
       ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
       : null,
     sex: GENDER.find((item) => item.label === user.sex)?.value,
-    isMarried: ISMARRIED.find((item) => item.value === user.isMarried)?.label
+    isMarried: user.isMarried === true ? 'Đã kết hôn' : 'Độc thân'
   };
 
   const {
@@ -76,33 +102,6 @@ export default function Personal() {
   } = useForm<User>({
     defaultValues: defaultUserValues
   });
-
-  useEffect(() => {
-    reset(defaultUserValues);
-    handleGetAvatar();
-  }, [user]);
-
-  const handleSaveProfile = async (data) => {
-    setLoading(true);
-    if (uploadFile) await UploadAvatarByUser(uploadFile, user);
-    let avatarUrl = null;
-    if (!avatar) await RemoveAvatarByUser(user);
-    else avatarUrl = await GetAvatarByUser(user);
-    const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
-    const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
-    const newData = { ...data, dob: formattedDob, avatar: avatarUrl, isMarried: isMarried };
-
-
-    onSaveData(newData);
-    setLoading(false);
-    setIsReadOnly(true);
-  };
-
-  const handleCancel = () => {
-    reset(defaultUserValues);
-    setAvatar(storageAvatar);
-    setIsReadOnly(true);
-  };
 
   return (
     <Container>

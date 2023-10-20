@@ -2,15 +2,13 @@ import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { User } from '../model';
-import { SetProfile, SetCompany } from '../userService';
+import { User } from 'src/modules/users/model';
+import { OnlineProfileService } from '../employeeService';
 
 const useMutateUserData = (obj) => {
   const { toast } = useApp();
   
-  let mutationFunction;
-  {if (obj === 'Company') mutationFunction = SetCompany.create;
-  else if (obj === 'Profile') mutationFunction = SetProfile.create}
+    const mutationFunction = OnlineProfileService.create;
 
   const { mutate: onSaveData, isLoading } = useMutation<
     ResponseData<User>,

@@ -31,7 +31,7 @@ function Autocomplete(props) {
             value={selectedOptions}
             disabled={disabled}
             onChange={handleSelectChange}
-            getOptionLabel={(option) => option.label}
+            getOptionLabel={(option) => option?.label}
             renderOption={(props, option, { selected }) => (
                 <li {...props}>
                     <Checkbox

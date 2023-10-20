@@ -19,22 +19,11 @@ export async function GetAvatarByUser(user) {
 
 export async function RemoveAvatarByUser(user) {
   const imageRef = ref(storage, `users/uid-${user.userId}/avatar.png`);
-  return deleteObject(imageRef);
-}
-
-export async function GetAvatarToImage(user) {
-  const photoURL = await GetAvatarByUser(user); // Lấy URL ảnh từ Firebase
-
-  const response = await fetch(photoURL);
-  const blob = await response.blob();
-
-  const imageFile = new File([blob], 'avatar.png', { type: 'image/png' });
-
-  // const updatedUser = {
-  //   ...user,
-  //   avatar: imageFile,
-  // };
-
-  // return updatedUser;
-  return imageFile;
+  try {
+    await getDownloadURL(imageRef);
+    await deleteObject(imageRef);
+    console.log('Đã xóa tệp ảnh thành công.');
+  } catch (error) {
+    console.error('Không thể xóa tệp ảnh. Lý do: ', error);
+  }
 }

@@ -34,9 +34,14 @@ export default function Cover() {
   const { onSaveData } = useMutateUserData('Profile');
 
   useEffect(() => {
-    setAvatar(user.avatar);
-    setSave(true);
+    handleGetAvatar();
   }, [user]);
+
+  const handleGetAvatar = async () => {
+    const avatarUrl = await GetAvatarByUser(user);
+    setAvatar(avatarUrl);
+    setSave(true);
+  };
 
   const handleUploadAvatar = (e) => {
     const image = e.target.files[0];
@@ -61,7 +66,7 @@ export default function Cover() {
   const handleDeleteAvatar = async (data) => {
     setAvatar(null);
     await RemoveAvatarByUser(user);
-    const newData = { ...data, avatar: "" };
+    const newData = { ...data, avatar: null };
     onSaveData(newData);
   }
 

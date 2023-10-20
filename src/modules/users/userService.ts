@@ -4,4 +4,3 @@ export const GetProfile = new BaseService('get-profile');
 export const SetProfile = new BaseService('edit-profile');
 export const GetCompany = new BaseService('get-information-company');
 export const SetCompany = new BaseService('edit-information-company');
-export const OnlineProfileService = new BaseService('employee/online-profile');

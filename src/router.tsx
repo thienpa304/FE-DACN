@@ -55,7 +55,7 @@ const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
 const OnlineProfile = Loader(
-  lazy(() => import('src/modules/users/onlineProfile'))
+  lazy(() => import('src/modules/employee/onlineProfile'))
 );
 
 // Status

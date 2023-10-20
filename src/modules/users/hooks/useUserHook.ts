@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Role, User } from 'src/modules/users/model';
 import { getAccessToken } from 'src/utils/localStorage';
-import { GetCompany, GetProfile, OnlineProfileService } from '../userService';
+import { GetCompany, GetProfile } from '../userService';
 
 const useProfileHook = () => {
   const [data, setData] = useState<Partial<User>>();
