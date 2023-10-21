@@ -17,7 +17,7 @@ import Autocomplete from 'src/components/Autocomplete';
 import { useForm } from 'react-hook-form';
 import { OnlineProfile, User } from '../../users/model';
 import { useApp } from 'src/modules/app/hooks';
-import useMutateUserData from '../../users/hooks/useMutateUserHook';
+import useMutateUserData from '../hooks/useMutateEmployee';
 import useUpdateOnlineProfile from '../hooks/useMutateOnlineProfile';
 import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
 import {
@@ -30,13 +30,13 @@ import {
 } from 'src/constants/option';
 
 export default function General() {
-  const { onlineProfile, isLoading } = useQueryOnlineProfile();
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [professionOptions, setProfessionOptions] = useState([]);
   const [workAddressOptions, setWorkAddressOptions] = useState([]);
-  const { onSaveData } = useMutateUserData('General');
+  const { onlineProfile, isLoading } = useQueryOnlineProfile();
+  const { onSaveData } = useMutateUserData();
   const { onUpdateData } = useUpdateOnlineProfile();
 
   const handleEdit = () => setIsReadOnly(false);
@@ -112,14 +112,14 @@ export default function General() {
           <LinearProgress />
         </Box>
       ) : (
-        <Container>
+        <Container id="general">
           <Box
             display="flex"
             justifyContent="space-between"
             alignItems="center"
           >
             <Box display="flex">
-              <Typography fontWeight={700} fontSize={22} lineHeight={3}>
+              <Typography fontWeight={700} fontSize={20} lineHeight={3}>
                 Thông tin chung
               </Typography>
             </Box>
