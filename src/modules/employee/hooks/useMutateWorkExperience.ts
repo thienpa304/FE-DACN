@@ -2,19 +2,16 @@ import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { User } from 'src/modules/users/model';
-import { OnlineProfileService } from '../employeeService';
+import { WorkExperienceService } from '../employeeService';
+import { OnlineProfile } from '../../users/model';
 
-const useMutateUserData = () => {
+const useUpdateOnlineProfile = () => {
   const { toast } = useApp();
-
-  const mutationFunction = OnlineProfileService.create;
-
-  const { mutate: onSaveData, isLoading } = useMutation<
-    ResponseData<User>,
-    AxiosError<ResponseData<User>>,
-    User
-  >(mutationFunction, {
+  const { mutate: onUpdateData, isLoading } = useMutation<
+    ResponseData<OnlineProfile>,
+    AxiosError<ResponseData<OnlineProfile>>,
+    [id: string, data: OnlineProfile]
+  >((data) => WorkExperienceService.updateAtEndPoint(data), {
     onSuccess: (res) => {
       if (res.status === 200) {
         toast.success({ massage: res.message });
@@ -26,10 +23,11 @@ const useMutateUserData = () => {
       toast.error({ massage: error.response.data.message });
     }
   });
+
   return {
-    onSaveData,
+    onUpdateData,
     isLoading
   };
 };
 
-export default useMutateUserData;
+export default useUpdateOnlineProfile;

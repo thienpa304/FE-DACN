@@ -79,4 +79,15 @@ export type OnlineProfile = {
   employee: Employee;
 };
 
+export type WorkExperience = {
+  id: number;
+  jobTitle: string;
+  companyName: string;
+  startDate: Date;
+  endDate: Date;
+  isDoing: boolean;
+  jobDescription: string;
+  onlineProfileUserId: number;
+};
+
 export type AttachedDocument = {};

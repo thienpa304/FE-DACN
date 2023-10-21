@@ -23,6 +23,7 @@ import { User } from '../../users/model';
 import { useApp } from 'src/modules/app/hooks';
 import useMutateUserData from '../../users/hooks/useMutateUserHook';
 import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
+import useProfileHook from '../../users/hooks/useUserHook';
 import {
   UploadAvatarByUser,
   GetAvatarByUser,
@@ -94,6 +95,7 @@ export default function Personal() {
 
   const handleDeleteAvatar = () => setAvatar(null);
 
+  debugger;
   const defaultUserValues = {
     ...user,
     dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
@@ -113,10 +115,10 @@ export default function Personal() {
   });
 
   return (
-    <Container>
+    <Container id="personal">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex">
-          <Typography fontWeight={700} fontSize={22} lineHeight={3}>
+          <Typography fontWeight={700} fontSize={20} lineHeight={3}>
             Thông tin cá nhân
           </Typography>
         </Box>
@@ -134,7 +136,7 @@ export default function Personal() {
       </Box>
       <Divider />
       <Grid container sx={{ mt: 1 }} py={2}>
-        <Grid item xs={2} pr={2}>
+        <Grid item xs={3} pr={2}>
           <Box
             display="flex"
             flexDirection="column"
@@ -146,8 +148,8 @@ export default function Personal() {
               src={avatar}
               sx={{
                 borderRadius: 2,
-                width: '85%',
-                height: 150,
+                width: '75%',
+                height: 160,
                 bgcolor: '#a0b9cfc2'
               }}
             />
@@ -206,7 +208,7 @@ export default function Personal() {
             )}
           </Box>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={9}>
           <Grid container mb={4} spacing={3}>
             <Grid item xs={12} sm={6}>
               <FormControl
@@ -235,7 +237,7 @@ export default function Personal() {
                 disabled={isReadOnly}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <FormControl
                 element={<TextField />}
                 control={control}
@@ -245,19 +247,6 @@ export default function Personal() {
                 label="Số điện thoại"
                 name="phone"
                 pattern="phone"
-                required
-                disabled={isReadOnly}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="address"
-                label="Địa chỉ"
-                name="address"
                 required
                 disabled={isReadOnly}
               />
@@ -298,6 +287,19 @@ export default function Personal() {
                 id="isMarried"
                 label="Tình trạng hôn nhân"
                 name="isMarried"
+                disabled={isReadOnly}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl
+                element={<TextField />}
+                control={control}
+                errors={errors}
+                fullWidth
+                id="address"
+                label="Địa chỉ"
+                name="address"
+                required
                 disabled={isReadOnly}
               />
             </Grid>
