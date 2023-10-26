@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -23,12 +23,13 @@ import { User } from '../../users/model';
 import { useApp } from 'src/modules/app/hooks';
 import useMutateUserData from '../../users/hooks/useMutateUserHook';
 import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
-import useProfileHook from '../../users/hooks/useUserHook';
 import {
-  UploadAvatarByUser,
-  GetAvatarByUser,
-  RemoveAvatarByUser
-} from 'src/common/upload-image';
+  GetFileByUserId,
+  UploadFileByUserId,
+  RemoveFileByUserId,
+  DocumentType
+} from 'src/common/firebaseService';
+import { avatarFormat } from 'src/constants/uploadFileRule';
 
 const Input = styled('input')({
   display: 'none'
@@ -41,7 +42,10 @@ export default function Personal() {
   const [storageAvatar, setStorageAvatar] = useState(null);
   const [uploadFile, setUploadFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { onSaveData } = useMutateUserData('Profile');
+  const [avatarError, setAvatarError] = useState(false);
+  const { onSaveData } = useMutateUserData();
+  const { acceptTypes, acceptSize } = avatarFormat;
+  const { avatarType } = DocumentType;
 
   useEffect(() => {
     reset(defaultUserValues);
@@ -52,10 +56,14 @@ export default function Personal() {
 
   const handleSaveProfile = async (data) => {
     setLoading(true);
-    if (uploadFile) await UploadAvatarByUser(uploadFile, user);
+    if (uploadFile)
+      await UploadFileByUserId(user.userId, uploadFile, avatarType);
     let avatarUrl = '';
-    if (!avatar) await RemoveAvatarByUser(user);
-    else avatarUrl = await GetAvatarByUser(user);
+    if (!avatar) await RemoveFileByUserId(user.userId, avatarType);
+    else
+      avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
+        () => ''
+      );
 
     const avatarString = avatarUrl !== '' ? avatarUrl : '';
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
@@ -79,23 +87,31 @@ export default function Personal() {
   };
 
   const handleGetAvatar = async () => {
-    const avatarUrl = await GetAvatarByUser(user);
+    const avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
+      () => null
+    );
     setStorageAvatar(avatarUrl);
     setAvatar(avatarUrl);
   };
 
   const handleUploadAvatar = (e) => {
+    setAvatarError(false);
     const image = e.target.files[0];
-    if (image) {
-      const imageUrl = URL.createObjectURL(image);
-      setAvatar(imageUrl);
-      setUploadFile(image);
+    if (!image) return;
+    if (!acceptTypes.includes(image.type) || image.size > acceptSize) {
+      setAvatarError(true);
+      return;
     }
+    const imageUrl = URL.createObjectURL(image);
+    setAvatar(imageUrl);
+    setUploadFile(image);
   };
 
-  const handleDeleteAvatar = () => setAvatar(null);
+  const handleDeleteAvatar = () => {
+    setAvatar(null);
+    setAvatarError(false);
+  };
 
-  debugger;
   const defaultUserValues = {
     ...user,
     dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
@@ -118,7 +134,7 @@ export default function Personal() {
     <Container id="personal">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex">
-          <Typography fontWeight={700} fontSize={20} lineHeight={3}>
+          <Typography fontWeight={700} fontSize={21} lineHeight={3}>
             Thông tin cá nhân
           </Typography>
         </Box>
@@ -149,7 +165,7 @@ export default function Personal() {
               sx={{
                 borderRadius: 2,
                 width: '75%',
-                height: 160,
+                height: 180,
                 bgcolor: '#a0b9cfc2'
               }}
             />
@@ -205,6 +221,22 @@ export default function Personal() {
                   Delete
                 </Button>
               </Box>
+            )}
+            {avatarError && (
+              <Typography color="error" fontSize={12}>
+                Định dạng file chỉ có thể là
+                {
+                  <strong>
+                    {acceptTypes.join(', ').replace(/image\//g, '.')}
+                  </strong>
+                }
+                , và dung lượng{' '}
+                {
+                  <strong>
+                    {` <=`} {acceptSize / 1024 / 1024}MB
+                  </strong>
+                }
+              </Typography>
             )}
           </Box>
         </Grid>

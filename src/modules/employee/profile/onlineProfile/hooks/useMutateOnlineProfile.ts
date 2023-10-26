@@ -1,19 +1,24 @@
 import { AxiosError } from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { OnlineProfileService } from '../employeeService';
-import { OnlineProfile } from '../../users/model';
+import { OnlineProfile } from 'src/modules/employee/model/index';
+import { OnlineProfileService } from 'src/modules/employee/profile/employeeService';
 
-const useUpdateOnlineProfile = () => {
+const useMutateOnlineProfile = () => {
+  const queryClient = useQueryClient();
   const { toast } = useApp();
-  const { mutate: onUpdateData, isLoading } = useMutation<
+
+  const mutationFunction = OnlineProfileService.create;
+
+  const { mutate: onSaveData, isLoading } = useMutation<
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>,
-    [id: string, data: OnlineProfile]
-  >((data) => OnlineProfileService.updateAtEndPoint(data), {
+    OnlineProfile
+  >(mutationFunction, {
     onSuccess: (res) => {
       if (res.status === 200) {
+        queryClient.invalidateQueries('get-OnlineProfile');
         toast.success({ massage: res.message });
       } else {
         toast.error({ massage: res.message });
@@ -23,11 +28,10 @@ const useUpdateOnlineProfile = () => {
       toast.error({ massage: error.response.data.message });
     }
   });
-
   return {
-    onUpdateData,
+    onSaveData,
     isLoading
   };
 };
 
-export default useUpdateOnlineProfile;
+export default useMutateOnlineProfile;

@@ -1,22 +1,23 @@
-import { Box } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import Cover from './Information/UserCover';
-import UserInfo from './Information/UserInfo';
+import UserInfo from './InfoUser';
 
-const Container = ({ children }) => (
-  <Box bgcolor="#ffff" sx={{ padding: 2, mb: 4 }}>
-    {children}
-  </Box>
-);
+const CustomBox = styled(Box)(({ theme }) => ({
+  background: '#ffff',
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(4),
+  boxShadow: '2px 2px 6px #aae2f7'
+}));
 
 export default function InfoAccountTab() {
   return (
     <>
-      <Container>
+      <CustomBox>
         <Cover />
-      </Container>
-      <Container>
+      </CustomBox>
+      <CustomBox>
         <UserInfo />
-      </Container>
+      </CustomBox>
     </>
   );
 }

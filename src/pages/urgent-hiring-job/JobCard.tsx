@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -13,8 +14,26 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import { useApp } from 'src/modules/app/hooks';
+import { GetFileByUserId, DocumentType } from 'src/common/firebaseService';
+import { defaultImage } from 'src/constants/uploadFileRule';
 
 function JobCard({ job }) {
+  const { user } = useApp();
+  const [companyAvatar, setCompanyAvatar] = useState('');
+
+  const getAvatar = async () => {
+    const avatar = await GetFileByUserId(
+      user?.userId,
+      DocumentType.companyAvatarType
+    ).catch(() => defaultImage.companyAvatar);
+    setCompanyAvatar(avatar);
+  };
+
+  useEffect(() => {
+    getAvatar();
+  }, [user]);
+
   return (
     <Card sx={{ minHeight: 160, border: 1, borderColor: '#98E4FF' }}>
       <CardHeader
@@ -25,7 +44,7 @@ function JobCard({ job }) {
         <Grid container gap={2}>
           <Grid item xs={2}>
             <Avatar
-              src="https://images.vietnamworks.com/img/company-default-logo.svg"
+              src={companyAvatar}
               variant="rounded"
               sx={{
                 bgcolor: '#a0b9cfc2',

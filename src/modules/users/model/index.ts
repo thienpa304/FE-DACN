@@ -5,6 +5,7 @@ import {
   PositionLevel
 } from 'src/constants/enum';
 import { Application } from 'src/modules/application/model';
+import { OnlineProfile, AttachedDocument } from 'src/modules/employee/model';
 
 export enum Role {
   ADMIN = 'ADMIN',
@@ -35,59 +36,9 @@ export type Company = {
 
 export type Employee = {
   userId: number;
-
   isMarried: boolean | string;
-
   user: User;
-
   online_profile: OnlineProfile;
-
   attached_document: AttachedDocument;
-
   applications: Application[];
 };
-
-export type OnlineProfile = {
-  userId: number;
-
-  jobTitle: string;
-
-  profession: string;
-
-  currentPosition: PositionLevel;
-
-  desiredPosition: PositionLevel;
-
-  desiredSalary: number;
-
-  degree: Degree;
-
-  workAddress: string;
-
-  experience: Experience;
-
-  employmentType: EmploymentType;
-
-  careerGoal: string;
-
-  skills: string;
-
-  view: number;
-
-  isHidden: boolean;
-
-  employee: Employee;
-};
-
-export type WorkExperience = {
-  id: number;
-  jobTitle: string;
-  companyName: string;
-  startDate: Date;
-  endDate: Date;
-  isDoing: boolean;
-  jobDescription: string;
-  onlineProfileUserId: number;
-};
-
-export type AttachedDocument = {};

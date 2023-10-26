@@ -5,20 +5,12 @@ import { Employee } from 'src/modules/users/model';
 export type Application = {
   application_id: number;
   postId: number;
-
   applicationType: ApplicationType;
-
   CV: string;
-
   name: string;
-
   email: string;
-
   phone: string;
-
   status: ApprovalStatus;
-
   employee: Employee;
-
   jobPosting: Job;
 };

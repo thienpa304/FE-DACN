@@ -52,52 +52,50 @@ export default function InfoTab(props) {
     );
 
   return (
-    <Box bgcolor="#ffff" sx={{ padding: 2, mb: 4 }}>
-      <Container>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex">
-            {editIcon}
-            <Box>
-              <Typography fontWeight={700} fontSize={22} lineHeight={3}>
-                {title}
-              </Typography>
-            </Box>
-          </Box>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleEdit}
-            startIcon={<AutoFixHighOutlinedIcon fontSize="large" />}
-            sx={{ borderRadius: 5 }}
-          >
-            <Typography textTransform="none">Chỉnh sửa</Typography>
-          </Button>
-          <Dialog open={open} fullWidth maxWidth="md">
-            <DialogTitle
-              sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}
-            >
+    <Container sx={{ paddingX: 2 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex">
+          {editIcon}
+          <Box>
+            <Typography fontWeight={700} fontSize={22} lineHeight={3}>
               {title}
-            </DialogTitle>
-            <DialogContent>{myForm}</DialogContent>
-          </Dialog>
+            </Typography>
+          </Box>
         </Box>
-        <Box sx={{ mt: 1 }}>
-          {infoData.map((item, index) => (
-            <Grid
-              container
-              key={index}
-              sx={{ borderTop: 1, borderColor: 'grey.300' }}
-            >
-              <InputLabel item xs={6} md={3}>
-                {item.label}
-              </InputLabel>
-              <InputData item xs={6} md={9}>
-                {handleData(item.value)}
-              </InputData>
-            </Grid>
-          ))}
-        </Box>
-      </Container>
-    </Box>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleEdit}
+          startIcon={<AutoFixHighOutlinedIcon fontSize="large" />}
+          sx={{ borderRadius: 5 }}
+        >
+          <Typography textTransform="none">Chỉnh sửa</Typography>
+        </Button>
+        <Dialog open={open} fullWidth maxWidth="md">
+          <DialogTitle
+            sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}
+          >
+            {title}
+          </DialogTitle>
+          <DialogContent>{myForm}</DialogContent>
+        </Dialog>
+      </Box>
+      <Box sx={{ mt: 1 }}>
+        {infoData.map((item, index) => (
+          <Grid
+            container
+            key={index}
+            sx={{ borderTop: 1, borderColor: 'grey.300' }}
+          >
+            <InputLabel item xs={6} md={4}>
+              {item.label}
+            </InputLabel>
+            <InputData item xs={6} md={8}>
+              {handleData(item.value)}
+            </InputData>
+          </Grid>
+        ))}
+      </Box>
+    </Container>
   );
 }

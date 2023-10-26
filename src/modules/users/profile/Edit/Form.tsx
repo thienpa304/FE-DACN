@@ -3,15 +3,16 @@ import { useForm } from 'react-hook-form';
 import DatePicker from 'src/components/DatePicker';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
-import { User } from '../../model';
+import { Company, User } from '../../model';
 import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
 import dayjs from 'dayjs';
 import useMutateUserData from '../../hooks/useMutateUserHook';
+import useMutateCompany from '../../hooks/useMutateCompany';
 import TextField from 'src/components/TextField';
 
 export function UserForm(props) {
   const { close, user } = props;
-  const { onSaveData } = useMutateUserData('Profile');
+  const { onSaveData } = useMutateUserData();
 
   const {
     control,
@@ -24,7 +25,6 @@ export function UserForm(props) {
         ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
         : null,
       sex: GENDER.find((item) => item.label === user.sex)?.value,
-      // isMarried: ISMARRIED.find((item) => item.value === user.isMarried)?.label
       isMarried: user.isMarried === true ? 'Đã kết hôn' : 'Độc thân'
     }
   });
@@ -146,13 +146,13 @@ export function UserForm(props) {
 
 export function CompanyForm(props) {
   const { close, user } = props;
-  const { onSaveData } = useMutateUserData('Company');
+  const { onSaveData } = useMutateCompany();
 
   const {
     control,
     handleSubmit,
     formState: { errors }
-  } = useForm<User>({
+  } = useForm<Company>({
     defaultValues: {
       ...user
     }
@@ -160,9 +160,10 @@ export function CompanyForm(props) {
 
   const handleSaveCompany = (data) => {
     onSaveData(data);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000);
+    close();
   };
   return (
     <Box sx={{ p: 3 }}>

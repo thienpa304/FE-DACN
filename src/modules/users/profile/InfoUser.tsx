@@ -1,7 +1,7 @@
 import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
 import { useApp } from 'src/modules/app/hooks';
 import { ISMARRIED } from 'src/constants/option';
-import InfoTab from './InfoTab';
+import InfoTab from './Information/InfoTab';
 
 export default function UserInfo() {
   const { user } = useApp();

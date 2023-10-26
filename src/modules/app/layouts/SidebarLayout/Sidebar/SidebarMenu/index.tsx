@@ -257,7 +257,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to={`/${rolePath}/online-profile`}
+                      to={`/${rolePath}/recruitment-profile`}
                       startIcon={<ReceiptLongIcon />}
                     >
                       Hồ sơ của bạn

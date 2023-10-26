@@ -16,14 +16,17 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import IconButton from '@mui/material/IconButton';
 import { useApp } from 'src/modules/app/hooks';
 import {
-  UploadAvatarByUser,
-  GetAvatarByUser,
-  RemoveAvatarByUser
-} from 'src/common/upload-image';
+  GetFileByUserId,
+  UploadFileByUserId,
+  RemoveFileByUserId,
+  DocumentType
+} from 'src/common/firebaseService';
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import { useForm } from 'react-hook-form';
 import { User } from '../../model';
 import FormControl from 'src/components/FormControl';
+import { avatarFormat } from 'src/constants/uploadFileRule';
+import UploadButton from 'src/components/UploadButton';
 
 const Input = styled('input')({
   display: 'none'
@@ -31,36 +34,46 @@ const Input = styled('input')({
 
 export default function Cover() {
   const { user } = useApp();
+  const { onSaveData } = useMutateUserData();
+  const { acceptTypes, acceptSize } = avatarFormat;
+  const { avatarType } = DocumentType;
   const [save, setSave] = useState(true);
-  const [avatar, setAvatar] = useState(null);
-  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { onSaveData } = useMutateUserData('Profile');
+  const [userAvatar, setUserAvatar] = useState({
+    avatar: '',
+    error: false,
+    imageFile: null
+  });
 
   useEffect(() => {
     handleGetAvatar();
   }, [user]);
 
   const handleGetAvatar = async () => {
-    const avatarUrl = await GetAvatarByUser(user);
-    setAvatar(avatarUrl);
+    const avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
+      () => ''
+    );
+    setUserAvatar({ ...userAvatar, avatar: avatarUrl });
     setSave(true);
   };
 
   const handleUploadAvatar = (e) => {
     const image = e.target.files[0];
-    if (image) {
-      const imageUrl = URL.createObjectURL(image);
-      setAvatar(imageUrl);
-      setFile(image);
-      setSave(false);
+    if (!image) return;
+    if (!acceptTypes.includes(image.type) || image.size > acceptSize) {
+      setUserAvatar({ ...userAvatar, error: true });
+      return;
     }
+    const imageUrl = URL.createObjectURL(image);
+    setUserAvatar({ avatar: imageUrl, error: false, imageFile: image });
+    setSave(false);
   };
+
   const handleSaveAvatar = async (data) => {
     setLoading(true);
-    await UploadAvatarByUser(file, user);
-    const url = await GetAvatarByUser(user);
-    setAvatar(url);
+    await UploadFileByUserId(user.userId, userAvatar.imageFile, avatarType);
+    const url = await GetFileByUserId(user.userId, avatarType).catch(() => '');
+    setUserAvatar({ ...userAvatar, avatar: url, error: false });
     setSave(true);
     const newData = { ...data, avatar: url };
     onSaveData(newData);
@@ -68,8 +81,8 @@ export default function Cover() {
   };
 
   const handleDeleteAvatar = async (data) => {
-    setAvatar(null);
-    await RemoveAvatarByUser(user);
+    setUserAvatar({ ...userAvatar, avatar: null, error: false });
+    await RemoveFileByUserId(user.userId, avatarType);
     const newData = { ...data, avatar: null };
     onSaveData(newData);
   };
@@ -93,35 +106,36 @@ export default function Cover() {
       </Box>
       <Box mt={2}>
         <Grid container columnSpacing={{ sm: 1 }}>
-          <Grid item xs={6} md={3} display="flex" flexWrap="wrap">
+          <Grid item xs={6} md={4} display="flex" flexWrap="wrap">
             <Box
               display="flex"
               flexDirection="column"
               alignItems="center"
+              justifyContent="center"
+              alignContent="center"
+              justifyItems="center"
               rowGap={0.5}
             >
-              <label htmlFor="userAvatar">
-                <IconButton component="label" sx={{ borderRadius: 10 }}>
-                  <Avatar
-                    alt={user.name}
-                    src={avatar}
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      bgcolor: '#a0b9cfc2'
-                    }}
-                  />
-                  <FormControl
-                    element={<Input type="file" accept="image/*" />}
-                    control={control}
-                    name="userAvatar"
-                    id="userAvatar"
-                    onChange={handleUploadAvatar}
-                  />
-                </IconButton>
-              </label>
+              <IconButton component="label" sx={{ borderRadius: 10 }}>
+                <Avatar
+                  alt={user.name}
+                  src={userAvatar.avatar}
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    bgcolor: '#a0b9cfc2'
+                  }}
+                />
+                <FormControl
+                  element={<Input type="file" accept="image/*" />}
+                  control={control}
+                  name="userAvatar"
+                  id="userAvatar"
+                  onChange={handleUploadAvatar}
+                />
+              </IconButton>
 
-              {!avatar && (
+              {!userAvatar.avatar && (
                 <label htmlFor="userAvatar">
                   <Button
                     component="label"
@@ -142,7 +156,7 @@ export default function Cover() {
                 </label>
               )}
 
-              {avatar && (
+              {userAvatar.avatar && (
                 <>
                   {!save && !loading && (
                     <Button
@@ -176,8 +190,25 @@ export default function Cover() {
                 </>
               )}
             </Box>
+
+            {userAvatar.error && (
+              <Typography color="error" mt={1} fontSize={12}>
+                Định dạng file chỉ có thể là
+                {
+                  <strong>
+                    {acceptTypes.join(', ').replace(/image\//g, '.')}
+                  </strong>
+                }
+                , và dung lượng{' '}
+                {
+                  <strong>
+                    {` <=`} {acceptSize / 1024 / 1024}MB
+                  </strong>
+                }
+              </Typography>
+            )}
           </Grid>
-          <Grid item xs={6} md={9}>
+          <Grid item xs={6} md={8}>
             <Box
               display="flex"
               flexDirection="column"
