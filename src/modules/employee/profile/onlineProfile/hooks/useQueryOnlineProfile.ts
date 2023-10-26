@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
-import { OnlineProfile } from '../../users/model';
-import { OnlineProfileService } from '../employeeService';
+import { OnlineProfile } from 'src/modules/employee/model/index';
+import { OnlineProfileService } from 'src/modules/employee/profile/employeeService';
 
 const useQueryOnlineProfile = () => {
   const { data, isLoading } = useQuery<

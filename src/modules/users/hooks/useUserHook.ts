@@ -12,7 +12,6 @@ const useProfileHook = () => {
 
   const getProfile = () => {
     GetProfile.get().then((res) => setData(res.data));
-    GetCompany.get().then((res) => setData(res.data));
   };
   return {
     profile: data

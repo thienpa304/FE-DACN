@@ -8,11 +8,11 @@ import Checkbox from '@mui/material/Checkbox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-function Autocomplete(props) {
+export default function Autocomplete(props) {
   const { options, label, onChange, defaultValue, name, disabled } = props;
   const [selectedOptions, setSelectedOptions] = useState(defaultValue || []);
 
-  const handleSelectChange = (event, newValue) => {
+  const handleSelectChange = (_, newValue) => {
     setSelectedOptions(newValue);
     onChange({ target: { name, value: newValue } });
   };
@@ -26,9 +26,10 @@ function Autocomplete(props) {
       size="small"
       multiple
       options={options}
+      limitTags={4}
       disableCloseOnSelect
-      value={selectedOptions}
       disabled={disabled}
+      value={selectedOptions}
       onChange={handleSelectChange}
       getOptionLabel={(option) => option?.label}
       renderOption={(props, option, { selected }) => (
@@ -48,5 +49,3 @@ function Autocomplete(props) {
     />
   );
 }
-
-export default Autocomplete;

@@ -54,8 +54,14 @@ const UrgentHiringJob = Loader(
 const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
+const EmployeeProfile = Loader(
+  lazy(() => import('src/modules/employee/profile'))
+);
 const OnlineProfile = Loader(
-  lazy(() => import('src/modules/employee/onlineProfile'))
+  lazy(() => import('src/modules/employee/profile/onlineProfile'))
+);
+const AttachedDocument = Loader(
+  lazy(() => import('src/modules/employee/profile/attachedDocument'))
 );
 
 // Status
@@ -110,8 +116,16 @@ const routes: RouteObject[] = [
             element: <UserProfile />
           },
           {
+            path: 'recruitment-profile',
+            element: <EmployeeProfile />
+          },
+          {
             path: 'online-profile',
             element: <OnlineProfile />
+          },
+          {
+            path: 'attachment-profile',
+            element: <AttachedDocument />
           }
 
           // {
