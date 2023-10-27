@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -9,14 +9,14 @@ import {
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
 import useMutateDegree from './hooks/useMutateDegree';
-import useMutateDegreeById from './hooks/useMutateDegreeById';
+import useMutateUpdateDegree from './hooks/useMutateUpdateDegree';
 import useMutateDeleteDegree from './hooks/useMutateDeleteDegree';
 import CustomDataGrid from 'src/components/EditDataGrid';
 
 function Degree() {
   const { onlineProfile, isLoading } = useQueryOnlineProfile();
   const { onSaveData } = useMutateDegree();
-  const { onSaveDataById } = useMutateDegreeById();
+  const { onSaveDataById } = useMutateUpdateDegree();
   const { onDeleteDataById } = useMutateDeleteDegree();
 
   const [loading, setLoading] = useState(false);

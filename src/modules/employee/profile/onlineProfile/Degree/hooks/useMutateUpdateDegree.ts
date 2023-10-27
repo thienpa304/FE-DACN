@@ -2,21 +2,21 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { AttachedDocumentService } from 'src/modules/employee/profile/employeeService';
-import { AttachedDocument } from 'src/modules/employee/model/index';
+import { DegreeService } from 'src/modules/employee/profile/employeeService';
+import { AnotherDegree } from 'src/modules/employee/model';
 
-const useUpdateAttachedDocument = () => {
+const useMutateUpdateDegree = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-  const { mutate: onUpdateData, isLoading } = useMutation<
-    ResponseData<AttachedDocument>,
-    AxiosError<ResponseData<AttachedDocument>>,
-    AttachedDocument
-  >((data) => AttachedDocumentService.updateAtEndPoint(data), {
+  const { mutate: onSaveDataById, isLoading } = useMutation<
+    ResponseData<AnotherDegree>,
+    AxiosError<ResponseData<AnotherDegree>>,
+    [id: string, data: AnotherDegree]
+  >(([id, data]) => DegreeService.update(id, data), {
     onSuccess: (res) => {
       if (res.status === 200) {
-        queryClient.invalidateQueries('get-AttachedDocument');
         toast.success({ massage: res.message });
+        queryClient.invalidateQueries('get-OnlineProfile');
       } else {
         toast.error({ massage: res.message });
       }
@@ -27,9 +27,9 @@ const useUpdateAttachedDocument = () => {
   });
 
   return {
-    onUpdateData,
+    onSaveDataById,
     isLoading
   };
 };
 
-export default useUpdateAttachedDocument;
+export default useMutateUpdateDegree;

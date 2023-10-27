@@ -2,17 +2,20 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { DegreeService } from 'src/modules/employee/profile/employeeService';
-import { AnotherDegree } from 'src/modules/employee/model';
+import { WorkExperience } from 'src/modules/employee/model/index';
+import { WorkExperienceService } from 'src/modules/employee/profile/employeeService';
 
-const useMutateDegreeById = () => {
+const useMutateExperience = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-  const { mutate: onSaveDataById, isLoading } = useMutation<
-    ResponseData<AnotherDegree>,
-    AxiosError<ResponseData<AnotherDegree>>,
-    [id: string, data: AnotherDegree]
-  >(([id, data]) => DegreeService.update(id, data), {
+
+  const mutationFunction = WorkExperienceService.create;
+
+  const { mutate: onSaveData, isLoading } = useMutation<
+    ResponseData<WorkExperience>,
+    AxiosError<ResponseData<WorkExperience>>,
+    WorkExperience
+  >(mutationFunction, {
     onSuccess: (res) => {
       if (res.status === 200) {
         toast.success({ massage: res.message });
@@ -25,11 +28,10 @@ const useMutateDegreeById = () => {
       toast.error({ massage: error.response.data.message });
     }
   });
-
   return {
-    onSaveDataById,
+    onSaveData,
     isLoading
   };
 };
 
-export default useMutateDegreeById;
+export default useMutateExperience;

@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import GeneralForm from '../GeneralForm'; // Đảm bảo đường dẫn tới GeneralForm là chính xác
+import { useState, useEffect } from 'react';
+import GeneralForm from '../GeneralForm';
 import { AttachedDocument } from '../../model';
-import { Box, Backdrop } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
+import {  Backdrop } from '@mui/material';
 import { useApp } from 'src/modules/app/hooks';
 import CircularProgress from '@mui/material/CircularProgress';
 import useQueryAttachedDocument from './hooks/useQueryAttachedDocument';
 import useMutateAttachedDocument from './hooks/useMutateAttachedDocument';
-import useUpdateAttachedDocument from './hooks/useMutateAttachedDocumentUpdate';
+import useMutateUpdateAttachedDocument from './hooks/useMutateUpdateAttachedDocument';
 import {
   EXPERIENCE,
   POSITION_LEVEL,
@@ -22,7 +21,7 @@ export default function AttachedGeneral(props) {
   const { user } = useApp();
   const { attachedDocument, isLoading } = useQueryAttachedDocument();
   const { onSaveData } = useMutateAttachedDocument();
-  const { onUpdateData } = useUpdateAttachedDocument();
+  const { onUpdateData } = useMutateUpdateAttachedDocument();
   const [newData, setNewData] = useState(null);
   const [employeeCV, setEmployeeCV] = useState('');
 
