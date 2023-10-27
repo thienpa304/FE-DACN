@@ -281,7 +281,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to={`/${rolePath}/profile/details`}
+                      to={`/${rolePath}/job-applied`}
                       startIcon={<PlaylistAddCheckCircleIcon />}
                     >
                       Việc làm đã ứng tuyển

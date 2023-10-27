@@ -63,7 +63,7 @@ const OnlineProfile = Loader(
 const AttachedDocument = Loader(
   lazy(() => import('src/modules/employee/profile/attachedDocument'))
 );
-
+const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
 // Status
 
 const Status404 = Loader(lazy(() => import('src/modules/status/Status404')));
@@ -126,6 +126,10 @@ const routes: RouteObject[] = [
           {
             path: 'attachment-profile',
             element: <AttachedDocument />
+          },
+          {
+            path: 'job-applied',
+            element: <JobApplied />
           }
 
           // {
