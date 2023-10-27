@@ -13,3 +13,6 @@ export const EducationService = new BaseService(
 export const DegreeService = new BaseService(
   'employee/online-profile/another-degree'
 );
+export const ExperienceService = new BaseService(
+  'employee/online-profile/work-experience'
+);

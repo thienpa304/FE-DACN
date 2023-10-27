@@ -2,20 +2,17 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { EducationInformation } from 'src/modules/employee/model/index';
-import { EducationService } from 'src/modules/employee/profile/employeeService';
+import { ExperienceService } from 'src/modules/employee/profile/employeeService';
+import { WorkExperience } from 'src/modules/employee/model';
 
-const useMutateEducation = () => {
+const useMutateDeleteExperience = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-
-  const mutationFunction = EducationService.create;
-
-  const { mutate: onSaveData, isLoading } = useMutation<
-    ResponseData<EducationInformation>,
-    AxiosError<ResponseData<EducationInformation>>,
-    EducationInformation
-  >(mutationFunction, {
+  const { mutate: onDeleteDataById, isLoading } = useMutation<
+    ResponseData<WorkExperience>,
+    AxiosError<ResponseData<WorkExperience>>,
+    string
+  >((id) => ExperienceService.remove(id), {
     onSuccess: (res) => {
       if (res.status === 200) {
         toast.success({ massage: res.message });
@@ -28,10 +25,11 @@ const useMutateEducation = () => {
       toast.error({ massage: error.response.data.message });
     }
   });
+
   return {
-    onSaveData,
+    onDeleteDataById,
     isLoading
   };
 };
 
-export default useMutateEducation;
+export default useMutateDeleteExperience;

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Backdrop } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
+import { Backdrop } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import GeneralForm from '../GeneralForm';
 import { OnlineProfile } from '../../model';

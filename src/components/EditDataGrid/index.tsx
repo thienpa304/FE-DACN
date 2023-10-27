@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
   Button,
-  styled,
   Snackbar,
   Alert,
   AlertTitle
@@ -26,6 +24,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+import dayjs from 'dayjs';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -64,7 +63,6 @@ const CustomDataGrid = (props) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    debugger;
     setCurrentRows(rows?.length > 0 ? rows : []);
     setInitialRows(rows?.length > 0 ? rows : []);
   }, [rows]);
@@ -117,7 +115,6 @@ const CustomDataGrid = (props) => {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    debugger;
     setCurrentRows(currentRows.filter((row) => row.id !== id));
     handleDelete(id);
   };
@@ -138,10 +135,12 @@ const CustomDataGrid = (props) => {
     let updatedRow;
     const existingRow = initialRows.find((row) => row.id === newRow.id);
     const missingFields = [];
-    debugger;
     for (const col of columns) {
       if (newRow[col.field] === '') {
         missingFields.push(col.headerName);
+      }
+      if (col.type === 'date') {
+        newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY')
       }
     }
 
@@ -241,6 +240,7 @@ const CustomDataGrid = (props) => {
             }
           }
         }}
+
         slots={{
           toolbar: EditToolbar
         }}

@@ -13,7 +13,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import useQueryOnlineProfile from './onlineProfile/hooks/useQueryOnlineProfile';
 import useUpdateOnlineProfile from './onlineProfile/hooks/useMutateOnlineProfileUpdate';
 import useQueryAttachedDocument from './attachedDocument/hooks/useQueryAttachedDocument';
-import useUpdateAttachedDocument from './attachedDocument/hooks/useMutateAttachedDocumentUpdate';
+import useMutateUpdateAttachedDocument from './attachedDocument/hooks/useMutateUpdateAttachedDocument';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -114,7 +114,7 @@ export default function EmployeeProfile() {
   const { onlineProfile } = useQueryOnlineProfile();
   const { attachedDocument } = useQueryAttachedDocument();
   const { onUpdateData: onUpdateOnline } = useUpdateOnlineProfile();
-  const { onUpdateData: onUpdateAttach } = useUpdateAttachedDocument();
+  const { onUpdateData: onUpdateAttach } = useMutateUpdateAttachedDocument();
 
   const employeeProfiles = [
     {

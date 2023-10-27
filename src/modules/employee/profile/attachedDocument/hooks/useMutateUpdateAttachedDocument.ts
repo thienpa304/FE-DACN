@@ -2,24 +2,21 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { WorkExperience } from 'src/modules/employee/model/index';
-import { WorkExperienceService } from 'src/modules/employee/profile/employeeService';
+import { AttachedDocumentService } from 'src/modules/employee/profile/employeeService';
+import { AttachedDocument } from 'src/modules/employee/model/index';
 
-const useMutateExperience = () => {
+const useMutateUpdateAttachedDocument = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-
-  const mutationFunction = WorkExperienceService.create;
-
-  const { mutate: onSaveExperienceData, isLoading } = useMutation<
-    ResponseData<WorkExperience>,
-    AxiosError<ResponseData<WorkExperience>>,
-    WorkExperience
-  >(mutationFunction, {
+  const { mutate: onUpdateData, isLoading } = useMutation<
+    ResponseData<AttachedDocument>,
+    AxiosError<ResponseData<AttachedDocument>>,
+    AttachedDocument
+  >((data) => AttachedDocumentService.updateAtEndPoint(data), {
     onSuccess: (res) => {
       if (res.status === 200) {
+        queryClient.invalidateQueries('get-AttachedDocument');
         toast.success({ massage: res.message });
-        queryClient.invalidateQueries('get-OnlineProfile');
       } else {
         toast.error({ massage: res.message });
       }
@@ -28,10 +25,11 @@ const useMutateExperience = () => {
       toast.error({ massage: error.response.data.message });
     }
   });
+
   return {
-    onSaveExperienceData,
+    onUpdateData,
     isLoading
   };
 };
 
-export default useMutateExperience;
+export default useMutateUpdateAttachedDocument;
