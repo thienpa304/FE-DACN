@@ -70,15 +70,11 @@ export default function AttachedGeneral(props) {
   }, [user]);
 
   return (
-    <>
-      {!isLoading && (
-        <GeneralForm
-          isLoading={isLoading}
-          data={newData}
-          options={options}
-          onSubmit={handleSaveProfile}
-        />
-      )}
-    </>
+      <GeneralForm
+        isLoading={isLoading}
+        data={newData}
+        options={options}
+        onSubmit={handleSaveProfile}
+      />
   );
 }

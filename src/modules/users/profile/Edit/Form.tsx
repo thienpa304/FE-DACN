@@ -30,7 +30,7 @@ export function UserForm(props) {
   });
 
   const handleSaveProfile = async (data) => {
-    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY')
+    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY');
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
     const newData = { ...data, dob: formattedDob, isMarried: isMarried };
     onSavaUser(newData);
