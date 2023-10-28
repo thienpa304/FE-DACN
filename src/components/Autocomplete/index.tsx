@@ -29,7 +29,7 @@ export default function Autocomplete(props) {
       limitTags={4}
       disableCloseOnSelect
       disabled={disabled}
-      value={selectedOptions?.label ? selectedOptions : [{ label: null, value: null }]}
+      value={selectedOptions.length > 0 ? selectedOptions : [{ label: null, value: null }]}
       onChange={handleSelectChange}
       getOptionLabel={(option) => option?.label}
       renderOption={(props, option, { selected }) => (
