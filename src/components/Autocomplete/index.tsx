@@ -10,15 +10,15 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function Autocomplete(props) {
   const { options, label, onChange, defaultValue, name, disabled } = props;
-  const [selectedOptions, setSelectedOptions] = useState(defaultValue || []);
-
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  debugger;
   const handleSelectChange = (_, newValue) => {
     setSelectedOptions(newValue);
     onChange({ target: { name, value: newValue } });
   };
 
   useEffect(() => {
-    setSelectedOptions(defaultValue || []);
+    setSelectedOptions(defaultValue?.[0] ? defaultValue : []);
   }, [defaultValue]);
 
   return (
@@ -29,7 +29,7 @@ export default function Autocomplete(props) {
       limitTags={4}
       disableCloseOnSelect
       disabled={disabled}
-      value={selectedOptions.length > 0 ? selectedOptions : []}
+      value={selectedOptions}
       onChange={handleSelectChange}
       getOptionLabel={(option) => option?.label}
       renderOption={(props, option, { selected }) => (
@@ -40,7 +40,7 @@ export default function Autocomplete(props) {
             style={{ marginRight: 8 }}
             checked={selected}
           />
-          {option.label}
+          {option?.label}
         </li>
       )}
       renderInput={(params) => (

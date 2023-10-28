@@ -8,7 +8,7 @@ const useQueryOnlineProfile = () => {
   const { data, isLoading } = useQuery<
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>
-  >('get-OnlineProfile', OnlineProfileService.get, { retry: 0 });
+  >('get-OnlineProfile', OnlineProfileService.get, { retry: 1 });
 
   return {
     onlineProfile: data?.data,

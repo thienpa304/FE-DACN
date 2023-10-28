@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import GeneralForm from '../GeneralForm';
 import { AttachedDocument } from '../../model';
 import { useApp } from 'src/modules/app/hooks';
@@ -15,7 +15,8 @@ import {
 } from 'src/constants/option';
 import { GetFileByUserId, DocumentType } from 'src/common/firebaseService';
 
-export default function AttachedGeneral(props) {
+function AttachedGeneral() {
+  console.log('CVGen');
   const { user } = useApp();
   const { attachedDocument, isLoading } = useQueryAttachedDocument();
   const { onSaveData } = useMutateAttachedDocument();
@@ -53,6 +54,7 @@ export default function AttachedGeneral(props) {
   });
 
   const handleGetFileCV = async () => {
+    debugger;
     const fileUrl = await GetFileByUserId(
       user?.userId,
       DocumentType.cvType
@@ -70,11 +72,13 @@ export default function AttachedGeneral(props) {
   }, [user]);
 
   return (
-      <GeneralForm
-        isLoading={isLoading}
-        data={newData}
-        options={options}
-        onSubmit={handleSaveProfile}
-      />
+    <GeneralForm
+      isLoading={isLoading}
+      data={newData}
+      options={options}
+      onSubmit={handleSaveProfile}
+    />
   );
 }
+
+export default React.memo(AttachedGeneral);
