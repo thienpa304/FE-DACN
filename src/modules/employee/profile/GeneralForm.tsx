@@ -47,7 +47,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
   isLoading,
   data,
   options,
-  onSubmit,
+  onSubmit
 }) => {
   const {
     control,
@@ -94,7 +94,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
     reset(data);
   }, [data]);
 
-  console.log('isLoading', isLoading)
+  console.log('isLoading', isLoading);
 
   return (
     <Container id="general">
@@ -117,11 +117,12 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
         )}
       </Box>
       <Divider />
-      {isLoading
-        ? <Box sx={{ width: '100%' }}>
+      {isLoading ? (
+        <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>
-        : <Grid sx={{ mt: 1 }} py={2}>
+      ) : (
+        <Grid sx={{ mt: 1 }} py={2}>
           <Grid container mb={4} spacing={3}>
             <Grid item xs={12}>
               <FormControl
@@ -296,8 +297,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
             </Box>
           )}
         </Grid>
-      }
-
+      )}
     </Container>
   );
 };

@@ -18,7 +18,7 @@ export default function Autocomplete(props) {
   };
 
   useEffect(() => {
-    setSelectedOptions(defaultValue || []);
+    setSelectedOptions(defaultValue || [{ label: null, value: null }]);
   }, [defaultValue]);
 
   return (
@@ -29,7 +29,7 @@ export default function Autocomplete(props) {
       limitTags={4}
       disableCloseOnSelect
       disabled={disabled}
-      value={selectedOptions.length > 0 ? selectedOptions : []}
+      value={selectedOptions?.label ? selectedOptions : [{ label: null, value: null }]}
       onChange={handleSelectChange}
       getOptionLabel={(option) => option?.label}
       renderOption={(props, option, { selected }) => (

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { User } from 'src/modules/users/model';
 import { getAccessToken } from 'src/utils/localStorage';
-import {  GetProfile } from '../userService';
+import { GetProfile } from '../userService';
 import { useQuery } from 'react-query';
 
 const useProfileHook = () => {
-  const { data : userData, isLoading } = useQuery('get-Profile', GetProfile.get);
+  const { data: userData, isLoading } = useQuery('get-Profile', GetProfile.get);
   const [data, setData] = useState<Partial<User>>();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const useProfileHook = () => {
   };
   return {
     profile: data,
-    userProfile: userData?.data 
+    userProfile: userData?.data
   };
 };
 

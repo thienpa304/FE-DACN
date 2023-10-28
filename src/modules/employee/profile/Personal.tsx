@@ -40,7 +40,7 @@ export default function Personal() {
     avatar: null,
     avatarError: false,
     storageAvatar: null,
-    uploadFile: null,
+    uploadFile: null
   });
   const { user } = useApp();
   const { onSaveData } = useMutateUserData();
@@ -69,7 +69,7 @@ export default function Personal() {
 
     const avatarString = avatarUrl !== '' ? avatarUrl : null;
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
-    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY')
+    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY');
     const newData = {
       ...data,
       dob: formattedDob,
@@ -84,7 +84,7 @@ export default function Personal() {
 
   const handleCancel = () => {
     reset(defaultUserValues);
-    setAvatarState({ ...avatarState, avatar: avatarState.storageAvatar })
+    setAvatarState({ ...avatarState, avatar: avatarState.storageAvatar });
     setIsReadOnly(true);
   };
 
@@ -92,23 +92,27 @@ export default function Personal() {
     const avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
       () => null
     );
-    setAvatarState({ ...avatarState, avatar: avatarUrl, storageAvatar: avatarUrl })
+    setAvatarState({
+      ...avatarState,
+      avatar: avatarUrl,
+      storageAvatar: avatarUrl
+    });
   };
 
   const handleUploadAvatar = (e) => {
-    setAvatarState({ ...avatarState, avatarError: false })
+    setAvatarState({ ...avatarState, avatarError: false });
     const image = e.target.files[0];
     if (!image) return;
     if (!acceptTypes.includes(image.type) || image.size > acceptSize) {
-      setAvatarState({ ...avatarState, avatarError: true })
+      setAvatarState({ ...avatarState, avatarError: true });
       return;
     }
     const imageUrl = URL.createObjectURL(image);
-    setAvatarState({ ...avatarState, avatar: imageUrl, uploadFile: image })
+    setAvatarState({ ...avatarState, avatar: imageUrl, uploadFile: image });
   };
 
   const handleDeleteAvatar = () => {
-    setAvatarState({ ...avatarState, avatar: null, avatarError: false })
+    setAvatarState({ ...avatarState, avatar: null, avatarError: false });
   };
 
   const defaultUserValues = {

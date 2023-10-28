@@ -29,7 +29,7 @@ const Input = styled('input')({
 });
 
 const AttachCV = (props) => {
-  console.log('CV')
+  console.log('CV');
   const { user } = useApp();
   const { attachedDocument } = useQueryAttachedDocument();
   const { cvType } = DocumentType;
@@ -48,7 +48,6 @@ const AttachCV = (props) => {
   useEffect(() => {
     handleGetFile();
   }, [user]);
-
 
   const handleGetFile = async () => {
     const fileUrl = await GetFileByUserId(user.userId, cvType).catch(() => '');

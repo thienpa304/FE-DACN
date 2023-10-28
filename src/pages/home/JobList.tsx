@@ -9,10 +9,10 @@ import {
 } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CardItemJob from 'src/modules/jobs/components/CardItem';
-import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
+import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 
 function JobList() {
-  const { jobs } = useQueryJob();
+  const { jobs } = useQueryAllJob();
   const initialJobsToShow = 12;
   const jobsToShow = jobs.slice(0, initialJobsToShow);
 

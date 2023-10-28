@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Snackbar,
-  Alert,
-  AlertTitle
-} from '@mui/material';
+import { Button, Snackbar, Alert, AlertTitle } from '@mui/material';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -143,9 +138,8 @@ const CustomDataGrid = (props) => {
       if (col.type === 'date') {
         debugger;
         if (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null)
-          invalidDate.push(col.headerName)
-        else
-          newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY')
+          invalidDate.push(col.headerName);
+        else newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY');
       }
     }
 
@@ -250,7 +244,6 @@ const CustomDataGrid = (props) => {
             }
           }
         }}
-
         slots={{
           toolbar: EditToolbar
         }}
@@ -276,7 +269,7 @@ const CustomDataGrid = (props) => {
           </AlertTitle>
           <strong>{error?.errorField}</strong>
         </Alert>
-      </Snackbar >
+      </Snackbar>
     </>
   );
 };

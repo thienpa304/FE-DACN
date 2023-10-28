@@ -6,7 +6,7 @@ import {
   Divider,
   Alert,
   AlertTitle,
-  Snackbar,
+  Snackbar
 } from '@mui/material';
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
@@ -23,14 +23,14 @@ export default function Education() {
   const { onDeleteDataById } = useMutateDeleteEducation();
 
   const [rows, setRows] = useState<GridRowsProp>([]);
-  const [error, setError] = useState({ state: false, message: '' })
+  const [error, setError] = useState({ state: false, message: '' });
 
   const processData = (rows: GridRowsProp) => {
     rows.map((row) => {
-      row.startDate = dayjs(row.startDate).format('DD-MM-YYYY')
-      row.endDate = dayjs(row.endDate).format('DD-MM-YYYY')
-    })
-  }
+      row.startDate = dayjs(row.startDate).format('DD-MM-YYYY');
+      row.endDate = dayjs(row.endDate).format('DD-MM-YYYY');
+    });
+  };
 
   useEffect(() => {
     const initialRows: GridRowsProp = onlineProfile?.education_informations;
@@ -47,17 +47,15 @@ export default function Education() {
       return false;
     }
     return true;
-  }
-  const handleSaveEducationData = data => {
-    if (validation(data))
-      onSaveData(data)
+  };
+  const handleSaveEducationData = (data) => {
+    if (validation(data)) onSaveData(data);
   };
   const handleUpdateEducationData = (id, data) => {
-    if (validation(data))
-      onSaveDataById([id, data])
+    if (validation(data)) onSaveDataById([id, data]);
   };
-  const handleDeleteEducationData = id => {
-    onDeleteDataById(id)
+  const handleDeleteEducationData = (id) => {
+    onDeleteDataById(id);
   };
 
   const columns: GridColDef[] = [
@@ -90,7 +88,7 @@ export default function Education() {
       },
       valueFormatter(params) {
         return dayjs(params.value).format('DD-MM-YYYY');
-      },
+      }
     },
     {
       field: 'endDate',
@@ -103,7 +101,7 @@ export default function Education() {
       },
       valueFormatter(params) {
         return dayjs(params.value).format('DD-MM-YYYY');
-      },
+      }
     }
   ];
 
@@ -134,11 +132,12 @@ export default function Education() {
         onClose={() => setError({ state: false, message: '' })}
       >
         <Alert severity="error">
-          <AlertTitle><strong>{error?.message}</strong></AlertTitle>
+          <AlertTitle>
+            <strong>{error?.message}</strong>
+          </AlertTitle>
           Dữ liệu của bạn sẽ không được lưu
         </Alert>
       </Snackbar>
-
     </Container>
   );
 }
