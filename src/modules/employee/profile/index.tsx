@@ -121,7 +121,7 @@ export default function EmployeeProfile() {
       id: 'online',
       title: 'Hồ sơ trực tuyến',
       profile: onlineProfile,
-      isHidden: onlineProfile?.isHidden || true,
+      isHidden: onlineProfile?.isHidden || false,
       linkTo: '/employee/online-profile',
       onUpdateData: onUpdateOnline
     },
@@ -129,7 +129,7 @@ export default function EmployeeProfile() {
       id: 'attach',
       title: 'Hồ sơ đính kèm',
       profile: attachedDocument,
-      isHidden: attachedDocument?.isHidden || true,
+      isHidden: attachedDocument?.isHidden || false,
       linkTo: '/employee/attachment-profile',
       onUpdateData: onUpdateAttach
     }

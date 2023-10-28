@@ -141,7 +141,9 @@ const AttachCV = (props) => {
                 onClick={openFile}
               >
                 {currentFile?.name ||
-                  ` CV cho vị trí: ${attachedDocument?.jobTitle || ''}`}
+                  ` CV cho vị trí công việc ${
+                    attachedDocument?.jobTitle || ''
+                  }`}
                 {loading && <CircularProgress />}
               </Box>
               {error && displayError()}

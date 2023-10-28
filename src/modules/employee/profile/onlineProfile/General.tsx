@@ -52,13 +52,11 @@ export default function OnlineGeneral() {
   }, [onlineProfile]);
 
   return (
-    <>
-      <GeneralForm
-        isLoading={isLoading}
-        data={newData}
-        options={options}
-        onSubmit={handleSaveProfile}
-      />
-    </>
+    <GeneralForm
+      isLoading={isLoading}
+      data={newData}
+      options={options}
+      onSubmit={handleSaveProfile}
+    />
   );
 }

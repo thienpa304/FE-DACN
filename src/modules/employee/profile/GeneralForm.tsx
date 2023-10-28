@@ -5,8 +5,7 @@ import {
   Grid,
   Typography,
   Container,
-  Divider,
-  LinearProgress
+  Divider
 } from '@mui/material';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import FormControl from 'src/components/FormControl';
@@ -14,7 +13,7 @@ import SelectInput from 'src/components/SelectInput';
 import TextField from 'src/components/TextField';
 import Autocomplete from 'src/components/Autocomplete';
 import { useForm } from 'react-hook-form';
-
+import LinearProgress from '@mui/material/LinearProgress';
 interface FormProps {
   jobTitle: string;
   profession: string | any[];
@@ -118,9 +117,11 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
       </Box>
       <Divider />
       {isLoading ? (
-        <Box display="flex" justifyContent="center" sx={{ width: '100%' }}>
-          <LinearProgress />
-          <Typography>Loading...</Typography>
+        <Box
+          sx={{ width: '100%', minHeight: 300 }}
+        >
+          <LinearProgress color="primary" />
+          <Typography sx={{ textAlign: "center", mt: 4 }}>Loading...</Typography>
         </Box>
       ) : (
         <Grid sx={{ mt: 1 }} py={2}>
@@ -298,8 +299,9 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
             </Box>
           )}
         </Grid>
-      )}
-    </Container>
+      )
+      }
+    </Container >
   );
 };
 
