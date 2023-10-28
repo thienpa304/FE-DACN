@@ -47,7 +47,7 @@ export default function OnlineProfile() {
   ];
 
   return (
-    <Container>
+    <Container key='online'>
       <Typography mt={3} fontSize={22} fontWeight={700}>
         Tạo hồ sơ trực tuyến
       </Typography>

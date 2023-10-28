@@ -60,7 +60,7 @@ const CustomDataGrid = (props) => {
   const [currentRows, setCurrentRows] = useState<GridRowsProp>([]);
   const [initialRows, setInitialRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [error, setError] = useState(null);
+  const [error, setError] = useState({ type: null, errorField: null });
 
   useEffect(() => {
     setCurrentRows(rows?.length > 0 ? rows : []);
@@ -135,18 +135,28 @@ const CustomDataGrid = (props) => {
     let updatedRow;
     const existingRow = initialRows.find((row) => row.id === newRow.id);
     const missingFields = [];
+    const invalidDate = [];
     for (const col of columns) {
       if (newRow[col.field] === '') {
         missingFields.push(col.headerName);
       }
       if (col.type === 'date') {
-        newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY')
+        debugger;
+        if (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null)
+          invalidDate.push(col.headerName)
+        else
+          newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY')
       }
     }
 
     if (missingFields.length > 0) {
       const missingFieldsMessage = `${missingFields.join(', ')}`;
-      setError(missingFieldsMessage);
+      setError({ type: 'missing', errorField: missingFieldsMessage });
+      return;
+    }
+    if (invalidDate.length > 0) {
+      const invalidFieldsMessage = `${invalidDate.join(', ')}`;
+      setError({ type: 'invalid', errorField: invalidFieldsMessage });
       return;
     }
 
@@ -250,20 +260,23 @@ const CustomDataGrid = (props) => {
             setRowModesModel
           }
         }}
-        sx={{ minHeight: 220 }}
+        sx={{ minHeight: 208 }}
         classes={{ columnHeaderTitle: classes.column, cell: classes.cell }}
       />
       <Snackbar
-        open={error}
+        open={error?.type}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         autoHideDuration={3000}
-        onClose={() => setError(null)}
+        onClose={() => setError({ type: null, errorField: null })}
       >
         <Alert severity="error">
-          <AlertTitle>Chưa nhập đầy đủ thông tin</AlertTitle>
-          <strong>{error}</strong>
+          <AlertTitle>
+            {error?.type === 'missing' && 'Chưa nhập đầy đủ thông tin'}
+            {error?.type === 'invalid' && 'Thời gian không hợp lệ'}
+          </AlertTitle>
+          <strong>{error?.errorField}</strong>
         </Alert>
-      </Snackbar>
+      </Snackbar >
     </>
   );
 };

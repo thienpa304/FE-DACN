@@ -29,13 +29,13 @@ const Input = styled('input')({
 });
 
 const AttachCV = (props) => {
+  console.log('CV')
   const { user } = useApp();
   const { attachedDocument } = useQueryAttachedDocument();
   const { cvType } = DocumentType;
   const { acceptTypes, acceptSize } = CVFormat;
   const defaultUserValues = { ...user };
 
-  const [document, setDocument] = useState(null);
   const [currentFile, setCurrentFile] = useState(null);
   const [currentFileUrl, setCurrentFileUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,9 +49,6 @@ const AttachCV = (props) => {
     handleGetFile();
   }, [user]);
 
-  useEffect(() => {
-    setDocument(document);
-  }, [attachedDocument]);
 
   const handleGetFile = async () => {
     const fileUrl = await GetFileByUserId(user.userId, cvType).catch(() => '');
@@ -111,7 +108,7 @@ const AttachCV = (props) => {
             <Typography mb={2} color="grey.700">
               <em>* Vui lòng gửi lên CV xin việc của bạn !</em>
             </Typography>
-            {error ? displayError() : null}
+            {error && displayError()}
             <label htmlFor="CV">
               <Button
                 component="label"
@@ -145,10 +142,10 @@ const AttachCV = (props) => {
                 onClick={openFile}
               >
                 {currentFile?.name ||
-                  ` CV XIN VIỆC CỦA BẠN ${document?.jobTitle || ''}`}
+                  ` CV cho vị trí: ${attachedDocument?.jobTitle || ''}`}
                 {loading && <CircularProgress />}
               </Box>
-              {error ? displayError() : null}
+              {error && displayError()}
             </Box>
             <Box display="flex">
               <Button

@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import GeneralForm from '../GeneralForm';
 import { AttachedDocument } from '../../model';
-import {  Backdrop } from '@mui/material';
 import { useApp } from 'src/modules/app/hooks';
-import CircularProgress from '@mui/material/CircularProgress';
 import useQueryAttachedDocument from './hooks/useQueryAttachedDocument';
 import useMutateAttachedDocument from './hooks/useMutateAttachedDocument';
 import useMutateUpdateAttachedDocument from './hooks/useMutateUpdateAttachedDocument';
@@ -35,7 +33,6 @@ export default function AttachedGeneral(props) {
   };
 
   const handleSaveProfile = (data: AttachedDocument) => {
-    debugger;
     const newData = { ...data, CV: employeeCV };
     if (attachedDocument?.userId) onUpdateData(newData);
     else onSaveData(newData);
@@ -74,20 +71,14 @@ export default function AttachedGeneral(props) {
 
   return (
     <>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}
-      >
-        <CircularProgress color="primary" />
-      </Backdrop>
-      {!isLoading ? (
+      {!isLoading && (
         <GeneralForm
           isLoading={isLoading}
           data={newData}
           options={options}
           onSubmit={handleSaveProfile}
         />
-      ) : null}
+      )}
     </>
   );
 }

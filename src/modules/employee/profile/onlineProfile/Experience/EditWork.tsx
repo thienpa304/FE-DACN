@@ -53,7 +53,6 @@ export default function EditExperience(props) {
     const endDate = watch('endDate');
 
     const validateDates = () => {
-        debugger;
         if (startDate && endDate) {
             if (dayjs(startDate).isAfter(endDate)) {
                 setError({ state: true, message: 'Ngày kết thúc phải sau ngày bắt đầu' });
@@ -79,12 +78,13 @@ export default function EditExperience(props) {
     }
 
     const processOutputData = (data) => {
-        const startDate = dayjs(data.startDate, 'DD-MM-YYYY').isValid()
-            ? dayjs(data.startDate, 'DD-MM-YYYY').format('DD-MM-YYYY')
+        console.log("data.startDate", data.startDate)
+        const startDate = dayjs(data.startDate).isValid()
+            ? dayjs(data.startDate).format('DD-MM-YYYY')
             : null;
         let endDate = null;
-        if (!data.isDoing && dayjs(data.endDate, 'YYYY-MM-DD').isValid())
-            endDate = dayjs(data.endDate, 'YYYY-MM-DD').format('DD-MM-YYYY');
+        if (!data.isDoing && dayjs(data.endDate).isValid())
+            endDate = dayjs(data.endDate).format('DD-MM-YYYY');
         return { ...data, startDate, endDate };
     }
 
@@ -99,7 +99,6 @@ export default function EditExperience(props) {
     useEffect(() => {
         const foundExperience = onlineProfile?.work_experiences.find((experience) => experience.id === workId);
         if (!foundExperience) return;
-        console.log(foundExperience)
         const formattedInputData = processInputData(foundExperience)
         reset(formattedInputData);
     }, [workId, onlineProfile]);

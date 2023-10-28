@@ -12,7 +12,7 @@ import TextField from 'src/components/TextField';
 
 export function UserForm(props) {
   const { close, user } = props;
-  const { onSaveData } = useMutateUserData();
+  const { onSaveData: onSavaUser } = useMutateUserData();
 
   const {
     control,
@@ -30,13 +30,11 @@ export function UserForm(props) {
   });
 
   const handleSaveProfile = async (data) => {
-    const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
+    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY')
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
     const newData = { ...data, dob: formattedDob, isMarried: isMarried };
-    onSaveData(newData);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    onSavaUser(newData);
+    close();
   };
 
   return (
@@ -146,7 +144,7 @@ export function UserForm(props) {
 
 export function CompanyForm(props) {
   const { close, user } = props;
-  const { onSaveData } = useMutateCompany();
+  const { onSaveData: onSaveCompany } = useMutateCompany();
 
   const {
     control,
@@ -159,10 +157,7 @@ export function CompanyForm(props) {
   });
 
   const handleSaveCompany = (data) => {
-    onSaveData(data);
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 1000);
+    onSaveCompany(data);
     close();
   };
   return (

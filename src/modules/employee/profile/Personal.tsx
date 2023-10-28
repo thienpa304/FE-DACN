@@ -36,16 +36,18 @@ const Input = styled('input')({
 });
 
 export default function Personal() {
+  const [avatarState, setAvatarState] = useState({
+    avatar: null,
+    avatarError: false,
+    storageAvatar: null,
+    uploadFile: null,
+  });
   const { user } = useApp();
-  const [isReadOnly, setIsReadOnly] = useState(true);
-  const [avatar, setAvatar] = useState(null);
-  const [storageAvatar, setStorageAvatar] = useState(null);
-  const [uploadFile, setUploadFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [avatarError, setAvatarError] = useState(false);
   const { onSaveData } = useMutateUserData();
   const { acceptTypes, acceptSize } = avatarFormat;
   const { avatarType } = DocumentType;
+  const [isReadOnly, setIsReadOnly] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     reset(defaultUserValues);
@@ -56,18 +58,18 @@ export default function Personal() {
 
   const handleSaveProfile = async (data) => {
     setLoading(true);
-    if (uploadFile)
-      await UploadFileByUserId(user.userId, uploadFile, avatarType);
+    if (avatarState.uploadFile)
+      await UploadFileByUserId(user.userId, avatarState.uploadFile, avatarType);
     let avatarUrl = '';
-    if (!avatar) await RemoveFileByUserId(user.userId, avatarType);
+    if (!avatarState.avatar) await RemoveFileByUserId(user.userId, avatarType);
     else
       avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
         () => ''
       );
 
-    const avatarString = avatarUrl !== '' ? avatarUrl : '';
+    const avatarString = avatarUrl !== '' ? avatarUrl : null;
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
-    const formattedDob = dayjs(data.dob, 'DD-MM-YYYY').format('DD-MM-YYYY');
+    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY')
     const newData = {
       ...data,
       dob: formattedDob,
@@ -82,7 +84,7 @@ export default function Personal() {
 
   const handleCancel = () => {
     reset(defaultUserValues);
-    setAvatar(storageAvatar);
+    setAvatarState({ ...avatarState, avatar: avatarState.storageAvatar })
     setIsReadOnly(true);
   };
 
@@ -90,26 +92,23 @@ export default function Personal() {
     const avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
       () => null
     );
-    setStorageAvatar(avatarUrl);
-    setAvatar(avatarUrl);
+    setAvatarState({ ...avatarState, avatar: avatarUrl, storageAvatar: avatarUrl })
   };
 
   const handleUploadAvatar = (e) => {
-    setAvatarError(false);
+    setAvatarState({ ...avatarState, avatarError: false })
     const image = e.target.files[0];
     if (!image) return;
     if (!acceptTypes.includes(image.type) || image.size > acceptSize) {
-      setAvatarError(true);
+      setAvatarState({ ...avatarState, avatarError: true })
       return;
     }
     const imageUrl = URL.createObjectURL(image);
-    setAvatar(imageUrl);
-    setUploadFile(image);
+    setAvatarState({ ...avatarState, avatar: imageUrl, uploadFile: image })
   };
 
   const handleDeleteAvatar = () => {
-    setAvatar(null);
-    setAvatarError(false);
+    setAvatarState({ ...avatarState, avatar: null, avatarError: false })
   };
 
   const defaultUserValues = {
@@ -161,7 +160,7 @@ export default function Personal() {
           >
             <Avatar
               alt={user.name}
-              src={avatar}
+              src={avatarState.avatar}
               sx={{
                 borderRadius: 2,
                 width: '75%',
@@ -169,7 +168,7 @@ export default function Personal() {
                 bgcolor: '#a0b9cfc2'
               }}
             />
-            {!avatar && !isReadOnly && (
+            {!avatarState.avatar && !isReadOnly && (
               <label htmlFor="userAvatar">
                 <Button
                   component="label"
@@ -191,7 +190,7 @@ export default function Personal() {
               </label>
             )}
 
-            {avatar && !isReadOnly && (
+            {avatarState.avatar && !isReadOnly && (
               <Box display="flex" flexDirection="row" alignItems="center">
                 <Button
                   component="label"
@@ -222,7 +221,7 @@ export default function Personal() {
                 </Button>
               </Box>
             )}
-            {avatarError && (
+            {avatarState.avatarError && (
               <Typography color="error" fontSize={12}>
                 Định dạng file chỉ có thể là
                 {

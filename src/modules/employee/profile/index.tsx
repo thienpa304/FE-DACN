@@ -39,7 +39,7 @@ const Item = styled(Box)(({ theme }) => ({
 
 const ProfileSection = ({
   title,
-  key,
+  id,
   profile,
   isHidden,
   linkTo,
@@ -69,7 +69,7 @@ const ProfileSection = ({
           >
             <img
               src={
-                key === 'online'
+                id === 'online'
                   ? 'https://cdn-icons-png.flaticon.com/128/1309/1309245.png'
                   : 'https://cdn-icons-png.flaticon.com/512/3135/3135796.png'
               }
@@ -89,7 +89,7 @@ const ProfileSection = ({
                 <Switch
                   checked={!isHidden}
                   onChange={handleHideProfile}
-                  name={`isHidden${key}`}
+                  name={`isHidden${id}`}
                 />
               </Item>
               <Item>
@@ -118,18 +118,18 @@ export default function EmployeeProfile() {
 
   const employeeProfiles = [
     {
-      key: 'online',
+      id: 'online',
       title: 'Hồ sơ trực tuyến',
       profile: onlineProfile,
-      isHidden: onlineProfile?.isHidden || false,
+      isHidden: onlineProfile?.isHidden || true,
       linkTo: '/employee/online-profile',
       onUpdateData: onUpdateOnline
     },
     {
-      key: 'attach',
+      id: 'attach',
       title: 'Hồ sơ đính kèm',
       profile: attachedDocument,
-      isHidden: attachedDocument?.isHidden || false,
+      isHidden: attachedDocument?.isHidden || true,
       linkTo: '/employee/attachment-profile',
       onUpdateData: onUpdateAttach
     }
@@ -157,7 +157,7 @@ export default function EmployeeProfile() {
         </Typography>
       </CustomBox>
       {employeeProfiles.map((profileItem) => (
-        <ProfileSection key={profileItem.key} {...profileItem} />
+        <ProfileSection key={profileItem.id} {...profileItem} />
       ))}
     </Container>
   );

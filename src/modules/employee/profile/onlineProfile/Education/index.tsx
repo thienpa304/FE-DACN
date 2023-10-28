@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Button,
-  Grid,
   Typography,
   Container,
-  Divider
+  Divider,
+  Alert,
+  AlertTitle,
+  Snackbar,
 } from '@mui/material';
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import CircularProgress from '@mui/material/CircularProgress';
-import LinearProgress from '@mui/material/LinearProgress';
-import FormControl from 'src/components/FormControl';
-import { useForm } from 'react-hook-form';
-import { EducationInformation } from '../../../model';
 import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
 import useMutateEducation from './hooks/useMutateEducation';
 import useMutateUpdateEducation from './hooks/useMutateUpdateEducation';
@@ -21,13 +17,13 @@ import dayjs from 'dayjs';
 import CustomDataGrid from 'src/components/EditDataGrid';
 
 export default function Education() {
-  const [loading, setLoading] = useState(false);
   const { onlineProfile, isLoading } = useQueryOnlineProfile();
   const { onSaveData } = useMutateEducation();
   const { onSaveDataById } = useMutateUpdateEducation();
   const { onDeleteDataById } = useMutateDeleteEducation();
 
   const [rows, setRows] = useState<GridRowsProp>([]);
+  const [error, setError] = useState({ state: false, message: '' })
 
   const processData = (rows: GridRowsProp) => {
     rows.map((row) => {
@@ -44,20 +40,24 @@ export default function Education() {
     );
   }, [onlineProfile]);
 
-  const handleSaveEducationData = async (data) => {
-    setLoading(true);
-    onSaveData(data);
-    setLoading(false);
+  const validation = (data) => {
+    debugger;
+    if (dayjs(data.startDate).isAfter(data.endDate)) {
+      setError({ state: true, message: 'Ngày kết thúc phải sau ngày bắt đầu' });
+      return false;
+    }
+    return true;
+  }
+  const handleSaveEducationData = data => {
+    if (validation(data))
+      onSaveData(data)
   };
-  const handleUpdateEducationData = async (id, data) => {
-    setLoading(true);
-    onSaveDataById([id, data]);
-    setLoading(false);
+  const handleUpdateEducationData = (id, data) => {
+    if (validation(data))
+      onSaveDataById([id, data])
   };
-  const handleDeleteEducationData = async (id) => {
-    setLoading(true);
-    onDeleteDataById(id);
-    setLoading(false);
+  const handleDeleteEducationData = id => {
+    onDeleteDataById(id)
   };
 
   const columns: GridColDef[] = [
@@ -126,6 +126,19 @@ export default function Education() {
           handleDelete={handleDeleteEducationData}
         />
       </Box>
+
+      <Snackbar
+        open={error?.state}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={3000}
+        onClose={() => setError({ state: false, message: '' })}
+      >
+        <Alert severity="error">
+          <AlertTitle><strong>{error?.message}</strong></AlertTitle>
+          Dữ liệu của bạn sẽ không được lưu
+        </Alert>
+      </Snackbar>
+
     </Container>
   );
 }
