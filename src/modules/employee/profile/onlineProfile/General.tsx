@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Backdrop } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import GeneralForm from '../GeneralForm';
 import { OnlineProfile } from '../../model';
 import useMutateOnlineProfile from './hooks/useMutateOnlineProfile';
@@ -55,20 +53,12 @@ export default function OnlineGeneral() {
 
   return (
     <>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}
-      >
-        <CircularProgress color="primary" />
-      </Backdrop>
-      {!isLoading ? (
-        <GeneralForm
-          isLoading={isLoading}
-          data={newData}
-          options={options}
-          onSubmit={handleSaveProfile}
-        />
-      ) : null}
+      <GeneralForm
+        isLoading={isLoading}
+        data={newData}
+        options={options}
+        onSubmit={handleSaveProfile}
+      />
     </>
   );
 }
