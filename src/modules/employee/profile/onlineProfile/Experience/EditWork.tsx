@@ -21,6 +21,7 @@ import useMutateExperience from './hooks/useMutateExperience';
 import useMutateUpdateExperience from './hooks/useMutateUpdateExperience';
 import DatePicker from 'src/components/DatePicker';
 import dayjs from 'dayjs';
+import { toInputDateString, toOutputDateString } from 'src/utils/inputOutputFormat';
 
 export default function EditExperience(props) {
   const { onlineProfile, isLoading } = useQueryOnlineProfile();
@@ -71,24 +72,15 @@ export default function EditExperience(props) {
   }, [startDate, endDate, isDoing]);
 
   const processInputData = (data) => {
-    const startDate = dayjs(data.startDate, 'YYYY-MM-DD').isValid()
-      ? dayjs(data.startDate, 'YYYY-MM-DD').toISOString()
-      : null;
-    let endDate = null;
-    if (!data.isDoing && dayjs(data.endDate, 'YYYY-MM-DD').isValid())
-      endDate = dayjs(data.endDate, 'YYYY-MM-DD').toISOString();
-    return { ...data, startDate, endDate };
+    if (!data.isDoing)
+      return { ...data, startDate: toInputDateString(data.startDate), endDate: toInputDateString(data.endDate) }
+    return { ...data, startDate: toInputDateString(data.startDate), endDate: null }
   };
 
   const processOutputData = (data) => {
-    console.log('data.startDate', data.startDate);
-    const startDate = dayjs(data.startDate).isValid()
-      ? dayjs(data.startDate).format('DD-MM-YYYY')
-      : null;
-    let endDate = null;
-    if (!data.isDoing && dayjs(data.endDate).isValid())
-      endDate = dayjs(data.endDate).format('DD-MM-YYYY');
-    return { ...data, startDate, endDate };
+    if (!data.isDoing)
+      return { ...data, startDate: toOutputDateString(data.startDate), endDate: toOutputDateString(data.endDate) }
+    return { ...data, startDate: toOutputDateString(data.startDate), endDate: null }
   };
 
   const handleSaveExperienceData = async (data) => {

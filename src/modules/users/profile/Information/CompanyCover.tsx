@@ -62,7 +62,7 @@ function ErrorMessage({ objectName, errorObject, format }) {
   return null;
 }
 
-function CompanyImage() {
+function CompanyCover() {
   const classes = useStyles();
   const { user } = useApp();
   const { company } = useQueryCompany();
@@ -250,4 +250,4 @@ function CompanyImage() {
   );
 }
 
-export default CompanyImage;
+export default CompanyCover;

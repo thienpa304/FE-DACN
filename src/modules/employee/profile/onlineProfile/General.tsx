@@ -12,6 +12,7 @@ import {
   PROFESSION,
   WORK_AT
 } from 'src/constants/option';
+import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
 
 export default function OnlineGeneral() {
   const { onlineProfile, isLoading } = useQueryOnlineProfile();
@@ -33,22 +34,14 @@ export default function OnlineGeneral() {
     else onSaveData(data);
   };
 
-  const formattedData = (data: OnlineProfile) => ({
+  const formatInputData = (data: OnlineProfile) => ({
     ...data,
-    profession: (data?.profession || '')
-      .split(', ')
-      .map((label) =>
-        options.profession.find((option) => option.label === label)
-      ),
-    workAddress: (data?.workAddress || '')
-      .split(', ')
-      .map((label) =>
-        options.workAddress.find((option) => option.label === label)
-      )
+    profession: convertStringToObjectList(data?.profession, options.profession),
+    workAddress: convertStringToObjectList(data?.workAddress, options.workAddress)
   });
 
   useEffect(() => {
-    setNewData(formattedData(onlineProfile));
+    setNewData(formatInputData(onlineProfile));
   }, [onlineProfile]);
 
   return (

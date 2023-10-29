@@ -32,7 +32,7 @@ const Input = styled('input')({
   display: 'none'
 });
 
-export default function Cover() {
+export default function UserCover() {
   const { user } = useApp();
   const { onSaveData } = useMutateUserData();
   const { acceptTypes, acceptSize } = avatarFormat;

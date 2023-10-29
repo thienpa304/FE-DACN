@@ -14,6 +14,7 @@ export type PropsSelectInput = SelectProps & {
 };
 export default function SelectInput(props: PropsSelectInput) {
   const { options = [], label } = props;
+  console.log(options, label)
   return (
     <FormControl fullWidth>
       <InputLabel size="small">{label}</InputLabel>
