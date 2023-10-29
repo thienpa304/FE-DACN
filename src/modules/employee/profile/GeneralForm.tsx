@@ -14,15 +14,21 @@ import TextField from 'src/components/TextField';
 import Autocomplete from 'src/components/Autocomplete';
 import { useForm } from 'react-hook-form';
 import LinearProgress from '@mui/material/LinearProgress';
+import { convertObjectListToString } from 'src/utils/inputOutputFormat';
+
+interface Option {
+  value: any;
+  label: string;
+}
 interface FormProps {
   jobTitle: string;
-  profession: string | any[];
+  profession: string | Option[];
   currentPosition: string;
   desiredPosition: string;
   desiredSalary: number;
   degree: string;
   experience: string;
-  workAddress: string | any[];
+  workAddress: string | Option[];
   employmentType: string;
   careerGoal: string;
   skills: string;
@@ -32,12 +38,12 @@ interface GeneralFormProps {
   isLoading: boolean;
   data: FormProps;
   options: {
-    profession: any[];
-    workAddress: any[];
-    positionLevel: any[];
-    degree: any[];
-    experience: any[];
-    workingForm: any[];
+    profession: Option[];
+    workAddress: Option[];
+    positionLevel: Option[];
+    degree: Option[];
+    experience: Option[];
+    workingForm: Option[];
   };
   onSubmit: (data: FormProps) => void;
 }
@@ -72,20 +78,11 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
 
   const onEdit = () => setIsReadOnly(false);
 
-  const processArrayToString = (data: any[] | string) => {
-    if (typeof data === 'string') {
-      return data;
-    } else if (Array.isArray(data)) {
-      return data?.map((option) => option.label).join(', ');
-    }
-    return '';
-  };
-
   const processDataAfter = (data: FormProps) => {
     return {
       ...data,
-      profession: processArrayToString(data?.profession),
-      workAddress: processArrayToString(data?.workAddress)
+      profession: convertObjectListToString(data?.profession as Option[]),
+      workAddress: convertObjectListToString(data?.workAddress as Option[])
     };
   };
 
@@ -117,11 +114,11 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
       </Box>
       <Divider />
       {isLoading ? (
-        <Box
-          sx={{ width: '100%', minHeight: 300 }}
-        >
+        <Box sx={{ width: '100%', minHeight: 300 }}>
           <LinearProgress color="primary" />
-          <Typography sx={{ textAlign: "center", mt: 4 }}>Loading...</Typography>
+          <Typography sx={{ textAlign: 'center', mt: 4 }}>
+            Loading...
+          </Typography>
         </Box>
       ) : (
         <Grid sx={{ mt: 1 }} py={2}>
@@ -299,9 +296,8 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
             </Box>
           )}
         </Grid>
-      )
-      }
-    </Container >
+      )}
+    </Container>
   );
 };
 

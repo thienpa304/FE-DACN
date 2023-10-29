@@ -30,6 +30,7 @@ import {
   DocumentType
 } from 'src/common/firebaseService';
 import { avatarFormat } from 'src/constants/uploadFileRule';
+import { toOutputDateString, toInputDateString } from 'src/utils/inputOutputFormat';
 
 const Input = styled('input')({
   display: 'none'
@@ -50,6 +51,7 @@ export default function Personal() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log("sex: ", user.sex)
     reset(defaultUserValues);
     handleGetAvatar();
   }, [user]);
@@ -58,6 +60,7 @@ export default function Personal() {
 
   const handleSaveProfile = async (data) => {
     setLoading(true);
+
     if (avatarState.uploadFile)
       await UploadFileByUserId(user.userId, avatarState.uploadFile, avatarType);
     let avatarUrl = '';
@@ -68,13 +71,11 @@ export default function Personal() {
       );
 
     const avatarString = avatarUrl !== '' ? avatarUrl : null;
-    const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
-    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY');
+
     const newData = {
       ...data,
-      dob: formattedDob,
-      avatar: avatarString,
-      isMarried: isMarried
+      dob: toOutputDateString(data.dob),
+      isMarried: data.isMarried === 'Đã kết hôn' ? "1" : "0"
     };
 
     onSaveData(newData);
@@ -92,6 +93,7 @@ export default function Personal() {
     const avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
       () => null
     );
+
     setAvatarState({
       ...avatarState,
       avatar: avatarUrl,
@@ -117,11 +119,9 @@ export default function Personal() {
 
   const defaultUserValues = {
     ...user,
-    dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
-      ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
-      : null,
+    dob: toInputDateString(user.dob as string, "DD-MM-YYYY", "DD-MM-YYYY"),
     sex: GENDER.find((item) => item.label === user.sex)?.value,
-    isMarried: user.isMarried === true ? 'Đã kết hôn' : 'Độc thân'
+    isMarried: user.isMarried ? 'Đã kết hôn' : 'Độc thân'
   };
 
   const {

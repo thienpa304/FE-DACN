@@ -14,6 +14,7 @@ import {
   WORK_AT
 } from 'src/constants/option';
 import { GetFileByUserId, DocumentType } from 'src/common/firebaseService';
+import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
 
 function AttachedGeneral() {
   console.log('CVGen');
@@ -41,16 +42,8 @@ function AttachedGeneral() {
 
   const formattedData = (data: AttachedDocument) => ({
     ...data,
-    profession: (data?.profession || '')
-      .split(', ')
-      .map((label) =>
-        options.profession.find((option) => option.label === label)
-      ),
-    workAddress: (data?.workAddress || '')
-      .split(', ')
-      .map((label) =>
-        options.workAddress.find((option) => option.label === label)
-      )
+    profession: convertStringToObjectList(data?.profession, options.profession),
+    workAddress: convertStringToObjectList(data?.workAddress, options.workAddress)
   });
 
   const handleGetFileCV = async () => {

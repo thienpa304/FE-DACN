@@ -1,9 +1,8 @@
-import { useApp } from 'src/modules/app/hooks';
-import useQueryCompanyfrom from './../hooks/useQueryCompany';
-import InfoTab from './Information/InfoTab';
+import { Box, styled } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
-import { Box, Container, styled } from '@mui/material';
-import CompanyImage from './Information/CompanyImage';
+import useQueryCompanyfrom from './../hooks/useQueryCompany';
+import InfoField from './Information/InfoField';
+import CompanyCover from './Information/CompanyCover';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   background: '#ffff',
@@ -23,10 +22,10 @@ export default function CompanyTab() {
   return (
     <>
       <CustomBox sx={{ p: 0, pb: 2 }}>
-        <CompanyImage />
+        <CompanyCover />
       </CustomBox>
       <CustomBox>
-        <InfoTab
+        <InfoField
           user={company}
           data={CompanyData(company)}
           title="Thông tin công ty"

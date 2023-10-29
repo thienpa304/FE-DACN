@@ -11,7 +11,7 @@ import {
   styled
 } from '@mui/material';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
-import { CompanyForm, UserForm } from '../Edit/Form';
+import { CompanyForm, UserForm } from './EditForm';
 
 const InputLabel = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(1.5, 1, 1.5, 0),
@@ -24,17 +24,9 @@ const InputData = styled(Grid)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily
 }));
 
-export default function InfoTab(props) {
+export default function InfoField(props) {
   const { user, data, title, editIcon, openForm } = props;
-
   const [open, setOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(user);
-  const [infoData, setInfoData] = useState(data);
-
-  useEffect(() => {
-    setCurrentUser(user);
-    setInfoData(data);
-  }, [user, data]);
 
   const handleEdit = () => setOpen(true);
 
@@ -46,9 +38,9 @@ export default function InfoTab(props) {
 
   const myForm =
     openForm === 'User' ? (
-      <UserForm close={handleClose} user={currentUser} />
+      <UserForm close={handleClose} user={user} />
     ) : (
-      <CompanyForm close={handleClose} user={currentUser} />
+      <CompanyForm close={handleClose} user={user} />
     );
 
   return (
@@ -81,7 +73,7 @@ export default function InfoTab(props) {
         </Dialog>
       </Box>
       <Box sx={{ mt: 1 }}>
-        {infoData.map((item, index) => (
+        {data.map((item, index) => (
           <Grid
             container
             key={index}

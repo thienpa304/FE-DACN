@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import useMutateCompany from '../../hooks/useMutateCompany';
 import TextField from 'src/components/TextField';
+import { toInputDateString, toOutputDateString } from 'src/utils/inputOutputFormat';
 
 export function UserForm(props) {
   const { close, user } = props;
@@ -21,16 +22,14 @@ export function UserForm(props) {
   } = useForm<User>({
     defaultValues: {
       ...user,
-      dob: dayjs(user.dob, 'DD-MM-YYYY').isValid()
-        ? dayjs(user.dob, 'DD-MM-YYYY').toISOString()
-        : null,
+      dob: toInputDateString(user.dob as string, "DD-MM-YYYY", "DD-MM-YYYY"),
       sex: GENDER.find((item) => item.label === user.sex)?.value,
-      isMarried: user.isMarried === true ? 'Đã kết hôn' : 'Độc thân'
+      isMarried: user.isMarried ? 'Đã kết hôn' : 'Độc thân'
     }
   });
 
   const handleSaveProfile = async (data) => {
-    const formattedDob = dayjs(data.dob).format('DD-MM-YYYY');
+    const formattedDob = toOutputDateString(data.dob, "DD-MM-YYYY")
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
     const newData = { ...data, dob: formattedDob, isMarried: isMarried };
     onSavaUser(newData);

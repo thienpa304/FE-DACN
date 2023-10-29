@@ -18,24 +18,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    column: {
-      fontWeight: 700
-    },
-    cell: {
-      '& .MuiDataGrid-cellContent': {
-        display: 'flex',
-        alignItems: 'center',
-        whiteSpace: 'normal',
-        wordWrap: 'break-word'
-      }
-    }
-  })
-);
+import AlertDialog from 'src/components/Dialog';
 
 const randomId = () =>
   `${Math.floor(Math.random() * 10000)}${Math.random()
@@ -50,12 +34,13 @@ interface EditToolbarProps {
 }
 
 const CustomDataGrid = (props) => {
-  const classes = useStyles();
   const { columns, rows, handleSave, handleUpdate, handleDelete } = props;
   const [currentRows, setCurrentRows] = useState<GridRowsProp>([]);
   const [initialRows, setInitialRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [error, setError] = useState({ type: null, errorField: null });
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     setCurrentRows(rows?.length > 0 ? rows : []);
@@ -110,9 +95,22 @@ const CustomDataGrid = (props) => {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
+    setSelectedId(id);
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setSelectedId(null);
+    setOpenDialog(false);
+  };
+
+  const handleConfirmDelete = (id: GridRowId) => () => {
     setCurrentRows(currentRows.filter((row) => row.id !== id));
     handleDelete(id);
+    setSelectedId(null);
+    setOpenDialog(false);
   };
+
 
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
@@ -129,28 +127,27 @@ const CustomDataGrid = (props) => {
   const processRowUpdate = (newRow: GridRowModel) => {
     let updatedRow;
     const existingRow = initialRows.find((row) => row.id === newRow.id);
-    const missingFields = [];
-    const invalidDate = [];
+
+    const invalidFields = columns
+      .filter((col) => col.type === 'date' && (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null))
+      .map((col) => col.headerName);
+
+    const missingFields = columns
+      .filter((col) => newRow[col.field] === '')
+      .map((col) => col.headerName);
+
     for (const col of columns) {
-      if (newRow[col.field] === '') {
-        missingFields.push(col.headerName);
-      }
       if (col.type === 'date') {
-        debugger;
-        if (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null)
-          invalidDate.push(col.headerName);
-        else newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY');
+        newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY');
       }
     }
 
     if (missingFields.length > 0) {
-      const missingFieldsMessage = `${missingFields.join(', ')}`;
-      setError({ type: 'missing', errorField: missingFieldsMessage });
+      setError({ type: 'missing', errorField: `${missingFields.join(', ')}` });
       return;
     }
-    if (invalidDate.length > 0) {
-      const invalidFieldsMessage = `${invalidDate.join(', ')}`;
-      setError({ type: 'invalid', errorField: invalidFieldsMessage });
+    if (invalidFields.length > 0) {
+      setError({ type: 'invalid', errorField: `${invalidFields.join(', ')}` });
       return;
     }
 
@@ -161,10 +158,10 @@ const CustomDataGrid = (props) => {
       updatedRow = { ...newRow, isNew: false };
       handleUpdate(newRow.id, updatedRow);
     }
-    const tmp = currentRows.map((row) =>
+    const targetRow = currentRows.map((row) =>
       row.id === newRow.id ? updatedRow : row
     );
-    setCurrentRows(tmp);
+    setCurrentRows(targetRow);
     return updatedRow;
   };
 
@@ -237,6 +234,7 @@ const CustomDataGrid = (props) => {
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         disableColumnMenu
+        hideFooterSelectedRowCount
         initialState={{
           pagination: {
             paginationModel: {
@@ -253,8 +251,14 @@ const CustomDataGrid = (props) => {
             setRowModesModel
           }
         }}
-        sx={{ minHeight: 208 }}
-        classes={{ columnHeaderTitle: classes.column, cell: classes.cell }}
+        getRowHeight={() => 'auto'}
+        sx={{
+          minHeight: 208,
+          '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
+          '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
+          '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
+          '.MuiDataGrid-columnHeaderTitle': { fontWeight: 700 },
+        }}
       />
       <Snackbar
         open={error?.type}
@@ -270,6 +274,7 @@ const CustomDataGrid = (props) => {
           <strong>{error?.errorField}</strong>
         </Alert>
       </Snackbar>
+      <AlertDialog open={openDialog} onClose={handleClose} handleConfirmDelete={handleConfirmDelete} selectedId={selectedId} />
     </>
   );
 };

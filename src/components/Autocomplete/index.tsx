@@ -11,7 +11,6 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export default function Autocomplete(props) {
   const { options, label, onChange, defaultValue, name, disabled } = props;
   const [selectedOptions, setSelectedOptions] = useState([]);
-  debugger;
   const handleSelectChange = (_, newValue) => {
     setSelectedOptions(newValue);
     onChange({ target: { name, value: newValue } });
