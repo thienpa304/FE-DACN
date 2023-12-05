@@ -21,7 +21,10 @@ import useMutateExperience from './hooks/useMutateExperience';
 import useMutateUpdateExperience from './hooks/useMutateUpdateExperience';
 import DatePicker from 'src/components/DatePicker';
 import dayjs from 'dayjs';
-import { toInputDateString, toOutputDateString } from 'src/utils/inputOutputFormat';
+import {
+  toInputDateString,
+  toOutputDateString
+} from 'src/utils/inputOutputFormat';
 
 export default function EditExperience(props) {
   const { onlineProfile, isLoading } = useQueryOnlineProfile();
@@ -73,14 +76,30 @@ export default function EditExperience(props) {
 
   const processInputData = (data) => {
     if (!data.isDoing)
-      return { ...data, startDate: toInputDateString(data.startDate), endDate: toInputDateString(data.endDate) }
-    return { ...data, startDate: toInputDateString(data.startDate), endDate: null }
+      return {
+        ...data,
+        startDate: toInputDateString(data.startDate),
+        endDate: toInputDateString(data.endDate)
+      };
+    return {
+      ...data,
+      startDate: toInputDateString(data.startDate),
+      endDate: null
+    };
   };
 
   const processOutputData = (data) => {
     if (!data.isDoing)
-      return { ...data, startDate: toOutputDateString(data.startDate), endDate: toOutputDateString(data.endDate) }
-    return { ...data, startDate: toOutputDateString(data.startDate), endDate: null }
+      return {
+        ...data,
+        startDate: toOutputDateString(data.startDate),
+        endDate: toOutputDateString(data.endDate)
+      };
+    return {
+      ...data,
+      startDate: toOutputDateString(data.startDate),
+      endDate: null
+    };
   };
 
   const handleSaveExperienceData = async (data) => {

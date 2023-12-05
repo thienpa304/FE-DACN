@@ -7,6 +7,9 @@ import BaseLayout from './modules/app/layouts/BaseLayout';
 import SidebarLayout from './modules/app/layouts/SidebarLayout';
 import AuthRouteProvider from './modules/auth/components/AuthRouteProvider';
 import { Role } from './modules/users/model';
+import UserManagementTable from './pages/admin/UserManagement';
+import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManagement';
+import EmailNotification from './pages/admin/EmailNotification';
 
 const Loader = (Component) => (props) =>
   (
@@ -20,7 +23,9 @@ const Loader = (Component) => (props) =>
 const RecruitmentCreate = Loader(
   lazy(() => import('src/pages/recruitment-create'))
 );
-
+const StatisticsAndReports = Loader(
+  lazy(() => import('src/pages/admin/StatisticsAndReports'))
+);
 const RecruitmentList = Loader(
   lazy(() => import('src/pages/recruitment-list'))
 );
@@ -264,6 +269,22 @@ const routes: RouteObject[] = [
       {
         path: 'jobs-posting',
         element: <RecruitmentListApproval />
+      },
+      {
+        path: 'user-manage',
+        element: <UserManagementTable />
+      },
+      {
+        path: 'statistic-report',
+        element: <StatisticsAndReports />
+      },
+      {
+        path: 'manage-access',
+        element: <SecurityAndAccessManagement />
+      },
+      {
+        path: 'mailer',
+        element: <EmailNotification />
       }
     ]
   },

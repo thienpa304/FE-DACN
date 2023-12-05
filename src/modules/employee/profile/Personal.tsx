@@ -30,7 +30,10 @@ import {
   DocumentType
 } from 'src/common/firebaseService';
 import { avatarFormat } from 'src/constants/uploadFileRule';
-import { toOutputDateString, toInputDateString } from 'src/utils/inputOutputFormat';
+import {
+  toOutputDateString,
+  toInputDateString
+} from 'src/utils/inputOutputFormat';
 
 const Input = styled('input')({
   display: 'none'
@@ -51,7 +54,7 @@ export default function Personal() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log("sex: ", user.sex)
+    console.log('sex: ', user.sex);
     reset(defaultUserValues);
     handleGetAvatar();
   }, [user]);
@@ -75,7 +78,7 @@ export default function Personal() {
     const newData = {
       ...data,
       dob: toOutputDateString(data.dob),
-      isMarried: data.isMarried === 'Đã kết hôn' ? "1" : "0"
+      isMarried: data.isMarried === 'Đã kết hôn' ? '1' : '0'
     };
 
     onSaveData(newData);
@@ -119,7 +122,7 @@ export default function Personal() {
 
   const defaultUserValues = {
     ...user,
-    dob: toInputDateString(user.dob as string, "DD-MM-YYYY", "DD-MM-YYYY"),
+    dob: toInputDateString(user.dob as string, 'DD-MM-YYYY', 'DD-MM-YYYY'),
     sex: GENDER.find((item) => item.label === user.sex)?.value,
     isMarried: user.isMarried ? 'Đã kết hôn' : 'Độc thân'
   };

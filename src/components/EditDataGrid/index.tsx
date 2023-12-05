@@ -111,7 +111,6 @@ const CustomDataGrid = (props) => {
     setOpenDialog(false);
   };
 
-
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
@@ -129,7 +128,11 @@ const CustomDataGrid = (props) => {
     const existingRow = initialRows.find((row) => row.id === newRow.id);
 
     const invalidFields = columns
-      .filter((col) => col.type === 'date' && (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null))
+      .filter(
+        (col) =>
+          col.type === 'date' &&
+          (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null)
+      )
       .map((col) => col.headerName);
 
     const missingFields = columns
@@ -255,9 +258,13 @@ const CustomDataGrid = (props) => {
         sx={{
           minHeight: 208,
           '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
-          '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
-          '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
-          '.MuiDataGrid-columnHeaderTitle': { fontWeight: 700 },
+          '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': {
+            py: '15px'
+          },
+          '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': {
+            py: '22px'
+          },
+          '.MuiDataGrid-columnHeaderTitle': { fontWeight: 700 }
         }}
       />
       <Snackbar
@@ -274,7 +281,12 @@ const CustomDataGrid = (props) => {
           <strong>{error?.errorField}</strong>
         </Alert>
       </Snackbar>
-      <AlertDialog open={openDialog} onClose={handleClose} handleConfirmDelete={handleConfirmDelete} selectedId={selectedId} />
+      <AlertDialog
+        open={openDialog}
+        onClose={handleClose}
+        handleConfirmDelete={handleConfirmDelete}
+        selectedId={selectedId}
+      />
     </>
   );
 };

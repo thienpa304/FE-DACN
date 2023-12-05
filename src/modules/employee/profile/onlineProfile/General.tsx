@@ -37,7 +37,10 @@ export default function OnlineGeneral() {
   const formatInputData = (data: OnlineProfile) => ({
     ...data,
     profession: convertStringToObjectList(data?.profession, options.profession),
-    workAddress: convertStringToObjectList(data?.workAddress, options.workAddress)
+    workAddress: convertStringToObjectList(
+      data?.workAddress,
+      options.workAddress
+    )
   });
 
   useEffect(() => {
