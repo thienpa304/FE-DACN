@@ -10,6 +10,8 @@ import { Role } from './modules/users/model';
 import UserManagementTable from './pages/admin/UserManagement';
 import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManagement';
 import EmailNotification from './pages/admin/EmailNotification';
+import CandidateProfileAnalysis from './pages/admin/CandidateProfileAnalysis ';
+import UserProfileManagement from './pages/admin/UserProfileManagement';
 
 const Loader = (Component) => (props) =>
   (
@@ -285,6 +287,14 @@ const routes: RouteObject[] = [
       {
         path: 'mailer',
         element: <EmailNotification />
+      },
+      {
+        path: 'analyze-profile',
+        element: <CandidateProfileAnalysis />
+      },
+      {
+        path: 'manage-profile',
+        element: <UserProfileManagement />
       }
     ]
   },
