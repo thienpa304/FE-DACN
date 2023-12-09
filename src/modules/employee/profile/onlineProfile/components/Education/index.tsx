@@ -9,15 +9,16 @@ import {
   Snackbar
 } from '@mui/material';
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
+import useQueryOnlineProfile from '../../hooks/useQueryOnlineProfile';
 import useMutateEducation from './hooks/useMutateEducation';
 import useMutateUpdateEducation from './hooks/useMutateUpdateEducation';
 import useMutateDeleteEducation from './hooks/useMutateDeleteEducation';
 import dayjs from 'dayjs';
-import CustomDataGrid from 'src/components/EditDataGrid';
+import EditDataGrid from 'src/components/EditDataGrid';
+import useOnlineProfile from '../../hooks/useOnlineProfile';
 
 export default function Education() {
-  const { onlineProfile, isLoading } = useQueryOnlineProfile();
+  const { profile } = useOnlineProfile();
   const { onSaveData } = useMutateEducation();
   const { onSaveDataById } = useMutateUpdateEducation();
   const { onDeleteDataById } = useMutateDeleteEducation();
@@ -33,21 +34,24 @@ export default function Education() {
   };
 
   useEffect(() => {
-    const initialRows: GridRowsProp = onlineProfile?.education_informations;
+    const rows = profile?.education_informations;
+    const initialRows = rows ? JSON.parse(JSON.stringify(rows)) : [];
     if (initialRows) processData(initialRows);
-    setRows(
-      onlineProfile?.education_informations?.length > 0 ? initialRows : []
-    );
-  }, [onlineProfile]);
+    setRows(profile?.education_informations?.length > 0 ? initialRows : []);
+  }, [profile]);
 
   const validation = (data) => {
-    debugger;
-    if (dayjs(data.startDate).isAfter(data.endDate)) {
+    if (
+      dayjs(data.startDate, 'DD-MM-YYYY').isAfter(
+        dayjs(data.endDate, 'DD-MM-YYYY')
+      )
+    ) {
       setError({ state: true, message: 'Ngày kết thúc phải sau ngày bắt đầu' });
       return false;
     }
     return true;
   };
+
   const handleSaveEducationData = (data) => {
     if (validation(data)) onSaveData(data);
   };
@@ -116,7 +120,7 @@ export default function Education() {
       </Box>
       <Divider />
       <Box pt={3} pb={6}>
-        <CustomDataGrid
+        <EditDataGrid
           rows={rows}
           columns={columns}
           handleSave={handleSaveEducationData}

@@ -8,10 +8,9 @@ import { OnlineProfileService } from 'src/modules/employee/profile/employeeServi
 const useMutateOnlineProfile = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-
   const mutationFunction = OnlineProfileService.create;
 
-  const { mutate: onSaveData, isLoading } = useMutation<
+  const { mutate: onSaveData, isSuccess } = useMutation<
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>,
     OnlineProfile
@@ -30,7 +29,7 @@ const useMutateOnlineProfile = () => {
   });
   return {
     onSaveData,
-    isLoading
+    isSuccess
   };
 };
 

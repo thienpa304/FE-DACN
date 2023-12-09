@@ -7,14 +7,14 @@ import {
   Divider
 } from '@mui/material';
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
 import useMutateDegree from './hooks/useMutateDegree';
 import useMutateUpdateDegree from './hooks/useMutateUpdateDegree';
 import useMutateDeleteDegree from './hooks/useMutateDeleteDegree';
-import CustomDataGrid from 'src/components/EditDataGrid';
+import EditDataGrid from 'src/components/EditDataGrid';
+import useOnlineProfile from '../../hooks/useOnlineProfile';
 
 function Degree() {
-  const { onlineProfile, isLoading } = useQueryOnlineProfile();
+  const { profile } = useOnlineProfile();
   const { onSaveData } = useMutateDegree();
   const { onSaveDataById } = useMutateUpdateDegree();
   const { onDeleteDataById } = useMutateDeleteDegree();
@@ -44,13 +44,10 @@ function Degree() {
   const [rows, setRows] = useState<GridRowsProp>([]);
 
   useEffect(() => {
-    if (
-      onlineProfile?.another_degrees &&
-      onlineProfile.another_degrees.length > 0
-    ) {
-      setRows(onlineProfile.another_degrees);
+    if (profile?.another_degrees && profile.another_degrees.length > 0) {
+      setRows(profile.another_degrees);
     }
-  }, [onlineProfile]);
+  }, [profile]);
 
   const columns: GridColDef[] = [
     {
@@ -86,7 +83,7 @@ function Degree() {
       </Box>
       <Divider />
       <Box pt={3} pb={6}>
-        <CustomDataGrid
+        <EditDataGrid
           rows={rows}
           columns={columns}
           handleSave={handleSaveDegreeData}

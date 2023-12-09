@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Snackbar, Alert, AlertTitle } from '@mui/material';
+import { Button, Snackbar, Alert, AlertTitle, Typography } from '@mui/material';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -33,7 +33,7 @@ interface EditToolbarProps {
   ) => void;
 }
 
-const CustomDataGrid = (props) => {
+const EditDataGrid = (props) => {
   const { columns, rows, handleSave, handleUpdate, handleDelete } = props;
   const [currentRows, setCurrentRows] = useState<GridRowsProp>([]);
   const [initialRows, setInitialRows] = useState<GridRowsProp>([]);
@@ -51,6 +51,7 @@ const CustomDataGrid = (props) => {
     const { setCurrentRows, setRowModesModel } = props;
 
     const handleAddClick = () => {
+      if (currentRows[0]?.isNew) return;
       const id = randomId();
       const newRow = { id, isNew: true };
       const emptyRow = columns.reduce((acc, column) => {
@@ -71,7 +72,9 @@ const CustomDataGrid = (props) => {
           startIcon={<AddIcon />}
           onClick={handleAddClick}
         >
-          Thêm mới
+          <Typography sx={{ fontWeight: 700, fontSize: 16 }}>
+            Thêm mới
+          </Typography>
         </Button>
       </GridToolbarContainer>
     );
@@ -111,7 +114,6 @@ const CustomDataGrid = (props) => {
     setOpenDialog(false);
   };
 
-
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
@@ -129,7 +131,11 @@ const CustomDataGrid = (props) => {
     const existingRow = initialRows.find((row) => row.id === newRow.id);
 
     const invalidFields = columns
-      .filter((col) => col.type === 'date' && (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null))
+      .filter(
+        (col) =>
+          col.type === 'date' &&
+          (!dayjs(newRow[col.field]).isValid() || newRow[col.field] === null)
+      )
       .map((col) => col.headerName);
 
     const missingFields = columns
@@ -158,10 +164,10 @@ const CustomDataGrid = (props) => {
       updatedRow = { ...newRow, isNew: false };
       handleUpdate(newRow.id, updatedRow);
     }
-    const targetRow = currentRows.map((row) =>
+    const rowList = currentRows.map((row) =>
       row.id === newRow.id ? updatedRow : row
     );
-    setCurrentRows(targetRow);
+    setCurrentRows(rowList);
     return updatedRow;
   };
 
@@ -255,9 +261,13 @@ const CustomDataGrid = (props) => {
         sx={{
           minHeight: 208,
           '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
-          '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
-          '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
-          '.MuiDataGrid-columnHeaderTitle': { fontWeight: 700 },
+          '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': {
+            py: '15px'
+          },
+          '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': {
+            py: '22px'
+          },
+          '.MuiDataGrid-columnHeaderTitle': { fontWeight: 700 }
         }}
       />
       <Snackbar
@@ -274,9 +284,14 @@ const CustomDataGrid = (props) => {
           <strong>{error?.errorField}</strong>
         </Alert>
       </Snackbar>
-      <AlertDialog open={openDialog} onClose={handleClose} handleConfirmDelete={handleConfirmDelete} selectedId={selectedId} />
+      <AlertDialog
+        open={openDialog}
+        onClose={handleClose}
+        handleConfirmDelete={handleConfirmDelete}
+        selectedId={selectedId}
+      />
     </>
   );
 };
 
-export default CustomDataGrid;
+export default EditDataGrid;

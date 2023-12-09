@@ -4,10 +4,14 @@ import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { AttachedDocumentService } from 'src/modules/employee/profile/employeeService';
 import { AttachedDocument } from 'src/modules/employee/model/index';
+import { useNavigate } from 'react-router';
 
 const useMutateUpdateAttachedDocument = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   const { toast } = useApp();
+
   const { mutate: onUpdateData, isLoading } = useMutation<
     ResponseData<AttachedDocument>,
     AxiosError<ResponseData<AttachedDocument>>,
@@ -17,6 +21,7 @@ const useMutateUpdateAttachedDocument = () => {
       if (res.status === 200) {
         queryClient.invalidateQueries('get-AttachedDocument');
         toast.success({ massage: res.message });
+        navigate('/employee/recruitment-profile');
       } else {
         toast.error({ massage: res.message });
       }

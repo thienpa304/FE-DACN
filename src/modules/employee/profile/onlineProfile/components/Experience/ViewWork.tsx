@@ -11,14 +11,14 @@ import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import BusinessIcon from '@mui/icons-material/Business';
-import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import EditExperience from './EditWork';
 import useMutateDeleteExperience from './hooks/useMutateDeleteExperience';
+import useOnlineProfile from '../../hooks/useOnlineProfile';
 
 export default function ExperienceView(props) {
   const { onDeleteDataById } = useMutateDeleteExperience();
-  const { onlineProfile } = useQueryOnlineProfile();
+  const { profile } = useOnlineProfile();
   const [listOfWork, setListOfWork] = useState([]);
   const [selectedWorkId, setSelectedWorkId] = useState(null);
   const [isEditWorkVisible, setIsEditWorkVisible] = useState(false);
@@ -34,8 +34,8 @@ export default function ExperienceView(props) {
   };
 
   useEffect(() => {
-    setListOfWork(onlineProfile?.work_experiences);
-  }, [onlineProfile]);
+    setListOfWork(profile?.work_experiences);
+  }, [profile]);
 
   return (
     <>
@@ -65,7 +65,7 @@ export default function ExperienceView(props) {
             </Typography>
             <Box display="flex">
               <Typography fontSize={12}>Mô tả công việc:&nbsp;</Typography>
-              <Box width={500}>
+              <Box>
                 <Typography fontSize={12}>{work.jobDescription}</Typography>
               </Box>
             </Box>
@@ -84,6 +84,7 @@ export default function ExperienceView(props) {
         <EditExperience
           workId={selectedWorkId}
           onClose={() => setIsEditWorkVisible(false)}
+          onlineProfile={profile}
         />
       )}
       {(!isEditWorkVisible || listOfWork?.length === 0) && (

@@ -15,19 +15,23 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import FormControl from 'src/components/FormControl';
 import TextField from 'src/components/TextField';
 import { useForm } from 'react-hook-form';
-import { WorkExperience } from '../../../model';
-import useQueryOnlineProfile from '../hooks/useQueryOnlineProfile';
+import { WorkExperience } from '../../../../model';
 import useMutateExperience from './hooks/useMutateExperience';
 import useMutateUpdateExperience from './hooks/useMutateUpdateExperience';
 import DatePicker from 'src/components/DatePicker';
 import dayjs from 'dayjs';
-import { toInputDateString, toOutputDateString } from 'src/utils/inputOutputFormat';
+import {
+  toInputDateString,
+  toOutputDateString
+} from 'src/utils/inputOutputFormat';
+import useOnlineProfile from '../../hooks/useOnlineProfile';
+import ButtonGroup from 'src/components/ButtonGroup';
 
 export default function EditExperience(props) {
-  const { onlineProfile, isLoading } = useQueryOnlineProfile();
   const { onSaveData } = useMutateExperience();
   const { onSaveDataById } = useMutateUpdateExperience();
   const { onClose, workId } = props;
+  const { profile } = useOnlineProfile();
   const [error, setError] = useState({ state: false, message: '' });
 
   const defaultUserValues = {
@@ -73,14 +77,30 @@ export default function EditExperience(props) {
 
   const processInputData = (data) => {
     if (!data.isDoing)
-      return { ...data, startDate: toInputDateString(data.startDate), endDate: toInputDateString(data.endDate) }
-    return { ...data, startDate: toInputDateString(data.startDate), endDate: null }
+      return {
+        ...data,
+        startDate: toInputDateString(data.startDate),
+        endDate: toInputDateString(data.endDate)
+      };
+    return {
+      ...data,
+      startDate: toInputDateString(data.startDate),
+      endDate: null
+    };
   };
 
   const processOutputData = (data) => {
     if (!data.isDoing)
-      return { ...data, startDate: toOutputDateString(data.startDate), endDate: toOutputDateString(data.endDate) }
-    return { ...data, startDate: toOutputDateString(data.startDate), endDate: null }
+      return {
+        ...data,
+        startDate: toOutputDateString(data.startDate),
+        endDate: toOutputDateString(data.endDate)
+      };
+    return {
+      ...data,
+      startDate: toOutputDateString(data.startDate),
+      endDate: null
+    };
   };
 
   const handleSaveExperienceData = async (data) => {
@@ -92,20 +112,14 @@ export default function EditExperience(props) {
   };
 
   useEffect(() => {
-    const foundExperience = onlineProfile?.work_experiences.find(
+    const foundExperience = profile?.work_experiences.find(
       (experience) => experience.id === workId
     );
-    if (!foundExperience) return;
-    const formattedInputData = processInputData(foundExperience);
-    reset(formattedInputData);
-  }, [workId, onlineProfile]);
-
-  if (isLoading)
-    return (
-      <Box sx={{ width: '100%' }}>
-        <LinearProgress />
-      </Box>
-    );
+    if (foundExperience) {
+      const formattedInputData = processInputData(foundExperience);
+      reset(formattedInputData);
+    }
+  }, [workId, profile]);
 
   return (
     <>
@@ -212,19 +226,10 @@ export default function EditExperience(props) {
             />
           </Grid>
         </Grid>
-        <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
-          <Button
-            color="success"
-            onClick={handleSubmit(handleSaveExperienceData)}
-            variant="contained"
-            sx={{ width: 120 }}
-          >
-            Xác nhận
-          </Button>
-          <Button onClick={onClose} variant="outlined" sx={{ width: 120 }}>
-            Hủy
-          </Button>
-        </Box>
+        <ButtonGroup
+          handleSubmit={handleSubmit(handleSaveExperienceData)}
+          handleCancel={onClose}
+        />
       </Box>
     </>
   );

@@ -11,7 +11,7 @@ import {
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import useQueryOnlineProfile from './onlineProfile/hooks/useQueryOnlineProfile';
-import useUpdateOnlineProfile from './onlineProfile/hooks/useMutateOnlineProfileUpdate';
+import useUpdateOnlineProfile from './onlineProfile/hooks/useMutateUpdateOnlineProfile';
 import useQueryAttachedDocument from './attachedDocument/hooks/useQueryAttachedDocument';
 import useMutateUpdateAttachedDocument from './attachedDocument/hooks/useMutateUpdateAttachedDocument';
 

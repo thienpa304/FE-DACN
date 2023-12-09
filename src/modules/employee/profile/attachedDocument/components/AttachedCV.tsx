@@ -13,46 +13,45 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import FormControl from 'src/components/FormControl';
 import { useForm } from 'react-hook-form';
-import useQueryAttachedDocument from './hooks/useQueryAttachedDocument';
-import { User } from '../../../users/model';
+import { User } from '../../../../users/model';
 import { useApp } from 'src/modules/app/hooks';
 import {
-  GetFileByUserId,
-  UploadFileByUserId,
-  RemoveFileByUserId,
-  DocumentType
+  getFileByUrl,
+  uploadFile,
+  removeFileByUrl
 } from 'src/common/firebaseService';
 import { CVFormat } from 'src/constants/uploadFileRule';
+import useAttachedDocument from '../hooks/useDocument';
+import { applicationErrorText } from 'src/components/UploadError';
 
 const Input = styled('input')({
   display: 'none'
 });
 
 const AttachCV = (props) => {
-  console.log('CV');
   const { user } = useApp();
-  const { attachedDocument } = useQueryAttachedDocument();
-  const { cvType } = DocumentType;
+  const { setProfile, profile } = useAttachedDocument();
   const { acceptTypes, acceptSize } = CVFormat;
   const defaultUserValues = { ...user };
 
-  const [currentFile, setCurrentFile] = useState(null);
-  const [currentFileUrl, setCurrentFileUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentDoc, setCurrentDoc] = useState({
+    file: null,
+    url: ''
+  });
 
-  const { control, handleSubmit } = useForm<User>({
+  const { control } = useForm<User>({
     defaultValues: defaultUserValues
   });
 
   useEffect(() => {
     handleGetFile();
-  }, [user]);
+  }, [profile]);
 
   const handleGetFile = async () => {
-    const fileUrl = await GetFileByUserId(user.userId, cvType).catch(() => '');
-    setCurrentFile(fileUrl);
-    setCurrentFileUrl(fileUrl);
+    const fileUrl = await getFileByUrl(profile?.CV).catch(() => '');
+    setCurrentDoc({ url: fileUrl, file: null });
   };
 
   const handleUploadFile = async (e) => {
@@ -60,10 +59,9 @@ const AttachCV = (props) => {
     setLoading(true);
     const file = e.target.files[0];
     if (file && acceptTypes.includes(file.type) && file.size <= acceptSize) {
-      const fileUrl = URL.createObjectURL(file);
-      setCurrentFile(file);
-      setCurrentFileUrl(fileUrl);
-      await UploadFileByUserId(user.userId, file, cvType);
+      const fileUrl = await uploadFile(file);
+      setCurrentDoc({ url: fileUrl, file: file });
+      setProfile({ CV: fileUrl });
     } else {
       setError(true);
     }
@@ -73,23 +71,15 @@ const AttachCV = (props) => {
   const handleDeleteFile = () => {
     setError(false);
     setLoading(true);
-    RemoveFileByUserId(user.userId, cvType);
-    setCurrentFile(null);
-    setCurrentFileUrl(null);
+    removeFileByUrl(currentDoc.url);
+    setCurrentDoc({ url: '', file: null });
+    setProfile({ CV: '' });
     setLoading(false);
   };
 
   const openFile = () => {
-    window.open(currentFileUrl, '_blank');
+    window.open(currentDoc.url, '_blank');
   };
-
-  const displayError = () => (
-    <Typography color="error" my={1}>
-      File tải lên không hợp lệ. File phải có định dạng{' '}
-      <strong>{acceptTypes.join(', ').replace(/application\//g, '.')}</strong>{' '}
-      và dung lượng <strong>{` <= ${acceptSize / 1024 / 1024}MB`}</strong>
-    </Typography>
-  );
 
   return (
     <Container id="cv">
@@ -102,12 +92,12 @@ const AttachCV = (props) => {
       </Box>
       <Divider />
       <Box py={2}>
-        {!currentFile && (
+        {!currentDoc?.url && (
           <Box>
             <Typography mb={2} color="grey.700">
               <em>* Vui lòng gửi lên CV xin việc của bạn !</em>
             </Typography>
-            {error && displayError()}
+            {error && applicationErrorText}
             <label htmlFor="CV">
               <Button
                 component="label"
@@ -126,10 +116,11 @@ const AttachCV = (props) => {
                 Tải file
               </Button>
             </label>
+            {loading && <CircularProgress />}
           </Box>
         )}
 
-        {currentFile && (
+        {currentDoc?.url && (
           <Box>
             <Box display="flex">
               <ContactPageIcon sx={{ width: 50, height: 50 }} color="info" />
@@ -140,13 +131,11 @@ const AttachCV = (props) => {
                 width="100%"
                 onClick={openFile}
               >
-                {currentFile?.name ||
-                  ` CV cho vị trí công việc ${
-                    attachedDocument?.jobTitle || ''
-                  }`}
+                {currentDoc?.file?.name ||
+                  ` CV cho vị trí công việc ${profile?.jobTitle || ''}`}
                 {loading && <CircularProgress />}
               </Box>
-              {error && displayError()}
+              {error && applicationErrorText}
             </Box>
             <Box display="flex">
               <Button

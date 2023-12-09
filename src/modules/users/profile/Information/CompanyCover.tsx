@@ -26,6 +26,7 @@ import {
   coverImgFormat,
   defaultImage
 } from 'src/constants/uploadFileRule';
+import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
 
 const useStyles = makeStyles((theme) => ({
   coverImage: {
@@ -46,22 +47,6 @@ const Input = styled('input')({
   display: 'none'
 });
 
-function ErrorMessage({ objectName, errorObject, format }) {
-  if (errorObject.error) {
-    return (
-      <Typography color="error" mt={1} fontSize={12}>
-        <strong>{objectName}</strong> phải có định dạng
-        <strong>
-          {format.acceptTypes.join(', ').replace(/image\//g, '.')}
-        </strong>
-        , và dung lượng
-        <strong>{` <= ${format.acceptSize / 1024 / 1024}MB`}</strong>
-      </Typography>
-    );
-  }
-  return null;
-}
-
 function CompanyCover() {
   const classes = useStyles();
   const { user } = useApp();
@@ -70,8 +55,7 @@ function CompanyCover() {
 
   const defaultAvatar = {
     img: '',
-    error: false,
-    imageFile: null
+    error: false
   };
 
   const [companyAvatar, setCompanyAvatar] = useState(defaultAvatar);
@@ -110,7 +94,9 @@ function CompanyCover() {
     const documentType =
       kind === 'avatar' ? companyAvatarType : companyCoverType;
     UploadFileByUserId(user?.userId, image, documentType);
-    setImage({ ...initial, img: imageUrl, error: false });
+
+    // const imageUrl = uploadFile(image).catch(() => '');  // new
+    setImage({ img: imageUrl, error: false });
   };
 
   const removeImage = (e, setImage, kind) => {
@@ -175,6 +161,12 @@ function CompanyCover() {
             sx={{ fontWeight: 700 }}
             onClick={(e) => {
               removeImage(e, setCompanyCover, 'cover');
+              // removeFileByUrl(companyCover.img);
+              setCompanyAvatar({
+                ...companyAvatar,
+                img: defaultImage.companyAvatar,
+                error: false
+              });
               handleClose();
             }}
           >
@@ -212,6 +204,8 @@ function CompanyCover() {
           component="label"
           onClick={(e) => {
             removeImage(e, setCompanyAvatar, 'avatar');
+            // removeFileByUrl(companyAvatar.img);
+            setCompanyAvatar({ ...companyAvatar, img: '' });
           }}
           size="small"
           startIcon={<DoNotDisturbOnOutlinedIcon />}
@@ -234,16 +228,8 @@ function CompanyCover() {
           <Typography variant="h3">{company?.companyName}</Typography>
         </Box>
         <Box>
-          <ErrorMessage
-            objectName={'Ảnh bìa'}
-            errorObject={companyCover}
-            format={coverImgFormat}
-          />
-          <ErrorMessage
-            objectName={'Ảnh đại diện'}
-            errorObject={companyAvatar}
-            format={avatarFormat}
-          />
+          {companyCover.error && coverErrorText}
+          {companyAvatar.error && avatarErrorText}
         </Box>
       </Container>
     </>

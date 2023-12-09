@@ -2,17 +2,20 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { OnlineProfileService } from 'src/modules/employee/profile/employeeService';
 import { OnlineProfile } from 'src/modules/employee/model/index';
+import { OnlineProfileService } from 'src/modules/employee/profile/employeeService';
 
-const useUpdateOnlineProfile = () => {
+const useMutateUpdateOnlineProfile = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-  const { mutate: onUpdateData, isLoading } = useMutation<
+  const useMutateFunction = (data) =>
+    OnlineProfileService.updateAtEndPoint(data);
+
+  const { mutate: onUpdateData, isLoading, isSuccess } = useMutation<
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>,
     OnlineProfile
-  >((data) => OnlineProfileService.updateAtEndPoint(data), {
+  >(useMutateFunction, {
     onSuccess: (res) => {
       if (res.status === 200) {
         queryClient.invalidateQueries('get-OnlineProfile');
@@ -28,8 +31,8 @@ const useUpdateOnlineProfile = () => {
 
   return {
     onUpdateData,
-    isLoading
+    isSuccess
   };
 };
 
-export default useUpdateOnlineProfile;
+export default useMutateUpdateOnlineProfile;

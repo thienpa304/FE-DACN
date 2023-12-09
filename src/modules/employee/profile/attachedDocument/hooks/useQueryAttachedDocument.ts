@@ -8,7 +8,10 @@ const useQueryAttachedDocument = () => {
   const { data, isLoading } = useQuery<
     ResponseData<AttachedDocument>,
     AxiosError<ResponseData<AttachedDocument>>
-  >('get-AttachedDocument', AttachedDocumentService.get, { retry: 1, refetchOnWindowFocus: false });
+  >('get-AttachedDocument', AttachedDocumentService.get, {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     attachedDocument: data?.data,

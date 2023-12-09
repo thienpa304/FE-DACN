@@ -11,12 +11,12 @@ import {
 } from '@mui/material';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
-import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
 import DatePicker from 'src/components/DatePicker';
 import TextField from 'src/components/TextField';
+import EditButton from 'src/components/EditButton';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { User } from '../../users/model';
@@ -27,10 +27,19 @@ import {
   GetFileByUserId,
   UploadFileByUserId,
   RemoveFileByUserId,
-  DocumentType
+  DocumentType,
+  getFileByUrl,
+  uploadFile,
+  removeFileByUrl
 } from 'src/common/firebaseService';
 import { avatarFormat } from 'src/constants/uploadFileRule';
-import { toOutputDateString, toInputDateString } from 'src/utils/inputOutputFormat';
+import {
+  toOutputDateString,
+  toInputDateString
+} from 'src/utils/inputOutputFormat';
+import ButtonGroup from 'src/components/ButtonGroup';
+import { avatarErrorText } from 'src/components/UploadError';
+import useMutateAvatar from 'src/modules/users/hooks/useMutateAvatar';
 
 const Input = styled('input')({
   display: 'none'
@@ -44,14 +53,13 @@ export default function Personal() {
     uploadFile: null
   });
   const { user } = useApp();
+  const { onSaveData: onSavaAvatar } = useMutateAvatar();
   const { onSaveData } = useMutateUserData();
   const { acceptTypes, acceptSize } = avatarFormat;
-  const { avatarType } = DocumentType;
-  const [isReadOnly, setIsReadOnly] = useState(true);
+  const [isReadOnly, setIsReadOnly] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log("sex: ", user.sex)
     reset(defaultUserValues);
     handleGetAvatar();
   }, [user]);
@@ -61,24 +69,21 @@ export default function Personal() {
   const handleSaveProfile = async (data) => {
     setLoading(true);
 
-    if (avatarState.uploadFile)
-      await UploadFileByUserId(user.userId, avatarState.uploadFile, avatarType);
     let avatarUrl = '';
-    if (!avatarState.avatar) await RemoveFileByUserId(user.userId, avatarType);
-    else
-      avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
-        () => ''
-      );
-
-    const avatarString = avatarUrl !== '' ? avatarUrl : null;
+    if (avatarState.uploadFile)
+      avatarUrl = await uploadFile(avatarState.uploadFile).catch(() => '');
+    if (!avatarState.avatar) await removeFileByUrl(user.avatar);
 
     const newData = {
       ...data,
       dob: toOutputDateString(data.dob),
-      isMarried: data.isMarried === 'Đã kết hôn' ? "1" : "0"
+      isMarried: data.isMarried === 'Đã kết hôn' ? '1' : '0',
+      avatar: avatarUrl
     };
-
     onSaveData(newData);
+
+    onSavaAvatar(newData);
+
     setLoading(false);
     setIsReadOnly(true);
   };
@@ -90,10 +95,7 @@ export default function Personal() {
   };
 
   const handleGetAvatar = async () => {
-    const avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
-      () => null
-    );
-
+    const avatarUrl = await getFileByUrl(user?.avatar);
     setAvatarState({
       ...avatarState,
       avatar: avatarUrl,
@@ -102,7 +104,6 @@ export default function Personal() {
   };
 
   const handleUploadAvatar = (e) => {
-    setAvatarState({ ...avatarState, avatarError: false });
     const image = e.target.files[0];
     if (!image) return;
     if (!acceptTypes.includes(image.type) || image.size > acceptSize) {
@@ -110,7 +111,12 @@ export default function Personal() {
       return;
     }
     const imageUrl = URL.createObjectURL(image);
-    setAvatarState({ ...avatarState, avatar: imageUrl, uploadFile: image });
+    setAvatarState({
+      ...avatarState,
+      avatar: imageUrl,
+      uploadFile: image,
+      avatarError: false
+    });
   };
 
   const handleDeleteAvatar = () => {
@@ -119,7 +125,7 @@ export default function Personal() {
 
   const defaultUserValues = {
     ...user,
-    dob: toInputDateString(user.dob as string, "DD-MM-YYYY", "DD-MM-YYYY"),
+    dob: toInputDateString(user.dob as string, 'DD-MM-YYYY', 'DD-MM-YYYY'),
     sex: GENDER.find((item) => item.label === user.sex)?.value,
     isMarried: user.isMarried ? 'Đã kết hôn' : 'Độc thân'
   };
@@ -141,17 +147,7 @@ export default function Personal() {
             Thông tin cá nhân
           </Typography>
         </Box>
-        {isReadOnly && (
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleEdit}
-            startIcon={<AutoFixHighOutlinedIcon fontSize="large" />}
-            sx={{ borderRadius: 5 }}
-          >
-            <Typography textTransform="none">Chỉnh sửa</Typography>
-          </Button>
-        )}
+        {isReadOnly && <EditButton onClick={handleEdit} />}
       </Box>
       <Divider />
       <Grid container sx={{ mt: 1 }} py={2}>
@@ -188,8 +184,11 @@ export default function Personal() {
                     id="userAvatar"
                     label="Ảnh đại diện"
                     onChange={handleUploadAvatar}
+                    // sx={{ fontSize: 15 }}
                   />
-                  Upload
+                  <Typography sx={{ fontSize: 15, fontWeight: 700 }}>
+                    Tải lên
+                  </Typography>
                 </Button>
               </label>
             )}
@@ -211,7 +210,9 @@ export default function Personal() {
                     label="Ảnh đại diện"
                     onChange={handleUploadAvatar}
                   />
-                  Upload
+                  <Typography sx={{ fontSize: 15, fontWeight: 700 }}>
+                    Thay đổi
+                  </Typography>
                 </Button>
                 <Button
                   component="label"
@@ -221,26 +222,13 @@ export default function Personal() {
                   variant="text"
                   color="secondary"
                 >
-                  Delete
+                  <Typography sx={{ fontSize: 15, fontWeight: 700 }}>
+                    Xóa
+                  </Typography>
                 </Button>
               </Box>
             )}
-            {avatarState.avatarError && (
-              <Typography color="error" fontSize={12}>
-                Định dạng file chỉ có thể là
-                {
-                  <strong>
-                    {acceptTypes.join(', ').replace(/image\//g, '.')}
-                  </strong>
-                }
-                , và dung lượng{' '}
-                {
-                  <strong>
-                    {` <=`} {acceptSize / 1024 / 1024}MB
-                  </strong>
-                }
-              </Typography>
-            )}
+            {avatarState.avatarError && avatarErrorText}
           </Box>
         </Grid>
         <Grid item xs={9}>
@@ -344,23 +332,10 @@ export default function Personal() {
               {loading ? (
                 <CircularProgress size={20} />
               ) : (
-                <>
-                  <Button
-                    color="success"
-                    onClick={handleSubmit(handleSaveProfile)}
-                    variant="contained"
-                    sx={{ width: 120 }}
-                  >
-                    Xác nhận
-                  </Button>
-                  <Button
-                    onClick={handleCancel}
-                    variant="outlined"
-                    sx={{ width: 120 }}
-                  >
-                    Hủy
-                  </Button>
-                </>
+                <ButtonGroup
+                  handleSubmit={handleSubmit(handleSaveProfile)}
+                  handleCancel={handleCancel}
+                />
               )}
             </Box>
           )}

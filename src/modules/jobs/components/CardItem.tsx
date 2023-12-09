@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Avatar,
   Box,
@@ -13,25 +14,12 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
-import { useApp } from 'src/modules/app/hooks';
-import { useEffect, useState } from 'react';
-import { GetFileByUserId, DocumentType } from 'src/common/firebaseService';
 
 function CardItemJob({ job }) {
-  const { user } = useApp();
-  const [companyAvatar, setCompanyAvatar] = useState('');
+  const [companyAvatar, setCompanyAvatar] = useState(
+    defaultImage.companyAvatar
+  );
 
-  const getAvatar = async () => {
-    const avatar = await GetFileByUserId(
-      user?.userId,
-      DocumentType.companyAvatarType
-    ).catch(() => defaultImage.companyAvatar);
-    setCompanyAvatar(avatar);
-  };
-
-  useEffect(() => {
-    getAvatar();
-  }, [user]);
   return (
     <LinkText to={`/job/${job?.postId}`}>
       <Card sx={{ height: 160, border: 1, borderColor: '#98E4FF' }}>

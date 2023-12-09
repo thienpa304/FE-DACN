@@ -12,11 +12,10 @@ const CustomBox = styled(Box)(({ theme }) => ({
   boxShadow: '2px 2px 6px #aae2f7'
 }));
 
-
 export default function InfoAccountTab() {
   const { userProfile: user } = useProfileHook();
   const isMarried = user?.isMarried ? 'Đã kết hôn' : 'Độc thân';
-  const dob = dayjs(user?.dob, "DD-MM-YYYY").isValid() ? user?.dob : null;
+  const dob = dayjs(user?.dob, 'DD-MM-YYYY').isValid() ? user?.dob : null;
   const UserData = [
     { label: 'Họ và tên', value: user?.name },
     { label: 'Giới tính', value: user?.sex },
@@ -36,7 +35,9 @@ export default function InfoAccountTab() {
           user={user}
           data={UserData}
           title="Thông tin cá nhân"
-          editIcon={<ListAltOutlinedIcon color="primary" sx={{ fontSize: 60 }} />}
+          editIcon={
+            <ListAltOutlinedIcon color="primary" sx={{ fontSize: 60 }} />
+          }
           openForm="User"
         />
       </CustomBox>

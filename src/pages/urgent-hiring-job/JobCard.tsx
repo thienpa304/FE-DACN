@@ -15,7 +15,6 @@ import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { useApp } from 'src/modules/app/hooks';
-import { GetFileByUserId, DocumentType } from 'src/common/firebaseService';
 import { defaultImage } from 'src/constants/uploadFileRule';
 
 function JobCard({ job }) {
@@ -23,10 +22,7 @@ function JobCard({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState('');
 
   const getAvatar = async () => {
-    const avatar = await GetFileByUserId(
-      user?.userId,
-      DocumentType.companyAvatarType
-    ).catch(() => defaultImage.companyAvatar);
+    const avatar = defaultImage.companyAvatar;
     setCompanyAvatar(avatar);
   };
 
