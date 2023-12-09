@@ -11,7 +11,11 @@ const useMutateUpdateOnlineProfile = () => {
   const useMutateFunction = (data) =>
     OnlineProfileService.updateAtEndPoint(data);
 
-  const { mutate: onUpdateData, isLoading, isSuccess } = useMutation<
+  const {
+    mutate: onUpdateData,
+    isLoading,
+    isSuccess
+  } = useMutation<
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>,
     OnlineProfile
