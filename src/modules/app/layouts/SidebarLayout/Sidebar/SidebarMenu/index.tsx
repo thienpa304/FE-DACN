@@ -19,14 +19,26 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CheckBoxTwoToneIcon from '@mui/icons-material/CheckBoxTwoTone';
 import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
-
+import {
+  AccountCircleTwoTone as UserManageIcon,
+  AssessmentTwoTone as StatisticReportIcon,
+  SecurityTwoTone as ManageAccessIcon,
+  EmailTwoTone as MailerIcon,
+  WorkTwoTone as JobsPostingIcon,
+  WorkOutlineTwoTone as ManageProfileIcon,
+  AnalyticsTwoTone as AnalyzeProfileIcon,
+  NotificationsActiveTwoTone as JobSuggestIcon
+} from '@mui/icons-material';
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
   .MuiList-root {
-    padding: ${theme.spacing(1)};
+    padding: 0 5px 0 9px;
 
     & > .MuiList-root {
       padding: 0 ${theme.spacing(0)} ${theme.spacing(1)};
+    }
+    .MuiListItem-root .MuiButton-root {
+      padding: 9px 12px;
     }
   }
 
@@ -309,6 +321,75 @@ function SidebarMenu() {
               component="div"
               subheader={
                 <ListSubheader component="div" disableSticky>
+                  Quản lý hệ thống
+                </ListSubheader>
+              }
+            >
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/user-manage`}
+                      startIcon={<UserManageIcon />}
+                    >
+                      Quản lý người dùng
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/statistic-report`}
+                      startIcon={<StatisticReportIcon />}
+                    >
+                      Thống kê và báo cáo
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/manage-access`}
+                      startIcon={<ManageAccessIcon />}
+                    >
+                      Bảo mật và quản lý quyền truy cập
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/mailer`}
+                      startIcon={<MailerIcon />}
+                    >
+                      Thông báo qua email
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+            </List>
+            <List
+              component="div"
+              subheader={
+                <ListSubheader component="div" disableSticky>
                   Quản lý công việc
                 </ListSubheader>
               }
@@ -321,9 +402,54 @@ function SidebarMenu() {
                       component={RouterLink}
                       onClick={closeSidebar}
                       to={`/${rolePath}/jobs-posting`}
-                      startIcon={<AccountCircleTwoToneIcon />}
+                      startIcon={<JobsPostingIcon />}
                     >
                       Việc đăng tuyển
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/manage-profile`}
+                      startIcon={<ManageProfileIcon />}
+                    >
+                      Quản lý hồ sơ và CV
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/analyze-profile`}
+                      startIcon={<AnalyzeProfileIcon />}
+                    >
+                      Phân tích hồ sơ cá nhân
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/job-suggest`}
+                      startIcon={<JobSuggestIcon />}
+                    >
+                      Gợi ý việc làm
                     </Button>
                   </ListItem>
                 </List>
