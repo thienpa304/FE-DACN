@@ -95,7 +95,7 @@ export default function ModalApply(props: Props) {
                 errors={errors}
                 required
                 id="name"
-                label="Hộ và tên"
+                label="Họ và tên"
                 name="name"
               />
             </Grid>

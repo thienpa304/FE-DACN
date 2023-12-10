@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Snackbar, Alert, AlertTitle } from '@mui/material';
+import { Button, Snackbar, Alert, AlertTitle, Typography } from '@mui/material';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -33,7 +33,7 @@ interface EditToolbarProps {
   ) => void;
 }
 
-const CustomDataGrid = (props) => {
+const EditDataGrid = (props) => {
   const { columns, rows, handleSave, handleUpdate, handleDelete } = props;
   const [currentRows, setCurrentRows] = useState<GridRowsProp>([]);
   const [initialRows, setInitialRows] = useState<GridRowsProp>([]);
@@ -51,6 +51,7 @@ const CustomDataGrid = (props) => {
     const { setCurrentRows, setRowModesModel } = props;
 
     const handleAddClick = () => {
+      if (currentRows[0]?.isNew) return;
       const id = randomId();
       const newRow = { id, isNew: true };
       const emptyRow = columns.reduce((acc, column) => {
@@ -71,7 +72,9 @@ const CustomDataGrid = (props) => {
           startIcon={<AddIcon />}
           onClick={handleAddClick}
         >
-          Thêm mới
+          <Typography sx={{ fontWeight: 700, fontSize: 16 }}>
+            Thêm mới
+          </Typography>
         </Button>
       </GridToolbarContainer>
     );
@@ -161,10 +164,10 @@ const CustomDataGrid = (props) => {
       updatedRow = { ...newRow, isNew: false };
       handleUpdate(newRow.id, updatedRow);
     }
-    const targetRow = currentRows.map((row) =>
+    const rowList = currentRows.map((row) =>
       row.id === newRow.id ? updatedRow : row
     );
-    setCurrentRows(targetRow);
+    setCurrentRows(rowList);
     return updatedRow;
   };
 
@@ -291,4 +294,4 @@ const CustomDataGrid = (props) => {
   );
 };
 
-export default CustomDataGrid;
+export default EditDataGrid;

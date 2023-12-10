@@ -5,7 +5,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Typography } from '@mui/material';
 export default function AlertDialog(props) {
   const { open, selectedId, handleConfirmDelete, onClose } = props;
-  console.log('after open: ', selectedId);
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle

@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { CompanyForm, UserForm } from './EditForm';
+import EditButton from 'src/components/EditButton';
 
 const InputLabel = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(1.5, 1, 1.5, 0),
@@ -54,15 +55,7 @@ export default function InfoField(props) {
             </Typography>
           </Box>
         </Box>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={handleEdit}
-          startIcon={<AutoFixHighOutlinedIcon fontSize="large" />}
-          sx={{ borderRadius: 5 }}
-        >
-          <Typography textTransform="none">Chỉnh sửa</Typography>
-        </Button>
+        <EditButton onClick={handleEdit} />
         <Dialog open={open} fullWidth maxWidth="md">
           <DialogTitle
             sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}

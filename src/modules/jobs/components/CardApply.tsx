@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { Avatar, Box, Card, CardContent, Grid, Button } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Button,
+  Container
+} from '@mui/material';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PaidIcon from '@mui/icons-material/Paid';
 import SendIcon from '@mui/icons-material/Send';
@@ -8,6 +16,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled } from '@mui/material/styles';
 import { Job } from '../model';
 import ModalApply from '../../application/components/ModalApply';
+import { toInputDateString } from 'src/utils/inputOutputFormat';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -44,71 +53,81 @@ const CardApply: React.FC<Props> = ({ data }) => {
   return (
     <Card>
       <CardContent>
-        <Grid container>
-          <Grid item xs={12} md={2}>
-            <AvatarWrapper src="https://cdn1.vieclam24h.vn/images/default/2023/10/02/Logo%20ISO-1_169621842571.jpg" />
-          </Grid>
-          <Grid item xs={12} md={10}>
-            <Box>
-              <SubTitle>{data?.employer?.companyName}</SubTitle>
-              <Title>{data.jobTitle}</Title>
-              <Grid container spacing={1}>
-                <Grid item xs={12} md={6}>
-                  <Grid container alignItems={'center'}>
-                    <PaidIcon color="primary" sx={{ margin: '0 5px' }} />
-                    <LabelText> Mức lương : </LabelText>
-                    <ValueText>
-                      {data.minSalary} - {data.maxSalary} triệu
-                    </ValueText>
+        <Container>
+          <Grid container>
+            <Grid item xs={12} md={2}>
+              <AvatarWrapper
+                src={
+                  data?.employer?.logo ||
+                  'https://cdn1.vieclam24h.vn/images/default/2023/10/02/Logo%20ISO-1_169621842571.jpg'
+                }
+              />
+            </Grid>
+            <Grid item xs={12} md={10}>
+              <Box>
+                <SubTitle>{data?.employer?.companyName}</SubTitle>
+                <Title>{data.jobTitle}</Title>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} md={6}>
+                    <Grid container alignItems={'center'}>
+                      <PaidIcon color="primary" sx={{ margin: '0 5px' }} />
+                      <LabelText> Mức lương : </LabelText>
+                      <ValueText>
+                        {data.minSalary} - {data.maxSalary} triệu
+                      </ValueText>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Grid container alignItems={'center'}>
+                      <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
+                      <LabelText> Hạn nộp hồ sơ : </LabelText>
+                      <ValueText>{data.applicationDeadline}</ValueText>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Grid container alignItems={'center'}>
+                      <AccessibilityIcon
+                        color="primary"
+                        sx={{ margin: '0 5px' }}
+                      />
+                      <LabelText> Độ tuổi : </LabelText>
+                      <ValueText>
+                        {data.minAge} - {data.maxAge}
+                      </ValueText>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Grid container alignItems={'center'}>
+                      <LocationOnIcon
+                        color="primary"
+                        sx={{ margin: '0 5px' }}
+                      />
+                      <LabelText> Khu vực ứng tuyển : </LabelText>
+                      <ValueText>{data.contactAddress}</ValueText>
+                    </Grid>
                   </Grid>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Grid container alignItems={'center'}>
-                    <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
-                    <LabelText> Hạn nộp hồ sơ : </LabelText>
-                    <ValueText> {data.applicationDeadline}</ValueText>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Grid container alignItems={'center'}>
-                    <AccessibilityIcon
-                      color="primary"
-                      sx={{ margin: '0 5px' }}
-                    />
-                    <LabelText> Độ tuổi : </LabelText>
-                    <ValueText>
-                      {data.minAge} - {data.maxAge}
-                    </ValueText>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Grid container alignItems={'center'}>
-                    <LocationOnIcon color="primary" sx={{ margin: '0 5px' }} />
-                    <LabelText> Khu vực ứng tuyển : </LabelText>
-                    <ValueText>{data.contactAddress}</ValueText>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Box sx={{ marginTop: 1 }}>
-                <Button
-                  onClick={handleOpenFormApply}
-                  variant="contained"
-                  startIcon={<SendIcon />}
-                  color="info"
-                >
-                  Nộp hồ sơ
-                </Button>
+                <Box sx={{ marginTop: 1 }}>
+                  <Button
+                    onClick={handleOpenFormApply}
+                    variant="contained"
+                    startIcon={<SendIcon />}
+                    color="info"
+                  >
+                    Nộp hồ sơ
+                  </Button>
+                </Box>
               </Box>
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
-        <ModalApply
-          open={openFormApply}
-          postId={data.postId}
-          onClose={onCloseFormApply}
-          position={data.jobTitle}
-          company={data?.employer?.companyName}
-        />
+          <ModalApply
+            open={openFormApply}
+            postId={data.postId}
+            onClose={onCloseFormApply}
+            position={data.jobTitle}
+            company={data?.employer?.companyName}
+          />
+        </Container>
       </CardContent>
     </Card>
   );

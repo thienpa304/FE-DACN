@@ -13,6 +13,7 @@ import {
   toInputDateString,
   toOutputDateString
 } from 'src/utils/inputOutputFormat';
+import ButtonGroup from 'src/components/ButtonGroup';
 
 export function UserForm(props) {
   const { close, user } = props;
@@ -32,7 +33,7 @@ export function UserForm(props) {
   });
 
   const handleSaveProfile = async (data) => {
-    const formattedDob = toOutputDateString(data.dob, 'DD-MM-YYYY');
+    const formattedDob = toOutputDateString(data.dob);
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
     const newData = { ...data, dob: formattedDob, isMarried: isMarried };
     onSavaUser(newData);
@@ -127,19 +128,10 @@ export function UserForm(props) {
           </Grid>
         </Grid>
       </Grid>
-      <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
-        <Button
-          color="success"
-          onClick={handleSubmit(handleSaveProfile)}
-          variant="contained"
-          sx={{ width: 120 }}
-        >
-          Xác nhận
-        </Button>
-        <Button onClick={() => close()} variant="outlined" sx={{ width: 120 }}>
-          Hủy
-        </Button>
-      </Box>
+      <ButtonGroup
+        handleSubmit={handleSubmit(handleSaveProfile)}
+        handleCancel={() => close()}
+      />
     </Box>
   );
 }
@@ -215,19 +207,10 @@ export function CompanyForm(props) {
           </Grid>
         </Grid>
       </Grid>
-      <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
-        <Button
-          color="success"
-          onClick={handleSubmit(handleSaveCompany)}
-          variant="contained"
-          sx={{ width: 120 }}
-        >
-          Xác nhận
-        </Button>
-        <Button onClick={() => close()} variant="outlined" sx={{ width: 120 }}>
-          Hủy
-        </Button>
-      </Box>
+      <ButtonGroup
+        handleSubmit={handleSubmit(handleSaveCompany)}
+        handleCancel={() => close()}
+      />
     </Box>
   );
 }

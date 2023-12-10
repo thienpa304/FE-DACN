@@ -1,7 +1,9 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
+import { Box, Container } from '@mui/material';
 import JobList from './JobList';
-import { Box } from '@mui/material';
+import ProfessionIntro from './ProfessionIntro';
+import Casousel from './Casousel';
 const OverviewWrapper = styled(Box)(
   () => `
     overflow: auto;
@@ -13,7 +15,11 @@ const OverviewWrapper = styled(Box)(
 const Home = () => {
   return (
     <OverviewWrapper>
-      <JobList />
+      <Casousel />
+      <Container sx={{ pb: 3 }}>
+        <ProfessionIntro />
+        <JobList />
+      </Container>
     </OverviewWrapper>
   );
 };

@@ -15,18 +15,13 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import IconButton from '@mui/material/IconButton';
 import { useApp } from 'src/modules/app/hooks';
-import {
-  GetFileByUserId,
-  UploadFileByUserId,
-  RemoveFileByUserId,
-  DocumentType
-} from 'src/common/firebaseService';
-import useMutateUserData from '../../hooks/useMutateUserHook';
+import { uploadFile, removeFileByUrl } from 'src/common/firebaseService';
 import { useForm } from 'react-hook-form';
 import { User } from '../../model';
 import FormControl from 'src/components/FormControl';
 import { avatarFormat } from 'src/constants/uploadFileRule';
-import UploadButton from 'src/components/UploadButton';
+import useMutateAvatar from '../../hooks/useMutateAvatar';
+import { avatarErrorText } from 'src/components/UploadError';
 
 const Input = styled('input')({
   display: 'none'
@@ -34,11 +29,9 @@ const Input = styled('input')({
 
 export default function UserCover() {
   const { user } = useApp();
-  const { onSaveData } = useMutateUserData();
+  const { onSaveData, isLoading } = useMutateAvatar();
   const { acceptTypes, acceptSize } = avatarFormat;
-  const { avatarType } = DocumentType;
   const [save, setSave] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [userAvatar, setUserAvatar] = useState({
     avatar: '',
     error: false,
@@ -49,11 +42,8 @@ export default function UserCover() {
     handleGetAvatar();
   }, [user]);
 
-  const handleGetAvatar = async () => {
-    const avatarUrl = await GetFileByUserId(user.userId, avatarType).catch(
-      () => ''
-    );
-    setUserAvatar({ ...userAvatar, avatar: avatarUrl });
+  const handleGetAvatar = () => {
+    setUserAvatar({ ...userAvatar, avatar: user?.avatar?.replace(' ', '') });
     setSave(true);
   };
 
@@ -70,20 +60,17 @@ export default function UserCover() {
   };
 
   const handleSaveAvatar = async (data) => {
-    setLoading(true);
-    await UploadFileByUserId(user.userId, userAvatar.imageFile, avatarType);
-    const url = await GetFileByUserId(user.userId, avatarType).catch(() => '');
+    const url = await uploadFile(userAvatar.imageFile).catch(() => '');
     setUserAvatar({ ...userAvatar, avatar: url, error: false });
-    setSave(true);
     const newData = { ...data, avatar: url };
     onSaveData(newData);
-    setLoading(false);
+    setSave(true);
   };
 
   const handleDeleteAvatar = async (data) => {
+    await removeFileByUrl(userAvatar.avatar);
     setUserAvatar({ ...userAvatar, avatar: null, error: false });
-    await RemoveFileByUserId(user.userId, avatarType);
-    const newData = { ...data, avatar: null };
+    const newData = { ...data, avatar: ' ' };
     onSaveData(newData);
   };
 
@@ -151,14 +138,14 @@ export default function UserCover() {
                       id="userAvatar"
                       onChange={handleUploadAvatar}
                     />
-                    Upload
+                    Tải lên
                   </Button>
                 </label>
               )}
 
               {userAvatar.avatar && (
                 <>
-                  {!save && !loading && (
+                  {!save && !isLoading && (
                     <Button
                       component="label"
                       onClick={handleSubmit(handleSaveAvatar)}
@@ -167,11 +154,11 @@ export default function UserCover() {
                       variant="outlined"
                       color="secondary"
                     >
-                      Save
+                      Lưu
                     </Button>
                   )}
 
-                  {loading ? (
+                  {isLoading ? (
                     <CircularProgress size={20} />
                   ) : (
                     save && (
@@ -183,7 +170,7 @@ export default function UserCover() {
                         variant="outlined"
                         color="secondary"
                       >
-                        Delete
+                        Xóa
                       </Button>
                     )
                   )}
@@ -191,22 +178,7 @@ export default function UserCover() {
               )}
             </Box>
 
-            {userAvatar.error && (
-              <Typography color="error" mt={1} fontSize={12}>
-                Định dạng file chỉ có thể là
-                {
-                  <strong>
-                    {acceptTypes.join(', ').replace(/image\//g, '.')}
-                  </strong>
-                }
-                , và dung lượng{' '}
-                {
-                  <strong>
-                    {` <=`} {acceptSize / 1024 / 1024}MB
-                  </strong>
-                }
-              </Typography>
-            )}
+            {userAvatar.error && avatarErrorText}
           </Grid>
           <Grid item xs={6} md={8}>
             <Box

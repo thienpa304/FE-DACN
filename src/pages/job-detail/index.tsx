@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import CardApply from 'src/modules/jobs/components/CardApply';
 import TabContent from './TabContent';
 import { useParams } from 'react-router';
@@ -16,12 +16,12 @@ const JobDetail = () => {
   }, [data]);
 
   return (
-    <Box margin={1} paddingBottom={2}>
+    <Container sx={{ paddingY: 2 }}>
       <CardApply data={itemDetail} />
       <Box marginTop={2}>
         <TabContent />
       </Box>
-    </Box>
+    </Container>
   );
 };
 

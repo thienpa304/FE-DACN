@@ -1,11 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { appReducer } from 'src/modules/app';
 import { jobReducer } from 'src/modules/jobs';
+import { docReduce } from 'src/modules/jobProfile/attachedDocument/documentSlice';
+import { onlineProfileReduce } from 'src/modules/jobProfile/onlineProfile/profileSlice';
 
 export const store = configureStore({
   reducer: {
     app: appReducer,
-    job: jobReducer
+    job: jobReducer,
+    document: docReduce,
+    onlineProfile: onlineProfileReduce
   }
 });
 

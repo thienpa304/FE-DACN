@@ -34,5 +34,9 @@ export type Job = {
   jobDescription: string;
   jobRequirements: string;
   benefits: string;
+  createAt: Date;
+  submissionCount: number;
+  view: number;
+  isHidden: boolean;
   employer: Company;
 };
