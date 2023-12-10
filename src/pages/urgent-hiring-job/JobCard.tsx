@@ -44,7 +44,7 @@ function JobCard({ job }) {
               variant="rounded"
               sx={{
                 bgcolor: '#a0b9cfc2',
-                height: 100,
+                height: 110,
                 width: '100%'
               }}
             >

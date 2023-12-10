@@ -17,46 +17,44 @@ function JobList() {
   const jobsToShow = jobs.slice(0, initialJobsToShow);
 
   return (
-    <Container sx={{ py: 3 }}>
-      <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ bgcolor: '#B6FFFA', borderTopRadius: 1, p: 2 }}
+    <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1 }}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ bgcolor: '#f0e9fe', borderTopRadius: 1, p: 2 }}
+      >
+        <Box display="flex" justifyContent="space-between">
+          <ScheduleIcon color="secondary" sx={{ fontSize: 35 }} />
+          <Typography fontWeight={700} fontSize={20} alignSelf="end">
+            Việc làm tuyển gấp
+          </Typography>
+        </Box>
+        <Link
+          href="/urgent-hiring-job"
+          underline="none"
+          color="secondary"
+          fontSize={16}
+          fontWeight={700}
+          sx={{
+            '&:hover': {
+              color: '#FF7D55'
+            }
+          }}
         >
-          <Box display="flex" justifyContent="space-between">
-            <ScheduleIcon color="secondary" sx={{ fontSize: 35 }} />
-            <Typography fontWeight={700} fontSize={20}>
-              Việc làm tuyển gấp
-            </Typography>
-          </Box>
-          <Divider />
-          <Link
-            href="/urgent-hiring-job"
-            underline="none"
-            color="secondary"
-            fontSize={16}
-            sx={{
-              '&:hover': {
-                color: '#FF7D55'
-              }
-            }}
-          >
-            Xem thêm
-          </Link>
-        </Box>
-        <Box p={2}>
-          <Grid container mb={4} spacing={2}>
-            {jobsToShow.map((job, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
-                <CardItemJob key={index} job={job} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Card>
-    </Container>
+          Xem thêm
+        </Link>
+      </Box>
+      <Box p={2}>
+        <Grid container mb={4} spacing={2}>
+          {jobsToShow.map((job, index) => (
+            <Grid key={index} item xs={12} sm={6} md={4}>
+              <CardItemJob key={index} job={job} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Card>
   );
 }
 

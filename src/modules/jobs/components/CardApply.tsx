@@ -16,6 +16,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled } from '@mui/material/styles';
 import { Job } from '../model';
 import ModalApply from '../../application/components/ModalApply';
+import { toInputDateString } from 'src/utils/inputOutputFormat';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -55,7 +56,12 @@ const CardApply: React.FC<Props> = ({ data }) => {
         <Container>
           <Grid container>
             <Grid item xs={12} md={2}>
-              <AvatarWrapper src="https://cdn1.vieclam24h.vn/images/default/2023/10/02/Logo%20ISO-1_169621842571.jpg" />
+              <AvatarWrapper
+                src={
+                  data?.employer?.logo ||
+                  'https://cdn1.vieclam24h.vn/images/default/2023/10/02/Logo%20ISO-1_169621842571.jpg'
+                }
+              />
             </Grid>
             <Grid item xs={12} md={10}>
               <Box>
@@ -75,7 +81,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
                     <Grid container alignItems={'center'}>
                       <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
                       <LabelText> Hạn nộp hồ sơ : </LabelText>
-                      <ValueText> {data.applicationDeadline}</ValueText>
+                      <ValueText>{data.applicationDeadline}</ValueText>
                     </Grid>
                   </Grid>
                   <Grid item xs={12} md={6}>

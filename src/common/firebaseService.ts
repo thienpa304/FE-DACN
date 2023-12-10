@@ -27,7 +27,9 @@ export async function UploadFileByUserId(
   kind: DocumentType
 ) {
   const fileRef = ref(storage, `users/uid-${userId}/${kind}`);
-  return uploadBytes(fileRef, image);
+  uploadBytes(fileRef, image);
+  const fileURL = await getDownloadURL(fileRef);
+  return fileURL.toString();
 }
 
 export async function RemoveFileByUserId(userId: number, kind: DocumentType) {

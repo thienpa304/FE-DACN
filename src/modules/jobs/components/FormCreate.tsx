@@ -22,12 +22,17 @@ import {
   EXPERIENCE,
   GENDER_OPTION,
   POSITION_LEVEL,
-  WORKING_FORM
+  WORKING_FORM,
+  PROFESSION
 } from 'src/constants/option';
 import useMutateJob from '../hooks/useMutateJob';
 import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
 import dayjs from 'dayjs';
+import {
+  convertObjectListToString,
+  toOutputDateString
+} from 'src/utils/inputOutputFormat';
 
 const defaultValues = {
   sex: '',
@@ -37,7 +42,8 @@ const defaultValues = {
   experience: '',
   jobDescription: '',
   jobRequirements: '',
-  benefits: ''
+  benefits: '',
+  profession: ''
 };
 type Props = {
   title?: string;
@@ -61,15 +67,30 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
   // reset Data if selected is true
   useEffect(() => {
-    reset({ ...defaultData });
+    reset({
+      ...defaultData,
+      profession: PROFESSION.find(
+        (item) => item.label === defaultData?.profession
+      )?.value.toString()
+    });
   }, [defaultData]);
 
   const handleSave = (data) => {
-    const formattedDeadline = dayjs(
+    const formattedDeadline = toOutputDateString(
       data.applicationDeadline,
-      'DD-MM-YYYY'
-    ).format('DD-MM-YYYY');
-    const newData = { ...data, applicationDeadline: formattedDeadline };
+      'DD/MM/YYYY',
+      'YYYY-MM-DD'
+    );
+    debugger;
+    console.log(data?.profession);
+    const profession = PROFESSION.find(
+      (item) => item.value === data.profession
+    )?.label;
+    const newData = {
+      ...data,
+      applicationDeadline: formattedDeadline,
+      profession: profession
+    };
     if (selectedId) onSaveDataById([selectedId, newData]);
     else onSaveData(newData);
   };
@@ -108,7 +129,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12}>
                       <FormControl
-                        element={<TextField />}
+                        element={<SelectInput />}
+                        options={PROFESSION}
                         control={control}
                         errors={errors}
                         id="profession"

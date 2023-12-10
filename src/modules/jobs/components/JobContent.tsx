@@ -19,6 +19,8 @@ import {
 import { styled } from '@mui/material/styles';
 import { TextParser } from 'src/components/TextEditor';
 import { Job } from '../model';
+import { toInputDateString } from 'src/utils/inputOutputFormat';
+import dayjs from 'dayjs';
 const CommonInfo = styled(Box)(({ theme }) => ({
   padding: 10,
   backgroundColor: '#F0FFF0',
@@ -48,7 +50,10 @@ const JobContent: React.FC<Props> = ({ data }) => {
                   <DateRangeIcon />
                 </AvatarWrapper>
               </ListItemAvatar>
-              <ListItemText primary="Jan 9, 2014" secondary="Ngày đăng" />
+              <ListItemText
+                primary={dayjs(data.createAt).format('YYYY-MM-DD')}
+                secondary="Ngày đăng"
+              />
             </ListItem>
           </Grid>
           <Grid item xs={12} md={4}>

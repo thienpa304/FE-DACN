@@ -27,6 +27,7 @@ import {
   defaultImage
 } from 'src/constants/uploadFileRule';
 import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
+import useMutateCompany from '../../hooks/useMutateCompany';
 
 const useStyles = makeStyles((theme) => ({
   coverImage: {
@@ -52,6 +53,7 @@ function CompanyCover() {
   const { user } = useApp();
   const { company } = useQueryCompany();
   const { companyAvatarType, companyCoverType } = DocumentType;
+  const { onSaveData } = useMutateCompany();
 
   const defaultAvatar = {
     img: '',
@@ -77,7 +79,7 @@ function CompanyCover() {
     setCompanyCover({ ...companyCover, img: coverUrl });
   };
 
-  const uploadImage = (e, setImage, format, kind) => {
+  const uploadImage = async (e, setImage, format, kind) => {
     const initial = kind === 'cover' ? companyCover : companyAvatar;
     const image = e.target.files[0];
     if (!image) return;
@@ -93,9 +95,12 @@ function CompanyCover() {
     const imageUrl = URL.createObjectURL(image);
     const documentType =
       kind === 'avatar' ? companyAvatarType : companyCoverType;
-    UploadFileByUserId(user?.userId, image, documentType);
+    const logoUrl = await UploadFileByUserId(user?.userId, image, documentType);
 
-    // const imageUrl = uploadFile(image).catch(() => '');  // new
+    // const logoUrl = uploadFile(image).catch(() => '');  // new
+    if (kind === 'avatar') {
+      onSaveData({ ...company, logo: logoUrl });
+    }
     setImage({ img: imageUrl, error: false });
   };
 

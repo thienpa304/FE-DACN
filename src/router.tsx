@@ -62,13 +62,13 @@ const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
 const EmployeeProfile = Loader(
-  lazy(() => import('src/modules/employee/profile'))
+  lazy(() => import('src/pages/employee/JobProfile'))
 );
 const OnlineProfile = Loader(
-  lazy(() => import('src/modules/employee/profile/onlineProfile'))
+  lazy(() => import('src/modules/jobProfile/onlineProfile'))
 );
 const AttachedDocument = Loader(
-  lazy(() => import('src/modules/employee/profile/attachedDocument'))
+  lazy(() => import('src/modules/jobProfile/attachedDocument'))
 );
 const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
 // Status

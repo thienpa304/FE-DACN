@@ -17,12 +17,10 @@ const JobDetail = () => {
 
   return (
     <Container sx={{ paddingY: 2 }}>
-      {/* <Box margin={1} paddingBottom={2}> */}
       <CardApply data={itemDetail} />
       <Box marginTop={2}>
         <TabContent />
       </Box>
-      {/* </Box> */}
     </Container>
   );
 };

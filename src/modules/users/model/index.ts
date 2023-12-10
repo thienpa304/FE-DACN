@@ -5,7 +5,7 @@ import {
   PositionLevel
 } from 'src/constants/enum';
 import { Application } from 'src/modules/application/model';
-import { OnlineProfile, AttachedDocument } from 'src/modules/employee/model';
+import { OnlineProfile, AttachedDocument } from 'src/modules/jobProfile/model';
 
 export enum Role {
   ADMIN = 'ADMIN',
@@ -32,6 +32,7 @@ export type Company = {
   taxCode: string;
   companyLocation: string;
   careerField: string;
+  logo: string;
 };
 
 export type Employee = {
