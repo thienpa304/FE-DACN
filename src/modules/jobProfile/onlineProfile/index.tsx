@@ -110,7 +110,8 @@ export default function OnlineProfile() {
               bgcolor="#ffff"
               sx={{ boxShadow: '2px 2px 6px #aae2f7' }}
               width={200}
-              position="fixed"
+              position="sticky"
+              top={60}
             >
               <TableOfContents sections={sections} />
             </Box>

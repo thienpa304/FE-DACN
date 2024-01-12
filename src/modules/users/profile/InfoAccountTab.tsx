@@ -4,6 +4,7 @@ import useProfileHook from '../hooks/useUserHook';
 import InfoField from './Information/InfoField';
 import UserCover from './Information/UserCover';
 import dayjs from 'dayjs';
+import { useApp } from 'src/modules/app/hooks';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   background: '#ffff',
@@ -13,6 +14,7 @@ const CustomBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function InfoAccountTab() {
+  const { isEmployee } = useApp();
   const { userProfile: user } = useProfileHook();
   const isMarried = user?.isMarried ? 'Đã kết hôn' : 'Độc thân';
   const dob = dayjs(user?.dob, 'DD-MM-YYYY').isValid() ? user?.dob : null;
@@ -25,6 +27,13 @@ export default function InfoAccountTab() {
     { label: 'Tình trạng hôn nhân', value: isMarried },
     { label: 'Địa chỉ', value: user?.address }
   ];
+  if (!isEmployee) {
+    // if isEmployee is true, remove { label: 'Tình trạng hôn nhân', value: isMarried } from UserData
+    UserData.splice(
+      UserData.findIndex((item) => item.label === 'Tình trạng hôn nhân'),
+      1
+    );
+  }
   return (
     <>
       <CustomBox>
