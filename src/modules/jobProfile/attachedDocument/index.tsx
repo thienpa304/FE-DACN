@@ -89,7 +89,7 @@ export default function AttachedDocument() {
             ))}
           </Grid>
           <Grid item xs={2}>
-            <CustomBox width={200} position="fixed">
+            <CustomBox width={200} position="sticky" top={60}>
               <TableOfContents sections={sections} />
             </CustomBox>
           </Grid>

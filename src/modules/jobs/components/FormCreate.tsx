@@ -31,8 +31,16 @@ import useMutateJobById from '../hooks/useMutateJobById';
 import dayjs from 'dayjs';
 import {
   convertObjectListToString,
-  toOutputDateString
+  findObjectKey,
+  toOutputDateString,
+  toOutputOptionLabel
 } from 'src/utils/inputOutputFormat';
+import {
+  Degree,
+  EmploymentType,
+  Experience,
+  PositionLevel
+} from 'src/constants/enum';
 
 const defaultValues = {
   sex: '',
@@ -67,6 +75,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
   // reset Data if selected is true
   useEffect(() => {
+    console.log('--->');
+    console.log('--->', defaultData?.benefits);
     reset({
       ...defaultData,
       profession: PROFESSION.find(
@@ -76,24 +86,25 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   }, [defaultData]);
 
   const handleSave = (data) => {
-    const formattedDeadline = toOutputDateString(
-      data.applicationDeadline,
-      'DD/MM/YYYY',
-      'YYYY-MM-DD'
-    );
-    debugger;
-    console.log(data?.profession);
-    const profession = PROFESSION.find(
-      (item) => item.value === data.profession
-    )?.label;
+    const profession = toOutputOptionLabel(data.profession, PROFESSION);
+    const degree = findObjectKey(data.degree, Degree);
+    const employmentType = findObjectKey(data.employmentType, EmploymentType);
+    const experience = findObjectKey(data.experience, Experience);
+    const positionLevel = findObjectKey(data.positionLevel, PositionLevel);
+
     const newData = {
       ...data,
-      applicationDeadline: formattedDeadline,
-      profession: profession
+      profession
+      // degree,
+      // employmentType,
+      // experience,
+      // positionLevel
     };
+
     if (selectedId) onSaveDataById([selectedId, newData]);
     else onSaveData(newData);
   };
+
   return (
     <>
       <FormProvider {...methods}>

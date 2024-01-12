@@ -14,8 +14,10 @@ import {
   toOutputDateString
 } from 'src/utils/inputOutputFormat';
 import ButtonGroup from 'src/components/ButtonGroup';
+import { useApp } from 'src/modules/app/hooks';
 
 export function UserForm(props) {
+  const { isEmployee } = useApp();
   const { close, user } = props;
   const { onSaveData: onSavaUser } = useMutateUserData();
 
@@ -114,18 +116,20 @@ export function UserForm(props) {
               name="sex"
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<SelectInput />}
-              options={ISMARRIED_OPTION}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="isMarried"
-              label="Tình trạng hôn nhân"
-              name="isMarried"
-            />
-          </Grid>
+          {isEmployee && (
+            <Grid item xs={12} sm={6}>
+              <FormControl
+                element={<SelectInput />}
+                options={ISMARRIED_OPTION}
+                control={control}
+                errors={errors}
+                fullWidth
+                id="isMarried"
+                label="Tình trạng hôn nhân"
+                name="isMarried"
+              />
+            </Grid>
+          )}
         </Grid>
       </Grid>
       <ButtonGroup

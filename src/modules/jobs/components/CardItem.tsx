@@ -59,7 +59,16 @@ function CardItemJob({ job }) {
                   <LocationOnOutlinedIcon
                     sx={{ maxHeight: 18, color: 'grey.700' }}
                   />
-                  <Typography>{job.workAddress}</Typography>
+                  <Typography
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      maxWidth: '200px'
+                    }}
+                  >
+                    {job.workAddress}
+                  </Typography>
                 </Box>
               </Box>
             </Grid>
