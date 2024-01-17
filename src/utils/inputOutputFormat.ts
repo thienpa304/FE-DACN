@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { object } from 'prop-types';
 
 interface Option {
   value: any;
@@ -42,6 +43,7 @@ export function toInputDateString(
     ? dayjs(data, outputFormat).toISOString()
     : null;
 }
+
 export function toOutputDateString(
   data: Date,
   inputFormat?: string,
@@ -51,4 +53,20 @@ export function toOutputDateString(
   return dayjs(data, inputFormat).isValid()
     ? dayjs(data).format(outputFormat || 'DD-MM-YYYY')
     : null;
+}
+
+export function toOutputOptionLabel(value: string, option) {
+  return option.find((item) => item.value === value)?.label;
+}
+
+export function findObjectKey(
+  experienceValue: string,
+  object
+): string | undefined {
+  for (const key in object) {
+    if (object[key as keyof typeof object] === experienceValue) {
+      return key;
+    }
+  }
+  return undefined;
 }

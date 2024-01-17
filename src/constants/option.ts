@@ -80,12 +80,10 @@ export const EXPERIENCE = Object.keys(Experience).map((key) => ({
   value: Experience[key],
   label: Experience[key]
 }));
-
 export const POSITION_LEVEL = Object.keys(PositionLevel).map((key) => ({
   value: PositionLevel[key],
   label: PositionLevel[key]
 }));
-
 export const ISMARRIED_OPTION = ISMARRIED.map((item) => ({
   value: item.label,
   label: item.label

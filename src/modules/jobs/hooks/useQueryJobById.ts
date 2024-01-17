@@ -9,7 +9,7 @@ const useQueryJobById = (id) => {
   const { data, isLoading } = useQuery<
     ResponseData<Job>,
     AxiosError<ResponseData<Job>>
-  >('job-getById', async () => JobViewService.getById(id));
+  >(['job-getById', id], async () => JobViewService.getById(id));
 
   return {
     data: data?.data,

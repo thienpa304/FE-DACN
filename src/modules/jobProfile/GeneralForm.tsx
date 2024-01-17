@@ -6,10 +6,19 @@ import SelectInput from 'src/components/SelectInput';
 import TextField from 'src/components/TextField';
 import Autocomplete from 'src/components/Autocomplete';
 import { useForm } from 'react-hook-form';
-import { convertObjectListToString } from 'src/utils/inputOutputFormat';
+import {
+  convertObjectListToString,
+  findObjectKey
+} from 'src/utils/inputOutputFormat';
 import NumericFormatCustom from 'src/components/NumberFormatCustom';
 import EditButton from 'src/components/EditButton';
 import ButtonGroup from 'src/components/ButtonGroup';
+import {
+  Degree,
+  EmploymentType,
+  Experience,
+  PositionLevel
+} from 'src/constants/enum';
 interface Option {
   value: any;
   label: any;
@@ -73,7 +82,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
   const [isReadOnly, setIsReadOnly] = useState(false);
 
   const handleSaveProfile = (data: FormProps) => {
-    const newData = processDataAfter(data);
+    const newData = processDataPayload(data);
     onSubmit(newData);
     setIsReadOnly(true);
   };
@@ -85,11 +94,16 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
 
   const onEdit = () => setIsReadOnly(false);
 
-  const processDataAfter = (data: FormProps) => {
+  const processDataPayload = (data: FormProps) => {
     return {
       ...data,
       profession: convertObjectListToString(data?.profession as Option[]),
-      workAddress: convertObjectListToString(data?.workAddress as Option[])
+      workAddress: convertObjectListToString(data?.workAddress as Option[]),
+      degree: findObjectKey(data.degree, Degree)
+      // employmentType: findObjectKey(data.employmentType, EmploymentType),
+      // experience: findObjectKey(data.experience, Experience),
+      // currentPosition: findObjectKey(data.currentPosition, PositionLevel),
+      // desiredPosition: findObjectKey(data.desiredPosition, PositionLevel)
     };
   };
 
@@ -181,7 +195,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
               InputProps={{
                 inputComponent: NumericFormatCustom as any,
                 endAdornment: (
-                  <InputAdornment position="end">VNĐ</InputAdornment>
+                  <InputAdornment position="end">triệu VNĐ</InputAdornment>
                 )
               }}
             />

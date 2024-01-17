@@ -85,7 +85,7 @@ const columns: GridColDef[] = [
     renderCell: () => <>0</>
   },
   {
-    field: 'ag2e',
+    field: 'age',
     headerName: 'Lượt xem',
     type: 'number',
     minWidth: 110,
