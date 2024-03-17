@@ -89,7 +89,7 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <SidebarLayout showSidebar={false} />,
+        element: <SidebarLayout showsidebar={false} />,
         children: [
           {
             path: '',

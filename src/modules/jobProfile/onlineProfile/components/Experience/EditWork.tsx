@@ -26,12 +26,15 @@ import {
 } from 'src/utils/inputOutputFormat';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 import ButtonGroup from 'src/components/ButtonGroup';
+import useWorkExperience from '../../hooks/useWorkExperience';
+import { v4 } from 'uuid';
 
 export default function EditExperience(props) {
   const { onSaveData } = useMutateExperience();
   const { onSaveDataById } = useMutateUpdateExperience();
   const { onClose, workId } = props;
-  const { profile } = useOnlineProfile();
+  const { profile, setProfile } = useOnlineProfile();
+  const { work_experiences, setWorkExperience } = useWorkExperience();
   const [error, setError] = useState({ state: false, message: '' });
 
   const defaultUserValues = {
@@ -105,16 +108,36 @@ export default function EditExperience(props) {
 
   const handleSaveExperienceData = async (data) => {
     if (error.state) return;
+    console.log(data);
     const formattedOutputData = processOutputData(data);
+    // if (!profile.userId) {
+    //   if (data.id) {
+    //     const index = work_experiences.findIndex((item) => item.id === data.id);
+    //     if (index !== -1) {
+    //       const expList = [...work_experiences];
+    //       expList[index] = { ...formattedOutputData, id: data.id };
+    //       setWorkExperience(expList);
+    //     }
+    //   } else {
+    //     const expList = [
+    //       ...work_experiences,
+    //       { id: v4(), ...formattedOutputData }
+    //     ];
+    //     setWorkExperience(expList);
+    //     setProfile({ work_experiences: expList });
+    //   }
+    // } else {
+    // }
     if (data.id) onSaveDataById([data.id, formattedOutputData]);
     else onSaveData(formattedOutputData);
     onClose();
   };
 
   useEffect(() => {
-    const foundExperience = profile?.work_experiences.find(
-      (experience) => experience.id === workId
-    );
+    const foundExperience =
+      profile?.work_experiences?.find(
+        (experience) => experience.id === workId
+      ) || work_experiences?.find((experience) => experience.id === workId);
     if (foundExperience) {
       const formattedInputData = processInputData(foundExperience);
       reset(formattedInputData);

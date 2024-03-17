@@ -7,6 +7,7 @@ import {
   Container,
   Divider,
   Grid,
+  InputAdornment,
   Typography
 } from '@mui/material';
 import React, { useEffect } from 'react';
@@ -41,6 +42,7 @@ import {
   Experience,
   PositionLevel
 } from 'src/constants/enum';
+import NumericFormatCustom from 'src/components/NumberFormatCustom';
 
 const defaultValues = {
   sex: '',
@@ -75,8 +77,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
   // reset Data if selected is true
   useEffect(() => {
-    console.log('--->');
-    console.log('--->', defaultData?.benefits);
     reset({
       ...defaultData,
       profession: PROFESSION.find(
@@ -136,6 +136,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         label="Chức danh"
                         placeholder="Vị trí hiển thị đăng tuyển"
                         name="jobTitle"
+                        inputProps={{ maxLength: 300 }}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -263,8 +264,15 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         id="trialPeriod"
                         label="Thời giai thử việc"
                         name="trialPeriod"
-                        type="number"
                         pattern="integer"
+                        type="number"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              tháng
+                            </InputAdornment>
+                          )
+                        }}
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -288,9 +296,16 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         id="minSalary"
                         label="Mức lương tối thiểu"
                         name="minSalary"
-                        type="number"
                         pattern="integer"
                         required
+                        InputProps={{
+                          inputComponent: NumericFormatCustom as any,
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              triệu VNĐ
+                            </InputAdornment>
+                          )
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -302,10 +317,17 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         errors={errors}
                         id="maxSalary"
                         label="Mức lương tối đa"
-                        type="number"
                         name="maxSalary"
                         pattern="integer"
                         required
+                        InputProps={{
+                          inputComponent: NumericFormatCustom as any,
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              triệu VNĐ
+                            </InputAdornment>
+                          )
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>

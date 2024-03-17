@@ -3,13 +3,15 @@ import { appReducer } from 'src/modules/app';
 import { jobReducer } from 'src/modules/jobs';
 import { docReduce } from 'src/modules/jobProfile/attachedDocument/documentSlice';
 import { onlineProfileReduce } from 'src/modules/jobProfile/onlineProfile/profileSlice';
+import { workExperienceReduce } from 'src/modules/jobProfile/onlineProfile/workExperienceSlice';
 
 export const store = configureStore({
   reducer: {
     app: appReducer,
     job: jobReducer,
     document: docReduce,
-    onlineProfile: onlineProfileReduce
+    onlineProfile: onlineProfileReduce,
+    workExperiences: workExperienceReduce
   }
 });
 

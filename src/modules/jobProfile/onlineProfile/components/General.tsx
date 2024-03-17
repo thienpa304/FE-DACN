@@ -15,7 +15,7 @@ import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
 import useOnlineProfile from '../hooks/useOnlineProfile';
 
 export default function OnlineGeneral() {
-  const { profile } = useOnlineProfile();
+  const { profile, setProfile } = useOnlineProfile();
   const { onSaveData } = useMutateOnlineProfile();
   const { onUpdateData } = useUpdateOnlineProfile();
   const [newData, setNewData] = useState(null);
@@ -32,6 +32,7 @@ export default function OnlineGeneral() {
   const handleSaveProfile = (data: OnlineProfile) => {
     if (profile?.userId) onUpdateData(data);
     else onSaveData(data);
+    // setProfile(data);
   };
 
   const formatInputData = (data: OnlineProfile) => ({

@@ -34,7 +34,8 @@ interface EditToolbarProps {
 }
 
 const EditDataGrid = (props) => {
-  const { columns, rows, handleSave, handleUpdate, handleDelete } = props;
+  const { columns, rows, handleSave, handleUpdate, handleDelete, profile } =
+    props;
   const [currentRows, setCurrentRows] = useState<GridRowsProp>([]);
   const [initialRows, setInitialRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -51,6 +52,10 @@ const EditDataGrid = (props) => {
     const { setCurrentRows, setRowModesModel } = props;
 
     const handleAddClick = () => {
+      if (!profile?.userId) {
+        setError({ type: 'noProfile', errorField: null });
+        return;
+      }
       if (currentRows[0]?.isNew) return;
       const id = randomId();
       const newRow = { id, isNew: true };
@@ -273,13 +278,17 @@ const EditDataGrid = (props) => {
       <Snackbar
         open={error?.type}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={3000}
+        autoHideDuration={5000}
         onClose={() => setError({ type: null, errorField: null })}
       >
         <Alert severity="error">
           <AlertTitle>
             {error?.type === 'missing' && 'Chưa nhập đầy đủ thông tin'}
             {error?.type === 'invalid' && 'Thời gian không hợp lệ'}
+            <strong>
+              {error?.type === 'noProfile' &&
+                'Vui lòng hoàn thành trước phần Thông tin chung!'}
+            </strong>
           </AlertTitle>
           <strong>{error?.errorField}</strong>
         </Alert>

@@ -18,7 +18,7 @@ import EditDataGrid from 'src/components/EditDataGrid';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 
 export default function Education() {
-  const { profile } = useOnlineProfile();
+  const { profile, setProfile } = useOnlineProfile();
   const { onSaveData } = useMutateEducation();
   const { onSaveDataById } = useMutateUpdateEducation();
   const { onDeleteDataById } = useMutateDeleteEducation();
@@ -36,7 +36,9 @@ export default function Education() {
   useEffect(() => {
     const rows = profile?.education_informations;
     const initialRows = rows ? JSON.parse(JSON.stringify(rows)) : [];
+    console.log(initialRows);
     if (initialRows) processData(initialRows);
+    console.log(initialRows);
     setRows(profile?.education_informations?.length > 0 ? initialRows : []);
   }, [profile]);
 
@@ -53,13 +55,34 @@ export default function Education() {
   };
 
   const handleSaveEducationData = (data) => {
-    if (validation(data)) onSaveData(data);
+    if (validation(data)) {
+      onSaveData(data);
+      // console.log(data);
+      // const prevList = profile?.education_informations || [];
+      // const eduList = [...prevList, { ...data }];
+      // setProfile({ education_informations: eduList });
+    }
   };
   const handleUpdateEducationData = (id, data) => {
-    if (validation(data)) onSaveDataById([id, data]);
+    if (validation(data)) {
+      onSaveDataById([id, data]);
+      // const index = profile?.education_informations?.findIndex(
+      //   (item) => item.id === data.id
+      // );
+      // debugger;
+      // if (index !== -1) {
+      //   const eduList = [...profile?.education_informations] || [];
+      //   eduList[index] = data;
+      //   setProfile({ education_informations: eduList });
+      // }
+    }
   };
   const handleDeleteEducationData = (id) => {
     onDeleteDataById(id);
+    // const eduList = profile?.education_informations?.filter(
+    //   (edu) => edu.id !== id
+    // );
+    // setProfile({ education_informations: eduList });
   };
 
   const columns: GridColDef[] = [
@@ -121,6 +144,7 @@ export default function Education() {
       <Divider />
       <Box pt={3} pb={6}>
         <EditDataGrid
+          profile={profile}
           rows={rows}
           columns={columns}
           handleSave={handleSaveEducationData}

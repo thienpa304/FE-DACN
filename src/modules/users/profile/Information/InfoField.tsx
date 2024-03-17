@@ -44,8 +44,6 @@ export default function InfoField(props) {
       <CompanyForm close={handleClose} user={user} />
     );
 
-  console.log(data);
-
   return (
     <Container sx={{ paddingX: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center">

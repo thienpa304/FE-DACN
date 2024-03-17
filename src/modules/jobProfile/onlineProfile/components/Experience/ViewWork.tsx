@@ -5,7 +5,10 @@ import {
   Typography,
   Divider,
   Avatar,
-  IconButton
+  IconButton,
+  Snackbar,
+  Alert,
+  AlertTitle
 } from '@mui/material';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -15,13 +18,16 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 import EditExperience from './EditWork';
 import useMutateDeleteExperience from './hooks/useMutateDeleteExperience';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
+import useWorkExperience from '../../hooks/useWorkExperience';
 
 export default function ExperienceView(props) {
   const { onDeleteDataById } = useMutateDeleteExperience();
   const { profile } = useOnlineProfile();
+  const { work_experiences, setWorkExperience } = useWorkExperience();
   const [listOfWork, setListOfWork] = useState([]);
   const [selectedWorkId, setSelectedWorkId] = useState(null);
   const [isEditWorkVisible, setIsEditWorkVisible] = useState(false);
+  const [isNoProfile, setIsNoProfile] = useState(false);
 
   const handleEditWork = (workId) => {
     if (workId) setSelectedWorkId(workId);
@@ -29,13 +35,29 @@ export default function ExperienceView(props) {
   };
 
   const handleAddWork = () => {
+    debugger;
+    if (!profile?.work_experiences) {
+      setIsNoProfile(true);
+      return;
+    }
     setSelectedWorkId(null);
     setIsEditWorkVisible(true);
   };
 
+  const handleDeleteWork = (workId) => {
+    onDeleteDataById(workId);
+    // if (profile?.work_experiences?.length > 1)
+    // onDeleteDataById(workId);
+    // else {
+    //   const newList = work_experiences.filter((work) => work.id !== workId);
+    //   setWorkExperience(newList);
+    // }
+  };
+
   useEffect(() => {
-    setListOfWork(profile?.work_experiences);
-  }, [profile]);
+    profile?.work_experiences ? setListOfWork(profile?.work_experiences) : [];
+    //   : setListOfWork(work_experiences);
+  }, [profile, work_experiences]);
 
   return (
     <>
@@ -74,7 +96,7 @@ export default function ExperienceView(props) {
             <IconButton onClick={() => handleEditWork(work.id)}>
               <ModeEditOutlineIcon />
             </IconButton>
-            <IconButton onClick={() => onDeleteDataById(work.id)}>
+            <IconButton onClick={() => handleDeleteWork(work.id)}>
               <DeleteOutlineIcon />
             </IconButton>
           </Box>
@@ -105,6 +127,21 @@ export default function ExperienceView(props) {
           >
             <Typography>Thêm kinh nghiệm làm việc</Typography>
           </Button>
+          <Snackbar
+            open={isNoProfile}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            autoHideDuration={5000}
+            onClose={() => setIsNoProfile(false)}
+          >
+            <Alert severity="error">
+              <AlertTitle>
+                <strong>
+                  {isNoProfile &&
+                    'Vui lòng hoàn thành trước phần Thông tin chung!'}
+                </strong>
+              </AlertTitle>
+            </Alert>
+          </Snackbar>
         </>
       )}
     </>

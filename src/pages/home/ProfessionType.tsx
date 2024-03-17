@@ -44,7 +44,7 @@ const iconsList = [
   }
 ];
 
-function ProfessionIntro() {
+function ProfessionType() {
   const [searchValue, setSearchValue] = useState('');
   const [open, setOpen] = React.useState(false);
 
@@ -143,4 +143,4 @@ function ProfessionIntro() {
   );
 }
 
-export default ProfessionIntro;
+export default ProfessionType;

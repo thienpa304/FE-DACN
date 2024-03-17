@@ -22,8 +22,8 @@ import HeaderUserbox from './Userbox';
 import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
 
-const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
-  ({ theme, showSidebar }) => `
+const HeaderWrapper = styled(Box)<{ showsidebar: boolean }>(
+  ({ theme, showsidebar }) => `
         height: ${theme.header.height};
         color: ${theme.header.textColor};
         padding: ${theme.spacing(0, 2)};
@@ -35,13 +35,13 @@ const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
         justify-content: space-between;
         width: 100%;
         @media (min-width: ${theme.breakpoints.values.lg}px) {
-            left: ${showSidebar ? theme.sidebar.width : 0};
+            left: ${showsidebar ? theme.sidebar.width : 0};
             width: auto;
         }
 `
 );
 
-function Header({ showSidebar }) {
+function Header({ showsidebar }) {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const {
     user: { userId }
@@ -50,7 +50,7 @@ function Header({ showSidebar }) {
 
   return (
     <HeaderWrapper
-      showSidebar={showSidebar}
+      showsidebar={showsidebar}
       display="flex"
       alignItems="center"
       sx={{
@@ -75,7 +75,7 @@ function Header({ showSidebar }) {
         alignItems="center"
         spacing={2}
       >
-        {!showSidebar && <Logo />}
+        {!showsidebar && <Logo />}
         {/* <HeaderMenu /> */}
       </Stack>
       <Box display="flex" alignItems="center">
@@ -99,7 +99,7 @@ function Header({ showSidebar }) {
             </Link>
           </>
         )}
-        {showSidebar && (
+        {showsidebar && (
           <Box
             component="span"
             sx={{
