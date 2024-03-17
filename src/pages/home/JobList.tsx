@@ -5,19 +5,28 @@ import {
   Link,
   Typography,
   Card,
-  Divider
+  Divider,
+  Pagination
 } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CardItemJob from 'src/modules/jobs/components/CardItem';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
+import { useState } from 'react';
 
 function JobList() {
-  const { jobs } = useQueryAllJob();
-  const initialJobsToShow = 12;
-  const jobsToShow = jobs.slice(0, initialJobsToShow);
   const { totalResults } = useQueryTotalResults();
-  console.log(totalResults);
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 9;
+  const validvalidTotalPages = Number.isInteger(totalResults)
+    ? totalResults
+    : 1;
+  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
+  const { jobs } = useQueryAllJob({ page: currentPage, num: jobsPerPage });
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1 }}>
@@ -50,12 +59,22 @@ function JobList() {
       </Box>
       <Box p={3}>
         <Grid container mb={3} spacing={2}>
-          {jobsToShow.map((job, index) => (
-            <Grid key={index} item xs={12} sm={6} md={4}>
+          {jobs.map((job, index) => (
+            <Grid key={job.id} item xs={12} sm={6} md={4}>
               <CardItemJob key={index} job={job} />
             </Grid>
           ))}
         </Grid>
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={(event, page) => handlePageChange(page)}
+          color="secondary"
+          variant="outlined"
+          shape="rounded"
+          size="large"
+          sx={{ display: 'flex', justifyContent: 'center' }}
+        />
       </Box>
     </Card>
   );

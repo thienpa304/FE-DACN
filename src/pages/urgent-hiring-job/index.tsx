@@ -4,17 +4,19 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import LinkText from 'src/components/LinkText';
 import JobCard from './JobCard';
+import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
 
 function UrgentHiringJob() {
-  const { jobs } = useQueryAllJob();
+  const { totalResults } = useQueryTotalResults();
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 10;
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentPageJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  const jobsPerPage = 15;
+  const validvalidTotalPages = Number.isInteger(totalResults)
+    ? totalResults
+    : 1;
+  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
+  const { jobs } = useQueryAllJob({ page: currentPage, num: jobsPerPage });
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
@@ -37,8 +39,8 @@ function UrgentHiringJob() {
           tuyển dụng
         </Typography>
         <Grid container spacing={2}>
-          {currentPageJobs.map((job, index) => (
-            <Grid key={index} item xs={12}>
+          {jobs.map((job, index) => (
+            <Grid key={job.id} item xs={12}>
               <LinkText to={`/job/${job?.postId}`}>
                 <JobCard key={index} job={job} />
               </LinkText>
