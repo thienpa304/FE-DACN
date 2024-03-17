@@ -25,9 +25,12 @@ import useOnlineProfile from './hooks/useOnlineProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import SubmitBox from '../SubmitBox';
 import { useNavigate } from 'react-router';
-import useMutateOnlineProfile from './hooks/useMutateOnlineProfile';
 import useMutateUpdateOnlineProfile from './hooks/useMutateUpdateOnlineProfile';
-import { OnlineProfile as OnlineProfileType } from 'src/modules/jobProfile/model/index';
+import useWorkExperience from './hooks/useWorkExperience';
+import useProfileHook from 'src/modules/users/hooks/useUserHook';
+import useMutateOnlineProfile from './hooks/useMutateOnlineProfile';
+import { OnlineProfile as OnlineProfileType } from '../model';
+import useMutateEducation from './components/Education/hooks/useMutateEducation';
 
 const MyBox = ({ children }) => (
   <Box bgcolor="#ffff" sx={{ mb: 4, boxShadow: '2px 2px 6px #aae2f7' }}>
@@ -68,11 +71,25 @@ export default function OnlineProfile() {
   useMutateUpdateOnlineProfile();
   const { onlineProfile, isLoading } = useQueryOnlineProfile();
   const { profile, setProfile } = useOnlineProfile();
+  const { onSaveData: onSaveGeneral } = useMutateOnlineProfile();
+  const { onSaveData: onSaveEducation } = useMutateEducation();
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     if (profile?.userId) navigate('/employee/recruitment-profile');
     else setMissingInfo(true);
+    // debugger;
+    // const education_informations = profile?.education_informations
+    //   ? [...profile?.education_informations]
+    //   : [];
+    // const work_experiences = profile?.work_experiences
+    //   ? [...profile?.work_experiences]
+    //   : [];
+    // debugger;
+    // onSaveGeneral(profile as OnlineProfileType);
+    // debugger;
+    // for (let i = 0; i < education_informations.length; i++)
+    //   onSaveEducation(education_informations[i]);
   };
 
   const goBack = () => {

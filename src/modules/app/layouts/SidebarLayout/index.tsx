@@ -8,10 +8,10 @@ import { SidebarContext } from 'src/contexts/SidebarContext';
 
 interface SidebarLayoutProps {
   children?: ReactNode;
-  showSidebar?: boolean;
+  showsidebar?: boolean;
 }
 
-const SidebarLayout: FC<SidebarLayoutProps> = ({ showSidebar = true }) => {
+const SidebarLayout: FC<SidebarLayoutProps> = ({ showsidebar = true }) => {
   const theme = useTheme();
 
   return (
@@ -43,8 +43,8 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showSidebar = true }) => {
           }
         }}
       >
-        <Header showSidebar={showSidebar} />
-        {showSidebar && <Sidebar />}
+        <Header showsidebar={showsidebar.toString()} />
+        {showsidebar && <Sidebar />}
         <Box
           sx={{
             position: 'relative',
@@ -53,7 +53,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showSidebar = true }) => {
             flex: 1,
             pt: `${theme.header.height}`,
             [theme.breakpoints.up('lg')]: {
-              ml: showSidebar && `${theme.sidebar.width}`
+              ml: showsidebar && `${theme.sidebar.width}`
             }
           }}
         >

@@ -17,6 +17,7 @@ import { styled } from '@mui/material/styles';
 import { Job } from '../model';
 import ModalApply from '../../application/components/ModalApply';
 import { toInputDateString } from 'src/utils/inputOutputFormat';
+import { defaultImage } from 'src/constants/uploadFileRule';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -55,12 +56,9 @@ const CardApply: React.FC<Props> = ({ data }) => {
       <CardContent>
         <Container>
           <Grid container>
-            <Grid item xs={12} md={2}>
+            <Grid item xs={12} md={2} display="flex" alignItems="center">
               <AvatarWrapper
-                src={
-                  data?.employer?.logo ||
-                  'https://cdn1.vieclam24h.vn/images/default/2023/10/02/Logo%20ISO-1_169621842571.jpg'
-                }
+                src={data?.employer?.logo || defaultImage.companyAvatar}
               />
             </Grid>
             <Grid item xs={12} md={10}>

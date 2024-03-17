@@ -17,7 +17,6 @@ import { GetFileByUserId, DocumentType } from 'src/common/firebaseService';
 import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
 
 function AttachedGeneral() {
-  console.log('CVGen');
   const { user } = useApp();
   const { attachedDocument, isLoading } = useQueryAttachedDocument();
   const { onSaveData } = useMutateAttachedDocument();
@@ -69,7 +68,6 @@ function AttachedGeneral() {
 
   return (
     <GeneralForm
-      // isLoading={isLoading}
       data={newData}
       options={options}
       onSubmit={handleSaveProfile}

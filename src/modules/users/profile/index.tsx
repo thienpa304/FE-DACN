@@ -50,12 +50,13 @@ export default function ManagementUserSettings() {
               indicatorColor="primary"
               sx={{ borderBottom: 2, borderColor: 'grey.300', mb: -2 }}
             >
-              {tabs.map((tab) => {
-                if (!tab.show) return <></>;
-                return (
-                  <Tab key={tab.value} label={tab.label} value={tab.value} />
-                );
-              })}
+              {tabs
+                .filter((tab) => tab.show)
+                .map((tab) => {
+                  return (
+                    <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  );
+                })}
             </TabsWrapper>
           </Grid>
           <Grid item xs={12}>

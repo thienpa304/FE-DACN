@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
@@ -10,8 +9,11 @@ import { store } from './redux/store';
 import { Provider } from 'react-redux';
 import AuthAppProvider from './modules/auth/components/AuthAppProvider';
 const queryClient = new QueryClient();
+import { createRoot } from 'react-dom/client';
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root'));
+
+root.render(
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
@@ -24,8 +26,7 @@ ReactDOM.render(
         </AuthAppProvider>
       </Provider>
     </QueryClientProvider>
-  </HelmetProvider>,
-  document.getElementById('root')
+  </HelmetProvider>
 );
 
 serviceWorker.unregister();

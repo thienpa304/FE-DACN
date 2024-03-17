@@ -17,7 +17,9 @@ import {
   GetFileByUserId,
   UploadFileByUserId,
   RemoveFileByUserId,
-  DocumentType
+  DocumentType,
+  uploadFile,
+  removeFileByUrl
 } from 'src/common/firebaseService';
 import { useApp } from 'src/modules/app/hooks';
 import useQueryCompany from '../../hooks/useQueryCompany';
@@ -28,6 +30,7 @@ import {
 } from 'src/constants/uploadFileRule';
 import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
 import useMutateCompany from '../../hooks/useMutateCompany';
+import useMutateCompanyLogo from '../../hooks/useMutateCompanyLogo';
 
 const useStyles = makeStyles((theme) => ({
   coverImage: {
@@ -53,7 +56,7 @@ function CompanyCover() {
   const { user } = useApp();
   const { company } = useQueryCompany();
   const { companyAvatarType, companyCoverType } = DocumentType;
-  const { onSaveData } = useMutateCompany();
+  const { onSaveData } = useMutateCompanyLogo();
 
   const defaultAvatar = {
     img: '',
@@ -67,15 +70,15 @@ function CompanyCover() {
 
   const getImage = async () => {
     const getUserId = user?.userId;
-    const [avatarUrl, coverUrl] = await Promise.all([
-      GetFileByUserId(getUserId, companyAvatarType).catch(
-        () => defaultImage.companyAvatar
-      ),
+    const [coverUrl] = await Promise.all([
+      // GetFileByUserId(getUserId, companyAvatarType).catch(
+      //   () => defaultImage.companyAvatar
+      // ),
       GetFileByUserId(getUserId, companyCoverType).catch(
         () => defaultImage.companyCover
       )
     ]);
-    setCompanyAvatar({ ...companyAvatar, img: avatarUrl });
+    setCompanyAvatar({ ...companyAvatar, img: company?.logo });
     setCompanyCover({ ...companyCover, img: coverUrl });
   };
 
@@ -95,22 +98,30 @@ function CompanyCover() {
     const imageUrl = URL.createObjectURL(image);
     const documentType =
       kind === 'avatar' ? companyAvatarType : companyCoverType;
-    const logoUrl = await UploadFileByUserId(user?.userId, image, documentType);
 
-    // const logoUrl = uploadFile(image).catch(() => '');  // new
+    // const logoUrl = await UploadFileByUserId(user?.userId, image, documentType); // old
+    const logoUrl = await uploadFile(image).catch(() => ''); // new
+
     if (kind === 'avatar') {
-      onSaveData({ ...company, logo: logoUrl });
+      onSaveData({ logo: logoUrl });
+    } else {
+      await UploadFileByUserId(user?.userId, image, documentType); // old
     }
     setImage({ img: imageUrl, error: false });
   };
 
-  const removeImage = (e, setImage, kind) => {
+  const removeImage = async (e, setImage, kind) => {
     const initial = kind === 'cover' ? companyCover : companyAvatar;
     const defaultImg =
       kind === 'cover' ? defaultImage.companyCover : defaultImage.companyAvatar;
     const documentType =
       kind === 'avatar' ? companyAvatarType : companyCoverType;
-    RemoveFileByUserId(user?.userId, documentType);
+
+    // RemoveFileByUserId(user?.userId, documentType); // old
+    await removeFileByUrl(company?.logo); // new
+    if (kind === 'avatar') {
+      onSaveData({ logo: defaultImage.companyAvatar });
+    }
     setImage({ ...initial, img: defaultImg, error: false });
   };
 
@@ -124,7 +135,7 @@ function CompanyCover() {
 
   useEffect(() => {
     getImage();
-  }, [user]);
+  }, [user, company]);
 
   const renderCoverImage = () => (
     <Paper className={classes.paper} elevation={12}>
@@ -210,7 +221,7 @@ function CompanyCover() {
           onClick={(e) => {
             removeImage(e, setCompanyAvatar, 'avatar');
             // removeFileByUrl(companyAvatar.img);
-            setCompanyAvatar({ ...companyAvatar, img: '' });
+            // setCompanyAvatar({ ...companyAvatar, img: '' });
           }}
           size="small"
           startIcon={<DoNotDisturbOnOutlinedIcon />}

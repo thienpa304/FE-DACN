@@ -19,21 +19,30 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 
 function JobCard({ job }) {
   const { user } = useApp();
-  const [companyAvatar, setCompanyAvatar] = useState('');
-
-  const getAvatar = async () => {
-    const avatar = defaultImage.companyAvatar;
-    setCompanyAvatar(avatar);
-  };
-
-  useEffect(() => {
-    getAvatar();
-  }, [user]);
+  const [companyAvatar, setCompanyAvatar] = useState(
+    job?.employer?.logo || defaultImage.companyAvatar
+  );
 
   return (
-    <Card sx={{ minHeight: 160, border: 1, borderColor: '#98E4FF' }}>
+    <Card
+      sx={{
+        minHeight: 160,
+        border: 1,
+        borderColor: '#98E4FF',
+        borderRadius: '3px'
+      }}
+    >
       <CardHeader
-        sx={{ pt: 1.5, pb: 0, color: '#ce8b0e' }}
+        sx={{
+          pt: 1.5,
+          pb: 0,
+          color: '#ce8b0e',
+          overflow: 'hidden',
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: 2,
+          whiteSpace: 'normal'
+        }}
         title={job.jobTitle}
       />
       <CardContent sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
@@ -55,7 +64,17 @@ function JobCard({ job }) {
             <Box display="flex" flexDirection="column" gap={1}>
               <Box display="flex">
                 <BusinessIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-                <Typography>{job.employer?.companyName}</Typography>
+                <Typography
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 2
+                  }}
+                >
+                  {job.employer?.companyName}
+                </Typography>
               </Box>
               <Box display="flex">
                 <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
@@ -72,7 +91,15 @@ function JobCard({ job }) {
                 <LocationOnOutlinedIcon
                   sx={{ maxHeight: 18, color: 'grey.700' }}
                 />
-                <Typography>Địa điểm: {job.workAddress}</Typography>
+                <Typography
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Địa điểm: {job.workAddress}
+                </Typography>
               </Box>
             </Box>
           </Grid>
