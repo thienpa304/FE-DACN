@@ -43,7 +43,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showsidebar = true }) => {
           }
         }}
       >
-        <Header showsidebar={showsidebar.toString()} />
+        <Header showsidebar={showsidebar} />
         {showsidebar && <Sidebar />}
         <Box
           sx={{
@@ -53,7 +53,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showsidebar = true }) => {
             flex: 1,
             pt: `${theme.header.height}`,
             [theme.breakpoints.up('lg')]: {
-              ml: showsidebar && `${theme.sidebar.width}`
+              ml: showsidebar ? `${theme.sidebar.width}` : undefined
             }
           }}
         >
