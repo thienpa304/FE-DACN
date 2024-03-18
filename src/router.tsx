@@ -12,6 +12,8 @@ import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManageme
 import EmailNotification from './pages/admin/EmailNotification';
 import CandidateProfileAnalysis from './pages/admin/CandidateProfileAnalysis ';
 import UserProfileManagement from './pages/admin/UserProfileManagement';
+import ResultJobList from './pages/result-job-list';
+import JobRecommend from './pages/job-recommend';
 
 const Loader = (Component) => (props) =>
   (
@@ -106,6 +108,10 @@ const routes: RouteObject[] = [
           {
             path: 'messenger',
             element: <Messenger />
+          },
+          {
+            path: '/:id',
+            element: <ResultJobList />
           }
         ]
       },
@@ -137,6 +143,10 @@ const routes: RouteObject[] = [
           {
             path: 'job-applied',
             element: <JobApplied />
+          },
+          {
+            path: 'job-recommend',
+            element: <JobRecommend />
           }
 
           // {

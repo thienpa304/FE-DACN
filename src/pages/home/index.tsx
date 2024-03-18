@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Container } from '@mui/material';
-import JobList from './JobList';
+import UrgentJobTab from './UrgentJobTab';
 import ProfessionType from './ProfessionType';
 import Casousel from './Casousel';
 const OverviewWrapper = styled(Box)(
@@ -18,7 +18,7 @@ const Home = () => {
       <Casousel />
       <Container sx={{ pb: 3 }}>
         <ProfessionType />
-        <JobList />
+        <UrgentJobTab />
       </Container>
     </OverviewWrapper>
   );

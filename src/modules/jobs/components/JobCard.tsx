@@ -18,7 +18,6 @@ import { useApp } from 'src/modules/app/hooks';
 import { defaultImage } from 'src/constants/uploadFileRule';
 
 function JobCard({ job }) {
-  const { user } = useApp();
   const [companyAvatar, setCompanyAvatar] = useState(
     job?.employer?.logo || defaultImage.companyAvatar
   );

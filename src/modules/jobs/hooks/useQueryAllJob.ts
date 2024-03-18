@@ -4,7 +4,7 @@ import { ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { JobViewService } from '../jobService';
 
-const useQueryAllJob = (params) => {
+const useQueryAllJob = (params?) => {
   const { data, isLoading, isPreviousData } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>

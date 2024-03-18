@@ -10,7 +10,7 @@ import {
   InputAdornment,
   Typography
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import DatePicker from 'src/components/DatePicker';
 import Footer from 'src/components/Footer';
@@ -43,6 +43,8 @@ import {
   PositionLevel
 } from 'src/constants/enum';
 import NumericFormatCustom from 'src/components/NumberFormatCustom';
+import ChatGPT from 'src/modules/ai/ChatGPT';
+import { jobAnalysist } from 'src/modules/ai/roles';
 
 const defaultValues = {
   sex: '',
@@ -64,7 +66,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveDataById } = useMutateJobById();
   // fetch data by selectedId
   const { data: defaultData } = useQueryJobById(selectedId);
-
+  const [message, setMessage] = useState({});
   const methods = useForm({
     defaultValues
   });
@@ -100,10 +102,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       // experience,
       // positionLevel
     };
-
-    if (selectedId) onSaveDataById([selectedId, newData]);
-    else onSaveData(newData);
+    setMessage(newData);
+    // if (selectedId) onSaveDataById([selectedId, newData]);
+    // else onSaveData(newData);
   };
+
+  const [analysisResult, setAnalysisResults] = useState();
+  const [sendRequest, setSendRequest] = useState(false);
 
   return (
     <>
@@ -440,6 +445,14 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     >
                       {selectedId ? 'Lưu' : 'Tạo'}
                     </Button>
+                    <Button
+                      onClick={() => setSendRequest(true)}
+                      color="success"
+                      variant="contained"
+                      size="small"
+                    >
+                      Phân tích
+                    </Button>
                   </Grid>
                 </CardActions>
               </Card>
@@ -447,7 +460,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
           </Grid>
         </Container>
       </FormProvider>
-
+      <ChatGPT
+        request={jobAnalysist}
+        content={message}
+        setAnswer={setAnalysisResults}
+        sendRequest={sendRequest}
+      />
+      <div>{analysisResult}</div>
       <Footer />
     </>
   );
