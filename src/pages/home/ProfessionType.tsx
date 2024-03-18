@@ -11,34 +11,41 @@ import {
 } from '@mui/material';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import SearchIcon from '@mui/icons-material/Search';
-import ProfessionListDialog from 'src/modules/jobs/components/ProfessionListDialog';
+import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
 
 const iconsList = [
   {
+    code: 1,
     name: 'Hành chính - Thư ký',
     icon: 'https://cdn-icons-png.flaticon.com/128/925/925025.png'
   },
   {
+    code: 2,
     name: 'Khách sạn - Nhà hàng - Du lịch',
     icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946788.png'
   },
   {
+    code: 3,
     name: 'Bán sỉ - Bán lẻ - Quản lý cửa hàng',
     icon: 'https://cdn-icons-png.flaticon.com/512/2611/2611215.png'
   },
   {
+    code: 4,
     name: 'Marketing',
     icon: 'https://cdn-icons-png.flaticon.com/128/3141/3141181.png'
   },
   {
+    code: 5,
     name: 'Bán hàng - Kinh doanh',
     icon: 'https://cdn-icons-png.flaticon.com/128/420/420199.png'
   },
   {
+    code: 6,
     name: 'Kế toán',
     icon: 'https://cdn-icons-png.flaticon.com/128/1570/1570998.png'
   },
   {
+    code: 7,
     name: 'Tài chính - Đầu tư - Chứng khoán',
     icon: 'https://cdn-icons-png.flaticon.com/128/3328/3328363.png'
   }
@@ -118,6 +125,7 @@ function ProfessionType() {
           {iconsList.map((profession, index) => (
             <Button
               key={index}
+              href={`/${profession.code}`}
               sx={{
                 width: 150,
                 height: 150,
