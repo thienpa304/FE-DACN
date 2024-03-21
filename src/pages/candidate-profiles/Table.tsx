@@ -2,28 +2,64 @@ import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
 import LinkText from 'src/components/LinkText';
 import TableData from 'src/components/TableData';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Chip, Grid } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import { useNavigate } from 'react-router';
+import { Grid, Link } from '@mui/material';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
 import { ApprovalStatus } from 'src/constants/enum';
-import { useState } from 'react';
+import { useMemo, useState, forwardRef } from 'react';
 import SelectInput from 'src/components/SelectInput';
 
+interface CustomLinkProps {
+  to?: string;
+  children: React.ReactNode;
+  sx?: any;
+}
+
+const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
+  (props, ref) => {
+    const { to, children, sx } = props;
+
+    const link = useMemo(() => {
+      if (!to) return '#';
+      return to;
+    }, [to]);
+
+    const isInternal = useMemo(() => {
+      return link.startsWith('/') || link.startsWith('#');
+    }, [link]);
+
+    if (isInternal) {
+      return (
+        <LinkText ref={ref} to={link} sx={sx}>
+          {children}
+        </LinkText>
+      );
+    } else {
+      return (
+        <Link href={link} target="_blank" rel="noopener noreferrer" sx={sx}>
+          {children}
+        </Link>
+      );
+    }
+  }
+);
+
 const renderJobTitle = (data) => {
-  const navigate = useNavigate();
-  const handleLinkToDetail = () => {
-    navigate(`/job/${data.id}`);
-  };
+  const url = data?.row?.CV ? data?.row?.CV : '#';
   return (
     <>
       <Grid container alignItems={'center'}>
-        <LinkText to={`/employer/recruitment/list/${data.id}`}>
-          {data.value}
-        </LinkText>
+        <CustomLink
+          to={url}
+          sx={{
+            color: '#319fce',
+            ':hover': {
+              textDecoration: 'none'
+            }
+          }}
+        >
+          {data.value || '#'}
+        </CustomLink>
       </Grid>
     </>
   );

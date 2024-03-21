@@ -125,7 +125,7 @@ function ProfessionType() {
           {iconsList.map((profession, index) => (
             <Button
               key={index}
-              href={`/${profession.code}`}
+              href={`/profession/${profession.code}`}
               sx={{
                 width: 150,
                 height: 150,
@@ -140,7 +140,7 @@ function ProfessionType() {
                 width={80}
                 height={80}
               />
-              <Typography color="secondary" fontWeight={700}>
+              <Typography color="secondary" fontWeight={700} textAlign="center">
                 {profession.name}
               </Typography>
             </Button>

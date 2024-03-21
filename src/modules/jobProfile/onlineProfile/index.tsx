@@ -31,6 +31,7 @@ import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import useMutateOnlineProfile from './hooks/useMutateOnlineProfile';
 import { OnlineProfile as OnlineProfileType } from '../model';
 import useMutateEducation from './components/Education/hooks/useMutateEducation';
+import CVPage from 'src/pages/view-cv';
 
 const MyBox = ({ children }) => (
   <Box bgcolor="#ffff" sx={{ mb: 4, boxShadow: '2px 2px 6px #aae2f7' }}>
@@ -160,6 +161,7 @@ export default function OnlineProfile() {
           </AlertTitle>
         </Alert>
       </Snackbar>
+      {/* <CVPage /> */}
     </>
   );
 }

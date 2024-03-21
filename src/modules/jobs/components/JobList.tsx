@@ -4,6 +4,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import LinkText from 'src/components/LinkText';
 import JobCard from './JobCard';
 import Pagination from 'src/components/Pagination';
+import JobFilter from './JobFilter';
 
 function JobList(props) {
   const { pageTitle, totalRecords, queryJobs } = props;
@@ -12,10 +13,11 @@ function JobList(props) {
   const validTotalPages = Number.isInteger(totalRecords) ? totalRecords : 1;
   const totalPages = Math.ceil(validTotalPages / jobsPerPage);
   const { jobs } = queryJobs({ page: currentPage, num: jobsPerPage });
-
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
+  const handleFilter = (data: any) => {};
 
   return (
     <Container maxWidth="md" sx={{ py: 3 }}>
@@ -30,6 +32,7 @@ function JobList(props) {
           <Typography variant="h3">{pageTitle}</Typography>
         </Box>
       </Box>
+      <JobFilter handleFilter={handleFilter} />
       <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff' }}>
         <Typography fontSize={18} mb={2}>
           <span style={{ color: '#ce8b0e' }}>{jobs.length}</span> việc làm đang

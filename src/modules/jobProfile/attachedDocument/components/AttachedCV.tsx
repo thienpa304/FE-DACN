@@ -23,10 +23,13 @@ import {
 import { CVFormat } from 'src/constants/uploadFileRule';
 import useAttachedDocument from '../hooks/useDocument';
 import { applicationErrorText } from 'src/components/UploadError';
+import FileFormatInfo from 'src/components/FileFormatInfo';
 
 const Input = styled('input')({
   display: 'none'
 });
+const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
+const ACCEPTED_FILE_SIZE_MB = CVFormat.acceptSize / 1024 / 1024;
 
 const AttachCV = (props) => {
   const { user } = useApp();
@@ -128,7 +131,7 @@ const AttachCV = (props) => {
                 justifyContent="left"
                 component={Button}
                 color="inherit"
-                width="100%"
+                width="50%"
                 onClick={openFile}
               >
                 {currentDoc?.file?.name ||
@@ -166,10 +169,10 @@ const AttachCV = (props) => {
             </Box>
           </Box>
         )}
-        <Typography fontSize={13} color="grey.600" mt={1}>
-          Định dạng file {acceptTypes.join(', ').replace(/application\//g, '.')}{' '}
-          và dung lượng {` <= ${acceptSize / 1024 / 1024} MB`}
-        </Typography>
+        <FileFormatInfo
+          acceptTypes={ACCEPTED_FILE_TYPES}
+          acceptSize_MB={ACCEPTED_FILE_SIZE_MB}
+        />
       </Box>
     </Container>
   );

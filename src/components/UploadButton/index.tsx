@@ -3,35 +3,34 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from 'src/common/firebaseConfig';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import Button from '@mui/material/Button';
+import Button, { ButtonProps } from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import LinearPercent from '../LinearPercent';
 import dayjs from 'dayjs';
+import { ApplicationType } from 'src/constants/enum';
 
 const VisuallyHiddenInput = styled('input')({
   display: 'none'
 });
 
 const ButtonWrapper = styled(Button)<any>(({ theme }) => ({
-  backgroundColor: theme.colors.primary.lighter,
-  '&:hover': {
-    backgroundColor: theme.colors.primary.lighter
-  }
+  backgroundColor: theme.colors.primary.lighter
 }));
 const ChipWrapper = styled(Chip)(({ theme }) => ({
   borderRadius: 6
 }));
 
-type Props = {
+type Props = ButtonProps & {
   label?: string;
   value?: string;
   onChange?: (url: string) => void;
+  setIsChecked?: (value: string) => void;
 };
 
 function UploadButton(props: Props) {
-  const { label, onChange } = props;
+  const { label, sx, onChange, setIsChecked } = props;
   // State to store uploaded file
   const [file, setFile] = useState<File>();
 
@@ -43,11 +42,13 @@ function UploadButton(props: Props) {
   // Handle file upload event and update state
   function handleChange(event) {
     const file = event.target.files[0];
+    if (!file) return;
     setFile(file);
     handleUpload(file);
   }
   const handleDeleteFile = () => {
     setFile(null);
+    setIsChecked('');
   };
   const handleUpload = (value) => {
     if (!value) {
@@ -81,6 +82,7 @@ function UploadButton(props: Props) {
         });
       }
     );
+    setIsChecked(ApplicationType.cv_enclosed);
   };
 
   return (
@@ -89,12 +91,13 @@ function UploadButton(props: Props) {
         component="label"
         variant="contained"
         startIcon={<CloudUploadIcon />}
+        sx={sx}
       >
         {label || 'Upload file'}
         <VisuallyHiddenInput
           type="file"
           onChange={handleChange}
-          accept="image/jpeg,image/png,application/pdf,image/x-eps"
+          accept="application/pdf"
         />
       </ButtonWrapper>
       <Box marginTop={2}>
