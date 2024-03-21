@@ -108,6 +108,8 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
   };
 
   useEffect(() => {
+    console.log(data);
+
     reset(data);
   }, [data]);
 

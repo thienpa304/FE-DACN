@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import GeneralForm from '../../GeneralForm';
-import { OnlineProfile } from '../../model';
-import useMutateOnlineProfile from '../hooks/useMutateOnlineProfile';
-import useUpdateOnlineProfile from '../hooks/useMutateUpdateOnlineProfile';
+import GeneralForm from '../../../GeneralForm';
+import { OnlineProfile } from '../../../model';
+import useMutateOnlineProfile from '../../hooks/useMutateOnlineProfile';
+import useUpdateOnlineProfile from '../../hooks/useMutateUpdateOnlineProfile';
 import {
   EXPERIENCE,
   POSITION_LEVEL,
@@ -12,7 +12,7 @@ import {
   WORK_AT
 } from 'src/constants/option';
 import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
-import useOnlineProfile from '../hooks/useOnlineProfile';
+import useOnlineProfile from '../../hooks/useOnlineProfile';
 
 export default function OnlineGeneral() {
   const { profile, setProfile } = useOnlineProfile();

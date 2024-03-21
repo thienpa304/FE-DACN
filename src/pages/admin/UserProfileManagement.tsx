@@ -22,6 +22,8 @@ import {
 import { Box } from '@mui/system';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DirectoryTreeView from './DirectoryTreeView';
+import Pagination from 'src/components/Pagination';
 
 const UserProfileManagement = () => {
   const [users, setUsers] = useState([]);
@@ -79,7 +81,7 @@ const UserProfileManagement = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: 30 }}>
+    <Container maxWidth="lg" style={{ marginTop: 30 }}>
       <Card>
         <CardHeader title="Quản lý Hồ sơ và CV Người Dùng" />
         <Divider />
@@ -123,79 +125,107 @@ const UserProfileManagement = () => {
             </Grid>
             <Grid item xs={12}>
               <Divider />
-              <Typography variant="h6">Danh sách Người Dùng:</Typography>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Tên Người Dùng</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell>Hồ sơ Cá nhân</TableCell>
-                      <TableCell>CV</TableCell>
-                      <TableCell>Ngày Đăng Ký</TableCell>
-                      <TableCell>Vai Trò</TableCell>
-                      <TableCell>Thao Tác</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {users.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell>
-                          <MuiLink
-                            href={user.profile}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {user.name}
-                          </MuiLink>
-                        </TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>
-                          <MuiLink
-                            href={user.profile}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {user.profile}
-                          </MuiLink>
-                        </TableCell>
-                        <TableCell>
-                          <MuiLink
-                            href={user.cv}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {user.cv}
-                          </MuiLink>
-                        </TableCell>
-                        <TableCell>{user.registrationDate}</TableCell>
-                        <TableCell>{user.role}</TableCell>
-                        <TableCell style={{ display: 'flex' }}>
-                          <Tooltip title="Chỉnh Sửa">
-                            <IconButton
-                              color="primary"
-                              onClick={() => handleEditUser(user.id)}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Xóa">
-                            <IconButton
-                              color="secondary"
-                              onClick={() => handleDeleteUser(user.id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <Box display="flex">
+                <DirectoryTreeView />
+                <Box pl={5} borderLeft="2px solid #e5eaf2">
+                  <Typography
+                    textAlign="center"
+                    fontWeight={700}
+                    fontSize={20}
+                    mb={1}
+                    lineHeight={3}
+                  >
+                    Danh sách hồ sơ người dùng
+                  </Typography>
+                  <TableContainer
+                    sx={{
+                      border: '2px solid #e5eaf2',
+                      boxShadow: '1px 2px 4px #aae2f7',
+                      borderRadius: 2,
+                      mb: 2
+                    }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Tên Người Dùng</TableCell>
+                          <TableCell>Email</TableCell>
+                          <TableCell>Hồ sơ Cá nhân</TableCell>
+                          <TableCell>CV</TableCell>
+                          <TableCell>Ngày Đăng Ký</TableCell>
+                          <TableCell>Vai Trò</TableCell>
+                          <TableCell>Thao Tác</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {users.map((user) => (
+                          <TableRow key={user.id}>
+                            <TableCell>
+                              <MuiLink
+                                href={user.profile}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {user.name}
+                              </MuiLink>
+                            </TableCell>
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>
+                              <MuiLink
+                                href={user.profile}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {user.profile}
+                              </MuiLink>
+                            </TableCell>
+                            <TableCell>
+                              <MuiLink
+                                href={user.cv}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {user.cv}
+                              </MuiLink>
+                            </TableCell>
+                            <TableCell>{user.registrationDate}</TableCell>
+                            <TableCell>{user.role}</TableCell>
+                            <TableCell style={{ display: 'flex' }}>
+                              <Tooltip title="Chỉnh Sửa">
+                                <IconButton
+                                  color="primary"
+                                  onClick={() => handleEditUser(user.id)}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Xóa">
+                                <IconButton
+                                  color="secondary"
+                                  onClick={() => handleDeleteUser(user.id)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <Pagination />
+                </Box>
+              </Box>
             </Grid>
           </Grid>
         </CardContent>
+        <div>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+              <Grid></Grid>
+            </Grid>
+          </Grid>
+        </div>
       </Card>
     </Container>
   );

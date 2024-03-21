@@ -22,7 +22,7 @@ export default function JobRecommendTab(props) {
 
   return (
     <Card
-      sx={{ mb: 5, borderRadius: 0, boxShadow: '2px 2px 6px #aae2f7' }}
+      sx={{ borderRadius: 0, boxShadow: '2px 2px 6px #aae2f7' }}
       id={props.id}
     >
       <Box

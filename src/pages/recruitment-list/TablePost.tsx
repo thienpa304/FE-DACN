@@ -9,11 +9,12 @@ import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
+import dayjs from 'dayjs';
 
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
-    navigate(`/job/${data.id}`);
+    navigate(`/job/${data?.row?.postId}`);
   };
   return (
     <>
@@ -26,7 +27,7 @@ const renderJobTitle = (data) => {
           </Tooltip>
         </Grid>
         <Grid item xs={10}>
-          <LinkText to={`/employer/recruitment/list/${data.id}`}>
+          <LinkText to={`/job/${data?.row?.postId}`}>
             <TypographyEllipsis> {data.value}</TypographyEllipsis>
           </LinkText>
         </Grid>
@@ -41,31 +42,49 @@ const renderStatus = (data) => {
     <Chip label={data.value} size="small" color={color} variant="outlined" />
   );
 };
+
+const rederDate = (data) => {
+  const date = dayjs(data?.value).format('DD/MM/YYYY');
+  return <>{date}</>;
+};
+
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
     headerName: 'Tên tin đăng',
-    minWidth: 250,
+    minWidth: 400,
+    headerAlign: 'center',
     renderCell: renderJobTitle
   },
   {
-    field: 'publishingDate',
-    headerName: 'Ngày đăng',
-    minWidth: 150
+    field: 'createAt',
+    headerName: 'Ngày nộp',
+    minWidth: 150,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: rederDate
+  },
+  {
+    field: 'applicationDeadline',
+    headerName: 'Hạn nộp',
+    minWidth: 150,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: rederDate
   },
   {
     field: 'fullName',
     headerName: 'Lượt nộp',
     minWidth: 100,
-    type: 'number',
+    headerAlign: 'center',
     align: 'center',
     renderCell: () => <>0</>
   },
   {
     field: 'ag2e',
     headerName: 'Lượt xem',
-    type: 'number',
     minWidth: 110,
+    headerAlign: 'center',
     align: 'center',
     renderCell: () => <>0</>
   },
@@ -73,12 +92,9 @@ const columns: GridColDef[] = [
     field: 'status',
     headerName: 'Trạng thái',
     minWidth: 150,
+    headerAlign: 'center',
+    align: 'center',
     renderCell: renderStatus
-  },
-  {
-    field: '2232',
-    headerName: 'Khác',
-    minWidth: 150
   }
 ];
 

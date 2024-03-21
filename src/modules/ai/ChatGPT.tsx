@@ -1,82 +1,59 @@
 import React, { useEffect, useState } from 'react';
 
-const ChatGPT = (props) => {
-  const { request, content, setAnswer, sendRequest } = props;
+const ChatGPT = ({ request, content, setAnswer, sendRequest }) => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
 
   useEffect(() => {
-    setInputText(request + JSON.stringify(content));
-  }, [request, content]);
+    if (content) {
+      const inputText = request + JSON.stringify(content);
+      if (sendRequest) sendMessage(inputText);
+    }
+  }, [request, content, sendRequest]);
 
   useEffect(() => {
-    if (sendRequest) sendMessage();
-  }, [sendRequest]);
-
-  useEffect(() => {
-    if (messages[messages.length - 1]?.role === 'ai')
+    if (messages.length > 0 && messages[messages.length - 1].role === 'ai')
       setAnswer(messages[messages.length - 1].content);
-  }, [messages.length]);
+  }, [messages, setAnswer]);
 
-  const sendMessage = async () => {
+  const sendMessage = async (inputText) => {
     if (!inputText.trim()) return;
+    console.log('inputText', inputText);
 
-    // Thực hiện gửi yêu cầu API đến OpenAI
-    const response = await fetch(
-      'https://api.chatanywhere.cn/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization:
-            'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
-          // 'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo', // Chọn mô hình ChatGPT bạn muốn sử dụng
-          messages: [{ role: 'user', content: inputText }]
-        })
-      }
-    );
+    try {
+      const response = await fetch(
+        'https://api.chatanywhere.cn/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization:
+              'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
+            // 'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+          },
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo', // Chọn mô hình ChatGPT bạn muốn sử dụng
+            messages: [{ role: 'user', content: inputText }]
+          })
+        }
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    // Cập nhật tin nhắn và phản hồi từ API
-    setMessages([
-      ...messages,
-      { role: 'user', content: inputText },
-      {
-        role: 'ai',
-        content: data?.choices[0]?.message?.content
-      }
-    ]);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: 'user', content: inputText },
+        { role: 'ai', content: data?.choices?.[0]?.message?.content }
+      ]);
 
-    // Xóa nội dung tin nhắn sau khi gửi
-    setInputText('');
+      // setInputText('');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
-  return (
-    <div>
-      {/* <div>
-        {messages[messages.length - 1]?.role === 'ai' &&
-          messages[messages.length - 1].content}
-      </div> */}
-      {/* <textarea
-        // type="text"
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            sendMessage();
-          }
-        }}
-        placeholder="Nhập tin nhắn của bạn..."
-        style={{ width: '100%', padding: '10px', marginTop: '10px' }}
-        rows={5}
-      /> */}
-      {/* <button onClick={sendMessage}>Gửi</button> */}
-    </div>
-  );
+  // Trả về null hoặc không trả về gì cả vì không có phần tử DOM nào cần thiết
+  return null;
 };
 
 export default ChatGPT;
