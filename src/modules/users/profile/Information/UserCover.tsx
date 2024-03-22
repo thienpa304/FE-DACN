@@ -63,7 +63,6 @@ export default function UserCover() {
     const url = await uploadFile(userAvatar.imageFile).catch(() => '');
     setUserAvatar({ ...userAvatar, avatar: url, error: false });
     const newData = { ...data, avatar: url };
-    console.log(newData);
     onSaveData(newData);
     setSave(true);
   };

@@ -8,7 +8,10 @@ const useQueryJobOwner = () => {
   const { data, isLoading } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
-  >('jobOwner-getList', JobService.get);
+  >('jobOwner-getList', JobService.get, {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],

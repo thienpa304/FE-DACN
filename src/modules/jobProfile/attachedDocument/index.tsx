@@ -23,6 +23,8 @@ import { AttachedDocument as AttachedDocumentType } from '../model';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useNavigate } from 'react-router';
 import SubmitBox from '../SubmitBox';
+import { findObjectKey } from 'src/utils/inputOutputFormat';
+import { Degree } from 'src/constants/enum';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   background: '#ffff',
@@ -56,8 +58,10 @@ export default function AttachedDocument() {
   const navigate = useNavigate();
 
   const handleSaveProfile = () => {
-    if (profile?.userId) onUpdateData(profile as AttachedDocumentType);
-    else onSaveData(profile as AttachedDocumentType);
+    const degree = findObjectKey(profile.degree, Degree);
+    if (profile?.userId)
+      onUpdateData({ ...profile, degree: degree } as AttachedDocumentType);
+    else onSaveData({ ...profile, degree: degree } as AttachedDocumentType);
   };
 
   const goBack = () => {

@@ -15,11 +15,12 @@ import {
 } from 'src/utils/inputOutputFormat';
 import ButtonGroup from 'src/components/ButtonGroup';
 import { useApp } from 'src/modules/app/hooks';
+import { setUser } from 'src/modules/app/appSlice';
 
 export function UserForm(props) {
   const { isEmployee } = useApp();
   const { close, user } = props;
-  const { onSaveData: onSavaUser } = useMutateUserData();
+  const { onSaveData: onSaveUser } = useMutateUserData();
 
   const {
     control,
@@ -38,7 +39,8 @@ export function UserForm(props) {
     const formattedDob = toOutputDateString(data.dob);
     const isMarried = data.isMarried === 'Đã kết hôn' ? '1' : '0';
     const newData = { ...data, dob: formattedDob, isMarried: isMarried };
-    onSavaUser(newData);
+    onSaveUser(newData);
+    setUser(newData);
     close();
   };
 

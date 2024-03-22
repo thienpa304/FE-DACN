@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 export default function PDFview() {
   return (
     <div>
-      <PDFDownloadLink document={<CVPage />} fileName="my-cv.pdf">
+      <PDFDownloadLink document={<CVPage user={name: 'd'} />} fileName="my-cv.pdf">
         {({ blob, url, loading, error }) =>
           loading ? (
             <Button>Loading document...</Button>

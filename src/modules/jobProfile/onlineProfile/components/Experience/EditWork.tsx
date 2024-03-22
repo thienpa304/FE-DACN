@@ -108,7 +108,6 @@ export default function EditExperience(props) {
 
   const handleSaveExperienceData = async (data) => {
     if (error.state) return;
-    console.log(data);
     const formattedOutputData = processOutputData(data);
     // if (!profile.userId) {
     //   if (data.id) {

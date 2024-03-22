@@ -40,6 +40,7 @@ import {
 import ButtonGroup from 'src/components/ButtonGroup';
 import { avatarErrorText } from 'src/components/UploadError';
 import useMutateAvatar from 'src/modules/users/hooks/useMutateAvatar';
+import PersonalViewUI from './PersonalViewUI';
 
 const Input = styled('input')({
   display: 'none'
@@ -52,7 +53,7 @@ export default function Personal() {
     storageAvatar: null,
     uploadFile: null
   });
-  const { user } = useApp();
+  const { user, setUserApp } = useApp();
   const { onSaveData: onSavaAvatar } = useMutateAvatar();
   const { onSaveData } = useMutateUserData();
   const { acceptTypes, acceptSize } = avatarFormat;
@@ -69,10 +70,13 @@ export default function Personal() {
   const handleSaveProfile = async (data) => {
     setLoading(true);
 
-    let avatarUrl = '';
+    let avatarUrl = user.avatar;
     if (avatarState.uploadFile)
       avatarUrl = await uploadFile(avatarState.uploadFile).catch(() => '');
-    if (!avatarState.avatar) await removeFileByUrl(user.avatar);
+    if (!avatarState.avatar) {
+      await removeFileByUrl(user.avatar);
+      avatarUrl = '';
+    }
 
     const newData = {
       ...data,
@@ -80,10 +84,15 @@ export default function Personal() {
       isMarried: data.isMarried === 'Đã kết hôn' ? '1' : '0',
       avatar: avatarUrl
     };
+    setUserApp({
+      ...newData,
+      isMarried: newData.isMarried === '1',
+      sex: GENDER.find((item) => item.value === newData.sex)?.label,
+      avatar: avatarUrl
+    });
     onSaveData(newData);
 
     onSavaAvatar(newData);
-
     setLoading(false);
     setIsReadOnly(true);
   };
@@ -232,101 +241,105 @@ export default function Personal() {
           </Box>
         </Grid>
         <Grid item xs={9}>
-          <Grid container mb={4} spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="name"
-                label="Họ và tên"
-                name="name"
-                required
-                disabled={isReadOnly}
-              />
+          {!isReadOnly ? (
+            <Grid container mb={4} spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  element={<TextField />}
+                  control={control}
+                  errors={errors}
+                  fullWidth
+                  id="name"
+                  label="Họ và tên"
+                  name="name"
+                  required
+                  disabled={isReadOnly}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  element={<TextField />}
+                  control={control}
+                  errors={errors}
+                  fullWidth
+                  id="email"
+                  label="Email"
+                  name="email"
+                  pattern="email"
+                  required
+                  disabled={isReadOnly}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  element={<TextField />}
+                  control={control}
+                  errors={errors}
+                  fullWidth
+                  id="phone"
+                  label="Số điện thoại"
+                  name="phone"
+                  pattern="phone"
+                  required
+                  disabled={isReadOnly}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  element={<DatePicker maxDate={dayjs()} />}
+                  control={control}
+                  errors={errors}
+                  fullWidth
+                  id="dob"
+                  label="Ngày sinh"
+                  name="dob"
+                  required
+                  disabled={isReadOnly}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  element={<SelectInput />}
+                  options={GENDER}
+                  control={control}
+                  errors={errors}
+                  fullWidth
+                  id="sex"
+                  label="Giới tính"
+                  name="sex"
+                  disabled={isReadOnly}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  element={<SelectInput />}
+                  options={ISMARRIED_OPTION}
+                  control={control}
+                  errors={errors}
+                  fullWidth
+                  id="isMarried"
+                  label="Tình trạng hôn nhân"
+                  name="isMarried"
+                  disabled={isReadOnly}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl
+                  element={<TextField />}
+                  control={control}
+                  errors={errors}
+                  fullWidth
+                  id="address"
+                  label="Địa chỉ"
+                  name="address"
+                  required
+                  disabled={isReadOnly}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="email"
-                label="Email"
-                name="email"
-                pattern="email"
-                required
-                disabled={isReadOnly}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="phone"
-                label="Số điện thoại"
-                name="phone"
-                pattern="phone"
-                required
-                disabled={isReadOnly}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl
-                element={<DatePicker maxDate={dayjs()} />}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="dob"
-                label="Ngày sinh"
-                name="dob"
-                required
-                disabled={isReadOnly}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl
-                element={<SelectInput />}
-                options={GENDER}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="sex"
-                label="Giới tính"
-                name="sex"
-                disabled={isReadOnly}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl
-                element={<SelectInput />}
-                options={ISMARRIED_OPTION}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="isMarried"
-                label="Tình trạng hôn nhân"
-                name="isMarried"
-                disabled={isReadOnly}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="address"
-                label="Địa chỉ"
-                name="address"
-                required
-                disabled={isReadOnly}
-              />
-            </Grid>
-          </Grid>
+          ) : (
+            <PersonalViewUI user={user} />
+          )}
           {!isReadOnly && (
             <Box display="flex" justifyContent="center" sx={{ gap: 3 }}>
               {loading ? (

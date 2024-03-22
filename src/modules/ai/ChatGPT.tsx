@@ -18,7 +18,6 @@ const ChatGPT = ({ request, content, setAnswer, sendRequest }) => {
 
   const sendMessage = async (inputText) => {
     if (!inputText.trim()) return;
-    console.log('inputText', inputText);
 
     try {
       const response = await fetch(

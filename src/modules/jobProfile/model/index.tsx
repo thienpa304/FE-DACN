@@ -14,7 +14,7 @@ export type OnlineProfile = {
   currentPosition: PositionLevel;
   desiredPosition: PositionLevel;
   desiredSalary: number;
-  degree: Degree;
+  degree: Degree | string;
   workAddress: string;
   experience: Experience;
   employmentType: EmploymentType;
@@ -63,7 +63,7 @@ export type AttachedDocument = {
   currentPosition: PositionLevel;
   desiredPosition: PositionLevel;
   desiredSalary: number;
-  degree: Degree;
+  degree: Degree | string;
   workAddress: string;
   experience: Experience;
   employmentType: EmploymentType;
