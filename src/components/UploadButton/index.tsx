@@ -75,7 +75,6 @@ function UploadButton(props: Props) {
       () => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
           setPercent(null);
           setFileUrl(url);
           onChange(url);

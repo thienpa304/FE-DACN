@@ -9,7 +9,10 @@ const useQueryJobById = (id) => {
   const { data, isLoading } = useQuery<
     ResponseData<Job>,
     AxiosError<ResponseData<Job>>
-  >(['job-getById', id], async () => JobViewService.getById(id));
+  >(['job-getById', id], async () => JobViewService.getById(id), {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     data: data?.data,

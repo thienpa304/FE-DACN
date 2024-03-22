@@ -51,7 +51,10 @@ const useQueryJob = () => {
   const { data, isLoading } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
-  >('job-getList', JobService.get);
+  >('job-getList', JobService.get, {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     // jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],

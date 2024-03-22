@@ -77,7 +77,6 @@ export async function downloadFileByUrl(url: string) {
   if (!url) return '';
   const fileName = decodeURIComponent(url.split('%2F')[1].split('?')[0]);
   const fileRef = ref(storage, `userDocument/${fileName}`);
-  console.log(fileRef);
 
   getDownloadURL(fileRef)
     .then((url) => {

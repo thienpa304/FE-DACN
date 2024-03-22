@@ -18,6 +18,7 @@ interface CustomLinkProps {
 const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
   (props, ref) => {
     const { to, children, sx } = props;
+    const [CVData, setCVData] = useState(null);
 
     const link = useMemo(() => {
       if (!to) return '#';
@@ -34,6 +35,8 @@ const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
           {children}
         </LinkText>
       );
+    } else if (link.startsWith('{')) {
+      return;
     } else {
       return (
         <Link href={link} target="_blank" rel="noopener noreferrer" sx={sx}>

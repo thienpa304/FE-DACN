@@ -98,7 +98,7 @@ import {
   StyleSheet,
   PDFViewer
 } from '@react-pdf/renderer';
-import PDFview from './PDFview';
+// import PDFview from './PDFview';
 
 const bodyText = {
   fontSize: 15,
@@ -110,7 +110,6 @@ export function DownloadPage({ rootElementId, downloadFileName }) {
     const input = document.getElementById(rootElementId);
     const elementWidth = input.offsetWidth; // Lấy chiều rộng của phần tử gốc
     const elementHeight = input.offsetHeight; // Lấy chiều cao của phần tử gốc
-    console.log(elementHeight, elementWidth);
 
     const pdf = new jsPDF('p', 'pt', [elementWidth, elementHeight]); // Tạo một tệp PDF với kích thước dựa trên kích thước của phần tử gốc
 
@@ -163,7 +162,7 @@ export function DownloadPage({ rootElementId, downloadFileName }) {
 //   });
 // };
 
-const CVPage = () => {
+const CVPage = ({ user }) => {
   return (
     <>
       <Container id="view-cv" sx={{ bgcolor: '#f2f5f9' }}>
@@ -234,7 +233,13 @@ const CVPage = () => {
                   Thông tin nghề nghiệp
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
-                <Grid container>
+                <Typography sx={bodyText}>
+                  <strong>Vị trí mong muốn:</strong> {user.jobTitle}
+                </Typography>
+                <Typography sx={bodyText}>
+                  <strong>Nghề nghiệp:</strong> {user.profession}
+                </Typography>
+                <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography sx={bodyText}>
                       <strong>Cấp bậc hiện tại:</strong> {user.currentPosition}
@@ -242,11 +247,24 @@ const CVPage = () => {
                   </Grid>
                   <Grid item xs={6}>
                     <Typography sx={bodyText}>
-                      <strong>Chức vụ mong muốn:</strong> {user.desiredPosition}
+                      <strong>Cấp bậc mong muốn:</strong> {user.desiredPosition}
                     </Typography>
                   </Grid>
                 </Grid>
-                <Grid container>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Typography sx={bodyText}>
+                      <strong>Mức lương mong muốn:</strong> {user.desiredSalary}{' '}
+                      triệu VNĐ
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography sx={bodyText}>
+                      <strong>Trình độ học vấn:</strong> {user.degree}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography sx={bodyText}>
                       <strong>Kinh nghiệm làm việc:</strong> {user.experience}
@@ -254,31 +272,13 @@ const CVPage = () => {
                   </Grid>
                   <Grid item xs={6}>
                     <Typography sx={bodyText}>
-                      <strong>Bằng cấp:</strong> {user.degree}
+                      <strong>Hình thức làm việc:</strong> {user.employmentType}
                     </Typography>
                   </Grid>
                 </Grid>
-                <Grid container>
-                  <Grid item xs={6}>
-                    <Typography sx={bodyText}>
-                      <strong>Loại hình làm việc:</strong> {user.employmentType}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography sx={bodyText}>
-                      <strong>Lương mong muốn:</strong> {user.desiredSalary}{' '}
-                      triệu VNĐ
-                    </Typography>
-                  </Grid>
-                </Grid>
-
                 <Typography sx={bodyText}>
                   <strong>Địa chỉ làm việc:</strong> {user.workAddress}
                 </Typography>
-                <Typography sx={bodyText}>
-                  <strong>Lĩnh vực nghề nghiệp:</strong> {user.profession}
-                </Typography>
-
                 <Typography sx={bodyText}>
                   <strong>Mục tiêu nghề nghiệp:</strong> {user.careerGoal}
                 </Typography>

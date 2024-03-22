@@ -11,7 +11,10 @@ const useQueryTotalResults = () => {
   const { data, isLoading } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>
-  >('get-TotalResults', TotalResults.get);
+  >('get-TotalResults', TotalResults.get, {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     totalResults: data?.data?.totalResults,

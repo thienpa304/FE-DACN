@@ -73,10 +73,19 @@ export default function ModalApply(props: Props) {
       setMissInfo(true);
       return;
     }
+
+    let submitProfile = '';
+    if (isChecked === ApplicationType.online_profile) {
+      submitProfile = JSON.stringify(onlineProfile);
+    } else if (isChecked === ApplicationType.attached_document) {
+      submitProfile = JSON.stringify(attachedDocument);
+    } else submitProfile = JSON.stringify(onlineProfile);
+
     onSaveData({
       ...data,
       postId,
-      applicationType: isChecked
+      applicationType: isChecked,
+      CV: submitProfile
     });
   };
 
@@ -183,7 +192,6 @@ export default function ModalApply(props: Props) {
                 id="name"
                 label="Họ và tên"
                 name="name"
-                defaultValue={user?.name}
               />
             </Grid>
             <Grid item xs={12}>
@@ -196,7 +204,6 @@ export default function ModalApply(props: Props) {
                 label="Email"
                 name="email"
                 pattern="email"
-                defaultValue={user?.email}
               />
             </Grid>
             <Grid item xs={12}>
@@ -209,7 +216,6 @@ export default function ModalApply(props: Props) {
                 label="Số điện thoại"
                 name="phone"
                 pattern="phone"
-                defaultValue={user?.phone}
               />
             </Grid>
           </Grid>

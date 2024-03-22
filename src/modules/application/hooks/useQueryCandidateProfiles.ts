@@ -8,7 +8,10 @@ const useQueryCandidateProfiles = () => {
   const { data, isLoading } = useQuery<
     ResponseData<Application[]>,
     AxiosError<ResponseData<Application[]>>
-  >('application-getList', CandidateProfilesService.get);
+  >('application-getList', CandidateProfilesService.get, {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     data:
