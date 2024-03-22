@@ -27,7 +27,7 @@ const renderJobTitle = (data) => {
           </Tooltip>
         </Grid>
         <Grid item xs={10}>
-          <LinkText to={`/job/${data?.row?.postId}`}>
+          <LinkText to={`/employer/recruitment/list/${data?.row?.postId}`}>
             <TypographyEllipsis> {data.value}</TypographyEllipsis>
           </LinkText>
         </Grid>
