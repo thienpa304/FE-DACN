@@ -16,7 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import useMutateApplyJob from '../hooks/useMutateApplyJob';
 import { ApplicationType } from 'src/constants/enum';
 
-const Title = styled('h3')(() => ({
+const Title = styled('div')(() => ({
   fontWeight: 600,
   fontSize: 18,
   margin: '5px 0'
@@ -64,7 +64,7 @@ export default function ModalApply(props: Props) {
         <DialogTitle>
           <SubTitle> Vị trí ứng tuyển</SubTitle>
           <Title>{position}</Title>
-          <SubTitle>{company}</SubTitle>
+          {company && <SubTitle>{company}</SubTitle>}
         </DialogTitle>
 
         <DialogContent>

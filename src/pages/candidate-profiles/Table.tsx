@@ -60,7 +60,7 @@ const columns: GridColDef[] = [
   {
     field: 'publishingDate',
     headerName: 'Vị trí ứng tuyển',
-    minWidth: 150
+    minWidth: 200
   },
   {
     field: 'applicationType',
@@ -70,7 +70,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Trạng thái tuyển dụng',
-    minWidth: 150,
+    minWidth: 200,
     renderCell: renderStatus
   }
 ];

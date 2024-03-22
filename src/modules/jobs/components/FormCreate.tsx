@@ -7,9 +7,10 @@ import {
   Container,
   Divider,
   Grid,
+  InputAdornment,
   Typography
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import DatePicker from 'src/components/DatePicker';
 import Footer from 'src/components/Footer';
@@ -41,6 +42,9 @@ import {
   Experience,
   PositionLevel
 } from 'src/constants/enum';
+import NumericFormatCustom from 'src/components/NumberFormatCustom';
+import ChatGPT from 'src/modules/ai/ChatGPT';
+import { jobAnalysist } from 'src/modules/ai/roles';
 
 const defaultValues = {
   sex: '',
@@ -62,7 +66,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveDataById } = useMutateJobById();
   // fetch data by selectedId
   const { data: defaultData } = useQueryJobById(selectedId);
-
+  const [message, setMessage] = useState({});
   const methods = useForm({
     defaultValues
   });
@@ -75,8 +79,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
   // reset Data if selected is true
   useEffect(() => {
-    console.log('--->');
-    console.log('--->', defaultData?.benefits);
     reset({
       ...defaultData,
       profession: PROFESSION.find(
@@ -100,10 +102,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       // experience,
       // positionLevel
     };
-
-    if (selectedId) onSaveDataById([selectedId, newData]);
-    else onSaveData(newData);
+    setMessage(newData);
+    // if (selectedId) onSaveDataById([selectedId, newData]);
+    // else onSaveData(newData);
   };
+
+  const [analysisResult, setAnalysisResults] = useState();
+  const [sendRequest, setSendRequest] = useState(false);
 
   return (
     <>
@@ -136,6 +141,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         label="Chức danh"
                         placeholder="Vị trí hiển thị đăng tuyển"
                         name="jobTitle"
+                        inputProps={{ maxLength: 300 }}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -263,8 +269,15 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         id="trialPeriod"
                         label="Thời giai thử việc"
                         name="trialPeriod"
-                        type="number"
                         pattern="integer"
+                        type="number"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              tháng
+                            </InputAdornment>
+                          )
+                        }}
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -288,9 +301,16 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         id="minSalary"
                         label="Mức lương tối thiểu"
                         name="minSalary"
-                        type="number"
                         pattern="integer"
                         required
+                        InputProps={{
+                          inputComponent: NumericFormatCustom as any,
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              triệu VNĐ
+                            </InputAdornment>
+                          )
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -302,10 +322,17 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         errors={errors}
                         id="maxSalary"
                         label="Mức lương tối đa"
-                        type="number"
                         name="maxSalary"
                         pattern="integer"
                         required
+                        InputProps={{
+                          inputComponent: NumericFormatCustom as any,
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              triệu VNĐ
+                            </InputAdornment>
+                          )
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -418,6 +445,14 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     >
                       {selectedId ? 'Lưu' : 'Tạo'}
                     </Button>
+                    <Button
+                      onClick={() => setSendRequest(true)}
+                      color="success"
+                      variant="contained"
+                      size="small"
+                    >
+                      Phân tích
+                    </Button>
                   </Grid>
                 </CardActions>
               </Card>
@@ -425,7 +460,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
           </Grid>
         </Container>
       </FormProvider>
-
+      <ChatGPT
+        request={jobAnalysist}
+        content={message}
+        setAnswer={setAnalysisResults}
+        sendRequest={sendRequest}
+      />
+      <div>{analysisResult}</div>
       <Footer />
     </>
   );

@@ -304,10 +304,10 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to={`/${rolePath}/profile/details`}
-                      startIcon={<FavoriteIcon />}
+                      to={`/${rolePath}/job-recommend`}
+                      startIcon={<JobSuggestIcon />}
                     >
-                      Việc làm đã lưu
+                      Gợi ý việc làm
                     </Button>
                   </ListItem>
                 </List>

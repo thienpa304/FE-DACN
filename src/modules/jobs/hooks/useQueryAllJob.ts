@@ -4,11 +4,13 @@ import { ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { JobViewService } from '../jobService';
 
-const useQueryAllJob = () => {
-  const { data, isLoading } = useQuery<
+const useQueryAllJob = (params?) => {
+  const { data, isLoading, isPreviousData } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
-  >('get-AllJobs', JobViewService.get);
+  >(['get-AllJobs', params?.page], () => JobViewService.get({ params }), {
+    keepPreviousData: true
+  });
 
   return {
     jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],

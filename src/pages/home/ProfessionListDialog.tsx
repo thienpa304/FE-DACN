@@ -51,8 +51,8 @@ function ProfessionListDialog(props) {
       <DialogContent sx={{ display: 'flex', flexWrap: 'wrap' }}>
         {professions.map((profession, index) => (
           <Link
-            key={index}
-            href="#"
+            key={profession?.code}
+            href={`/${profession?.code}`}
             sx={{
               flexBasis: '33%',
               padding: 1.5,

@@ -10,7 +10,7 @@ import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 import Table from './Table';
 
 const RecruitmentApproval = () => {
-  const { jobs } = useQueryJob();
+  // const { jobs } = useQueryJob({ page: 1 });
   return (
     <Container maxWidth="xl">
       <Grid
@@ -23,10 +23,10 @@ const RecruitmentApproval = () => {
       >
         <Grid item xs={12}>
           <Card>
-            <CardHeader title="Danh sách việc đăng tuyển" />
+            <CardHeader title="Danh sách tin tuyển dụng" />
             <Divider />
             <CardContent>
-              <Table data={jobs || []} />
+              <Table />
             </CardContent>
           </Card>
         </Grid>

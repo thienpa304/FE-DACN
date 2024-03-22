@@ -89,6 +89,7 @@ function Degree() {
           handleSave={handleSaveDegreeData}
           handleUpdate={handleUpdateDegreeData}
           handleDelete={handleDeleteDegreeData}
+          profile={profile}
         />
       </Box>
     </Container>

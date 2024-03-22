@@ -9,6 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
+import { toInputDateString } from 'src/utils/inputOutputFormat';
 
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
@@ -44,30 +45,29 @@ const renderStatus = (data) => {
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
-    headerName: 'Tên tin đăng',
+    headerName: 'Tên tin tuyển dụng',
     minWidth: 250,
     renderCell: renderJobTitle
   },
   {
-    field: 'publishingDate',
+    field: 'createAt',
     headerName: 'Ngày đăng',
-    minWidth: 150
+    minWidth: 150,
+    renderCell: (data) => toInputDateString(data.value as string, 'YYYY-MM-DD HH:MM:ss', 'DD-MM-YYYY')
   },
   {
-    field: 'fullName',
+    field: 'submissionCount',
     headerName: 'Lượt nộp',
     minWidth: 100,
-    type: 'number',
     align: 'center',
-    renderCell: () => <>0</>
+    headerAlign: 'center'
   },
   {
-    field: 'ag2e',
+    field: 'view',
     headerName: 'Lượt xem',
-    type: 'number',
     minWidth: 110,
     align: 'center',
-    renderCell: () => <>0</>
+    headerAlign: 'center'
   },
   {
     field: 'status',
@@ -84,7 +84,7 @@ const columns: GridColDef[] = [
 
 export default function TablePost({ data }) {
   return (
-    <Box sx={{ height: '75vh', width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <TableData rows={data} columns={columns} />
     </Box>
   );

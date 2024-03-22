@@ -17,18 +17,38 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 
 function CardItemJob({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
-    defaultImage.companyAvatar
+    job?.employer?.logo || defaultImage.companyAvatar
   );
 
   return (
     <LinkText to={`/job/${job?.postId}`}>
-      <Card sx={{ height: 160, border: 1, borderColor: '#98E4FF' }}>
-        <CardHeader sx={{ py: 1, color: '#ce8b0e' }} title={job.jobTitle} />
+      <Card
+        sx={{
+          border: 1,
+          borderRadius: '3px',
+          borderColor: '#98E4FF',
+          height: 190
+        }}
+      >
+        <CardHeader
+          sx={{
+            py: 1,
+            color: '#aa720a',
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2,
+            whiteSpace: 'normal',
+            maxHeight: '3.5em',
+            minHeight: '3.5em'
+          }}
+          title={job.jobTitle}
+        />
         <CardContent
           sx={{ display: 'flex', flexDirection: 'row', gap: 4, pt: 1 }}
         >
-          <Grid container gap={2}>
-            <Grid item xs={3}>
+          <Grid container spacing={2}>
+            <Grid item md={4} sm={6} xs={3}>
               <Avatar
                 src={companyAvatar}
                 variant="rounded"
@@ -39,11 +59,23 @@ function CardItemJob({ job }) {
                 }}
               />
             </Grid>
-            <Grid item xs>
+            <Grid item md={8} sm={6} xs={9}>
               <Box display="flex" flexDirection="column" gap={1}>
                 <Box display="flex">
                   <BusinessIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-                  <Typography>{job.employer?.companyName}</Typography>
+                  <Typography
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 2,
+                      whiteSpace: 'normal',
+                      maxWidth: '90%'
+                    }}
+                  >
+                    {job.employer?.companyName}
+                  </Typography>
                 </Box>
                 <Box display="flex">
                   <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
@@ -64,7 +96,7 @@ function CardItemJob({ job }) {
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
-                      maxWidth: '200px'
+                      maxWidth: '90%'
                     }}
                   >
                     {job.workAddress}
