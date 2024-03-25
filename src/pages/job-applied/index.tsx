@@ -7,7 +7,7 @@ import {
   Grid
 } from '@mui/material';
 import useQueryJobApplied from 'src/modules/application/hooks/useQueryJobApplied';
-import TablePost from 'src/pages/recruitment-list/TablePost';
+import TablePost from './TablePost';
 
 const JobApplied = () => {
   const { data } = useQueryJobApplied();

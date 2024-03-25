@@ -1,16 +1,16 @@
-import { Box, Button, Grid, Typography } from '@mui/material';
 import React from 'react';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import SelectInput from 'src/components/SelectInput';
 import FormControl from 'src/components/FormControl';
+import { useForm } from 'react-hook-form';
 import {
   DEGREE,
   EXPERIENCE,
   GENDER_OPTION,
   POSITION_LEVEL,
-  WORKING_FORM,
-  WORK_AT
+  WORKING_FORM
 } from 'src/constants';
-import { useForm } from 'react-hook-form';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 interface Option {
   value: any;
@@ -18,46 +18,68 @@ interface Option {
 }
 
 interface FormProps {
-  profession: Option;
-  workAddress: Option;
-  positionLevel: Option;
-  degree: Option;
-  experience: Option;
-  employmentType: Option;
-  gender: Option;
+  profession: Option | string;
+  workAddress: Option | string;
+  positionLevel: Option | string;
+  degree: Option | string;
+  experience: Option | string;
+  employmentType: Option | string;
+  gender: Option | string;
 }
 
+const addAllOption = (optionsArray, allLabel) => {
+  return [...optionsArray, { value: 'Tất cả', label: allLabel }];
+};
+
 const options = {
-  experience: [...EXPERIENCE, { value: 'Tất cả', label: 'Tất cả' }],
-  positionLevel: [...POSITION_LEVEL, { value: 'Tất cả', label: 'Tất cả' }],
-  degree: [...DEGREE, { value: 'Tất cả', label: 'Tất cả' }],
-  employmentType: [...WORKING_FORM, { value: 'Tất cả', label: 'Tất cả' }],
-  sex: [...GENDER_OPTION, { value: 'Tất cả', label: 'Tất cả' }]
+  experience: addAllOption(EXPERIENCE, 'Tất cả'),
+  positionLevel: addAllOption(POSITION_LEVEL, 'Tất cả'),
+  degree: addAllOption(DEGREE, 'Tất cả'),
+  employmentType: addAllOption(WORKING_FORM, 'Tất cả'),
+  sex: addAllOption(GENDER_OPTION, 'Tất cả')
 };
 
 const defaultValues = {
-  experience: null,
-  positionLevel: null,
-  degree: null,
-  employmentType: null,
-  sex: null
+  experience: '',
+  positionLevel: '',
+  degree: '',
+  employmentType: '',
+  sex: ''
 };
 
-export default function JobFilter(props) {
-  const { handleFilter } = props;
-  const filter = (data) => {
-    handleFilter(data);
-  };
-  const clear = () => {
-    reset(defaultValues);
-    handleFilter(defaultValues);
-  };
+export default function JobFilter({ handleFilter }) {
   const {
     control,
     reset,
     handleSubmit,
     formState: { errors }
   } = useForm<FormProps>({ defaultValues: defaultValues });
+
+  const filter = (data) => {
+    handleFilter(data);
+  };
+
+  const clear = () => {
+    reset(defaultValues);
+    handleFilter(defaultValues);
+  };
+
+  const renderFormControl = (option, label) => (
+    <Grid item xs={1.9} key={option}>
+      <FormControl
+        element={<SelectInput />}
+        options={options[option]}
+        control={control}
+        errors={errors}
+        fullWidth
+        id={option}
+        label={label}
+        name={option}
+        sx={{ bgcolor: '#ffff', borderRadius: '5px' }}
+      />
+    </Grid>
+  );
+
   return (
     <Box
       sx={{
@@ -72,78 +94,26 @@ export default function JobFilter(props) {
         pl: 2
       }}
     >
-      <Grid container spacing={0.5} display="flex" alignItems="center">
-        <Grid item xs={0.8}>
-          <Typography lineHeight={3} fontWeight={700}>
-            Bộ lọc:
-          </Typography>
+      <Grid container spacing={0.3} display="flex" alignItems="center">
+        <Grid item xs={0.5}>
+          <FilterAltIcon />
         </Grid>
-        <Grid item xs={2}>
-          <FormControl
-            element={<SelectInput />}
-            options={options.experience}
-            control={control}
-            errors={errors}
-            fullWidth
-            id="experience"
-            label="Kinh nghiệm"
-            name="experience"
-            sx={{ bgcolor: '#ffff', borderRadius: '5px' }}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <FormControl
-            element={<SelectInput />}
-            options={options.positionLevel}
-            control={control}
-            errors={errors}
-            fullWidth
-            id="positionLevel"
-            label="Cấp bậc"
-            name="positionLevel"
-            sx={{ bgcolor: '#ffff', borderRadius: '5px' }}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <FormControl
-            element={<SelectInput />}
-            options={options.degree}
-            control={control}
-            errors={errors}
-            fullWidth
-            id="degree"
-            label="Trình độ"
-            name="degree"
-            sx={{ bgcolor: '#ffff', borderRadius: '5px' }}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <FormControl
-            element={<SelectInput />}
-            options={options.employmentType}
-            control={control}
-            errors={errors}
-            fullWidth
-            id="employmentType"
-            label="Hình thức"
-            name="employmentType"
-            sx={{ bgcolor: '#ffff', borderRadius: '5px' }}
-          />
-        </Grid>
-        <Grid item xs={1.5}>
-          <FormControl
-            element={<SelectInput />}
-            options={options.sex}
-            control={control}
-            errors={errors}
-            fullWidth
-            id="sex"
-            label="Giới tính"
-            name="sex"
-            sx={{ bgcolor: '#ffff', borderRadius: '5px' }}
-          />
-        </Grid>
-        <Grid item xs={0.8}>
+        {['experience', 'positionLevel', 'degree', 'employmentType', 'sex'].map(
+          (option) =>
+            renderFormControl(
+              option,
+              option === 'employmentType'
+                ? 'Hình thức'
+                : option === 'sex'
+                ? 'Giới tính'
+                : option === 'positionLevel'
+                ? 'Cấp bậc'
+                : option === 'degree'
+                ? 'Trình độ'
+                : 'Kinh nghiệm'
+            )
+        )}
+        <Grid item xs={0.9}>
           <Button
             onClick={handleSubmit(filter)}
             variant="text"
@@ -152,7 +122,7 @@ export default function JobFilter(props) {
             Lọc
           </Button>
         </Grid>
-        <Grid item xs={0.8}>
+        <Grid item xs={0.9}>
           <Button
             onClick={clear}
             variant="text"

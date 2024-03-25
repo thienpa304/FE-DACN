@@ -33,7 +33,6 @@ function ResultJobList() {
     setProfession(profession);
 
     if (!profession) return;
-    console.log('----', filterResult);
 
     let filteredJobs = jobs.filter((job) => job.profession === profession);
     if (filterResult) {

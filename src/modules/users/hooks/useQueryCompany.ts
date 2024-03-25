@@ -8,7 +8,10 @@ const useQueryCompany = () => {
   const { data, isLoading } = useQuery<
     ResponseData<Company>,
     AxiosError<ResponseData<Company>>
-  >('get-Company', GetCompany.get);
+  >('get-Company', GetCompany.get, {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     company: data?.data,

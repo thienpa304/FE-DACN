@@ -52,7 +52,7 @@ function ProfessionListDialog(props) {
         {professions.map((profession, index) => (
           <Link
             key={profession?.code}
-            href={`/${profession?.code}`}
+            href={`/profession/${profession?.code}`}
             sx={{
               flexBasis: '33%',
               padding: 1.5,
@@ -62,7 +62,6 @@ function ProfessionListDialog(props) {
                 color: '#FF7D55'
               }
             }}
-            onClick={() => {}}
           >
             {profession.name}
           </Link>

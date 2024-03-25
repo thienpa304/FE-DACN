@@ -110,7 +110,7 @@ const routes: RouteObject[] = [
             element: <Messenger />
           },
           {
-            path: '/:id',
+            path: '/profession/:id',
             element: <ResultJobList />
           }
         ]

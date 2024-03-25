@@ -9,15 +9,13 @@ import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import SelectInput from 'src/components/SelectInput';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useMutateJobStatus from 'src/modules/jobs/hooks/useMutateJobStatus';
 import { ApprovalStatus } from 'src/constants/enum';
-import { toInputDateString } from 'src/utils/inputOutputFormat';
 import useQueryTotalResultsByAdmin from 'src/modules/jobs/hooks/useQueryTotalResultsByAdmin';
 import Pagination from 'src/components/Pagination';
 import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 import dayjs from 'dayjs';
-import moment from 'moment';
 
 const renderJobTitle = (data) => {
     const navigate = useNavigate();
@@ -49,7 +47,7 @@ const renderCompany = (data) => {
         <Grid container alignItems={'center'}>
             <Grid item xs={10}>
                 <LinkText to={`/employer/recruitment/list/${data.id}`}>
-                    {data.value.companyName}
+                    {data.value?.companyName}
                 </LinkText>
             </Grid>
         </Grid>
@@ -98,8 +96,7 @@ const columns: GridColDef[] = [
         field: 'createAt',
         headerName: 'Ngày đăng',
         minWidth: 150,
-        // renderCell: (data) => dayjs(data.value).format('DD-MM-YYYY HH:mm:ss')
-        renderCell: (data) => moment(data.value).format('DD-MM-YYYY HH:mm:ss')
+        renderCell: (data) => dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')
     },
     {
         field: 'submissionCount',
@@ -124,21 +121,28 @@ const columns: GridColDef[] = [
     }
 ];
 
-export default function Table() {
+export default function Table({ statusFilter }) {
     const { totalResults } = useQueryTotalResultsByAdmin();
     const [currentPage, setCurrentPage] = useState(1);
     const jobsPerPage = 10;
+
+    const [status, setStatus] = useState('')
 
     const validvalidTotalPages = Number.isInteger(totalResults)
         ? totalResults
         : 1;
     const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
 
-    const { jobs } = useQueryJob({ page: currentPage, num: jobsPerPage });
+    const { jobs, isLoading } = useQueryJob({ page: currentPage, num: jobsPerPage, status: status });
 
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
     };
+
+    useEffect(() => {
+        setStatus(statusFilter)
+        console.log(status)
+    }, [statusFilter])
 
     return (
         <Box sx={{ width: '100%' }}>

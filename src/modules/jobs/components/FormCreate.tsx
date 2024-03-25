@@ -1,50 +1,45 @@
+import React, { useEffect, useState } from 'react';
 import {
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
+  CircularProgress,
   Container,
   Divider,
   Grid,
   InputAdornment,
   Typography
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import DatePicker from 'src/components/DatePicker';
-import Footer from 'src/components/Footer';
+import dayjs from 'dayjs';
+import SuspenseLoader from 'src/components/SuspenseLoader';
+import {
+  PROFESSION,
+  WORKING_FORM,
+  DEGREE,
+  EXPERIENCE,
+  POSITION_LEVEL,
+  GENDER_OPTION
+} from 'src/constants/option';
+import { jobAnalysist } from 'src/modules/ai/roles';
+import ChatGPT from 'src/modules/ai/ChatGPT';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
 import TextEditor from 'src/components/TextEditor';
 import TextField from 'src/components/TextField';
-import {
-  DEGREE,
-  EXPERIENCE,
-  GENDER_OPTION,
-  POSITION_LEVEL,
-  WORKING_FORM,
-  PROFESSION
-} from 'src/constants/option';
+import NumericFormatCustom from 'src/components/NumberFormatCustom';
+import Footer from 'src/components/Footer';
 import useMutateJob from '../hooks/useMutateJob';
 import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
-import dayjs from 'dayjs';
-import {
-  convertObjectListToString,
-  findObjectKey,
-  toOutputDateString,
-  toOutputOptionLabel
-} from 'src/utils/inputOutputFormat';
-import {
-  Degree,
-  EmploymentType,
-  Experience,
-  PositionLevel
-} from 'src/constants/enum';
-import NumericFormatCustom from 'src/components/NumberFormatCustom';
-import ChatGPT from 'src/modules/ai/ChatGPT';
-import { jobAnalysist } from 'src/modules/ai/roles';
+import { toOutputOptionLabel } from 'src/utils/inputOutputFormat';
+import DatePicker from 'src/components/DatePicker';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import axios from 'axios';
 
 const defaultValues = {
   sex: '',
@@ -64,12 +59,13 @@ type Props = {
 const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
   const { onSaveDataById } = useMutateJobById();
-  // fetch data by selectedId
-  const { data: defaultData } = useQueryJobById(selectedId);
+  const { data, isLoading } = useQueryJobById(selectedId);
   const [message, setMessage] = useState({});
-  const methods = useForm({
-    defaultValues
-  });
+  const [analysisResults, setAnalysisResults] = useState();
+  const [sendRequest, setSendRequest] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [keywords, setKeywords] = useState([]);
+  const methods = useForm({ defaultValues });
   const {
     control,
     reset,
@@ -77,41 +73,52 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     handleSubmit
   } = methods;
 
-  // reset Data if selected is true
-  useEffect(() => {
-    reset({
-      ...defaultData,
-      profession: PROFESSION.find(
-        (item) => item.label === defaultData?.profession
-      )?.value.toString()
-    });
-  }, [defaultData]);
-
-  const handleSave = (data) => {
-    const profession = toOutputOptionLabel(data.profession, PROFESSION);
-    const degree = findObjectKey(data.degree, Degree);
-    const employmentType = findObjectKey(data.employmentType, EmploymentType);
-    const experience = findObjectKey(data.experience, Experience);
-    const positionLevel = findObjectKey(data.positionLevel, PositionLevel);
-
-    const newData = {
-      ...data,
-      profession
-      // degree,
-      // employmentType,
-      // experience,
-      // positionLevel
-    };
-    setMessage(newData);
-    // if (selectedId) onSaveDataById([selectedId, newData]);
-    // else onSaveData(newData);
+  const handleSave = (newData) => {
+    if (selectedId) onSaveDataById([selectedId, newData]);
+    else onSaveData(newData);
   };
 
-  const [analysisResult, setAnalysisResults] = useState();
-  const [sendRequest, setSendRequest] = useState(false);
+  const handleAnalysis = (newData) => {
+    setMessage({
+      profession: newData.profession,
+      positionLevel: newData.positionLevel,
+      degree: newData.degree,
+      experience: newData.experience,
+      jobDescription: newData.jobDescription,
+      jobRequirements: newData.jobRequirements,
+      benefits: newData.benefits
+    });
+    setIsAnalyzing(true);
+    setSendRequest(true);
+  };
+
+  const takePhotoThisPage = () => {
+    const element = document.getElementById('form-create');
+    html2canvas(element).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, 'PNG', 15, 40, 180, 100);
+      pdf.save('form-create.pdf');
+      window.open(pdf.output('bloburl'), '_blank');
+    });
+  };
+
+  useEffect(() => {
+    reset(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (analysisResults) {
+      setKeywords(JSON.parse(analysisResults));
+      setSendRequest(false);
+      setIsAnalyzing(false);
+    }
+  }, [analysisResults]);
+
+  if (isLoading) return <SuspenseLoader />;
 
   return (
-    <>
+    <Box id={'form-create'}>
       <FormProvider {...methods}>
         <Container maxWidth="xl">
           <Grid
@@ -441,34 +448,45 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                       onClick={handleSubmit(handleSave)}
                       color="success"
                       variant="contained"
-                      size="small"
+                      sx={{ minWidth: 100 }}
                     >
                       {selectedId ? 'Lưu' : 'Tạo'}
                     </Button>
                     <Button
-                      onClick={() => setSendRequest(true)}
-                      color="success"
+                      onClick={handleSubmit(handleAnalysis)}
+                      color="primary"
                       variant="contained"
-                      size="small"
+                      sx={{ ml: 2, minWidth: 100 }}
+                      disabled={isAnalyzing}
                     >
                       Phân tích
                     </Button>
                   </Grid>
                 </CardActions>
+                {isAnalyzing && <CircularProgress sx={{ mx: '50%' }} />}
+                {analysisResults && (
+                  <Container sx={{ mb: 2 }}>
+                    <Divider />
+                    <Typography mt={2}>
+                      <b>Từ khóa:</b> <em>{keywords?.join(', ')}</em>
+                    </Typography>
+                  </Container>
+                )}
               </Card>
             </Grid>
           </Grid>
         </Container>
       </FormProvider>
-      <ChatGPT
-        request={jobAnalysist}
-        content={message}
-        setAnswer={setAnalysisResults}
-        sendRequest={sendRequest}
-      />
-      <div>{analysisResult}</div>
+      {sendRequest && (
+        <ChatGPT
+          request={jobAnalysist}
+          content={message}
+          setAnswer={setAnalysisResults}
+          sendRequest={sendRequest}
+        />
+      )}
       <Footer />
-    </>
+    </Box>
   );
 };
 

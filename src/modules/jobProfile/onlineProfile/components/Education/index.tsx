@@ -36,9 +36,7 @@ export default function Education() {
   useEffect(() => {
     const rows = profile?.education_informations;
     const initialRows = rows ? JSON.parse(JSON.stringify(rows)) : [];
-    console.log(initialRows);
     if (initialRows) processData(initialRows);
-    console.log(initialRows);
     setRows(profile?.education_informations?.length > 0 ? initialRows : []);
   }, [profile]);
 

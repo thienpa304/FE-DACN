@@ -47,7 +47,6 @@ export async function RemoveFileByUserId(userId: number, kind: DocumentType) {
 // Version 2: When there is a column to store the file url in database
 export async function getFileByUrl(url: string) {
   if (!url) return '';
-  console.log(url);
   const fileName = decodeURIComponent(url.split('%2F')[1].split('?')[0]);
   const fileRef = ref(storage, `userDocument/${fileName}`);
   const fileURL = await getDownloadURL(fileRef);
@@ -72,4 +71,33 @@ export async function removeFileByUrl(url: string) {
   } catch (error) {
     console.error('Không thể xóa ảnh. Lỗi: ', error);
   }
+}
+
+export async function downloadFileByUrl(url: string) {
+  if (!url) return '';
+  const fileName = decodeURIComponent(url.split('%2F')[1].split('?')[0]);
+  const fileRef = ref(storage, `userDocument/${fileName}`);
+
+  getDownloadURL(fileRef)
+    .then((url) => {
+      // `url` is the download URL for 'images/stars.jpg'
+
+      // This can be downloaded directly:
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'blob';
+      xhr.onload = (event) => {
+        const blob = xhr.response;
+      };
+      debugger;
+      xhr.open('GET', url);
+      xhr.send();
+
+      // Or inserted into an <img> element
+      // const img = document.getElementById('myimg');
+      // img.setAttribute('src', url);
+    })
+    .catch((error) => {
+      // Handle any errors
+      console.log(error);
+    });
 }

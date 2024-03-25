@@ -9,7 +9,9 @@ const useQueryAllJob = (params?) => {
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
   >(['get-AllJobs', params?.page], () => JobViewService.get({ params }), {
-    keepPreviousData: true
+    keepPreviousData: true,
+    retry: 1,
+    refetchOnWindowFocus: false
   });
 
   return {

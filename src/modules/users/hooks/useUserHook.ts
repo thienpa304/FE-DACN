@@ -5,19 +5,25 @@ import { GetProfile } from '../userService';
 import { useQuery } from 'react-query';
 
 const useProfileHook = () => {
-  const { data: userData, isLoading } = useQuery('get-Profile', GetProfile.get);
-  const [data, setData] = useState<Partial<User>>();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { data, isLoading } = useQuery('get-Profile', GetProfile.get, {
+    retry: 1,
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn
+  });
 
   useEffect(() => {
-    if (getAccessToken()) getProfile();
+    if (getAccessToken()) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
   }, []);
 
-  const getProfile = () => {
-    GetProfile.get().then((res) => setData(res.data));
-  };
   return {
-    profile: data,
-    userProfile: userData?.data
+    profile: data?.data,
+    userProfile: data?.data,
+    isLoading
   };
 };
 

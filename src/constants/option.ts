@@ -90,7 +90,7 @@ export const ISMARRIED_OPTION = ISMARRIED.map((item) => ({
 }));
 
 export const PROFESSION = professions.map((item) => ({
-  value: item.code,
+  value: item.name,
   label: item.name
 }));
 

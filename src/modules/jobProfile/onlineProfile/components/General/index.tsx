@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import GeneralForm from '../../GeneralForm';
-import { OnlineProfile } from '../../model';
-import useMutateOnlineProfile from '../hooks/useMutateOnlineProfile';
-import useUpdateOnlineProfile from '../hooks/useMutateUpdateOnlineProfile';
+import GeneralForm from '../../../GeneralForm';
+import { OnlineProfile } from '../../../model';
+import useMutateOnlineProfile from '../../hooks/useMutateOnlineProfile';
+import useUpdateOnlineProfile from '../../hooks/useMutateUpdateOnlineProfile';
 import {
   EXPERIENCE,
   POSITION_LEVEL,
@@ -11,8 +11,12 @@ import {
   PROFESSION,
   WORK_AT
 } from 'src/constants/option';
-import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
-import useOnlineProfile from '../hooks/useOnlineProfile';
+import {
+  convertStringToObjectList,
+  findObjectKey
+} from 'src/utils/inputOutputFormat';
+import useOnlineProfile from '../../hooks/useOnlineProfile';
+import { Degree } from 'src/constants/enum';
 
 export default function OnlineGeneral() {
   const { profile, setProfile } = useOnlineProfile();
@@ -30,9 +34,12 @@ export default function OnlineGeneral() {
   };
 
   const handleSaveProfile = (data: OnlineProfile) => {
-    if (profile?.userId) onUpdateData(data);
-    else onSaveData(data);
-    // setProfile(data);
+    const degree = findObjectKey(data.degree, Degree);
+
+    const newData = { ...data, degree: degree };
+    // setProfile(newData);
+    if (profile?.userId) onUpdateData(newData);
+    else onSaveData(newData);
   };
 
   const formatInputData = (data: OnlineProfile) => ({

@@ -35,7 +35,6 @@ export default function ExperienceView(props) {
   };
 
   const handleAddWork = () => {
-    debugger;
     if (!profile?.work_experiences) {
       setIsNoProfile(true);
       return;

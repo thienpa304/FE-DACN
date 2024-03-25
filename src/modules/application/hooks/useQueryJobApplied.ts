@@ -8,7 +8,10 @@ const useQueryJobApplied = () => {
   const { data, isLoading } = useQuery<
     ResponseData<Application[]>,
     AxiosError<ResponseData<Application[]>>
-  >('job-applied-getList', ApplicationService.get);
+  >('job-applied-getList', ApplicationService.get, {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     data:

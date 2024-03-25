@@ -5,7 +5,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid
+  Grid,
+  Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useForm } from 'react-hook-form';
@@ -15,6 +16,10 @@ import UploadButton from 'src/components/UploadButton';
 import AddIcon from '@mui/icons-material/Add';
 import useMutateApplyJob from '../hooks/useMutateApplyJob';
 import { ApplicationType } from 'src/constants/enum';
+import useQueryOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useQueryOnlineProfile';
+import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
+import { useApp } from 'src/modules/app/hooks';
+import useProfileHook from 'src/modules/users/hooks/useUserHook';
 
 const Title = styled('div')(() => ({
   fontWeight: 600,
@@ -38,6 +43,19 @@ type Props = {
 export default function ModalApply(props: Props) {
   const { onSaveData } = useMutateApplyJob();
   const { open, onClose, position, company, postId } = props;
+  const { profile: user } = useProfileHook();
+  const { onlineProfile, isLoading: isLoadingOnlineProfile } =
+    useQueryOnlineProfile();
+  const { attachedDocument, isLoading: isLoadingDocumentProfile } =
+    useQueryAttachedDocument();
+  const [isChecked, setIsChecked] = useState('');
+  const [missInfo, setMissInfo] = useState(false);
+
+  const buttonStyle = {
+    width: '100%',
+    px: 1,
+    color: '#000'
+  };
 
   const {
     control,
@@ -51,16 +69,34 @@ export default function ModalApply(props: Props) {
     onClose();
   };
   const handleApply = (data) => {
+    if (!isChecked) {
+      setMissInfo(true);
+      return;
+    }
+
+    let submitProfile = '';
+    if (isChecked === ApplicationType.online_profile) {
+      submitProfile = JSON.stringify(onlineProfile);
+    } else if (isChecked === ApplicationType.attached_document) {
+      submitProfile = JSON.stringify(attachedDocument);
+    } else submitProfile = JSON.stringify(onlineProfile);
+
     onSaveData({
       ...data,
       postId,
-      applicationType: ApplicationType.cv_enclosed
+      applicationType: isChecked,
+      CV: submitProfile
     });
+  };
+
+  const uploadProfile = (id) => {
+    setIsChecked(id);
+    debugger;
   };
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} maxWidth="md">
         <DialogTitle>
           <SubTitle> Vị trí ứng tuyển</SubTitle>
           <Title>{position}</Title>
@@ -68,25 +104,84 @@ export default function ModalApply(props: Props) {
         </DialogTitle>
 
         <DialogContent>
-          <Grid container marginBottom={3} spacing={2}>
-            <Grid item>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6} lg={4}>
+              <Button
+                startIcon={<AddIcon />}
+                variant="contained"
+                fullWidth
+                onClick={() => uploadProfile(ApplicationType.online_profile)}
+                sx={[
+                  buttonStyle,
+                  {
+                    bgcolor:
+                      isChecked === ApplicationType.online_profile
+                        ? '#f29c00'
+                        : '#fff6e5'
+                  }
+                ]}
+              >
+                {onlineProfile
+                  ? 'Hồ sơ trực tuyến'
+                  : 'Chưa có hồ sơ trực tuyến'}
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <Button
+                startIcon={<AddIcon />}
+                variant="contained"
+                fullWidth
+                onClick={() => uploadProfile(ApplicationType.attached_document)}
+                sx={[
+                  buttonStyle,
+                  {
+                    bgcolor:
+                      isChecked === ApplicationType.attached_document
+                        ? '#f29c00'
+                        : '#fff6e5'
+                  }
+                ]}
+              >
+                {attachedDocument ? (
+                  'Hồ sơ đính kèm'
+                ) : (
+                  <em>Chưa có hồ sơ đính kèm</em>
+                )}
+              </Button>
+            </Grid>
+            <Grid item xs={12} lg={4}>
               <FormControl
                 control={control}
                 errors={errors}
-                required
                 id="CV"
                 name="CV"
                 label="Tải lên hồ sơ có sẵn"
               >
-                <UploadButton />
+                <UploadButton
+                  sx={[
+                    buttonStyle,
+                    {
+                      bgcolor:
+                        isChecked === ApplicationType.cv_enclosed
+                          ? '#f29c00'
+                          : '#fff6e5'
+                    }
+                  ]}
+                  setIsChecked={setIsChecked}
+                />
               </FormControl>
             </Grid>
-            <Grid item>
-              <Button startIcon={<AddIcon />} variant="outlined">
-                Tạo hồ sơ trực tuyến
-              </Button>
-            </Grid>
           </Grid>
+          {missInfo && (
+            <Typography
+              color="error"
+              mb={3}
+              fontWeight={700}
+              fontStyle="italic"
+            >
+              * Vui lòng chọn loại hồ sơ cần gửi !
+            </Typography>
+          )}
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <FormControl
