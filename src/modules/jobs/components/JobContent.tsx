@@ -10,6 +10,7 @@ import {
   Avatar,
   Box,
   Container,
+  Divider,
   Grid,
   ListItem,
   ListItemAvatar,
@@ -80,6 +81,8 @@ const JobContent: React.FC<Props> = ({ data }) => {
             </ListItem>
           </Grid>
         </Grid>
+        <Divider sx={{ width: '90%', margin: 'auto', my: 1 }} />
+
         <Grid container sx={{ my: 0.5 }}>
           <Grid item xs={12} md={4}>
             <ListItem>
@@ -108,6 +111,8 @@ const JobContent: React.FC<Props> = ({ data }) => {
             </ListItem>
           </Grid>
         </Grid>
+        <Divider sx={{ width: '90%', margin: 'auto', my: 1 }} />
+
         <Grid container sx={{ my: 0.5 }}>
           <Grid item xs={12} md={4}>
             <ListItem>

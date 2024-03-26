@@ -38,7 +38,6 @@
     "jspdf": "^2.5.1",
     "nprogress": "0.2.0",
     "numeral": "2.0.6",
-    "openai": "^4.29.1",
     "pdfjs-dist": "2.6.347",
     "prop-types": "15.8.1",
     "puppeteer": "^22.6.0",

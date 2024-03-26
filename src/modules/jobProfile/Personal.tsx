@@ -104,7 +104,7 @@ export default function Personal() {
   };
 
   const handleGetAvatar = async () => {
-    const avatarUrl = await getFileByUrl(user?.avatar);
+    const avatarUrl = await getFileByUrl(user?.avatar).catch(() => '');
     setAvatarState({
       ...avatarState,
       avatar: avatarUrl,
@@ -134,7 +134,7 @@ export default function Personal() {
 
   const defaultUserValues = {
     ...user,
-    dob: toInputDateString(user.dob as string, 'DD-MM-YYYY', 'DD-MM-YYYY'),
+    dob: toInputDateString(user.dob as string, 'DD-MM-YYYY'),
     sex: GENDER.find((item) => item.label === user.sex)?.value,
     isMarried: user.isMarried ? 'Đã kết hôn' : 'Độc thân'
   };

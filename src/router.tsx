@@ -42,6 +42,9 @@ const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
 const CandidateProfiles = Loader(
   lazy(() => import('src/pages/candidate-profiles'))
 );
+const ViewCandidateProfile = Loader(
+  lazy(() => import('src/pages/view-candidate-profile'))
+);
 
 // User
 
@@ -247,6 +250,10 @@ const routes: RouteObject[] = [
           {
             path: 'profile',
             element: <CandidateProfiles />
+          },
+          {
+            path: 'profile/:id',
+            element: <ViewCandidateProfile />
           }
         ]
       }

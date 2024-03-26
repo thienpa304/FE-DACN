@@ -35,11 +35,7 @@ import Footer from 'src/components/Footer';
 import useMutateJob from '../hooks/useMutateJob';
 import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
-import { toOutputOptionLabel } from 'src/utils/inputOutputFormat';
 import DatePicker from 'src/components/DatePicker';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
-import axios from 'axios';
 
 const defaultValues = {
   sex: '',
@@ -61,7 +57,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveDataById } = useMutateJobById();
   const { data, isLoading } = useQueryJobById(selectedId);
   const [message, setMessage] = useState({});
-  const [analysisResults, setAnalysisResults] = useState();
+  const [analysisResults, setAnalysisResults] = useState([]);
   const [sendRequest, setSendRequest] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [keywords, setKeywords] = useState([]);
@@ -79,28 +75,19 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   };
 
   const handleAnalysis = (newData) => {
-    setMessage({
-      profession: newData.profession,
-      positionLevel: newData.positionLevel,
-      degree: newData.degree,
-      experience: newData.experience,
-      jobDescription: newData.jobDescription,
-      jobRequirements: newData.jobRequirements,
-      benefits: newData.benefits
-    });
+    setMessage([
+      {
+        profession: newData.profession,
+        positionLevel: newData.positionLevel,
+        degree: newData.degree,
+        experience: newData.experience,
+        jobDescription: newData.jobDescription,
+        jobRequirements: newData.jobRequirements,
+        benefits: newData.benefits
+      }
+    ]);
     setIsAnalyzing(true);
     setSendRequest(true);
-  };
-
-  const takePhotoThisPage = () => {
-    const element = document.getElementById('form-create');
-    html2canvas(element).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, 'PNG', 15, 40, 180, 100);
-      pdf.save('form-create.pdf');
-      window.open(pdf.output('bloburl'), '_blank');
-    });
   };
 
   useEffect(() => {
@@ -108,11 +95,35 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   }, [data]);
 
   useEffect(() => {
-    if (analysisResults) {
-      setKeywords(JSON.parse(analysisResults));
-      setSendRequest(false);
-      setIsAnalyzing(false);
+    if (analysisResults.length > 0) {
+      const result = analysisResults[0];
+
+      const startIndex = result.indexOf('[');
+      if (startIndex === -1) {
+        console.log("Không tìm thấy ký tự '['");
+        return;
+      }
+
+      // Tìm vị trí kết thúc của ']'
+      const endIndex = result.lastIndexOf(']');
+      if (endIndex === -1) {
+        console.log("Không tìm thấy ký tự ']'");
+        return;
+      }
+
+      // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
+      const extractedString = result.substring(startIndex, endIndex + 1);
+
+      // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
+      const jsonString = extractedString.replace(/'/g, '"');
+
+      // B2: Parse string sang array
+      const jsonArray = JSON.parse(jsonString);
+
+      setKeywords(() => jsonArray);
     }
+    setSendRequest(false);
+    setIsAnalyzing(false);
   }, [analysisResults]);
 
   if (isLoading) return <SuspenseLoader />;

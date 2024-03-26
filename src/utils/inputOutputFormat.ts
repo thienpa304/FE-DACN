@@ -40,7 +40,7 @@ export function toInputDateString(
 ) {
   if (!data) return '';
   return dayjs(data, inputFormat).isValid()
-    ? dayjs(data, outputFormat).toISOString()
+    ? dayjs(data, inputFormat).toISOString()
     : null;
 }
 
@@ -51,7 +51,7 @@ export function toOutputDateString(
 ) {
   if (!data) return null;
   return dayjs(data, inputFormat).isValid()
-    ? dayjs(data).format(outputFormat || 'DD-MM-YYYY')
+    ? dayjs(data, inputFormat).format(outputFormat || 'DD/MM/YYYY')
     : null;
 }
 
@@ -59,12 +59,9 @@ export function toOutputOptionLabel(value: string, option) {
   return option.find((item) => item.value === value)?.label;
 }
 
-export function findObjectKey(
-  experienceValue: string,
-  object
-): string | undefined {
+export function findObjectKey(stringValue: string, object): string | undefined {
   for (const key in object) {
-    if (object[key as keyof typeof object] === experienceValue) {
+    if (object[key as keyof typeof object] === stringValue) {
       return key;
     }
   }

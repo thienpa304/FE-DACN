@@ -55,7 +55,7 @@ function UploadButton(props: Props) {
       alert('Please upload an image first!');
     }
     let date = dayjs(new Date()).format('DDMMYYYY');
-    const storageRef = ref(storage, `/files/${value.name}-${date}`);
+    const storageRef = ref(storage, `/userDocument/${value.name}-${date}`);
 
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.

@@ -1,11 +1,11 @@
 export enum Degree {
+  other = 'Khác',
   highSchool = 'Trung học',
   intermediate = 'Trung cấp',
   associate = 'Cao đẳng',
   bachelor = 'Cử nhân',
   master = 'Thạc sĩ',
-  doctor = 'Tiến sĩ',
-  other = 'Khác'
+  doctor = 'Tiến sĩ'
 }
 export enum UserRole {
   Employee = 'EMPLOYEE',
