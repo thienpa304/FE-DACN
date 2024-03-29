@@ -5,9 +5,11 @@ import { AttachedDocument } from 'src/modules/jobProfile/model/index';
 import { AttachedDocumentService } from 'src/modules/jobProfile/employeeService';
 import { useEffect, useState } from 'react';
 import { getAccessToken } from 'src/utils/localStorage';
+import { useApp } from 'src/modules/app/hooks';
 
 const useQueryAttachedDocument = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isEmployee } = useApp();
 
   useEffect(() => {
     const token = getAccessToken();
@@ -24,7 +26,7 @@ const useQueryAttachedDocument = () => {
   >('get-AttachedDocument', AttachedDocumentService.get, {
     retry: 1,
     refetchOnWindowFocus: false,
-    enabled: isLoggedIn
+    enabled: isLoggedIn && isEmployee
   });
 
   return {

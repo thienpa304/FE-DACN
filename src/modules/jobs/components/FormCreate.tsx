@@ -35,11 +35,11 @@ import Footer from 'src/components/Footer';
 import useMutateJob from '../hooks/useMutateJob';
 import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
-import { toOutputOptionLabel } from 'src/utils/inputOutputFormat';
 import DatePicker from 'src/components/DatePicker';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
-import axios from 'axios';
+import _ from 'lodash';
+import { preProcessText } from 'src/utils/inputOutputFormat';
+import { tfidfReview } from 'src/utils/keywords';
+import useProfileHook from 'src/modules/users/hooks/useUserHook';
 
 const defaultValues = {
   sex: '',
@@ -50,7 +50,12 @@ const defaultValues = {
   jobDescription: '',
   jobRequirements: '',
   benefits: '',
-  profession: ''
+  profession: '',
+  email: '',
+  name: '',
+  address: '',
+  phone: '',
+  contactAddress: ''
 };
 type Props = {
   title?: string;
@@ -60,11 +65,14 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
   const { onSaveDataById } = useMutateJobById();
   const { data, isLoading } = useQueryJobById(selectedId);
-  const [message, setMessage] = useState({});
-  const [analysisResults, setAnalysisResults] = useState();
+  const [message, setMessage] = useState([]);
+  const [analysisResults, setAnalysisResults] = useState([]);
   const [sendRequest, setSendRequest] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [keywords, setKeywords] = useState([]);
+  const [documentText, setDocumentText] = useState('');
+  const { profile } = useProfileHook();
+
   const methods = useForm({ defaultValues });
   const {
     control,
@@ -79,40 +87,69 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   };
 
   const handleAnalysis = (newData) => {
-    setMessage({
+    const jobDescription = preProcessText(
+      JSON.stringify(newData.jobDescription)
+    );
+    const jobRequirements = preProcessText(
+      JSON.stringify(newData.jobRequirements)
+    );
+    const benefits = preProcessText(JSON.stringify(newData.benefits));
+    const processedText = {
       profession: newData.profession,
       positionLevel: newData.positionLevel,
       degree: newData.degree,
       experience: newData.experience,
-      jobDescription: newData.jobDescription,
-      jobRequirements: newData.jobRequirements,
-      benefits: newData.benefits
-    });
+      jobDescription: jobDescription,
+      jobRequirements: jobRequirements,
+      benefits: benefits
+    };
+    setMessage([processedText]);
+    setDocumentText(JSON.stringify(processedText));
     setIsAnalyzing(true);
     setSendRequest(true);
   };
 
-  const takePhotoThisPage = () => {
-    const element = document.getElementById('form-create');
-    html2canvas(element).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, 'PNG', 15, 40, 180, 100);
-      pdf.save('form-create.pdf');
-      window.open(pdf.output('bloburl'), '_blank');
-    });
-  };
+  useEffect(() => {
+    if (data) reset(data);
+    else if (!selectedId)
+      reset({
+        name: profile?.name,
+        email: profile.email,
+        phone: profile?.phone,
+        contactAddress: profile?.address
+      });
+  }, [data, profile]);
 
   useEffect(() => {
-    reset(data);
-  }, [data]);
+    if (analysisResults.length > 0) {
+      const result = analysisResults[0];
 
-  useEffect(() => {
-    if (analysisResults) {
-      setKeywords(JSON.parse(analysisResults));
-      setSendRequest(false);
-      setIsAnalyzing(false);
+      const startIndex = result.indexOf('[');
+      if (startIndex === -1) {
+        console.log("Không tìm thấy ký tự '['");
+        return;
+      }
+
+      // Tìm vị trí kết thúc của ']'
+      const endIndex = result.lastIndexOf(']');
+      if (endIndex === -1) {
+        console.log("Không tìm thấy ký tự ']'");
+        return;
+      }
+
+      // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
+      const extractedString = result.substring(startIndex, endIndex + 1);
+
+      // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
+      const jsonString = extractedString.replace(/'/g, '"');
+
+      // B2: Parse string sang array
+      const keywordArray = JSON.parse(jsonString);
+
+      setKeywords(() => tfidfReview(keywordArray, documentText));
     }
+    setSendRequest(false);
+    setIsAnalyzing(false);
   }, [analysisResults]);
 
   if (isLoading) return <SuspenseLoader />;
@@ -211,7 +248,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         required
                       />
                     </Grid>
-                    <Grid item xs={6} md={2}>
+                    <Grid item xs={12} md={2}>
                       <FormControl
                         element={
                           <TextField InputProps={{ inputProps: { min: 0 } }} />
@@ -225,7 +262,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         pattern="integer"
                       />
                     </Grid>
-                    <Grid item xs={6} md={2}>
+                    <Grid item xs={12} md={2}>
                       <FormControl
                         element={
                           <TextField InputProps={{ inputProps: { min: 0 } }} />
@@ -253,9 +290,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="numberOfVacancies"
@@ -264,21 +299,22 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         required
                         type="number"
                         pattern="integer"
+                        InputProps={{ inputProps: { min: 1 } }}
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="trialPeriod"
                         label="Thời giai thử việc"
                         name="trialPeriod"
-                        pattern="integer"
+                        required
                         type="number"
+                        pattern="integer"
                         InputProps={{
+                          inputProps: { min: 1 },
                           endAdornment: (
                             <InputAdornment position="end">
                               tháng
@@ -300,17 +336,17 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="minSalary"
                         label="Mức lương tối thiểu"
                         name="minSalary"
+                        type="number"
                         pattern="integer"
                         required
                         InputProps={{
+                          inputProps: { min: 1 },
                           inputComponent: NumericFormatCustom as any,
                           endAdornment: (
                             <InputAdornment position="end">
@@ -322,17 +358,17 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="maxSalary"
                         label="Mức lương tối đa"
                         name="maxSalary"
+                        type="number"
                         pattern="integer"
                         required
                         InputProps={{
+                          inputProps: { min: 1 },
                           inputComponent: NumericFormatCustom as any,
                           endAdornment: (
                             <InputAdornment position="end">
@@ -342,7 +378,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={8}>
                       <FormControl
                         element={<TextField />}
                         control={control}
@@ -424,7 +460,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         pattern="phone"
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={8}>
                       <FormControl
                         element={<TextField />}
                         control={control}

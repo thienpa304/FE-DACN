@@ -18,141 +18,145 @@ import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 import dayjs from 'dayjs';
 
 const renderJobTitle = (data) => {
-    const navigate = useNavigate();
-    const handleLinkToDetail = () => {
-        navigate(`/job/${data.id}`);
-    };
-    return (
-        <>
-            <Grid container alignItems={'center'}>
-                <Grid item xs={2}>
-                    <Tooltip title="Xem trực tiếp">
-                        <IconButton size="small" onClick={handleLinkToDetail}>
-                            <RemoveRedEyeIcon sx={{ width: 18, height: 18, color: 'gray' }} />
-                        </IconButton>
-                    </Tooltip>
-                </Grid>
-                <Grid item xs={10}>
-                    <LinkText to={`/job/${data.id}`}>
-                        {data.value}
-                    </LinkText>
-                </Grid>
-            </Grid>
-        </>
-    );
+  const navigate = useNavigate();
+  const handleLinkToDetail = () => {
+    navigate(`/job/${data.id}`);
+  };
+  return (
+    <>
+      <Grid container alignItems={'center'}>
+        <Grid item xs={2}>
+          <Tooltip title="Xem trực tiếp">
+            <IconButton size="small" onClick={handleLinkToDetail}>
+              <RemoveRedEyeIcon sx={{ width: 18, height: 18, color: 'gray' }} />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+        <Grid item xs={10}>
+          <LinkText to={`/job/${data.id}`}>{data.value}</LinkText>
+        </Grid>
+      </Grid>
+    </>
+  );
 };
 
 const renderCompany = (data) => {
-    return (
-        <Grid container alignItems={'center'}>
-            <Grid item xs={10}>
-                <LinkText to={`/employer/recruitment/list/${data.id}`}>
-                    {data.value?.companyName}
-                </LinkText>
-            </Grid>
-        </Grid>
-    )
-}
+  return (
+    <Grid container alignItems={'center'}>
+      <Grid item xs={10}>
+        <LinkText to={`/employer/recruitment/list/${data.id}`}>
+          {data.value?.companyName}
+        </LinkText>
+      </Grid>
+    </Grid>
+  );
+};
 
 const renderStatus = (data) => {
-    const initValue = APPROVAL_STATUS.find(
-        (item) => item.label === data.value
-    ).value;
-    const { mutate } = useMutateJobStatus();
-    const [value, setValue] = useState(initValue);
-    const handleChangeValue = (e) => {
-        const value = e.target.value as ApprovalStatus;
-        mutate([data.id, { status: value }]).then(() => {
-            setValue(e.target.value);
-        });
-    };
-    return (
-        <SelectInput
-            value={value}
-            options={APPROVAL_STATUS}
-            onChange={handleChangeValue}
-        />
-    );
+  const initValue = APPROVAL_STATUS.find(
+    (item) => item.label === data.value
+  ).value;
+  const { mutate } = useMutateJobStatus();
+  const [value, setValue] = useState(initValue);
+  const handleChangeValue = (e) => {
+    const value = e.target.value as ApprovalStatus;
+    mutate([data.id, { status: value }]).then(() => {
+      setValue(e.target.value);
+    });
+  };
+  return (
+    <SelectInput
+      value={value}
+      options={APPROVAL_STATUS}
+      onChange={handleChangeValue}
+    />
+  );
 };
 const columns: GridColDef[] = [
-    {
-        field: 'jobTitle',
-        headerName: 'Tên tin tuyển dụng',
-        minWidth: 250,
-        renderCell: renderJobTitle
-    },
-    {
-        field: 'name',
-        headerName: 'Người đăng',
-        minWidth: 150
-    },
-    {
-        field: 'employer',
-        headerName: 'Tên công ty',
-        minWidth: 250,
-        renderCell: renderCompany
-    },
-    {
-        field: 'createAt',
-        headerName: 'Ngày đăng',
-        minWidth: 150,
-        renderCell: (data) => dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')
-    },
-    {
-        field: 'submissionCount',
-        headerName: 'Lượt nộp',
-        minWidth: 100,
-        align: 'center',
-        headerAlign: 'center'
-    },
-    {
-        field: 'view',
-        headerName: 'Lượt xem',
-        minWidth: 110,
-        align: 'center',
-        headerAlign: 'center'
-    },
-    {
-        field: 'status',
-        headerName: 'Trạng thái',
-        minWidth: 130,
-        headerAlign: 'center',
-        renderCell: renderStatus
-    }
+  {
+    field: 'jobTitle',
+    headerName: 'Tên tin tuyển dụng',
+    minWidth: 250,
+    renderCell: renderJobTitle
+  },
+  {
+    field: 'name',
+    headerName: 'Người đăng',
+    minWidth: 150
+  },
+  {
+    field: 'employer',
+    headerName: 'Tên công ty',
+    minWidth: 250,
+    renderCell: renderCompany
+  },
+  {
+    field: 'createAt',
+    headerName: 'Ngày đăng',
+    minWidth: 150,
+    renderCell: (data) =>
+      dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')
+  },
+  {
+    field: 'submissionCount',
+    headerName: 'Lượt nộp',
+    minWidth: 100,
+    align: 'center',
+    headerAlign: 'center'
+  },
+  {
+    field: 'view',
+    headerName: 'Lượt xem',
+    minWidth: 110,
+    align: 'center',
+    headerAlign: 'center'
+  },
+  {
+    field: 'status',
+    headerName: 'Trạng thái',
+    minWidth: 130,
+    headerAlign: 'center',
+    renderCell: renderStatus
+  }
 ];
 
 export default function Table({ statusFilter }) {
-    const { totalResults } = useQueryTotalResultsByAdmin();
-    const [currentPage, setCurrentPage] = useState(1);
-    const jobsPerPage = 10;
+  const { totalResults, refetch: refetchTotalResults } =
+    useQueryTotalResultsByAdmin({
+      status: statusFilter
+    });
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 10;
 
-    const [status, setStatus] = useState('')
+  const validvalidTotalPages = Number.isInteger(totalResults)
+    ? totalResults
+    : 1;
+  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
 
-    const validvalidTotalPages = Number.isInteger(totalResults)
-        ? totalResults
-        : 1;
-    const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
+  const { jobs, refetch } = useQueryJob({
+    page: currentPage,
+    num: jobsPerPage,
+    status: statusFilter
+  });
 
-    const { jobs, isLoading } = useQueryJob({ page: currentPage, num: jobsPerPage, status: status });
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
-    const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
-    };
+  useEffect(() => {
+    refetch();
+    refetchTotalResults();
+  }, [statusFilter]);
 
-    useEffect(() => {
-        setStatus(statusFilter)
-        console.log(status)
-    }, [statusFilter])
+  return (
+    <Box sx={{ width: '100%' }}>
+      <TableData rows={jobs} columns={columns} hideFooter />
 
-    return (
-        <Box sx={{ width: '100%' }}>
-            <TableData rows={jobs} columns={columns} hideFooter />
-
-            <Pagination
-                totalPages={totalPages}
-                currentPage={currentPage}
-                handlePageChange={handlePageChange}
-            />
-        </Box>
-    );
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+      />
+    </Box>
+  );
 }

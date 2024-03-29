@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
-import AlertDialog from 'src/components/Dialog';
+import DeleteAlertDialog from 'src/components/DeleteAlertDialog';
 
 const randomId = () =>
   `${Math.floor(Math.random() * 10000)}${Math.random()
@@ -149,7 +149,7 @@ const EditDataGrid = (props) => {
 
     for (const col of columns) {
       if (col.type === 'date') {
-        newRow[col.field] = dayjs(newRow[col.field]).format('DD-MM-YYYY');
+        newRow[col.field] = dayjs(newRow[col.field]).format('DD/MM/YYYY');
       }
     }
 
@@ -293,7 +293,7 @@ const EditDataGrid = (props) => {
           <strong>{error?.errorField}</strong>
         </Alert>
       </Snackbar>
-      <AlertDialog
+      <DeleteAlertDialog
         open={openDialog}
         onClose={handleClose}
         handleConfirmDelete={handleConfirmDelete}

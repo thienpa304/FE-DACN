@@ -1,24 +1,38 @@
 import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
-import LinkText from 'src/components/LinkText';
 import TableData from 'src/components/TableData';
-import { Grid, Link } from '@mui/material';
+import { Button, CircularProgress, Grid, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
 import { ApprovalStatus } from 'src/constants/enum';
-import { useMemo, useState, forwardRef } from 'react';
+import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
+import { v4 } from 'uuid';
+import useQueryJobOwner from 'src/modules/jobs/hooks/useQueryJobOwner';
+import ChatGPT from 'src/modules/ai/ChatGPT';
+import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
+import { useQueryCandidateProfileByIdList } from 'src/modules/application/hooks/useQueryCandidateProfileById';
+import dayjs from 'dayjs';
+import { getFileByUrl } from 'src/common/firebaseService';
+import pdfToText from 'react-pdftotext';
+import { RoundOneCheck, RoundTwoCheck } from 'src/modules/ai/roles';
+import { Application } from 'src/modules/application/model';
+import { Job } from 'src/modules/jobs/model';
+import { User } from 'src/modules/users/model';
+import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
+import { preProcessText } from 'src/utils/inputOutputFormat';
 
 interface CustomLinkProps {
   to?: string;
   children: React.ReactNode;
   sx?: any;
+  state?: any;
 }
 
 const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
   (props, ref) => {
     const { to, children, sx } = props;
-    const [CVData, setCVData] = useState(null);
 
     const link = useMemo(() => {
       if (!to) return '#';
@@ -29,28 +43,380 @@ const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
       return link.startsWith('/') || link.startsWith('#');
     }, [link]);
 
-    if (isInternal) {
-      return (
-        <LinkText ref={ref} to={link} sx={sx}>
-          {children}
-        </LinkText>
-      );
-    } else if (link.startsWith('{')) {
-      return;
-    } else {
-      return (
-        <Link href={link} target="_blank" rel="noopener noreferrer" sx={sx}>
-          {children}
-        </Link>
-      );
-    }
+    const url = link.slice(1);
+    return (
+      <Link {...props} to={isInternal ? url : v4()} style={sx}>
+        {children}
+      </Link>
+    );
   }
 );
 
-const renderJobTitle = (data) => {
-  const url = data?.row?.CV ? data?.row?.CV : '#';
-  return (
-    <>
+type ProfileTypeInfo = {
+  personal_information: User;
+  online_profile?: OnlineProfile;
+  attached_document?: AttachedDocument;
+  application: Omit<Application, 'applicationType'> & {
+    id: number;
+    applicationType: string;
+    matchingRate: number; // Thay `number` bằng kiểu dữ liệu thích hợp nếu cần
+  };
+};
+
+type ProfileApplicationType = {
+  id: number;
+  profile: ProfileTypeInfo;
+  job: Job;
+};
+
+export default function Table(props) {
+  const { data } = props;
+  // data : danh sách Application
+  const [analyzedProfile, setAnalyzedProfile] =
+    useState<ProfileApplicationType[]>(data);
+  const [message, setMessage] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [sendRequest, setSendRequest] = useState(false);
+  const [showList, setShowList] = useState([]);
+  const [roundOneFinished, setRoundOneFinished] = useState(false);
+  const [roundTwoFinished, setRoundTwoFinished] = useState(false);
+  const [compareMethod, setCompareMethod] = useState('');
+  const [passRoundOneProfiles, setPassRoundOneProfiles] = useState<
+    ProfileApplicationType[]
+  >([]);
+  const [start, setStart] = useState(false);
+  const { jobs } = useQueryJobOwner();
+  const idList = data.map((item) => item?.application_id);
+  const { data: applicationDetailList } =
+    useQueryCandidateProfileByIdList(idList);
+  const [cvContent, setCvContent] = useState([]);
+  const [isParsing, setIsParsing] = useState(false);
+  const [parsingResult, setParsingResult] = useState(null);
+  const [cvEnclosedProfile, setCvEnclosedProfile] = useState();
+
+  const firstRoundForGeneralInfo = (job, profile) => {
+    const { personal_information, online_profile, attached_document } = profile;
+
+    const age =
+      dayjs().year() - dayjs(personal_information?.dob, 'YYYY-MM-DD').year();
+
+    if (
+      job?.sex !== personal_information?.sex ||
+      job?.minAge > age ||
+      job?.maxAge < age
+    )
+      return 0;
+
+    if (online_profile && !isProfileQualified(online_profile, job)) return 0;
+
+    if (attached_document && !isProfileQualified(attached_document, job))
+      return 0;
+
+    return 30;
+  };
+
+  const isProfileQualified = (profile, job) => {
+    const { profession, degree, experience } = profile;
+
+    if (!profession.includes(job?.profession)) return false;
+
+    if (compareDegrees(degree, job?.degree) < 0) return false;
+
+    if (compareExperience(experience, job?.experience) < 0) return false;
+
+    return true;
+  };
+
+  const fetchDataFromUrl = async (url, type) => {
+    try {
+      const filePath = await getFileByUrl(url);
+      const response = await fetch(filePath);
+      if (!response.ok) {
+        throw new Error('Failed to fetch file');
+      }
+      const blob = await response.blob();
+      return pdfToText(blob);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return null;
+    }
+  };
+
+  const readCVData = async (profile) => {
+    if (profile?.attached_document) {
+      const text = await fetchDataFromUrl(
+        profile.attached_document.CV,
+        'attached_document'
+      );
+      const preProcessText = text
+        ?.replace(/[^\w\s,+()@.:\/-]/g, '')
+        .replace(/\s+/g, ' ');
+      return preProcessText
+        ? {
+            ...profile,
+            attached_document: {
+              ...profile.attached_document,
+              CV: preProcessText
+            }
+          }
+        : null;
+    }
+    return null;
+  };
+
+  const readEnclosedCVData = async (profile) => {
+    if (
+      profile?.application?.applicationType === 'Nộp nhanh' &&
+      profile?.application?.CV
+    ) {
+      const text = await fetchDataFromUrl(
+        profile.application.CV,
+        'enclosed_CV'
+      );
+      const preProcessText = text
+        ?.replace(/[^\w\s,+()@.:\/-]/g, '')
+        .replace(/\s+/g, ' ');
+      if (preProcessText) {
+        return {
+          ...profile,
+          application: { ...profile.application, CV: preProcessText }
+        };
+      }
+
+      return profile;
+    }
+    return null;
+  };
+
+  const review = async (dataToAnalyze: ProfileApplicationType[]) => {
+    setIsAnalyzing(true);
+
+    if (!roundOneFinished) {
+      console.log('start');
+
+      const cvDataPromises = dataToAnalyze.map(async (data) => ({
+        ...data,
+        profile: await readCVData(data.profile)
+      }));
+
+      const attached_document_List = (await Promise.all(cvDataPromises)).filter(
+        (data) => data.profile
+      );
+      const attachProfileList = attached_document_List.map((data) => ({
+        profile: data,
+        job: data.job
+      }));
+
+      const enclosedCVDataPromises = dataToAnalyze.map(async (data) => {
+        return {
+          ...data,
+          profile: await readEnclosedCVData(data.profile)
+        };
+      });
+
+      const cv_enclosed_List = (
+        await Promise.all(enclosedCVDataPromises)
+      ).filter((data) => data.profile);
+
+      const cvEnclosedProfileList = cv_enclosed_List.map((data) => ({
+        profile: data,
+        job: data.job
+      }));
+      setMessage(cvEnclosedProfileList);
+      setCompareMethod(RoundOneCheck);
+      console.log('Start round 1', cvEnclosedProfileList);
+      setAnalyzedProfile((prev) => {
+        return prev.map((item) => {
+          // Tìm phần tử có id giống với item.id trong cvEnclosedProfileList hoặc attachProfileList
+          const matchedItem =
+            cvEnclosedProfileList.find(
+              (cvItem) => cvItem.profile.id === item.id
+            ) ||
+            attachProfileList.find(
+              (attachItem) => attachItem.profile.id === item.id
+            );
+
+          // Nếu tìm thấy phần tử khớp, trả về phần tử mới, nếu không, trả về item hiện tại
+          return matchedItem ? matchedItem.profile : item;
+        });
+      });
+      setSendRequest(true);
+    } else {
+      setMessage(passRoundOneProfiles);
+      setCompareMethod(RoundTwoCheck);
+      console.log('Start round 2');
+      setSendRequest(true);
+    }
+  };
+
+  const handleAnalyzeResult = async (result) => {
+    const responses = result.map((data) => JSON.parse(data));
+    console.log('analyzedProfile', analyzedProfile);
+
+    const updatedAnalyzedProfile = await Promise.all(
+      analyzedProfile.map(async (profile) => {
+        const foundItem = responses.find((res) => res.id === profile.id);
+        if (foundItem) {
+          return {
+            ...profile,
+            profile: {
+              ...profile.profile,
+              application: {
+                ...profile.profile.application,
+                matchingRate: foundItem.result
+              }
+            }
+          };
+        } else if (
+          (profile?.profile?.online_profile ||
+            profile?.profile?.attached_document) &&
+          !roundOneFinished
+        ) {
+          return {
+            ...profile,
+            profile: {
+              ...profile.profile,
+              application: {
+                ...profile.profile.application,
+                matchingRate: firstRoundForGeneralInfo(
+                  profile.job,
+                  profile.profile
+                )
+              }
+            }
+          };
+        }
+        return profile;
+      })
+    );
+
+    const passRoundDataThreshold = 30;
+    const passRoundData = updatedAnalyzedProfile.filter(
+      (data) => data.profile.application.matchingRate >= passRoundDataThreshold
+    );
+    setPassRoundOneProfiles(passRoundData);
+
+    setAnalyzedProfile(updatedAnalyzedProfile);
+
+    const resultList = updatedAnalyzedProfile.map((profile) => {
+      profile.profile.application.id = profile.id;
+      return profile.profile.application;
+    });
+    console.log('resultList', resultList);
+    setShowList(resultList);
+
+    setIsAnalyzing(false);
+    setSendRequest(false);
+    if (!roundOneFinished) setRoundOneFinished(true);
+    else setRoundTwoFinished(true);
+  };
+
+  useEffect(() => {
+    if (start) {
+      if (roundOneFinished && !roundTwoFinished) {
+        console.log('passRoundOneProfiles', passRoundOneProfiles);
+        passRoundOneProfiles.length && review(passRoundOneProfiles);
+      }
+      if (roundTwoFinished) {
+        console.log('Round 2 finished');
+        setStart(false);
+        setRoundOneFinished(false);
+        setRoundTwoFinished(false);
+      }
+    }
+  }, [roundOneFinished, roundTwoFinished]);
+
+  useEffect(() => {
+    if (!jobs.length || !applicationDetailList.length) return;
+
+    const matchJobAndProfile = () => {
+      const applicationData: ProfileApplicationType[] = data?.map((item) => {
+        // tim cong viec co id = id cua profile
+        const job = jobs?.find((job) => {
+          if (job?.postId === item?.jobPosting?.postId)
+            return {
+              id: job?.postId,
+              jobTitle: job?.jobTitle,
+              jobDescription: job?.jobDescription,
+              jobRequirements: job?.jobRequirements,
+              jobSalary: job?.benefits,
+              workAddress: job?.workAddress,
+              minAge: job?.minAge,
+              maxAge: job?.maxAge,
+              sex: job?.sex,
+              skills: job?.skills,
+              employmentType: job?.employmentType,
+              degree: job?.degree,
+              experience: job?.experience,
+              positionLevel: job?.positionLevel
+            };
+        });
+        const profile = applicationDetailList?.find(
+          (app) => app?.application?.application_id === item?.application_id
+        );
+
+        const preProcessJobData = {
+          id: job?.postId,
+          jobTitle: job?.jobTitle,
+          profession: job?.profession,
+          jobDescription: preProcessText(job?.jobDescription),
+          jobRequirements: preProcessText(job?.jobRequirements),
+          benefits: preProcessText(job?.benefits),
+          workAddress: job?.workAddress,
+          minAge: job?.minAge,
+          maxAge: job?.maxAge,
+          sex: job?.sex,
+          skills: job?.skills,
+          employmentType: job?.employmentType,
+          degree: job?.degree,
+          experience: job?.experience,
+          positionLevel: job?.positionLevel
+        };
+
+        const preProcessProfileData = () => {
+          const prcessedProfile = {
+            ...profile,
+            personal_information: {
+              dob: profile?.personal_information?.dob,
+              sex: profile?.personal_information?.sex
+            }
+          };
+          return prcessedProfile;
+        };
+
+        return {
+          id: item?.application_id,
+          job: preProcessJobData,
+          profile: {
+            ...preProcessProfileData(),
+            application: {
+              ...preProcessProfileData().application,
+              jobTitle: job?.jobTitle
+            }
+          }
+        };
+      });
+      return applicationData;
+    };
+
+    const dataToAnalyze = matchJobAndProfile();
+
+    const resultList = dataToAnalyze?.map((item) => {
+      item.profile.application.id = item.id;
+      return item.profile.application;
+    });
+    setShowList(() => resultList);
+    setAnalyzedProfile(() => dataToAnalyze);
+  }, [data, jobs.length, applicationDetailList.length]);
+
+  useEffect(() => {
+    // go into round 1
+    start && review(analyzedProfile);
+  }, [start]);
+
+  const renderProfileName = (data) => {
+    const url = data?.row?.CV ? data?.row?.CV : '#';
+    return (
       <Grid container alignItems={'center'}>
         <CustomLink
           to={url}
@@ -58,66 +424,126 @@ const renderJobTitle = (data) => {
             color: '#319fce',
             ':hover': {
               textDecoration: 'none'
-            }
+            },
+            textDecoration: 'none'
+          }}
+          state={{
+            applicationId: data?.row?.id,
+            CV: data?.row?.CV
           }}
         >
-          {data.value || '#'}
+          {data.value || ''}
         </CustomLink>
       </Grid>
-    </>
-  );
-};
-
-const renderStatus = (data) => {
-  const initValue = APPROVAL_STATUS.find(
-    (item) => item.label === data.value
-  ).value;
-
-  const { mutate } = useMutateApplicationStatus();
-  const [value, setValue] = useState(initValue);
-  const handleChangeValue = (e) => {
-    const value = e.target.value as ApprovalStatus;
-    mutate([data.id, { status: value }]).then(() => {
-      setValue(e.target.value);
-    });
+    );
   };
-  return (
-    <SelectInput
-      value={value}
-      options={APPROVAL_STATUS}
-      onChange={handleChangeValue}
-    />
-  );
-};
-const columns: GridColDef[] = [
-  {
-    field: 'name',
-    headerName: 'Tên hồ sơ',
-    minWidth: 250,
-    renderCell: renderJobTitle
-  },
-  {
-    field: 'publishingDate',
-    headerName: 'Vị trí ứng tuyển',
-    minWidth: 200
-  },
-  {
-    field: 'applicationType',
-    headerName: 'Loại hồ sơ',
-    minWidth: 150
-  },
-  {
-    field: 'status',
-    headerName: 'Trạng thái tuyển dụng',
-    minWidth: 200,
-    renderCell: renderStatus
-  }
-];
 
-export default function Table({ data }) {
+  const renderStatus = (data) => {
+    const initValue = APPROVAL_STATUS.find(
+      (item) => item.label === data.value
+    ).value;
+
+    const { mutate } = useMutateApplicationStatus();
+    const [value, setValue] = useState(initValue);
+    const handleChangeValue = (e) => {
+      const value = e.target.value as ApprovalStatus;
+      mutate([data.id, { status: value }]).then(() => {
+        setValue(e.target.value);
+      });
+    };
+    return (
+      <SelectInput
+        value={value}
+        options={APPROVAL_STATUS}
+        onChange={handleChangeValue}
+      />
+    );
+  };
+
+  const renderMatchingRate = (data) => {
+    if (isAnalyzing) return <CircularProgress />;
+    let result = '';
+    if (data.value >= 70) result = 'Cao';
+    else if (data.value >= 30) result = 'Trung bình';
+    else result = 'Thấp';
+    return data.value === undefined ? (
+      <Typography>Chưa xác định</Typography>
+    ) : (
+      <Typography>{result}</Typography>
+    );
+  };
+
+  const columns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Tên hồ sơ',
+      minWidth: 220,
+      renderCell: renderProfileName
+    },
+    {
+      field: 'jobTitle',
+      headerName: 'Vị trí ứng tuyển',
+      minWidth: 250,
+      flex: 1
+    },
+    {
+      field: 'applicationType',
+      headerName: 'Loại hồ sơ',
+      minWidth: 150
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái tuyển dụng',
+      minWidth: 180,
+      renderCell: renderStatus
+    },
+    {
+      field: 'matchingRate',
+      headerName: 'Độ phù hợp',
+      minWidth: 150,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: renderMatchingRate,
+      sortable: true
+    }
+  ];
+
   return (
-    <Box sx={{ height: '75vh', width: '100%' }}>
-      <TableData rows={data} columns={columns} />
-    </Box>
+    <>
+      <Box sx={{ justifyContent: 'right', display: 'flex' }}>
+        <Button
+          onClick={() => setStart(true)}
+          variant="contained"
+          size="small"
+          sx={{ mr: 4 }}
+        >
+          Phân tích
+        </Button>
+      </Box>
+      <Box sx={{ height: '75vh', width: '100%' }}>
+        <TableData
+          rows={showList}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 8
+              }
+            }
+          }}
+          onPaginationModelChange={() => console.log('onPaginationModelChange')}
+        />
+      </Box>
+      {start && (
+        <>
+          <ChatGPT
+            request={compareMethod}
+            content={message}
+            setAnswer={handleAnalyzeResult}
+            sendRequest={sendRequest}
+          />
+        </>
+      )}
+    </>
   );
 }

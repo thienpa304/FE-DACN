@@ -12,8 +12,6 @@ import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManageme
 import EmailNotification from './pages/admin/EmailNotification';
 import CandidateProfileAnalysis from './pages/admin/CandidateProfileAnalysis ';
 import UserProfileManagement from './pages/admin/UserProfileManagement';
-import ResultJobList from './pages/result-job-list';
-import JobRecommend from './pages/job-recommend';
 
 const Loader = (Component) => (props) =>
   (
@@ -23,7 +21,6 @@ const Loader = (Component) => (props) =>
   );
 
 // Recruitment
-
 const RecruitmentCreate = Loader(
   lazy(() => import('src/pages/recruitment-create'))
 );
@@ -37,29 +34,33 @@ const RecruitmentListApproval = Loader(
   lazy(() => import('src/pages/recruitment-approval'))
 );
 const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
-// Candidate
 
+// Candidate
 const CandidateProfiles = Loader(
   lazy(() => import('src/pages/candidate-profiles'))
 );
+const ViewCandidateProfile = Loader(
+  lazy(() => import('src/pages/view-candidate-profile'))
+);
 
 // User
-
 const Login = Loader(lazy(() => import('src/modules/auth/components/Login')));
 const Register = Loader(
   lazy(() => import('src/modules/auth/components/Register'))
 );
 
 // Pages
-
 const Home = Loader(lazy(() => import('src/pages/home')));
 const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
 const UrgentHiringJob = Loader(
   lazy(() => import('src/pages/urgent-hiring-job'))
 );
+const ResultJobList = Loader(lazy(() => import('src/pages/result-job-list')));
+const CompanyInformation = Loader(
+  lazy(() => import('src/pages/company-information'))
+);
 
 // Applications
-
 const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
@@ -73,8 +74,10 @@ const AttachedDocument = Loader(
   lazy(() => import('src/modules/jobProfile/attachedDocument'))
 );
 const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
-// Status
 
+const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
+
+// Status
 const Status404 = Loader(lazy(() => import('src/modules/status/Status404')));
 const Status500 = Loader(lazy(() => import('src/modules/status/Status500')));
 const StatusComingSoon = Loader(
@@ -112,6 +115,10 @@ const routes: RouteObject[] = [
           {
             path: '/profession/:id',
             element: <ResultJobList />
+          },
+          {
+            path: '/company/:id',
+            element: <CompanyInformation />
           }
         ]
       },
@@ -247,6 +254,10 @@ const routes: RouteObject[] = [
           {
             path: 'profile',
             element: <CandidateProfiles />
+          },
+          {
+            path: 'profile/:id',
+            element: <ViewCandidateProfile />
           }
         ]
       }

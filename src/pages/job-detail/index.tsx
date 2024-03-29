@@ -5,6 +5,7 @@ import { useParams } from 'react-router';
 import useQueryJobById from 'src/modules/jobs/hooks/useQueryJobById';
 import { useEffect } from 'react';
 import useJob from 'src/modules/jobs/hooks/useJob';
+import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 
 const JobDetail = () => {
   const { setItemDetail, itemDetail } = useJob();
@@ -21,6 +22,7 @@ const JobDetail = () => {
       <Box marginTop={2}>
         <TabContent />
       </Box>
+      <CompanyInfoTab sx={{ mt: 2, borderRadius: 1 }} />
     </Container>
   );
 };

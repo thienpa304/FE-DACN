@@ -21,3 +21,23 @@ const useQueryJobById = (id) => {
 };
 
 export default useQueryJobById;
+
+export function useQueryJobByIdList(idList: number[]) {
+  if (!idList.length) return {};
+  const { data, isLoading } = useQuery<
+    ResponseData<Job>[],
+    AxiosError<ResponseData<Job>[]>
+  >(
+    ['job-getByIdList', idList],
+    async () => Promise.all(idList.map((id) => JobViewService.getById(id))),
+    {
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  );
+
+  return {
+    data: data?.map((item) => item?.data),
+    isLoading
+  };
+}

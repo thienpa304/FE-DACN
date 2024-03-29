@@ -28,7 +28,7 @@ interface FormProps {
 }
 
 const addAllOption = (optionsArray, allLabel) => {
-  return [...optionsArray, { value: 'Tất cả', label: allLabel }];
+  return [...optionsArray, { value: '', label: allLabel }];
 };
 
 const options = {

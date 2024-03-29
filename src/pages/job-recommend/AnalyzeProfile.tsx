@@ -28,6 +28,8 @@ import { getFileByUrl } from 'src/common/firebaseService';
 import FileUploader from 'src/components/FileUploader';
 import FileFormatInfo from 'src/components/FileFormatInfo';
 import ProfileInfo from './ProfileInfo';
+import { tfidfReview } from 'src/utils/keywords';
+import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
@@ -46,9 +48,11 @@ const AnalyzeProfile = (props) => {
     file: null,
     url: ''
   });
-  const [analysisResults, setAnalysisResults] = useState(null);
+  const [analysisResults, setAnalysisResults] = useState([]);
   const [keywords, setKeywords] = useState([]);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<
+    Partial<OnlineProfile> | Partial<AttachedDocument>
+  >(null);
   const [sendRequest, setSendRequest] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [message, setMessage] = useState({});
@@ -85,7 +89,7 @@ const AnalyzeProfile = (props) => {
         setOverToken(true);
       } else {
         setCurrentDoc({ url: fileUrl, file: file });
-        setMessage(text);
+        setMessage(() => [text]);
       }
     } catch (error) {
       console.error('Failed to extract text from pdf');
@@ -101,7 +105,7 @@ const AnalyzeProfile = (props) => {
     } else {
       if (!profile.userId) return;
       const object = removeAttributes(profile);
-      setMessage(object);
+      setMessage(() => [object]);
       if (id === 'document') {
         try {
           const filePath = await getFileByUrl(documentProfile?.CV);
@@ -111,7 +115,7 @@ const AnalyzeProfile = (props) => {
           }
           const blob = await response.blob();
           const text = await pdfToText(blob);
-          setMessage({ ...object, CV: text });
+          setMessage(() => [{ ...object, CV: text }]);
           setIsAnalyzing(true);
           setSendRequest(true);
         } catch (error) {
@@ -150,11 +154,36 @@ const AnalyzeProfile = (props) => {
   }, [onlineProfile, documentProfile]);
 
   useEffect(() => {
-    if (analysisResults) {
-      setKeywords(JSON.parse(analysisResults));
-      setSendRequest(false);
-      setIsAnalyzing(false);
+    if (analysisResults.length > 0) {
+      console.log(analysisResults);
+
+      const result = analysisResults[0];
+      const startIndex = result.indexOf('[');
+      if (startIndex === -1) {
+        console.log("Không tìm thấy ký tự '['");
+        return;
+      }
+
+      // Tìm vị trí kết thúc của ']'
+      const endIndex = result.lastIndexOf(']');
+      if (endIndex === -1) {
+        console.log("Không tìm thấy ký tự ']'");
+        return;
+      }
+
+      // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
+      const extractedString = result.substring(startIndex, endIndex + 1);
+
+      // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
+      const jsonString = extractedString.replace(/'/g, '"');
+
+      // B2: Parse string sang array
+      const keywordArray = JSON.parse(jsonString);
+
+      setKeywords(() => tfidfReview(keywordArray, JSON.stringify(message)));
     }
+    setSendRequest(false);
+    setIsAnalyzing(false);
   }, [analysisResults]);
 
   return (
@@ -219,7 +248,7 @@ const AnalyzeProfile = (props) => {
             />
           )}
           {isAnalyzing && <CircularProgress sx={{ mx: '50%' }} />}
-          {analysisResults && (
+          {analysisResults.length > 0 && (
             <Grid item xs={12}>
               <Divider />
               <Typography mt={2}>
@@ -230,7 +259,7 @@ const AnalyzeProfile = (props) => {
         </Box>
       </CustomContainer>
 
-      {analysisResults && (
+      {analysisResults.length > 0 && (
         <JobRecommendTab id={`recommend-upload-cv-profile`} />
       )}
       {sendRequest && (

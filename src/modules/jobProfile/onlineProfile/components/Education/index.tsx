@@ -6,7 +6,8 @@ import {
   Divider,
   Alert,
   AlertTitle,
-  Snackbar
+  Snackbar,
+  styled
 } from '@mui/material';
 import { GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import useQueryOnlineProfile from '../../hooks/useQueryOnlineProfile';
@@ -16,6 +17,28 @@ import useMutateDeleteEducation from './hooks/useMutateDeleteEducation';
 import dayjs from 'dayjs';
 import EditDataGrid from 'src/components/EditDataGrid';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
+import { toOutputDateString } from 'src/utils/inputOutputFormat';
+import DatePicker from 'src/components/DatePicker';
+
+const DatePickerStyle = {
+  '.css-i4bv87-MuiSvgIcon-root': {
+    height: '14px',
+    width: '14px'
+  },
+  '.css-1qrfzum-MuiButtonBase-root-MuiIconButton-root': {
+    paddingX: '0px',
+    marginRight: '-5px'
+  },
+  '.css-yykmq0-MuiInputBase-input-MuiOutlinedInput-input': {
+    paddingX: 0,
+    marginX: 0
+  },
+  '.css-33lv7h-MuiInputBase-root-MuiOutlinedInput-root': {
+    fontSize: '12px',
+    paddingRight: 0,
+    paddingLeft: '-100px'
+  }
+};
 
 export default function Education() {
   const { profile, setProfile } = useOnlineProfile();
@@ -28,8 +51,8 @@ export default function Education() {
 
   const processData = (rows: GridRowsProp) => {
     rows.map((row) => {
-      row.startDate = dayjs(row.startDate).format('DD-MM-YYYY');
-      row.endDate = dayjs(row.endDate).format('DD-MM-YYYY');
+      row.startDate = toOutputDateString(row.startDate);
+      row.endDate = toOutputDateString(row.endDate);
     });
   };
 
@@ -42,8 +65,8 @@ export default function Education() {
 
   const validation = (data) => {
     if (
-      dayjs(data.startDate, 'DD-MM-YYYY').isAfter(
-        dayjs(data.endDate, 'DD-MM-YYYY')
+      dayjs(data.startDate, 'DD/MM/YYYY').isAfter(
+        dayjs(data.endDate, 'DD/MM/YYYY')
       )
     ) {
       setError({ state: true, message: 'Ngày kết thúc phải sau ngày bắt đầu' });
@@ -83,6 +106,15 @@ export default function Education() {
     // setProfile({ education_informations: eduList });
   };
 
+  const handleDateChange = (params, date) => {
+    console.log(params, date);
+
+    params.api.setEditCellValue({
+      ...params,
+      value: date // Cập nhật giá trị đã chọn từ DatePicker vào row
+    });
+  };
+
   const columns: GridColDef[] = [
     {
       field: 'schoolName',
@@ -109,10 +141,19 @@ export default function Education() {
       width: 110,
       editable: true,
       valueGetter: (params) => {
-        return dayjs(params.value, 'DD-MM-YYYY').toDate();
+        return dayjs(params.value, 'DD/MM/YYYY').toDate();
       },
       valueFormatter(params) {
-        return dayjs(params.value).format('DD-MM-YYYY');
+        return toOutputDateString(params.value);
+      },
+      renderEditCell: (params) => {
+        return (
+          <DatePicker
+            sx={DatePickerStyle}
+            onChange={(e) => handleDateChange(params, e)}
+            value={params.value}
+          />
+        );
       }
     },
     {
@@ -125,7 +166,16 @@ export default function Education() {
         return dayjs(params.value, 'DD-MM-YYYY').toDate();
       },
       valueFormatter(params) {
-        return dayjs(params.value).format('DD-MM-YYYY');
+        return toOutputDateString(params.value);
+      },
+      renderEditCell: (params) => {
+        return (
+          <DatePicker
+            sx={DatePickerStyle}
+            onChange={(e) => handleDateChange(params, e)}
+            value={params.value}
+          />
+        );
       }
     }
   ];
@@ -154,14 +204,14 @@ export default function Education() {
       <Snackbar
         open={error?.state}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={3000}
+        autoHideDuration={5000}
         onClose={() => setError({ state: false, message: '' })}
       >
         <Alert severity="error">
           <AlertTitle>
             <strong>{error?.message}</strong>
           </AlertTitle>
-          Dữ liệu của bạn sẽ không được lưu
+          Dữ liệu của bạn sẽ không được lưu lại
         </Alert>
       </Snackbar>
     </Container>

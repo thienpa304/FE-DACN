@@ -5,18 +5,23 @@ import { Job } from '../model';
 import { JobUpdateStatusService } from '../jobService';
 
 const useQueryJob = (params) => {
-  const { data, isLoading } = useQuery<
+  const { data, isLoading, refetch } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
-  >(['get-AllJobs', params?.page], () => JobUpdateStatusService.get({ params }), {
-    keepPreviousData: true,
-    retry: 1,
-    refetchOnWindowFocus: false
-  });
+  >(
+    ['get-AllJobs', params?.page],
+    () => JobUpdateStatusService.get({ params }),
+    {
+      keepPreviousData: true,
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  );
 
   return {
     jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],
-    isLoading
+    isLoading,
+    refetch
   };
 };
 

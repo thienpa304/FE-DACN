@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
 import dayjs from 'dayjs';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
@@ -19,14 +21,14 @@ const renderJobTitle = (data) => {
   return (
     <>
       <Grid container alignItems={'center'}>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
           <Tooltip title="Xem trực tiếp">
             <IconButton size="small" onClick={handleLinkToDetail}>
               <RemoveRedEyeIcon sx={{ width: 18, height: 18, color: 'gray' }} />
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={11}>
           <LinkText to={`/employer/recruitment/list/${data?.row?.postId}`}>
             <TypographyEllipsis> {data.value}</TypographyEllipsis>
           </LinkText>
@@ -48,17 +50,30 @@ const rederDate = (data) => {
   return <>{date}</>;
 };
 
+const renderAtion = (data) => {
+  return (
+    <IconButton onClick={() => handleDelete(data)}>
+      <DeleteOutlineIcon />
+    </IconButton>
+  );
+};
+
+const handleDelete = (data) => {
+  console.log(data);
+};
+
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
     headerName: 'Tên tin đăng',
     minWidth: 400,
     headerAlign: 'center',
+    flex: 1,
     renderCell: renderJobTitle
   },
   {
     field: 'createAt',
-    headerName: 'Ngày nộp',
+    headerName: 'Ngày đăng tin',
     minWidth: 150,
     headerAlign: 'center',
     align: 'center',
@@ -66,39 +81,49 @@ const columns: GridColDef[] = [
   },
   {
     field: 'applicationDeadline',
-    headerName: 'Hạn nộp',
+    headerName: 'Hạn nộp hồ sơ',
     minWidth: 150,
     headerAlign: 'center',
     align: 'center',
     renderCell: rederDate
   },
   {
-    field: 'submissionCount',
+    field: 'submit',
     headerName: 'Lượt nộp',
     minWidth: 100,
     headerAlign: 'center',
     align: 'center',
+    renderCell: () => <>0</>
   },
   {
     field: 'view',
     headerName: 'Lượt xem',
-    minWidth: 110,
+    minWidth: 100,
     headerAlign: 'center',
     align: 'center',
+    renderCell: () => <>0</>
   },
   {
     field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 150,
+    minWidth: 120,
     headerAlign: 'center',
     align: 'center',
     renderCell: renderStatus
+  },
+  {
+    field: 'action',
+    headerName: 'Xóa tin đăng',
+    minWidth: 120,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: renderAtion
   }
 ];
 
 export default function TablePost({ data }) {
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ height: '75vh', width: '100%' }}>
       <TableData rows={data} columns={columns} />
     </Box>
   );

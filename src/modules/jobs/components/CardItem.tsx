@@ -27,7 +27,7 @@ function CardItemJob({ job }) {
           border: 1,
           borderRadius: '3px',
           borderColor: '#98E4FF',
-          height: 190
+          height: 170
         }}
       >
         <CardHeader

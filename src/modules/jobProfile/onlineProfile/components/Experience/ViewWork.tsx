@@ -19,6 +19,8 @@ import EditExperience from './EditWork';
 import useMutateDeleteExperience from './hooks/useMutateDeleteExperience';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 import useWorkExperience from '../../hooks/useWorkExperience';
+import { toOutputDateString } from 'src/utils/inputOutputFormat';
+import DeleteAlertDialog from 'src/components/DeleteAlertDialog';
 
 export default function ExperienceView(props) {
   const { onDeleteDataById } = useMutateDeleteExperience();
@@ -28,6 +30,7 @@ export default function ExperienceView(props) {
   const [selectedWorkId, setSelectedWorkId] = useState(null);
   const [isEditWorkVisible, setIsEditWorkVisible] = useState(false);
   const [isNoProfile, setIsNoProfile] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleEditWork = (workId) => {
     if (workId) setSelectedWorkId(workId);
@@ -43,14 +46,27 @@ export default function ExperienceView(props) {
     setIsEditWorkVisible(true);
   };
 
-  const handleDeleteWork = (workId) => {
-    onDeleteDataById(workId);
+  const handleDeleteWork = (id) => {
+    setSelectedWorkId(id);
+    setOpenDialog(true);
+
     // if (profile?.work_experiences?.length > 1)
     // onDeleteDataById(workId);
     // else {
     //   const newList = work_experiences.filter((work) => work.id !== workId);
     //   setWorkExperience(newList);
     // }
+  };
+
+  const handleConfirmDelete = (id) => () => {
+    onDeleteDataById(id);
+    setSelectedWorkId(null);
+    setOpenDialog(false);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedWorkId(null);
+    setOpenDialog(false);
   };
 
   useEffect(() => {
@@ -79,9 +95,9 @@ export default function ExperienceView(props) {
             <Typography fontWeight={700}>{work.jobTitle}</Typography>
             <Typography fontSize={12}>{work.companyName}</Typography>
             <Typography fontSize={12}>
-              {work.startDate} -{' '}
+              {toOutputDateString(work.startDate)} -{' '}
               {work.endDate && work.endDate !== '1899-11-30'
-                ? work.endDate
+                ? toOutputDateString(work.endDate)
                 : 'Hiện tại'}
             </Typography>
             <Box display="flex">
@@ -143,6 +159,12 @@ export default function ExperienceView(props) {
           </Snackbar>
         </>
       )}
+      <DeleteAlertDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        handleConfirmDelete={handleConfirmDelete}
+        selectedId={selectedWorkId}
+      />
     </>
   );
 }

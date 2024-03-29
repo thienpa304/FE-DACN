@@ -7,18 +7,19 @@ interface responseType {
   totalResults: number;
 }
 
-const useQueryTotalResults = () => {
-  const { data, isLoading } = useQuery<
+const useQueryTotalResults = (params?) => {
+  const { data, isLoading, refetch } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>
-  >('get-TotalResults', TotalResults.get, {
+  >('get-TotalResults', () => TotalResults.get({ params }), {
     retry: 1,
     refetchOnWindowFocus: false
   });
 
   return {
     totalResults: data?.data?.totalResults,
-    isLoading
+    isLoading,
+    refetch
   };
 };
 

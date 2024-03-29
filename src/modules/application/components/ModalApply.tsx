@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -20,6 +20,9 @@ import useQueryOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/us
 import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 import { useApp } from 'src/modules/app/hooks';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
+import { v4 } from 'uuid';
+import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
+import useAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useDocument';
 
 const Title = styled('div')(() => ({
   fontWeight: 600,
@@ -44,10 +47,10 @@ export default function ModalApply(props: Props) {
   const { onSaveData } = useMutateApplyJob();
   const { open, onClose, position, company, postId } = props;
   const { profile: user } = useProfileHook();
-  const { onlineProfile, isLoading: isLoadingOnlineProfile } =
-    useQueryOnlineProfile();
-  const { attachedDocument, isLoading: isLoadingDocumentProfile } =
-    useQueryAttachedDocument();
+  const { onlineProfile } = useQueryOnlineProfile();
+  const { attachedDocument } = useQueryAttachedDocument();
+  const { profile: online, setProfile: setOnline } = useOnlineProfile();
+  const { profile: document, setProfile: setDocument } = useAttachedDocument();
   const [isChecked, setIsChecked] = useState('');
   const [missInfo, setMissInfo] = useState(false);
 
@@ -60,6 +63,7 @@ export default function ModalApply(props: Props) {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({
     defaultValues: {}
@@ -75,11 +79,9 @@ export default function ModalApply(props: Props) {
     }
 
     let submitProfile = '';
-    if (isChecked === ApplicationType.online_profile) {
-      submitProfile = JSON.stringify(onlineProfile);
-    } else if (isChecked === ApplicationType.attached_document) {
-      submitProfile = JSON.stringify(attachedDocument);
-    } else submitProfile = JSON.stringify(onlineProfile);
+
+    if (isChecked === ApplicationType.cv_enclosed) submitProfile = data.CV;
+    else submitProfile = '#' + v4();
 
     onSaveData({
       ...data,
@@ -91,8 +93,20 @@ export default function ModalApply(props: Props) {
 
   const uploadProfile = (id) => {
     setIsChecked(id);
-    debugger;
   };
+
+  useEffect(() => {
+    reset(user);
+  }, [isChecked]);
+
+  useEffect(() => {
+    if (onlineProfile) {
+      setOnline(onlineProfile);
+    }
+    if (attachedDocument) {
+      setDocument(attachedDocument);
+    }
+  }, [onlineProfile, attachedDocument]);
 
   return (
     <div>
@@ -109,6 +123,7 @@ export default function ModalApply(props: Props) {
               <Button
                 startIcon={<AddIcon />}
                 variant="contained"
+                disabled={onlineProfile ? false : true}
                 fullWidth
                 onClick={() => uploadProfile(ApplicationType.online_profile)}
                 sx={[
@@ -121,9 +136,11 @@ export default function ModalApply(props: Props) {
                   }
                 ]}
               >
-                {onlineProfile
-                  ? 'Hồ sơ trực tuyến'
-                  : 'Chưa có hồ sơ trực tuyến'}
+                {onlineProfile ? (
+                  'Hồ sơ trực tuyến'
+                ) : (
+                  <em>Chưa có hồ sơ trực tuyến</em>
+                )}
               </Button>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
@@ -131,6 +148,7 @@ export default function ModalApply(props: Props) {
                 startIcon={<AddIcon />}
                 variant="contained"
                 fullWidth
+                disabled={attachedDocument ? false : true}
                 onClick={() => uploadProfile(ApplicationType.attached_document)}
                 sx={[
                   buttonStyle,
