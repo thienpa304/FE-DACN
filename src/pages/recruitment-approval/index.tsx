@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -8,9 +9,17 @@ import {
 } from '@mui/material';
 import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 import Table from './Table';
+import SelectInput from 'src/components/SelectInput';
+import { APPROVAL_STATUS } from 'src/constants';
+import { useState } from 'react';
 
 const RecruitmentApproval = () => {
-  const { jobs } = useQueryJob();
+  const [status, setStatus] = useState('');
+
+  const handleChangeStatusFilter = (e) => {
+    setStatus(e.target.value);
+  };
+
   return (
     <Container maxWidth="xl">
       <Grid
@@ -23,10 +32,27 @@ const RecruitmentApproval = () => {
       >
         <Grid item xs={12}>
           <Card>
-            <CardHeader title="Danh sách việc đăng tuyển" />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <CardHeader title="Danh sách tin tuyển dụng" />
+              <Box sx={{ margin: 'auto 25px auto auto', width: '120px' }}>
+                <SelectInput
+                  label="Trạng thái"
+                  value={status}
+                  options={APPROVAL_STATUS}
+                  onChange={(e) => handleChangeStatusFilter(e)}
+                ></SelectInput>
+              </Box>
+            </Box>
+
             <Divider />
             <CardContent>
-              <Table data={jobs || []} />
+              <Table statusFilter={status} />
             </CardContent>
           </Card>
         </Grid>

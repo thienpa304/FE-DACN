@@ -1,11 +1,11 @@
 export enum Degree {
-  other = 'Khác',
-  highSchool = 'Trung học',
-  intermediate = 'Trung cấp',
-  associate = 'Cao đẳng',
-  bachelor = 'Cử nhân',
+  doctor = 'Tiến sĩ',
   master = 'Thạc sĩ',
-  doctor = 'Tiến sĩ'
+  bachelor = 'Cử nhân',
+  associate = 'Cao đẳng',
+  intermediate = 'Trung cấp',
+  highSchool = 'Trung học',
+  other = 'Khác'
 }
 export enum UserRole {
   Employee = 'EMPLOYEE',
@@ -30,14 +30,14 @@ export enum EmploymentType {
 }
 
 export enum Experience {
-  Zero = 'Chưa có kinh nghiệm',
-  UnderOne = 'Dưới 1 năm',
-  One = '1 năm',
-  Two = '2 năm',
-  Three = '3 năm',
-  Four = '4 năm',
+  OverFive = 'Trên 5 năm',
   Five = '5 năm',
-  OverFive = 'Trên 5 năm'
+  Four = '4 năm',
+  Three = '3 năm',
+  Two = '2 năm',
+  One = '1 năm',
+  UnderOne = 'Dưới 1 năm',
+  Zero = 'Chưa có kinh nghiệm'
 }
 
 export enum PositionLevel {

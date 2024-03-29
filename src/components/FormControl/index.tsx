@@ -17,10 +17,7 @@ type Props = TextFieldProps &
     options?: Option[];
   };
 
-const FormControl: React.FC<Partial<Props>> = forwardRef<
-  HTMLDivElement,
-  Partial<Props>
->(
+const FormControl = forwardRef<HTMLDivElement, Partial<Props>>(
   (
     {
       control,
@@ -45,7 +42,7 @@ const FormControl: React.FC<Partial<Props>> = forwardRef<
         control={control}
         rules={getRulesByPattern(pattern, label, required)}
         render={({ field }) =>
-          React.cloneElement(element || children, {
+          React.cloneElement(element || children || <></>, {
             ...field,
             ...props,
             label: required ? labelRequired : label,

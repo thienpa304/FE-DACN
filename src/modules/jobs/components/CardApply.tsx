@@ -18,6 +18,8 @@ import { Job } from '../model';
 import ModalApply from '../../application/components/ModalApply';
 import { toInputDateString } from 'src/utils/inputOutputFormat';
 import { defaultImage } from 'src/constants/uploadFileRule';
+import { useApp } from 'src/modules/app/hooks';
+import { Link } from 'react-router-dom';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -44,6 +46,7 @@ type Props = {
   data: Partial<Job>;
 };
 const CardApply: React.FC<Props> = ({ data }) => {
+  const { isEmployee } = useApp();
   const [openFormApply, setOpenFormApply] = useState(false);
   const onCloseFormApply = () => {
     setOpenFormApply(false);
@@ -63,7 +66,9 @@ const CardApply: React.FC<Props> = ({ data }) => {
             </Grid>
             <Grid item xs={12} md={10}>
               <Box>
-                <SubTitle>{data?.employer?.companyName}</SubTitle>
+                <Link to="/company/1" style={{ textDecoration: 'none' }}>
+                  <SubTitle>{data?.employer?.companyName}</SubTitle>
+                </Link>
                 <Title>{data.jobTitle}</Title>
                 <Grid container spacing={1}>
                   <Grid item xs={12} md={6}>
@@ -105,16 +110,18 @@ const CardApply: React.FC<Props> = ({ data }) => {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Box sx={{ marginTop: 1 }}>
-                  <Button
-                    onClick={handleOpenFormApply}
-                    variant="contained"
-                    startIcon={<SendIcon />}
-                    color="info"
-                  >
-                    Nộp hồ sơ
-                  </Button>
-                </Box>
+                {isEmployee && (
+                  <Box sx={{ marginTop: 1 }}>
+                    <Button
+                      onClick={handleOpenFormApply}
+                      variant="contained"
+                      startIcon={<SendIcon />}
+                      color="info"
+                    >
+                      Nộp hồ sơ
+                    </Button>
+                  </Box>
+                )}
               </Box>
             </Grid>
           </Grid>

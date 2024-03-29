@@ -14,16 +14,68 @@ import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { CompanyForm, UserForm } from './EditForm';
 import EditButton from 'src/components/EditButton';
 
-const InputLabel = styled(Grid)(({ theme }) => ({
-  padding: theme.spacing(1.5, 1, 1.5, 0),
+export const InputLabel = styled(Grid)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
-  fontWeight: 700
+  fontWeight: 700,
+  display: 'flex',
+  alignItems: 'center',
+  minHeight: 50
 }));
 
-const InputData = styled(Grid)(({ theme }) => ({
-  padding: theme.spacing(1.5, 1, 1.5, 1),
-  fontFamily: theme.typography.fontFamily
+export const InputData = styled(Grid)(({ theme }) => ({
+  fontFamily: theme.typography.fontFamily,
+  display: 'flex',
+  alignItems: 'center'
 }));
+
+export const InfoGrid = (props) => {
+  const { item } = props;
+  const [more, setMore] = useState(false);
+  return (
+    <Grid container sx={{ borderTop: 1, borderColor: 'grey.300' }}>
+      {item.label !== 'Giới thiệu doanh nghiệp' && (
+        <>
+          <InputLabel item xs={6} md={4}>
+            {item.label}
+          </InputLabel>
+          <InputData item xs={6} md={8}>
+            <Typography lineHeight={2}>{item.value}</Typography>
+          </InputData>
+        </>
+      )}
+      {item.label === 'Giới thiệu doanh nghiệp' && (
+        <>
+          <InputLabel item xs={12}>
+            {item.label}
+          </InputLabel>
+          <InputData item xs={12}>
+            <Typography
+              lineHeight={2}
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: more ? 100 : 3,
+                WebkitBoxOrient: 'vertical'
+              }}
+            >
+              {item.value}
+            </Typography>
+          </InputData>
+          <Button
+            onClick={() => {
+              setMore((prev) => !prev);
+            }}
+            sx={{ mx: 'auto' }}
+            color="secondary"
+          >
+            {more ? 'Thu gọn' : 'Đọc thêm'}
+          </Button>
+        </>
+      )}
+    </Grid>
+  );
+};
 
 export default function InfoField(props) {
   const { user, data, title, editIcon, openForm } = props;
@@ -67,18 +119,7 @@ export default function InfoField(props) {
       </Box>
       <Box sx={{ mt: 1 }}>
         {data.map((item, index) => (
-          <Grid
-            container
-            key={index}
-            sx={{ borderTop: 1, borderColor: 'grey.300' }}
-          >
-            <InputLabel item xs={6} md={4}>
-              {item.label}
-            </InputLabel>
-            <InputData item xs={6} md={8}>
-              {handleData(item.value)}
-            </InputData>
-          </Grid>
+          <InfoGrid item={item} key={index} />
         ))}
       </Box>
     </Container>

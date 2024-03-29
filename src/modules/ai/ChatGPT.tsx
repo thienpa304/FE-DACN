@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const ChatGPT = ({
-  request,
-  content,
-  setAnswer,
-  sendRequest,
-  numRequest = 1
-}) => {
+const ChatGPT = ({ request, content, setAnswer, sendRequest }) => {
   const [responses, setResponses] = useState([]);
   const [waiting, setWaiting] = useState(false);
   useEffect(() => {
@@ -21,7 +15,6 @@ const ChatGPT = ({
           });
         })
       ).then((responses) => {
-        // console.log('responses2', responses);
         setAnswer(responses);
       });
     }

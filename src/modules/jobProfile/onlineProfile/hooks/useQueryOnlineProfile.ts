@@ -5,9 +5,11 @@ import { OnlineProfile } from 'src/modules/jobProfile/model/index';
 import { OnlineProfileService } from 'src/modules/jobProfile/employeeService';
 import { useEffect, useState } from 'react';
 import { getAccessToken } from 'src/utils/localStorage';
+import { useApp } from 'src/modules/app/hooks';
 
 const useQueryOnlineProfile = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isEmployee } = useApp();
 
   useEffect(() => {
     const token = getAccessToken();
@@ -24,7 +26,7 @@ const useQueryOnlineProfile = () => {
   >('get-OnlineProfile', OnlineProfileService.get, {
     retry: 1,
     refetchOnWindowFocus: false,
-    enabled: isLoggedIn
+    enabled: isLoggedIn && isEmployee
   });
 
   return {

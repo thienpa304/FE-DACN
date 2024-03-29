@@ -33,6 +33,8 @@ export type Company = {
   companyLocation: string;
   careerField: string;
   logo: string;
+  banner: string;
+  description: string;
 };
 
 export type Employee = {

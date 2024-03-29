@@ -8,7 +8,7 @@ export type Application = {
   application_id: number;
   postId: number;
   applicationType: ApplicationType;
-  CV: string | OnlineProfile | AttachedDocument;
+  CV: string;
   name: string;
   email: string;
   phone: string;

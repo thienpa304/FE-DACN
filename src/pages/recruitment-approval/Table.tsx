@@ -3,15 +3,19 @@ import { GridColDef } from '@mui/x-data-grid';
 import LinkText from 'src/components/LinkText';
 import TableData from 'src/components/TableData';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Chip, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import SelectInput from 'src/components/SelectInput';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useMutateJobStatus from 'src/modules/jobs/hooks/useMutateJobStatus';
 import { ApprovalStatus } from 'src/constants/enum';
+import useQueryTotalResultsByAdmin from 'src/modules/jobs/hooks/useQueryTotalResultsByAdmin';
+import Pagination from 'src/components/Pagination';
+import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
+import dayjs from 'dayjs';
 
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
@@ -29,12 +33,22 @@ const renderJobTitle = (data) => {
           </Tooltip>
         </Grid>
         <Grid item xs={10}>
-          <LinkText to={`/employer/recruitment/list/${data.id}`}>
-            {data.value}
-          </LinkText>
+          <LinkText to={`/job/${data.id}`}>{data.value}</LinkText>
         </Grid>
       </Grid>
     </>
+  );
+};
+
+const renderCompany = (data) => {
+  return (
+    <Grid container alignItems={'center'}>
+      <Grid item xs={10}>
+        <LinkText to={`/employer/recruitment/list/${data.id}`}>
+          {data.value?.companyName}
+        </LinkText>
+      </Grid>
+    </Grid>
   );
 };
 
@@ -61,7 +75,7 @@ const renderStatus = (data) => {
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
-    headerName: 'Tên tin đăng',
+    headerName: 'Tên tin tuyển dụng',
     minWidth: 250,
     renderCell: renderJobTitle
   },
@@ -71,39 +85,78 @@ const columns: GridColDef[] = [
     minWidth: 150
   },
   {
-    field: 'publishingDate',
-    headerName: 'Ngày đăng',
-    minWidth: 150
+    field: 'employer',
+    headerName: 'Tên công ty',
+    minWidth: 250,
+    renderCell: renderCompany
   },
-
   {
-    field: 'fullName',
+    field: 'createAt',
+    headerName: 'Ngày đăng',
+    minWidth: 150,
+    renderCell: (data) =>
+      dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')
+  },
+  {
+    field: 'submissionCount',
     headerName: 'Lượt nộp',
     minWidth: 100,
-    type: 'number',
     align: 'center',
-    renderCell: () => <>0</>
+    headerAlign: 'center'
   },
   {
-    field: 'age',
+    field: 'view',
     headerName: 'Lượt xem',
-    type: 'number',
     minWidth: 110,
     align: 'center',
-    renderCell: () => <>0</>
+    headerAlign: 'center'
   },
   {
     field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 150,
+    minWidth: 130,
+    headerAlign: 'center',
     renderCell: renderStatus
   }
 ];
 
-export default function Table({ data }) {
+export default function Table({ statusFilter }) {
+  const { totalResults, refetch: refetchTotalResults } =
+    useQueryTotalResultsByAdmin({
+      status: statusFilter
+    });
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 10;
+
+  const validvalidTotalPages = Number.isInteger(totalResults)
+    ? totalResults
+    : 1;
+  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
+
+  const { jobs, refetch } = useQueryJob({
+    page: currentPage,
+    num: jobsPerPage,
+    status: statusFilter
+  });
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    refetch();
+    refetchTotalResults();
+  }, [statusFilter]);
+
   return (
-    <Box sx={{ height: '75vh', width: '100%' }}>
-      <TableData rows={data} columns={columns} />
+    <Box sx={{ width: '100%' }}>
+      <TableData rows={jobs} columns={columns} hideFooter />
+
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+      />
     </Box>
   );
 }

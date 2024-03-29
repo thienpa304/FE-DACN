@@ -68,6 +68,7 @@ const ProfileSection = ({
             height={150}
           >
             <img
+              title={id}
               src={
                 id === 'online'
                   ? 'https://cdn-icons-png.flaticon.com/128/1309/1309245.png'

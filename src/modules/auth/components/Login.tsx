@@ -15,8 +15,6 @@ import FormControl from 'src/components/FormControl';
 import useLogin from '../hooks/useLoginHook';
 import { LoginRequest } from '../model';
 import { Role } from 'src/modules/users/model';
-import { useApp } from 'src/modules/app/hooks';
-import { Navigate } from 'react-router';
 
 export default function Login() {
   const { isLoading, onLogin } = useLogin();

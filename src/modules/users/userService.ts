@@ -6,3 +6,4 @@ export const GetCompany = new BaseService('get-information-company');
 export const SetCompany = new BaseService('edit-information-company');
 export const UploadAvatar = new BaseService('user/upload-avatar');
 export const UploadLogo = new BaseService('user/upload-logo');
+export const UploadBanner = new BaseService('user/upload-banner');

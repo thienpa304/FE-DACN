@@ -31,6 +31,7 @@ import {
 import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
 import useMutateCompany from '../../hooks/useMutateCompany';
 import useMutateCompanyLogo from '../../hooks/useMutateCompanyLogo';
+import useMutateCompanyBanner from '../../hooks/useMutateCompanyBanner';
 
 const useStyles = makeStyles((theme) => ({
   coverImage: {
@@ -57,29 +58,42 @@ function CompanyCover() {
   const { company } = useQueryCompany();
   const { companyAvatarType, companyCoverType } = DocumentType;
   const { onSaveData } = useMutateCompanyLogo();
+  const { onSaveData: onSaveBanner } = useMutateCompanyBanner();
 
   const defaultAvatar = {
     img: '',
     error: false
   };
 
-  const [companyAvatar, setCompanyAvatar] = useState(defaultAvatar);
-  const [companyCover, setCompanyCover] = useState(defaultAvatar);
+  const [companyAvatar, setCompanyAvatar] = useState({
+    ...defaultAvatar,
+    img: defaultImage.companyAvatar
+  });
+  const [companyCover, setCompanyCover] = useState({
+    ...defaultAvatar,
+    img: defaultImage.companyCover
+  });
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const getImage = async () => {
-    const getUserId = user?.userId;
-    const [coverUrl] = await Promise.all([
-      // GetFileByUserId(getUserId, companyAvatarType).catch(
-      //   () => defaultImage.companyAvatar
-      // ),
-      GetFileByUserId(getUserId, companyCoverType).catch(
-        () => defaultImage.companyCover
-      )
-    ]);
-    setCompanyAvatar({ ...companyAvatar, img: company?.logo });
-    setCompanyCover({ ...companyCover, img: coverUrl });
+    console.log(
+      company?.logo?.trim() !== '' ? company?.logo : defaultImage.companyAvatar
+    );
+    setCompanyAvatar({
+      ...companyAvatar,
+      img:
+        company?.logo?.trim() !== ''
+          ? company?.logo
+          : defaultImage.companyAvatar
+    });
+    setCompanyCover({
+      ...companyCover,
+      img:
+        company?.banner?.trim() !== ''
+          ? company?.banner
+          : defaultImage.companyCover
+    });
   };
 
   const uploadImage = async (e, setImage, format, kind) => {
@@ -96,16 +110,17 @@ function CompanyCover() {
     }
 
     const imageUrl = URL.createObjectURL(image);
-    const documentType =
-      kind === 'avatar' ? companyAvatarType : companyCoverType;
+    // const documentType =
+    //   kind === 'avatar' ? companyAvatarType : companyCoverType;
 
     // const logoUrl = await UploadFileByUserId(user?.userId, image, documentType); // old
-    const logoUrl = await uploadFile(image).catch(() => ''); // new
+    const url = await uploadFile(image).catch(() => ''); // new
 
     if (kind === 'avatar') {
-      onSaveData({ logo: logoUrl });
+      onSaveData({ logo: url });
     } else {
-      await UploadFileByUserId(user?.userId, image, documentType); // old
+      // await UploadFileByUserId(user?.userId, image, documentType); // old
+      onSaveBanner({ banner: url });
     }
     setImage({ img: imageUrl, error: false });
   };
@@ -118,9 +133,14 @@ function CompanyCover() {
       kind === 'avatar' ? companyAvatarType : companyCoverType;
 
     // RemoveFileByUserId(user?.userId, documentType); // old
-    await removeFileByUrl(company?.logo); // new
     if (kind === 'avatar') {
-      onSaveData({ logo: defaultImage.companyAvatar });
+      await removeFileByUrl(company?.logo).then(() =>
+        onSaveData({ logo: ' ' })
+      );
+    } else {
+      await removeFileByUrl(company?.banner).then(() =>
+        onSaveBanner({ banner: ' ' })
+      );
     }
     setImage({ ...initial, img: defaultImg, error: false });
   };
@@ -177,12 +197,6 @@ function CompanyCover() {
             sx={{ fontWeight: 700 }}
             onClick={(e) => {
               removeImage(e, setCompanyCover, 'cover');
-              // removeFileByUrl(companyCover.img);
-              setCompanyAvatar({
-                ...companyAvatar,
-                img: defaultImage.companyAvatar,
-                error: false
-              });
               handleClose();
             }}
           >
@@ -220,8 +234,6 @@ function CompanyCover() {
           component="label"
           onClick={(e) => {
             removeImage(e, setCompanyAvatar, 'avatar');
-            // removeFileByUrl(companyAvatar.img);
-            // setCompanyAvatar({ ...companyAvatar, img: '' });
           }}
           size="small"
           startIcon={<DoNotDisturbOnOutlinedIcon />}

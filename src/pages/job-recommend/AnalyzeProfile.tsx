@@ -28,6 +28,8 @@ import { getFileByUrl } from 'src/common/firebaseService';
 import FileUploader from 'src/components/FileUploader';
 import FileFormatInfo from 'src/components/FileFormatInfo';
 import ProfileInfo from './ProfileInfo';
+import { tfidfReview } from 'src/utils/keywords';
+import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
@@ -48,7 +50,9 @@ const AnalyzeProfile = (props) => {
   });
   const [analysisResults, setAnalysisResults] = useState([]);
   const [keywords, setKeywords] = useState([]);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<
+    Partial<OnlineProfile> | Partial<AttachedDocument>
+  >(null);
   const [sendRequest, setSendRequest] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [message, setMessage] = useState({});
@@ -174,9 +178,9 @@ const AnalyzeProfile = (props) => {
       const jsonString = extractedString.replace(/'/g, '"');
 
       // B2: Parse string sang array
-      const jsonArray = JSON.parse(jsonString);
+      const keywordArray = JSON.parse(jsonString);
 
-      setKeywords(() => jsonArray);
+      setKeywords(() => tfidfReview(keywordArray, JSON.stringify(message)));
     }
     setSendRequest(false);
     setIsAnalyzing(false);

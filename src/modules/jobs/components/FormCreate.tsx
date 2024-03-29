@@ -36,6 +36,10 @@ import useMutateJob from '../hooks/useMutateJob';
 import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
 import DatePicker from 'src/components/DatePicker';
+import _ from 'lodash';
+import { preProcessText } from 'src/utils/inputOutputFormat';
+import { tfidfReview } from 'src/utils/keywords';
+import useProfileHook from 'src/modules/users/hooks/useUserHook';
 
 const defaultValues = {
   sex: '',
@@ -46,7 +50,12 @@ const defaultValues = {
   jobDescription: '',
   jobRequirements: '',
   benefits: '',
-  profession: ''
+  profession: '',
+  email: '',
+  name: '',
+  address: '',
+  phone: '',
+  contactAddress: ''
 };
 type Props = {
   title?: string;
@@ -56,11 +65,14 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
   const { onSaveDataById } = useMutateJobById();
   const { data, isLoading } = useQueryJobById(selectedId);
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState([]);
   const [analysisResults, setAnalysisResults] = useState([]);
   const [sendRequest, setSendRequest] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [keywords, setKeywords] = useState([]);
+  const [documentText, setDocumentText] = useState('');
+  const { profile } = useProfileHook();
+
   const methods = useForm({ defaultValues });
   const {
     control,
@@ -75,24 +87,38 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   };
 
   const handleAnalysis = (newData) => {
-    setMessage([
-      {
-        profession: newData.profession,
-        positionLevel: newData.positionLevel,
-        degree: newData.degree,
-        experience: newData.experience,
-        jobDescription: newData.jobDescription,
-        jobRequirements: newData.jobRequirements,
-        benefits: newData.benefits
-      }
-    ]);
+    const jobDescription = preProcessText(
+      JSON.stringify(newData.jobDescription)
+    );
+    const jobRequirements = preProcessText(
+      JSON.stringify(newData.jobRequirements)
+    );
+    const benefits = preProcessText(JSON.stringify(newData.benefits));
+    const processedText = {
+      profession: newData.profession,
+      positionLevel: newData.positionLevel,
+      degree: newData.degree,
+      experience: newData.experience,
+      jobDescription: jobDescription,
+      jobRequirements: jobRequirements,
+      benefits: benefits
+    };
+    setMessage([processedText]);
+    setDocumentText(JSON.stringify(processedText));
     setIsAnalyzing(true);
     setSendRequest(true);
   };
 
   useEffect(() => {
-    reset(data);
-  }, [data]);
+    if (data) reset(data);
+    else if (!selectedId)
+      reset({
+        name: profile?.name,
+        email: profile.email,
+        phone: profile?.phone,
+        contactAddress: profile?.address
+      });
+  }, [data, profile]);
 
   useEffect(() => {
     if (analysisResults.length > 0) {
@@ -118,9 +144,9 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       const jsonString = extractedString.replace(/'/g, '"');
 
       // B2: Parse string sang array
-      const jsonArray = JSON.parse(jsonString);
+      const keywordArray = JSON.parse(jsonString);
 
-      setKeywords(() => jsonArray);
+      setKeywords(() => tfidfReview(keywordArray, documentText));
     }
     setSendRequest(false);
     setIsAnalyzing(false);
@@ -222,7 +248,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         required
                       />
                     </Grid>
-                    <Grid item xs={6} md={2}>
+                    <Grid item xs={12} md={2}>
                       <FormControl
                         element={
                           <TextField InputProps={{ inputProps: { min: 0 } }} />
@@ -236,7 +262,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         pattern="integer"
                       />
                     </Grid>
-                    <Grid item xs={6} md={2}>
+                    <Grid item xs={12} md={2}>
                       <FormControl
                         element={
                           <TextField InputProps={{ inputProps: { min: 0 } }} />
@@ -264,9 +290,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="numberOfVacancies"
@@ -275,21 +299,22 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         required
                         type="number"
                         pattern="integer"
+                        InputProps={{ inputProps: { min: 1 } }}
                       />{' '}
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="trialPeriod"
                         label="Thời giai thử việc"
                         name="trialPeriod"
-                        pattern="integer"
+                        required
                         type="number"
+                        pattern="integer"
                         InputProps={{
+                          inputProps: { min: 1 },
                           endAdornment: (
                             <InputAdornment position="end">
                               tháng
@@ -311,17 +336,17 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="minSalary"
                         label="Mức lương tối thiểu"
                         name="minSalary"
+                        type="number"
                         pattern="integer"
                         required
                         InputProps={{
+                          inputProps: { min: 1 },
                           inputComponent: NumericFormatCustom as any,
                           endAdornment: (
                             <InputAdornment position="end">
@@ -333,17 +358,17 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
-                        element={
-                          <TextField InputProps={{ inputProps: { min: 0 } }} />
-                        }
+                        element={<TextField />}
                         control={control}
                         errors={errors}
                         id="maxSalary"
                         label="Mức lương tối đa"
                         name="maxSalary"
+                        type="number"
                         pattern="integer"
                         required
                         InputProps={{
+                          inputProps: { min: 1 },
                           inputComponent: NumericFormatCustom as any,
                           endAdornment: (
                             <InputAdornment position="end">
@@ -353,7 +378,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={8}>
                       <FormControl
                         element={<TextField />}
                         control={control}
@@ -435,7 +460,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         pattern="phone"
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={8}>
                       <FormControl
                         element={<TextField />}
                         control={control}

@@ -3,23 +3,14 @@ import {
   Typography,
   Box,
   Grid,
-  Paper,
   Divider,
   Avatar,
-  Tooltip,
   Button
 } from '@mui/material';
 import CustomContainer from 'src/components/CustomContainer';
 import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import ReactPDF, {
-  Document,
-  Page,
-  Text,
-  StyleSheet,
-  PDFViewer
-} from '@react-pdf/renderer';
 import PersonalViewUI from 'src/modules/jobProfile/PersonalViewUI';
 import GeneralViewUI from 'src/modules/jobProfile/GeneralViewUI';
 import { ApplicationType } from 'src/constants/enum';
@@ -124,7 +115,7 @@ const CVPage = ({ user }) => {
                     <CustomContainer>
                       <Box p={3}>
                         <Typography variant="h3" gutterBottom>
-                          Thông tin nghề nghiệp
+                          Thông tin chung
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         <GeneralViewUI

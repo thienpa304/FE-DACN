@@ -17,7 +17,8 @@ export default function CompanyTab() {
     { label: 'Tên công ty', value: company?.companyName },
     { label: 'Địa chỉ công ty', value: company?.companyLocation },
     { label: 'Lĩnh vực', value: company?.careerField },
-    { label: 'Mã số thuế', value: company?.taxCode }
+    { label: 'Mã số thuế', value: company?.taxCode },
+    { label: 'Giới thiệu doanh nghiệp', value: company?.description }
   ];
   return (
     <>

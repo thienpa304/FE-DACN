@@ -136,9 +136,11 @@ export default function ModalApply(props: Props) {
                   }
                 ]}
               >
-                {onlineProfile
-                  ? 'Hồ sơ trực tuyến'
-                  : 'Chưa có hồ sơ trực tuyến'}
+                {onlineProfile ? (
+                  'Hồ sơ trực tuyến'
+                ) : (
+                  <em>Chưa có hồ sơ trực tuyến</em>
+                )}
               </Button>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>

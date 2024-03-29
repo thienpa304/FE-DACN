@@ -19,18 +19,20 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  Cell
 } from 'recharts';
+import useQueryJobPostingsReport from 'src/modules/admin/hooks/useQueryPostingsReport';
 
 const StatisticsAndReports = () => {
   // Example Data
-  const jobPostingData = [
-    { name: 'January', value: 65 },
-    { name: 'February', value: 59 },
-    { name: 'March', value: 80 },
-    { name: 'April', value: 81 },
-    { name: 'May', value: 56 }
-  ];
+  // const jobPostingData = [
+  //   { name: 'January', value: 65 },
+  //   { name: 'February', value: 59 },
+  //   { name: 'March', value: 80 },
+  //   { name: 'April', value: 81 },
+  //   { name: 'May', value: 56 }
+  // ];
 
   const applicantData = [
     { name: 'Engineer', value: 12 },
@@ -45,6 +47,10 @@ const StatisticsAndReports = () => {
     { name: 'Closed', value: 5 },
     { name: 'In Progress', value: 8 }
   ];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#814289'];
+
+  const { jobPostingData } = useQueryJobPostingsReport();
 
   return (
     <Container maxWidth="xl">
@@ -74,7 +80,8 @@ const StatisticsAndReports = () => {
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <XAxis dataKey="name" />
-                    <YAxis />
+                    {/* <YAxis type="number" domain={[0, 20]}/> */}
+                    <YAxis type="number" domain={[0, 'dataMax + 5']} />
                     <CartesianGrid strokeDasharray="3 3" />
                     <Tooltip />
                     <Legend />
@@ -95,7 +102,15 @@ const StatisticsAndReports = () => {
                       nameKey="name"
                       outerRadius={80}
                       fill="#8884d8"
-                    />{' '}
+                    >
+                      {/* </Pie> />{' '} */}
+                      {applicantData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
                     {/* Corrected component name */}
                   </PieChart>
                 </Grid>

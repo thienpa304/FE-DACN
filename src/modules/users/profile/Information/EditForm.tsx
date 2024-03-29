@@ -46,93 +46,91 @@ export function UserForm(props) {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Grid container mb={4}>
-        <Grid container item spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="name"
-              label="Họ và tên"
-              name="name"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              disabled
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="phone"
-              label="Số điện thoại"
-              name="phone"
-              pattern="phone"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="address"
-              label="Địa chỉ"
-              name="address"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<DatePicker maxDate={dayjs()} />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="dob"
-              label="Ngày sinh"
-              name="dob"
-              required
-            />
-          </Grid>
+      <Grid container spacing={3} mb={4}>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="name"
+            label="Họ và tên"
+            name="name"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            disabled
+            fullWidth
+            id="email"
+            label="Email"
+            name="email"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="phone"
+            label="Số điện thoại"
+            name="phone"
+            pattern="phone"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="address"
+            label="Địa chỉ"
+            name="address"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<DatePicker maxDate={dayjs()} />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="dob"
+            label="Ngày sinh"
+            name="dob"
+            required
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<SelectInput />}
+            options={GENDER}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="sex"
+            label="Giới tính"
+            name="sex"
+          />
+        </Grid>
+        {isEmployee && (
           <Grid item xs={12} sm={6}>
             <FormControl
               element={<SelectInput />}
-              options={GENDER}
+              options={ISMARRIED_OPTION}
               control={control}
               errors={errors}
               fullWidth
-              id="sex"
-              label="Giới tính"
-              name="sex"
+              id="isMarried"
+              label="Tình trạng hôn nhân"
+              name="isMarried"
             />
           </Grid>
-          {isEmployee && (
-            <Grid item xs={12} sm={6}>
-              <FormControl
-                element={<SelectInput />}
-                options={ISMARRIED_OPTION}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="isMarried"
-                label="Tình trạng hôn nhân"
-                name="isMarried"
-              />
-            </Grid>
-          )}
-        </Grid>
+        )}
       </Grid>
       <ButtonGroup
         handleSubmit={handleSubmit(handleSaveProfile)}
@@ -162,55 +160,63 @@ export function CompanyForm(props) {
   };
   return (
     <Box sx={{ p: 3 }}>
-      <Grid container mb={4}>
-        <Grid container item spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="companyName"
-              label="Tên công ty"
-              name="companyName"
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="companyLocation"
-              label="Địa chỉ"
-              name="companyLocation"
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="careerField"
-              label="Lĩnh vực"
-              name="careerField"
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl
-              element={<TextField />}
-              control={control}
-              errors={errors}
-              fullWidth
-              id="taxCode"
-              label="Mã số thuế"
-              name="taxCode"
-            />
-          </Grid>
+      <Grid container spacing={3} mb={4}>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="companyName"
+            label="Tên công ty"
+            name="companyName"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="companyLocation"
+            label="Địa chỉ"
+            name="companyLocation"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="careerField"
+            label="Lĩnh vực"
+            name="careerField"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="taxCode"
+            label="Mã số thuế"
+            name="taxCode"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            multiline
+            rows={4}
+            id="description"
+            label="Mô tả công ty"
+            name="description"
+          />
         </Grid>
       </Grid>
       <ButtonGroup
