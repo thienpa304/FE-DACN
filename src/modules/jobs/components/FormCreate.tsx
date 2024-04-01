@@ -25,7 +25,6 @@ import {
   GENDER_OPTION
 } from 'src/constants/option';
 import { jobAnalysist } from 'src/modules/ai/roles';
-import ChatGPT from 'src/modules/ai/ChatGPT';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
 import TextEditor from 'src/components/TextEditor';
@@ -40,6 +39,7 @@ import _ from 'lodash';
 import { preProcessText } from 'src/utils/inputOutputFormat';
 import { tfidfReview } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
+import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 
 const defaultValues = {
   sex: '',
@@ -55,7 +55,8 @@ const defaultValues = {
   name: '',
   address: '',
   phone: '',
-  contactAddress: ''
+  contactAddress: '',
+  skills: ''
 };
 type Props = {
   title?: string;
@@ -65,9 +66,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
   const { onSaveDataById } = useMutateJobById();
   const { data, isLoading } = useQueryJobById(selectedId);
-  const [message, setMessage] = useState([]);
   const [analysisResults, setAnalysisResults] = useState([]);
-  const [sendRequest, setSendRequest] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [keywords, setKeywords] = useState([]);
   const [documentText, setDocumentText] = useState('');
@@ -86,7 +85,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     else onSaveData(newData);
   };
 
-  const handleAnalysis = (newData) => {
+  const handleAnalysis = async (newData) => {
     const jobDescription = preProcessText(
       JSON.stringify(newData.jobDescription)
     );
@@ -94,6 +93,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       JSON.stringify(newData.jobRequirements)
     );
     const benefits = preProcessText(JSON.stringify(newData.benefits));
+    const skills = preProcessText(JSON.stringify(newData.skills));
     const processedText = {
       profession: newData.profession,
       positionLevel: newData.positionLevel,
@@ -101,12 +101,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       experience: newData.experience,
       jobDescription: jobDescription,
       jobRequirements: jobRequirements,
-      benefits: benefits
+      benefits: benefits,
+      skills: skills
     };
-    setMessage([processedText]);
     setDocumentText(JSON.stringify(processedText));
     setIsAnalyzing(true);
-    setSendRequest(true);
+    const result = await sendChatGPTRequest(jobAnalysist, [processedText]);
+    setAnalysisResults(result);
   };
 
   useEffect(() => {
@@ -148,7 +149,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
       setKeywords(() => tfidfReview(keywordArray, documentText));
     }
-    setSendRequest(false);
     setIsAnalyzing(false);
   }, [analysisResults]);
 
@@ -186,6 +186,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         placeholder="Vị trí hiển thị đăng tuyển"
                         name="jobTitle"
                         inputProps={{ maxLength: 300 }}
+                        multiline
+                        minRows={1}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -378,7 +380,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={12}>
                       <FormControl
                         element={<TextField />}
                         control={control}
@@ -387,11 +389,38 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         label="Địa chỉ làm việc"
                         name="workAddress"
                         required
+                        multiline
+                        minRows={2}
                       />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="skills"
+                        name="skills"
+                        label="Kĩ năng chuyên môn bắt buộc"
+                        placeholder="Hãy liệt kê ngắn gọn những từ khóa kĩ năng chuyên môn cần thiết nhất. Ví dụ: Python, ReactJS, HTML, CSS..."
+                        required
+                        multiline
+                        minRows={2}
+                        inputProps={{ maxLength: 200 }}
+                      />
+                      <Typography
+                        fontSize={12}
+                        color="secondary"
+                        fontStyle={'italic'}
+                        sx={{ display: 'flex', justifyContent: 'center' }}
+                      >
+                        Hãy liệt kê ngắn gọn ở dạng từ khóa. Ví dụ: Python,
+                        ReactJS, HTML, Go... Sẽ giúp hệ thống tìm kiếm được hồ
+                        sơ phù hợp với doanh nghiệp bạn nhất
+                      </Typography>
                     </Grid>
                   </Grid>
 
-                  <Typography variant="h6" marginBottom={2} marginTop={2}>
+                  <Typography variant="h6" marginBottom={1} marginTop={4}>
                     Mô tả công việc
                   </Typography>
                   <FormControl
@@ -401,7 +430,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     id="jobDescription"
                     name="jobDescription"
                   />
-                  <Typography variant="h6" marginBottom={2} marginTop={2}>
+                  <Typography variant="h6" marginBottom={1} marginTop={4}>
                     Yêu cầu công việc
                   </Typography>
                   <FormControl
@@ -411,7 +440,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     id="jobRequirements"
                     name="jobRequirements"
                   />
-                  <Typography variant="h6" marginBottom={2} marginTop={2}>
+                  <Typography variant="h6" marginBottom={1} marginTop={4}>
                     Quyền lợi
                   </Typography>
                   <FormControl
@@ -421,7 +450,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     id="benefits"
                     name="benefits"
                   />
-                  <Typography variant="h6" marginBottom={2} marginTop={2}>
+                  <Typography variant="h6" marginBottom={1} marginTop={4}>
                     Thông tin người liên hệ
                   </Typography>
                   <Grid container spacing={3}>
@@ -469,6 +498,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         id="contactAddress"
                         label="Địa chỉ liên hệ"
                         name="contactAddress"
+                        multiline
+                        minRows={1}
                       />
                     </Grid>
                   </Grid>
@@ -513,14 +544,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
           </Grid>
         </Container>
       </FormProvider>
-      {sendRequest && (
-        <ChatGPT
-          request={jobAnalysist}
-          content={message}
-          setAnswer={setAnalysisResults}
-          sendRequest={sendRequest}
-        />
-      )}
       <Footer />
     </Box>
   );

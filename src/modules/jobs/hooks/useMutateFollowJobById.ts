@@ -2,20 +2,19 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { JobUpdateStatusService } from '../jobService';
-import { Job } from '../model';
+import { FollowJobService } from '../jobService';
 
-const useMutateJobStatus = () => {
+const useMutateFollowJobById = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-  const { isLoading, mutateAsync } = useMutation<
-    ResponseData<Job>,
-    AxiosError<ResponseData<Job>>,
-    [id: string, data: Partial<Job>]
-  >(([id, data]) => JobUpdateStatusService.update(id, data), {
+  const { mutate: onFollowJobById, isLoading } = useMutation<
+    ResponseData<any[]>,
+    AxiosError<ResponseData<any[]>>,
+    [id: number]
+  >(([id]) => FollowJobService.create({ jobPosting: id }), {
     onSuccess: (res) => {
       if (res.status === 200) {
-        queryClient.invalidateQueries(['job-getById']);
+        queryClient.invalidateQueries(['get-FollowJobs']);
         toast.success({ massage: res.message });
       } else {
         toast.error({ massage: res.message });
@@ -27,9 +26,9 @@ const useMutateJobStatus = () => {
   });
 
   return {
-    mutate: mutateAsync,
+    onFollowJobById,
     isLoading
   };
 };
 
-export default useMutateJobStatus;
+export default useMutateFollowJobById;

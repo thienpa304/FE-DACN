@@ -1,8 +1,7 @@
 import { Box, Card, Grid, Link, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import CustomContainer from 'src/components/CustomContainer';
 import Pagination from 'src/components/Pagination';
-import CardItemJob from 'src/modules/jobs/components/CardItem';
+import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
 
@@ -32,7 +31,6 @@ export default function JobRecommendTab(props) {
         sx={{ bgcolor: '#f0e9fe', borderTopRadius: 1, px: 3, py: 2 }}
       >
         <Box display="flex" justifyContent="space-between">
-          {/* <ScheduleIcon color="secondary" sx={{ fontSize: 35 }} /> */}
           <Typography fontWeight={700} fontSize={20} alignSelf="end">
             Việc làm phù hợp
           </Typography>
@@ -56,7 +54,7 @@ export default function JobRecommendTab(props) {
         <Grid container mb={3} spacing={2}>
           {jobs.map((job, index) => (
             <Grid key={job.id} item xs={12} sm={6}>
-              <CardItemJob key={index} job={job} />
+              <SmallJobCard key={index} job={job} />
             </Grid>
           ))}
         </Grid>

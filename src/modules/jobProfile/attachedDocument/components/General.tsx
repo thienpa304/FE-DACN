@@ -11,7 +11,7 @@ import {
 } from 'src/constants/option';
 import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
 import useAttachedDocument from '../hooks/useDocument';
-
+import { Degree } from 'src/constants/enum';
 function AttachedGeneral() {
   const { setProfile, profile } = useAttachedDocument();
   const [newData, setNewData] = useState(null);
@@ -26,7 +26,9 @@ function AttachedGeneral() {
   };
 
   const handleSaveProfile = (data: AttachedDocument) => {
-    setProfile(data);
+    console.log(data.degree, DEGREE[data.degree]);
+
+    setProfile({ ...data });
   };
 
   const formattedData = (data: AttachedDocument) => ({

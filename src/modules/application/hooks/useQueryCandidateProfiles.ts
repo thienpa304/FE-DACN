@@ -4,19 +4,25 @@ import { ResponseData } from 'src/common/http-request';
 import { Application } from '../model';
 import { CandidateProfilesService } from '../applicationService';
 
-const useQueryCandidateProfiles = () => {
-  const { data, isLoading } = useQuery<
+const useQueryCandidateProfiles = (params?) => {
+  const { data, isLoading, refetch } = useQuery<
     ResponseData<Application[]>,
     AxiosError<ResponseData<Application[]>>
-  >('application-getList', CandidateProfilesService.get, {
-    retry: 1,
-    refetchOnWindowFocus: false
-  });
+  >(
+    ['application-getList', params?.page],
+    () => CandidateProfilesService.get({ params }),
+    {
+      keepPreviousData: true,
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  );
 
   return {
     data:
       data?.data?.map((item) => ({ ...item, id: item.application_id })) || [],
-    isLoading
+    isLoading,
+    refetch
   };
 };
 

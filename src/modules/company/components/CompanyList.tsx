@@ -2,56 +2,40 @@ import { useEffect, useState } from 'react';
 import { Box, Grid, Container, Typography } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import LinkText from 'src/components/LinkText';
-import JobCard from './JobCard';
+import JobCard from '../../jobs/components/JobCard';
 import Pagination from 'src/components/Pagination';
-import JobFilter from './JobFilter';
-import useQueryTotalResults from '../hooks/useQueryTotalResults';
+import JobFilter from '../../jobs/components/JobFilter';
+import useQueryTotalResults from '../../jobs/hooks/useQueryTotalResults';
 import WorkIcon from '@mui/icons-material/Work';
+import CompanyCard from './CompanyCard';
+import BusinessIcon from '@mui/icons-material/Business';
 
-function JobList(props) {
-  const { pageTitle, profession, queryJobs, sx, numOfJobPerPage, employerId } =
-    props;
+function CompanyList(props) {
+  const {
+    pageTitle,
+    profession,
+    queryJobs,
+    sx,
+    numOfJobPerPage,
+    queryCompanys
+  } = props;
+  const { companyList } = queryCompanys({ num: 10, page: 1 });
+  const totalResults = companyList?.length;
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState({
-    employerId: employerId,
-    profession: profession,
-    employmentType: '',
-    degree: '',
-    experience: '',
-    positionLevel: '',
-    sex: ''
-  });
-  const { totalResults, refetch: refetchTotalResults } = useQueryTotalResults({
-    ...filter
-  });
+  // const { totalResults } = useQueryTotalResults({});
   const jobsPerPage = numOfJobPerPage ? numOfJobPerPage : 15;
   const validTotalPages = Number.isInteger(totalResults) ? totalResults : 1;
   const totalPages = Math.ceil(validTotalPages / jobsPerPage);
-  const { jobs, refetch } = queryJobs({
+  const { jobs } = queryJobs({
     page: currentPage,
-    num: jobsPerPage,
-    ...filter
+    num: jobsPerPage
   });
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  const handleFilter = (data: any) => {
-    for (const key in data) {
-      if (data[key] === 'Tất cả') {
-        data[key] = '';
-      }
-    }
-    setFilter((prev) => ({ ...prev, ...data }));
-  };
-
-  useEffect(() => {
-    refetch();
-    refetchTotalResults();
-  }, [filter]);
-
   return (
-    <Container disableGutters maxWidth="md" sx={{ py: 3, ...sx }}>
+    <Container disableGutters maxWidth="lg" sx={{ py: 3, ...sx }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -59,30 +43,29 @@ function JobList(props) {
         mb={2}
       >
         <Box display="flex" justifyContent="space-between">
-          <WorkIcon color="secondary" sx={{ fontSize: 40, mr: 1 }} />
+          <BusinessIcon color="primary" sx={{ fontSize: 40, mr: 1 }} />
           <Typography variant="h3" display={'flex'} alignItems={'center'}>
             {pageTitle}
           </Typography>
         </Box>
       </Box>
-      <JobFilter handleFilter={handleFilter} />
       <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff' }}>
         <Typography fontSize={18} mb={2}>
-          <Box style={{ color: '#ce8b0e', display: 'inline' }}>
-            {totalResults ? totalResults : 0}
+          Danh sách công ty
+          <Box sx={{ color: '#ce8b0e', display: 'inline', ml: 1 }}>
+            ({totalResults ? totalResults : 0})
           </Box>{' '}
-          việc làm đang tuyển dụng
         </Typography>
         <Grid container spacing={2} minHeight={300}>
-          {jobs.length ? (
-            jobs.map((job, index) => (
-              <Grid key={job?.id} item xs={12}>
-                <JobCard key={index} job={job} />
+          {companyList?.length ? (
+            companyList.map((company, index) => (
+              <Grid key={company?.id} item xs={4}>
+                <CompanyCard key={index} company={company} />
               </Grid>
             ))
           ) : (
             <Typography fontStyle={'italic'} margin={'auto'}>
-              Không tìm thấy việc làm phù hợp
+              Chưa có công ty nào
             </Typography>
           )}
         </Grid>
@@ -96,4 +79,4 @@ function JobList(props) {
   );
 }
 
-export default JobList;
+export default CompanyList;

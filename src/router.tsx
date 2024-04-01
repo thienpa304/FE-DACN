@@ -59,6 +59,7 @@ const ResultJobList = Loader(lazy(() => import('src/pages/result-job-list')));
 const CompanyInformation = Loader(
   lazy(() => import('src/pages/company-information'))
 );
+const ShowCompanyPage = Loader(lazy(() => import('src/pages/company-list')));
 
 // Applications
 const Messenger = Loader(lazy(() => import('src/modules/messenger')));
@@ -74,6 +75,8 @@ const AttachedDocument = Loader(
   lazy(() => import('src/modules/jobProfile/attachedDocument'))
 );
 const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
+
+const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
 
 const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
 
@@ -94,7 +97,7 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <SidebarLayout showsidebar={false} />,
+        element: <SidebarLayout showSideBar={false} />,
         children: [
           {
             path: '',
@@ -119,6 +122,10 @@ const routes: RouteObject[] = [
           {
             path: '/company/:id',
             element: <CompanyInformation />
+          },
+          {
+            path: '/company',
+            element: <ShowCompanyPage />
           }
         ]
       },
@@ -154,12 +161,11 @@ const routes: RouteObject[] = [
           {
             path: 'job-recommend',
             element: <JobRecommend />
+          },
+          {
+            path: 'job-follow',
+            element: <JobFollow />
           }
-
-          // {
-          //   path: 'form',
-          //   element: <Forms />
-          // }
         ]
       },
       {

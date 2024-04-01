@@ -10,7 +10,6 @@ import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
 import { v4 } from 'uuid';
 import useQueryJobOwner from 'src/modules/jobs/hooks/useQueryJobOwner';
-import ChatGPT from 'src/modules/ai/ChatGPT';
 import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
 import { useQueryCandidateProfileByIdList } from 'src/modules/application/hooks/useQueryCandidateProfileById';
 import dayjs from 'dayjs';
@@ -22,6 +21,7 @@ import { Job } from 'src/modules/jobs/model';
 import { User } from 'src/modules/users/model';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 import { preProcessText } from 'src/utils/inputOutputFormat';
+import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 
 interface CustomLinkProps {
   to?: string;
@@ -69,18 +69,93 @@ type ProfileApplicationType = {
   job: Job;
 };
 
+const renderProfileName = (data) => {
+  const url = data?.row?.CV ? data?.row?.CV : '#';
+  return (
+    <Grid container alignItems={'center'}>
+      <CustomLink
+        to={url}
+        sx={{
+          color: '#319fce',
+          ':hover': {
+            textDecoration: 'none'
+          },
+          textDecoration: 'none'
+        }}
+        state={{
+          applicationId: data?.row?.id,
+          CV: data?.row?.CV
+        }}
+      >
+        {data.value || ''}
+      </CustomLink>
+    </Grid>
+  );
+};
+
+const renderStatus = (data) => {
+  const initValue = APPROVAL_STATUS.find(
+    (item) => item.label === data.value
+  ).value;
+
+  const { mutate } = useMutateApplicationStatus();
+  const [value, setValue] = useState(initValue);
+  const handleChangeValue = (e) => {
+    const value = e.target.value as ApprovalStatus;
+    mutate([data.id, { status: value }]).then(() => {
+      setValue(e.target.value);
+    });
+  };
+  return (
+    <SelectInput
+      value={value}
+      options={APPROVAL_STATUS}
+      onChange={handleChangeValue}
+    />
+  );
+};
+
+const renderMatchingRate = (data, isAnalyzing: boolean) => {
+  if (isAnalyzing) return <CircularProgress />;
+  let result = '';
+  if (data.value >= 70) result = 'Cao';
+  else if (data.value >= 30) result = 'Trung bình';
+  else result = 'Thấp';
+  return data.value === undefined ? (
+    <Typography>Chưa xác định</Typography>
+  ) : (
+    <Box
+      sx={{
+        width: '80%',
+        borderRadius: 3,
+        p: 1,
+        bgcolor:
+          data.value >= 70
+            ? '#ffc107'
+            : data.value >= 30
+            ? '#4caf50'
+            : '#b5b5b5',
+        display: 'flex',
+        justifyContent: 'center'
+      }}
+    >
+      {result}
+    </Box>
+  );
+};
+
 export default function Table(props) {
-  const { data } = props;
+  const { data, pageSize, handleChangePage, page, isLoading, totalResults } =
+    props;
+  console.log(totalResults);
+
   // data : danh sách Application
   const [analyzedProfile, setAnalyzedProfile] =
     useState<ProfileApplicationType[]>(data);
-  const [message, setMessage] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [sendRequest, setSendRequest] = useState(false);
   const [showList, setShowList] = useState([]);
   const [roundOneFinished, setRoundOneFinished] = useState(false);
   const [roundTwoFinished, setRoundTwoFinished] = useState(false);
-  const [compareMethod, setCompareMethod] = useState('');
   const [passRoundOneProfiles, setPassRoundOneProfiles] = useState<
     ProfileApplicationType[]
   >([]);
@@ -89,10 +164,6 @@ export default function Table(props) {
   const idList = data.map((item) => item?.application_id);
   const { data: applicationDetailList } =
     useQueryCandidateProfileByIdList(idList);
-  const [cvContent, setCvContent] = useState([]);
-  const [isParsing, setIsParsing] = useState(false);
-  const [parsingResult, setParsingResult] = useState(null);
-  const [cvEnclosedProfile, setCvEnclosedProfile] = useState();
 
   const firstRoundForGeneralInfo = (job, profile) => {
     const { personal_information, online_profile, attached_document } = profile;
@@ -176,6 +247,7 @@ export default function Table(props) {
       const preProcessText = text
         ?.replace(/[^\w\s,+()@.:\/-]/g, '')
         .replace(/\s+/g, ' ');
+
       if (preProcessText) {
         return {
           ...profile,
@@ -194,17 +266,9 @@ export default function Table(props) {
     if (!roundOneFinished) {
       console.log('start');
 
-      const cvDataPromises = dataToAnalyze.map(async (data) => ({
+      const attachedDocumentPromises = dataToAnalyze.map(async (data) => ({
         ...data,
         profile: await readCVData(data.profile)
-      }));
-
-      const attached_document_List = (await Promise.all(cvDataPromises)).filter(
-        (data) => data.profile
-      );
-      const attachProfileList = attached_document_List.map((data) => ({
-        profile: data,
-        job: data.job
       }));
 
       const enclosedCVDataPromises = dataToAnalyze.map(async (data) => {
@@ -214,17 +278,24 @@ export default function Table(props) {
         };
       });
 
-      const cv_enclosed_List = (
-        await Promise.all(enclosedCVDataPromises)
+      const attachedDocumentList = (
+        await Promise.all(attachedDocumentPromises)
       ).filter((data) => data.profile);
 
-      const cvEnclosedProfileList = cv_enclosed_List.map((data) => ({
+      const cvEnclosedList = (await Promise.all(enclosedCVDataPromises)).filter(
+        (data) => data.profile
+      );
+      const attachProfileList = attachedDocumentList.map((data) => ({
         profile: data,
         job: data.job
       }));
-      setMessage(cvEnclosedProfileList);
-      setCompareMethod(RoundOneCheck);
-      console.log('Start round 1', cvEnclosedProfileList);
+
+      const cvEnclosedProfileList = cvEnclosedList.map((data) => ({
+        profile: data,
+        job: data.job
+      }));
+      console.log('Start round 1');
+
       setAnalyzedProfile((prev) => {
         return prev.map((item) => {
           // Tìm phần tử có id giống với item.id trong cvEnclosedProfileList hoặc attachProfileList
@@ -240,73 +311,66 @@ export default function Table(props) {
           return matchedItem ? matchedItem.profile : item;
         });
       });
-      setSendRequest(true);
+      const result = await sendChatGPTRequest(
+        RoundOneCheck,
+        cvEnclosedProfileList
+      ).catch(() => []);
+      handleAnalyzeResult(result);
     } else {
-      setMessage(passRoundOneProfiles);
-      setCompareMethod(RoundTwoCheck);
       console.log('Start round 2');
-      setSendRequest(true);
+      const result = await sendChatGPTRequest(
+        RoundTwoCheck,
+        passRoundOneProfiles
+      ).catch(() => []);
+      handleAnalyzeResult(result);
     }
   };
 
-  const handleAnalyzeResult = async (result) => {
-    const responses = result.map((data) => JSON.parse(data));
+  const handleAnalyzeResult = async (result: any[]) => {
+    const responses = result?.map((data) => {
+      if (data) return JSON.parse(data);
+    });
     console.log('analyzedProfile', analyzedProfile);
 
     const updatedAnalyzedProfile = await Promise.all(
-      analyzedProfile.map(async (profile) => {
-        const foundItem = responses.find((res) => res.id === profile.id);
-        if (foundItem) {
-          return {
-            ...profile,
-            profile: {
-              ...profile.profile,
-              application: {
-                ...profile.profile.application,
-                matchingRate: foundItem.result
-              }
-            }
-          };
-        } else if (
+      analyzedProfile?.map(async (profile) => {
+        const foundItem = responses.find((res) => res?.id === profile?.id);
+        const matchingRate =
+          foundItem?.result ??
+          (!roundOneFinished &&
           (profile?.profile?.online_profile ||
-            profile?.profile?.attached_document) &&
-          !roundOneFinished
-        ) {
-          return {
-            ...profile,
-            profile: {
-              ...profile.profile,
-              application: {
-                ...profile.profile.application,
-                matchingRate: firstRoundForGeneralInfo(
-                  profile.job,
-                  profile.profile
-                )
-              }
+            profile?.profile?.attached_document)
+            ? firstRoundForGeneralInfo(profile.job, profile.profile)
+            : profile.profile.application.matchingRate);
+
+        return {
+          ...profile,
+          profile: {
+            ...profile.profile,
+            application: {
+              ...profile.profile.application,
+              matchingRate
             }
-          };
-        }
-        return profile;
+          }
+        };
       })
     );
 
     const passRoundDataThreshold = 30;
-    const passRoundData = updatedAnalyzedProfile.filter(
+    const passRoundData = updatedAnalyzedProfile?.filter(
       (data) => data.profile.application.matchingRate >= passRoundDataThreshold
     );
     setPassRoundOneProfiles(passRoundData);
 
     setAnalyzedProfile(updatedAnalyzedProfile);
 
-    const resultList = updatedAnalyzedProfile.map((profile) => {
-      profile.profile.application.id = profile.id;
-      return profile.profile.application;
-    });
-    console.log('resultList', resultList);
+    const resultList = updatedAnalyzedProfile?.map((profile) => ({
+      ...profile.profile.application,
+      id: profile.id
+    }));
     setShowList(resultList);
 
     setIsAnalyzing(false);
-    setSendRequest(false);
     if (!roundOneFinished) setRoundOneFinished(true);
     else setRoundTwoFinished(true);
   };
@@ -326,78 +390,63 @@ export default function Table(props) {
     }
   }, [roundOneFinished, roundTwoFinished]);
 
-  useEffect(() => {
-    if (!jobs.length || !applicationDetailList.length) return;
+  const preprocessJobData = (job) => ({
+    id: job?.postId,
+    jobTitle: job?.jobTitle,
+    profession: job?.profession,
+    jobDescription: preProcessText(job?.jobDescription),
+    jobRequirements: preProcessText(job?.jobRequirements),
+    benefits: preProcessText(job?.benefits),
+    workAddress: job?.workAddress,
+    minAge: job?.minAge,
+    maxAge: job?.maxAge,
+    sex: job?.sex,
+    skills: job?.skills,
+    employmentType: job?.employmentType,
+    degree: job?.degree,
+    experience: job?.experience,
+    positionLevel: job?.positionLevel
+  });
 
-    const matchJobAndProfile = () => {
-      const applicationData: ProfileApplicationType[] = data?.map((item) => {
-        // tim cong viec co id = id cua profile
-        const job = jobs?.find((job) => {
-          if (job?.postId === item?.jobPosting?.postId)
-            return {
-              id: job?.postId,
-              jobTitle: job?.jobTitle,
-              jobDescription: job?.jobDescription,
-              jobRequirements: job?.jobRequirements,
-              jobSalary: job?.benefits,
-              workAddress: job?.workAddress,
-              minAge: job?.minAge,
-              maxAge: job?.maxAge,
-              sex: job?.sex,
-              skills: job?.skills,
-              employmentType: job?.employmentType,
-              degree: job?.degree,
-              experience: job?.experience,
-              positionLevel: job?.positionLevel
-            };
-        });
+  const preprocessProfileData = (profile) => ({
+    ...profile,
+    personal_information: {
+      dob: profile?.personal_information?.dob,
+      sex: profile?.personal_information?.sex
+    }
+  });
+
+  const matchJobAndProfile = () => {
+    return data
+      ?.map((item) => {
+        const job = jobs?.find(
+          (job) => job?.postId === item?.jobPosting?.postId
+        );
         const profile = applicationDetailList?.find(
           (app) => app?.application?.application_id === item?.application_id
         );
+        if (!job || !profile) return null;
 
-        const preProcessJobData = {
-          id: job?.postId,
-          jobTitle: job?.jobTitle,
-          profession: job?.profession,
-          jobDescription: preProcessText(job?.jobDescription),
-          jobRequirements: preProcessText(job?.jobRequirements),
-          benefits: preProcessText(job?.benefits),
-          workAddress: job?.workAddress,
-          minAge: job?.minAge,
-          maxAge: job?.maxAge,
-          sex: job?.sex,
-          skills: job?.skills,
-          employmentType: job?.employmentType,
-          degree: job?.degree,
-          experience: job?.experience,
-          positionLevel: job?.positionLevel
-        };
-
-        const preProcessProfileData = () => {
-          const prcessedProfile = {
-            ...profile,
-            personal_information: {
-              dob: profile?.personal_information?.dob,
-              sex: profile?.personal_information?.sex
-            }
-          };
-          return prcessedProfile;
-        };
+        const preprocessedJobData = preprocessJobData(job);
+        const preprocessedProfileData = preprocessProfileData(profile);
 
         return {
           id: item?.application_id,
-          job: preProcessJobData,
+          job: preprocessedJobData,
           profile: {
-            ...preProcessProfileData(),
+            ...preprocessedProfileData,
             application: {
-              ...preProcessProfileData().application,
+              ...preprocessedProfileData.application,
               jobTitle: job?.jobTitle
             }
           }
         };
-      });
-      return applicationData;
-    };
+      })
+      .filter(Boolean);
+  };
+
+  useEffect(() => {
+    if (!jobs.length || !applicationDetailList.length) return;
 
     const dataToAnalyze = matchJobAndProfile();
 
@@ -414,88 +463,33 @@ export default function Table(props) {
     start && review(analyzedProfile);
   }, [start]);
 
-  const renderProfileName = (data) => {
-    const url = data?.row?.CV ? data?.row?.CV : '#';
-    return (
-      <Grid container alignItems={'center'}>
-        <CustomLink
-          to={url}
-          sx={{
-            color: '#319fce',
-            ':hover': {
-              textDecoration: 'none'
-            },
-            textDecoration: 'none'
-          }}
-          state={{
-            applicationId: data?.row?.id,
-            CV: data?.row?.CV
-          }}
-        >
-          {data.value || ''}
-        </CustomLink>
-      </Grid>
-    );
-  };
-
-  const renderStatus = (data) => {
-    const initValue = APPROVAL_STATUS.find(
-      (item) => item.label === data.value
-    ).value;
-
-    const { mutate } = useMutateApplicationStatus();
-    const [value, setValue] = useState(initValue);
-    const handleChangeValue = (e) => {
-      const value = e.target.value as ApprovalStatus;
-      mutate([data.id, { status: value }]).then(() => {
-        setValue(e.target.value);
-      });
-    };
-    return (
-      <SelectInput
-        value={value}
-        options={APPROVAL_STATUS}
-        onChange={handleChangeValue}
-      />
-    );
-  };
-
-  const renderMatchingRate = (data) => {
-    if (isAnalyzing) return <CircularProgress />;
-    let result = '';
-    if (data.value >= 70) result = 'Cao';
-    else if (data.value >= 30) result = 'Trung bình';
-    else result = 'Thấp';
-    return data.value === undefined ? (
-      <Typography>Chưa xác định</Typography>
-    ) : (
-      <Typography>{result}</Typography>
-    );
-  };
-
   const columns: GridColDef[] = [
     {
       field: 'name',
       headerName: 'Tên hồ sơ',
       minWidth: 220,
-      renderCell: renderProfileName
+      renderCell: renderProfileName,
+      sortable: true
     },
     {
       field: 'jobTitle',
       headerName: 'Vị trí ứng tuyển',
       minWidth: 250,
-      flex: 1
+      flex: 1,
+      sortable: true
     },
     {
       field: 'applicationType',
       headerName: 'Loại hồ sơ',
-      minWidth: 150
+      minWidth: 150,
+      sortable: true
     },
     {
       field: 'status',
       headerName: 'Trạng thái tuyển dụng',
       minWidth: 180,
-      renderCell: renderStatus
+      renderCell: renderStatus,
+      sortable: true
     },
     {
       field: 'matchingRate',
@@ -503,7 +497,7 @@ export default function Table(props) {
       minWidth: 150,
       align: 'center',
       headerAlign: 'center',
-      renderCell: renderMatchingRate,
+      renderCell: (data) => renderMatchingRate(data, isAnalyzing),
       sortable: true
     }
   ];
@@ -520,30 +514,17 @@ export default function Table(props) {
           Phân tích
         </Button>
       </Box>
-      <Box sx={{ height: '75vh', width: '100%' }}>
-        <TableData
-          rows={showList}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 8
-              }
-            }
-          }}
-          onPaginationModelChange={() => console.log('onPaginationModelChange')}
-        />
-      </Box>
-      {start && (
-        <>
-          <ChatGPT
-            request={compareMethod}
-            content={message}
-            setAnswer={handleAnalyzeResult}
-            sendRequest={sendRequest}
-          />
-        </>
-      )}
+      <TableData
+        rows={showList}
+        columns={columns}
+        pagination
+        paginationModel={{ page: page - 1, pageSize: pageSize }}
+        sx={{ height: '72.7vh', width: '100%' }}
+        paginationMode="server"
+        onPaginationModelChange={(e) => handleChangePage(e.page + 1)}
+        loading={isLoading}
+        rowCount={totalResults}
+      />
     </>
   );
 }

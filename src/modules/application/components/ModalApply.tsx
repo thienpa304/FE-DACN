@@ -89,6 +89,7 @@ export default function ModalApply(props: Props) {
       applicationType: isChecked,
       CV: submitProfile
     });
+    onClose();
   };
 
   const uploadProfile = (id) => {
@@ -242,7 +243,7 @@ export default function ModalApply(props: Props) {
           <Button onClick={handleClose} variant="outlined">
             Hủy
           </Button>
-          <Button onClick={handleSubmit(handleApply)} variant="outlined">
+          <Button onClick={handleSubmit(handleApply)} variant="contained">
             Nộp hồ sơ
           </Button>
         </DialogActions>

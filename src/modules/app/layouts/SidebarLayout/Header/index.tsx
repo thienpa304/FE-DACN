@@ -4,6 +4,7 @@ import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import {
   Box,
+  Button,
   IconButton,
   Link,
   Stack,
@@ -21,9 +22,10 @@ import HeaderMenu from './Menu';
 import HeaderUserbox from './Userbox';
 import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
+import { useNavigate } from 'react-router';
 
-const HeaderWrapper = styled(Box)<{ showsidebar: boolean }>(
-  ({ theme, showsidebar }) => `
+const HeaderWrapper = styled(Box)<{ showSideBar: boolean }>(
+  ({ theme, showSideBar }) => `
         height: ${theme.header.height};
         color: ${theme.header.textColor};
         padding: ${theme.spacing(0, 2)};
@@ -35,25 +37,31 @@ const HeaderWrapper = styled(Box)<{ showsidebar: boolean }>(
         justify-content: space-between;
         width: 100%;
         @media (min-width: ${theme.breakpoints.values.lg}px) {
-            left: ${showsidebar ? theme.sidebar.width : 0};
+            left: ${showSideBar ? theme.sidebar.width : 0};
             width: auto;
         }
 `
 );
 
-function Header({ showsidebar }) {
+function Header({ showSideBar }) {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const {
-    user: { userId }
+    user: { userId },
+    isEmployee,
+    isAdmin,
+    isEmployer
   } = useApp();
   const theme = useTheme();
+  const Navigate = useNavigate();
 
   return (
     <HeaderWrapper
-      showsidebar={showsidebar}
+      showSideBar={showSideBar}
       display="flex"
       alignItems="center"
       sx={{
+        mx: 'auto',
+        px: '27px',
         boxShadow:
           theme.palette.mode === 'dark'
             ? `0 1px 0 ${alpha(
@@ -75,9 +83,57 @@ function Header({ showsidebar }) {
         alignItems="center"
         spacing={2}
       >
-        {!showsidebar && <Logo />}
+        {!showSideBar && (
+          <Box display="flex">
+            <Logo />
+            {isEmployee && (
+              <>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    width: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('company');
+                  }}
+                >
+                  Công ty
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    width: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('employee/recruitment-profile');
+                  }}
+                >
+                  Hồ sơ
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    width: '150px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('employee/job-recommend');
+                  }}
+                >
+                  Phân tích hồ sơ
+                </Button>
+              </>
+            )}
+          </Box>
+        )}
         {/* <HeaderMenu /> */}
       </Stack>
+
       <Box display="flex" alignItems="center">
         <HeaderButtons />
         {userId ? (
@@ -99,7 +155,7 @@ function Header({ showsidebar }) {
             </Link>
           </>
         )}
-        {showsidebar && (
+        {showSideBar && (
           <Box
             component="span"
             sx={{

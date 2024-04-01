@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Button,
@@ -8,32 +8,56 @@ import {
   Container,
   Divider,
   Grid,
-  Link
+  Link,
+  Typography
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { GridColDef } from '@mui/x-data-grid';
 import TableData from 'src/components/TableData';
+import useQueryAllUserByAdmin from 'src/modules/admin/hooks/useQueryAllUserByAdmin';
+import useQueryTotalUserResultByAdmin from 'src/modules/admin/hooks/useQueryTotalUserResultByAdmin';
+import SuspenseLoader from 'src/components/SuspenseLoader';
+import Pagination from 'src/components/Pagination';
 
+const renderCellText = (params) => (
+  <Typography
+    fontStyle={!params.value ? 'italic' : 'normal'}
+    color={!params.value ? 'text.disabled' : 'text.primary'}
+  >
+    {params.value ? params.value : 'Chưa cập nhật'}
+  </Typography>
+);
 const userManagementColumns: GridColDef[] = [
   {
-    field: 'username',
+    field: 'name',
     headerName: 'Tên người dùng',
     minWidth: 200,
-    renderCell: (params) => (
-      <Link component={RouterLink} to={`/edit-user/${params.row.id}`}>
-        {params.value}
-      </Link>
-    )
+    renderCell: renderCellText
   },
   {
     field: 'email',
     headerName: 'Email',
-    minWidth: 200
+    minWidth: 200,
+    flex: 1,
+    renderCell: renderCellText
   },
   {
-    field: 'registrationDate',
-    headerName: 'Ngày đăng ký',
-    minWidth: 150
+    field: 'phone',
+    headerName: 'Số điện thoại',
+    minWidth: 150,
+    renderCell: renderCellText
+  },
+  {
+    field: 'dob',
+    headerName: 'Ngày sinh',
+    minWidth: 150,
+    renderCell: renderCellText
+  },
+  {
+    field: 'sex',
+    headerName: 'Giới tính',
+    minWidth: 120,
+    renderCell: renderCellText
   },
   {
     field: 'role',
@@ -44,19 +68,23 @@ const userManagementColumns: GridColDef[] = [
     field: 'actions',
     headerName: 'Hành động',
     minWidth: 150,
+    headerAlign: 'center',
+    align: 'center',
     renderCell: (params) => (
       <div>
         <Button
+          variant="contained"
+          color="primary"
           component={RouterLink}
           to={`/edit-user/${params.row.id}`}
-          variant="outlined"
           size="small"
         >
-          Sửa
+          Xem
         </Button>
         <Button
           // onClick={() => handleDeleteUser(params.row.id)}
-          variant="outlined"
+          variant="contained"
+          color="error"
           size="small"
           sx={{ marginLeft: 1 }}
         >
@@ -67,27 +95,49 @@ const userManagementColumns: GridColDef[] = [
   }
 ];
 
-const generateSampleUserData = () => {
-  const sampleData = [];
-  for (let i = 1; i <= 20; i++) {
-    sampleData.push({
-      id: i,
-      username: `user${i}`,
-      email: `user${i}@example.com`,
-      registrationDate: `2023-01-${i < 10 ? `0${i}` : i}`,
-      role: i % 2 === 0 ? 'Admin' : 'User'
-    });
-  }
-  return sampleData;
-};
-
 const UserManagement = () => {
-  const sampleUserData = generateSampleUserData();
+  const userPerPage = 8;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [users, setUsers] = useState([]);
+  const { userList, isLoading, refetch } = useQueryAllUserByAdmin({
+    page: currentPage,
+    num: userPerPage
+  });
+  const { totalResults } = useQueryTotalUserResultByAdmin();
+  const validvalidTotalPages = Number.isInteger(totalResults)
+    ? totalResults
+    : 1;
+  const totalPages = Math.ceil(validvalidTotalPages / userPerPage);
 
   const handleDeleteUser = (userId) => {
     // Implement the logic to delete the user with the given userId
     console.log(`Deleting user with ID: ${userId}`);
   };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    if (userList) {
+      const list = [...userList];
+      list.forEach((obj) => {
+        // Duyệt qua từng thuộc tính của đối tượng
+        for (let key in obj) {
+          // Kiểm tra nếu giá trị của thuộc tính là rỗng, null hoặc undefined
+          if (!obj[key] && obj[key] !== 0) {
+            // Đặt giá trị của thuộc tính là 'Chưa cập nhật'
+            obj[key] = 'Chưa cập nhật';
+          }
+        }
+      });
+      setUsers(list);
+    }
+  }, [userList]);
+
+  if (isLoading || !userList[0]?.id) {
+    return <SuspenseLoader />;
+  }
 
   return (
     <Container maxWidth="xl">
@@ -104,12 +154,17 @@ const UserManagement = () => {
             <CardHeader title="Danh sách người dùng" />
             <Divider />
             <CardContent>
-              <Box sx={{ height: '75vh', width: '100%' }}>
-                <TableData
-                  rows={sampleUserData}
-                  columns={userManagementColumns}
-                />
-              </Box>
+              <TableData
+                sx={{ height: '72vh', width: '100%' }}
+                rows={userList}
+                columns={userManagementColumns}
+                hideFooter
+              />
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}
+              />
             </CardContent>
           </Card>
         </Grid>

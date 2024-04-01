@@ -19,7 +19,9 @@ import ModalApply from '../../application/components/ModalApply';
 import { toInputDateString } from 'src/utils/inputOutputFormat';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import { useApp } from 'src/modules/app/hooks';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import FollowButton from './FollowButton';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -46,14 +48,16 @@ type Props = {
   data: Partial<Job>;
 };
 const CardApply: React.FC<Props> = ({ data }) => {
-  const { isEmployee } = useApp();
+  const { isEmployee, isEmployer, isAdmin } = useApp();
   const [openFormApply, setOpenFormApply] = useState(false);
+  const navigate = useNavigate();
   const onCloseFormApply = () => {
     setOpenFormApply(false);
   };
   const handleOpenFormApply = () => {
     setOpenFormApply(true);
   };
+
   return (
     <Card>
       <CardContent>
@@ -66,7 +70,10 @@ const CardApply: React.FC<Props> = ({ data }) => {
             </Grid>
             <Grid item xs={12} md={10}>
               <Box>
-                <Link to="/company/1" style={{ textDecoration: 'none' }}>
+                <Link
+                  to={`/company/${data?.employer?.userId}`}
+                  style={{ textDecoration: 'none' }}
+                >
                   <SubTitle>{data?.employer?.companyName}</SubTitle>
                 </Link>
                 <Title>{data.jobTitle}</Title>
@@ -110,16 +117,30 @@ const CardApply: React.FC<Props> = ({ data }) => {
                     </Grid>
                   </Grid>
                 </Grid>
-                {isEmployee && (
-                  <Box sx={{ marginTop: 1 }}>
+                {!isEmployer && !isAdmin && (
+                  <Box
+                    sx={{
+                      marginTop: 1,
+                      display: 'flex',
+                      gap: 2,
+                      alignItems: 'center'
+                    }}
+                  >
                     <Button
-                      onClick={handleOpenFormApply}
+                      onClick={
+                        isEmployee
+                          ? handleOpenFormApply
+                          : () => {
+                              navigate('/login');
+                            }
+                      }
                       variant="contained"
                       startIcon={<SendIcon />}
                       color="info"
                     >
                       Nộp hồ sơ
                     </Button>
+                    <FollowButton job={data} />
                   </Box>
                 )}
               </Box>

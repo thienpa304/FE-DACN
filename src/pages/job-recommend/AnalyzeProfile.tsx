@@ -11,16 +11,13 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import CustomContainer from 'src/components/CustomContainer';
 import pdfToText from 'react-pdftotext';
 import JobRecommendTab from './JobRecommendTab';
-import ChatGPT from 'src/modules/ai/ChatGPT';
 import { cvAnalysist } from 'src/modules/ai/roles';
 import {
   applicationErrorText,
   failedOCRErrorText,
   overTokenErrorText
 } from 'src/components/UploadError';
-import { useApp } from 'src/modules/app/hooks';
 import { CVFormat } from 'src/constants/uploadFileRule';
-import Tesseract from 'tesseract.js';
 import { pdfjs } from 'react-pdf';
 import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
 import useAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useDocument';
@@ -31,15 +28,14 @@ import ProfileInfo from './ProfileInfo';
 import { tfidfReview } from 'src/utils/keywords';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 
 const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
 const ACCEPTED_FILE_SIZE = CVFormat.acceptSize;
 const ACCEPTED_FILE_SIZE_MB = CVFormat.acceptSize / 1024 / 1024;
 
 const AnalyzeProfile = (props) => {
-  const { user } = useApp();
   const { id } = props;
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [failedOCR, setFailedOCR] = useState(false);
@@ -53,9 +49,8 @@ const AnalyzeProfile = (props) => {
   const [profile, setProfile] = useState<
     Partial<OnlineProfile> | Partial<AttachedDocument>
   >(null);
-  const [sendRequest, setSendRequest] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState([]);
   const { profile: onlineProfile } = useOnlineProfile();
   const { profile: documentProfile } = useAttachedDocument();
 
@@ -100,31 +95,40 @@ const AnalyzeProfile = (props) => {
   };
 
   const handleAnalysis = async () => {
-    if (id === 'upload-cv') {
-      if (!currentDoc.url) return;
-    } else {
-      if (!profile.userId) return;
-      const object = removeAttributes(profile);
-      setMessage(() => [object]);
-      if (id === 'document') {
-        try {
-          const filePath = await getFileByUrl(documentProfile?.CV);
-          const response = await fetch(filePath);
-          if (!response.ok) {
-            throw new Error('Failed to fetch file');
-          }
-          const blob = await response.blob();
-          const text = await pdfToText(blob);
-          setMessage(() => [{ ...object, CV: text }]);
-          setIsAnalyzing(true);
-          setSendRequest(true);
-        } catch (error) {
-          console.error('Error creating local URL:', error);
-        }
-      }
-    }
+    if (id === 'upload-cv' && !currentDoc.url) return;
+    if (id !== 'upload-cv' && !profile?.userId) return;
+
     setIsAnalyzing(true);
-    setSendRequest(true);
+    if (id === 'upload-cv') {
+      const result = await sendChatGPTRequest(cvAnalysist, message);
+      setAnalysisResults(result);
+      return;
+    }
+    const processedProfile = removeAttributes(profile);
+
+    if (id === 'document') {
+      try {
+        const filePath = await getFileByUrl(documentProfile?.CV);
+        const response = await fetch(filePath);
+        if (!response.ok) {
+          throw new Error('Failed to fetch file');
+        }
+        const blob = await response.blob();
+        const text = await pdfToText(blob);
+
+        setMessage((prev) => [{ ...prev, CV: text }]);
+        const result = await sendChatGPTRequest(cvAnalysist, [
+          { ...processedProfile, CV: text }
+        ]);
+        setAnalysisResults(result);
+      } catch (error) {
+        console.error('Error creating local URL:', error);
+      }
+    } else {
+      setMessage(() => [processedProfile]);
+      const result = await sendChatGPTRequest(cvAnalysist, [processedProfile]);
+      setAnalysisResults(result);
+    }
   };
 
   function removeDateAttributes(data) {
@@ -148,41 +152,45 @@ const AnalyzeProfile = (props) => {
     return rest;
   }
 
+  const loadKeywords = (analysisResults: any[]) => {
+    if (analysisResults.length <= 0) return;
+
+    const result = analysisResults[0];
+    const startIndex = result.indexOf('[');
+    if (startIndex === -1) {
+      console.log("Không tìm thấy ký tự '['");
+      return;
+    }
+
+    // Tìm vị trí kết thúc của ']'
+    const endIndex = result.lastIndexOf(']');
+    if (endIndex === -1) {
+      console.log("Không tìm thấy ký tự ']'");
+      return;
+    }
+
+    // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
+    const extractedString = result.substring(startIndex, endIndex + 1);
+
+    // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
+    const jsonString = extractedString
+      .replace(/'/g, '"')
+      .replace(/[_\!@#$%^&*;|<>]/g, '');
+    console.log('jsonString: ', jsonString);
+
+    // B2: Parse string sang array
+    const keywordArray = JSON.parse(jsonString);
+
+    setKeywords(() => tfidfReview(keywordArray, JSON.stringify(message)));
+  };
+
   useEffect(() => {
     if (id === 'online') setProfile(onlineProfile);
     else if (id === 'document') setProfile(documentProfile);
   }, [onlineProfile, documentProfile]);
 
   useEffect(() => {
-    if (analysisResults.length > 0) {
-      console.log(analysisResults);
-
-      const result = analysisResults[0];
-      const startIndex = result.indexOf('[');
-      if (startIndex === -1) {
-        console.log("Không tìm thấy ký tự '['");
-        return;
-      }
-
-      // Tìm vị trí kết thúc của ']'
-      const endIndex = result.lastIndexOf(']');
-      if (endIndex === -1) {
-        console.log("Không tìm thấy ký tự ']'");
-        return;
-      }
-
-      // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
-      const extractedString = result.substring(startIndex, endIndex + 1);
-
-      // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
-      const jsonString = extractedString.replace(/'/g, '"');
-
-      // B2: Parse string sang array
-      const keywordArray = JSON.parse(jsonString);
-
-      setKeywords(() => tfidfReview(keywordArray, JSON.stringify(message)));
-    }
-    setSendRequest(false);
+    loadKeywords(analysisResults);
     setIsAnalyzing(false);
   }, [analysisResults]);
 
@@ -261,14 +269,6 @@ const AnalyzeProfile = (props) => {
 
       {analysisResults.length > 0 && (
         <JobRecommendTab id={`recommend-upload-cv-profile`} />
-      )}
-      {sendRequest && (
-        <ChatGPT
-          request={cvAnalysist}
-          content={message}
-          setAnswer={setAnalysisResults}
-          sendRequest={sendRequest}
-        />
       )}
     </Box>
   );

@@ -16,6 +16,7 @@ import useQueryTotalResultsByAdmin from 'src/modules/jobs/hooks/useQueryTotalRes
 import Pagination from 'src/components/Pagination';
 import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
 import dayjs from 'dayjs';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
@@ -32,7 +33,14 @@ const renderJobTitle = (data) => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item xs={10}>
+        <Grid
+          item
+          xs={10}
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+        >
           <LinkText to={`/job/${data.id}`}>{data.value}</LinkText>
         </Grid>
       </Grid>
@@ -43,7 +51,14 @@ const renderJobTitle = (data) => {
 const renderCompany = (data) => {
   return (
     <Grid container alignItems={'center'}>
-      <Grid item xs={10}>
+      <Grid
+        item
+        xs={10}
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}
+      >
         <LinkText to={`/employer/recruitment/list/${data.id}`}>
           {data.value?.companyName}
         </LinkText>
@@ -94,6 +109,7 @@ const columns: GridColDef[] = [
     field: 'createAt',
     headerName: 'Ngày đăng',
     minWidth: 150,
+    sortable: true,
     renderCell: (data) =>
       dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')
   },
@@ -102,21 +118,24 @@ const columns: GridColDef[] = [
     headerName: 'Lượt nộp',
     minWidth: 100,
     align: 'center',
-    headerAlign: 'center'
+    headerAlign: 'center',
+    sortable: true
   },
   {
     field: 'view',
     headerName: 'Lượt xem',
     minWidth: 110,
     align: 'center',
-    headerAlign: 'center'
+    headerAlign: 'center',
+    sortable: true
   },
   {
     field: 'status',
     headerName: 'Trạng thái',
     minWidth: 130,
     headerAlign: 'center',
-    renderCell: renderStatus
+    renderCell: renderStatus,
+    sortable: true
   }
 ];
 
@@ -133,7 +152,7 @@ export default function Table({ statusFilter }) {
     : 1;
   const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
 
-  const { jobs, refetch } = useQueryJob({
+  const { jobs, refetch, isLoading } = useQueryJob({
     page: currentPage,
     num: jobsPerPage,
     status: statusFilter
@@ -148,10 +167,16 @@ export default function Table({ statusFilter }) {
     refetchTotalResults();
   }, [statusFilter]);
 
-  return (
-    <Box sx={{ width: '100%' }}>
-      <TableData rows={jobs} columns={columns} hideFooter />
+  if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
 
+  return (
+    <Box>
+      <TableData
+        sx={{ height: '72vh', width: '100%' }}
+        rows={jobs}
+        columns={columns}
+        hideFooter
+      />
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}

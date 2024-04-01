@@ -36,7 +36,7 @@ export default function OnlineGeneral() {
   const handleSaveProfile = (data: OnlineProfile) => {
     const degree = findObjectKey(data.degree, Degree);
 
-    const newData = { ...data, degree: degree };
+    const newData = data;
     // setProfile(newData);
     if (profile?.userId) onUpdateData(newData);
     else onSaveData(newData);

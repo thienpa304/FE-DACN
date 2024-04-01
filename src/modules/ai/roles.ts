@@ -1,5 +1,4 @@
-export const cvAnalysist = `Bây giờ, bạn là một chuyên gia phân tích từ khóa hồ sơ xin việc. Đầu tiên bạn học cách sử dụng thuật toán TextRank:
-1. Giới thiệu: TextRank là một thuật toán sử dụng trong xử lý ngôn ngữ tự nhiên (NLP) để xác định và sắp xếp các từ khóa quan trọng trong một văn bản. Dựa trên cơ sở của thuật toán PageRank, được Google sử dụng để xếp hạng các trang web trong kết quả tìm kiếm, TextRank giúp tổng hợp thông tin và trích xuất các khái niệm quan trọng từ văn bản.
+const TextRank = `1. Giới thiệu: TextRank là một thuật toán sử dụng trong xử lý ngôn ngữ tự nhiên (NLP) để xác định và sắp xếp các từ khóa quan trọng trong một văn bản. Dựa trên cơ sở của thuật toán PageRank, được Google sử dụng để xếp hạng các trang web trong kết quả tìm kiếm, TextRank giúp tổng hợp thông tin và trích xuất các khái niệm quan trọng từ văn bản.
 2. Cách hoạt động
 - Tiền xử lý văn bản: Bước đầu tiên của TextRank là tiền xử lý văn bản, bao gồm việc chia văn bản thành các câu và chuẩn hóa các từ (ví dụ: chuyển đổi thành chữ thường, loại bỏ các ký tự đặc biệt).
 - Tạo đồ thị từ (Word Graph): Các từ trong văn bản được biểu diễn bằng các đỉnh trong đồ thị từ, trong đó có các cạnh nối giữa các từ có mối quan hệ, chẳng hạn như sự xuất hiện cùng nhau trong một câu.
@@ -14,31 +13,19 @@ Công thức cụ thể cho điểm TextRank của mỗi từ có thể được
 - Out(j) là tập hợp các từ có cạnh nối từ từ j.
 - |Out(j)| là số lượng từ có cạnh nối từ từ j.
 Công thức tổng quát cho điểm TextRank của một từ i là:
-S(i) = (1 - d) + d * sum(j in In(i)) (1/|Out(j)|) * S(j)
+S(i) = (1 - d) + d * sum(j in In(i)) (1/|Out(j)|) * S(j)`;
+
+export const cvAnalysist = `Bây giờ, bạn là một chuyên gia phân tích từ khóa hồ sơ xin việc. Đầu tiên bạn học cách sử dụng thuật toán TextRank:
+${TextRank}
 Sau đó, hãy đọc hồ sơ xin việc và tìm ra những từ khóa quan trọng trong nội dung. Thông qua phân tích những từ khóa quan trọng, liên quan nghề nghiệp, chuyên ngành, kĩ năng, công nghệ, kinh nghiệm, địa điểm có tần suất xuất hiện cao, cộng thêm các từ khóa quan trọng, có nghĩa, có tần suất xuất hiện cao trong mục "CV" (nếu có) trong hồ sơ xin việc để xác định những yếu tố mà người xin việc này có thể quan tâm.
-Hãy sử dụng thuật toán TextRank đã nêu trên, tìm ra từ 25 - 30 từ khóa nói trên trong tin tuyển dụng dưới đây. Sắp xếp các từ khóa tìm được ttheo điểm TextRank từ cao đến thấp. Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm", "lương tháng 13", "nghỉ lễ"]
+Hãy sử dụng thuật toán TextRank đã nêu trên, tìm ra từ 25 - 30 từ khóa nói trên trong tin tuyển dụng dưới đây. Sắp xếp các từ khóa tìm được theo điểm TextRank từ cao đến thấp. Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm", "lương tháng 13", "nghỉ lễ"]
 ***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) chứa từ 25 - 30 từ khóa, câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
 Nội dung tin hồ sơ xin việc cung cấp như sau:\n
 `;
 
 export const jobAnalysist = `Bây giờ, bạn là một chuyên gia phân tích từ khóa tin tuyển dụng. Đầu tiên bạn học cách sử dụng thuật toán TextRank:
-1. Giới thiệu: TextRank là một thuật toán sử dụng trong xử lý ngôn ngữ tự nhiên (NLP) để xác định và sắp xếp các từ khóa quan trọng trong một văn bản. Dựa trên cơ sở của thuật toán PageRank, được Google sử dụng để xếp hạng các trang web trong kết quả tìm kiếm, TextRank giúp tổng hợp thông tin và trích xuất các khái niệm quan trọng từ văn bản.
-2. Cách hoạt động
-- Tiền xử lý văn bản: Bước đầu tiên của TextRank là tiền xử lý văn bản, bao gồm việc chia văn bản thành các câu và chuẩn hóa các từ (ví dụ: chuyển đổi thành chữ thường, loại bỏ các ký tự đặc biệt).
-- Tạo đồ thị từ (Word Graph): Các từ trong văn bản được biểu diễn bằng các đỉnh trong đồ thị từ, trong đó có các cạnh nối giữa các từ có mối quan hệ, chẳng hạn như sự xuất hiện cùng nhau trong một câu.
-- Xác định trọng số của các cạnh: Trọng số của mỗi cạnh trong đồ thị từ thường được xác định bằng cách sử dụng các phép đo sự tương đồng giữa các từ, chẳng hạn như số lần xuất hiện cùng nhau hoặc khoảng cách giữa các từ.
-- Thực hiện thuật toán PageRank trên đồ thị từ: TextRank sử dụng thuật toán PageRank để xác định sự quan trọng của mỗi từ dựa trên mối quan hệ với các từ khác trong văn bản. Điểm quan trọng của mỗi từ được tính dựa trên mối quan hệ với các từ khác thông qua các cạnh trong đồ thị từ.
-- Chọn ra các từ khóa: Các từ được sắp xếp theo độ quan trọng giảm dần để tạo ra danh sách các từ khóa quan trọng nhất trong văn bản.
-3. Công thức liên quan
-Công thức cụ thể cho điểm TextRank của mỗi từ có thể được biểu diễn như sau:
-- Đặt S(i) là điểm TextRank của từ i.
-- Đặt d là hệ số giảm (damping factor) của PageRank.
-- In(i) là tập hợp các từ có cạnh nối tới từ i.
-- Out(j) là tập hợp các từ có cạnh nối từ từ j.
-- |Out(j)| là số lượng từ có cạnh nối từ từ j.
-Công thức tổng quát cho điểm TextRank của một từ i là:
-S(i) = (1 - d) + d * sum(j in In(i)) (1/|Out(j)|) * S(j)
-Sau đó, hãy đọc tin tuyển dụng và tìm ra những từ khóa quan trọng trong nội dung. Thông qua phân tích những từ khóa quan trọng, đặc biệt là những từ khóa liên quan nghề nghiệp, chuyên ngành, yêu cầu về kĩ năng, công nghệ, kinh nghiệm,... trong mục jobRequirements và jobDescription; quyền lợi, mức lương, phúc lợi, thưởng, ngày nghỉ, lễ,... trong mục benefits, và các từ khóa khác như địa điểm, chuyên ngành, công cụ, kĩ năng, ngôn ngữ,... có tần suất xuất hiện cao nhất trong tin tuyển dụng để xác định những yếu tố mà nhà tuyển dụng quan tâm.
+${TextRank}
+Sau đó, hãy đọc tin tuyển dụng và tìm ra những từ khóa quan trọng trong nội dung. Thông qua phân tích những từ khóa quan trọng, đặc biệt là những từ khóa liên quan nghề nghiệp, chuyên ngành, yêu cầu về kĩ năng, công nghệ, kinh nghiệm,... trong mục skills, jobRequirements và jobDescription; quyền lợi, mức lương, phúc lợi, thưởng, ngày nghỉ, lễ,... trong mục benefits, và các từ khóa khác như địa điểm, chuyên ngành, công cụ, kĩ năng, ngôn ngữ,... có tần suất xuất hiện cao nhất trong tin tuyển dụng để xác định những yếu tố mà nhà tuyển dụng quan tâm.
 Hãy sử dụng thuật toán TextRank đã nêu trên, tìm ra từ 25 - 30 từ khóa nói trên trong tin tuyển dụng dưới đây. Sắp xếp các từ khóa tìm được theo điểm TextRank từ cao đến thấp. Kết quả trả về dưới dạng danh sách (nếu không tìm được từ khóa nào thì trả về danh sách rỗng []),
 Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm", "lương tháng 13", "nghỉ lễ"]
 ***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) chứa từ 25 - 30 từ khóa, câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
@@ -64,22 +51,7 @@ Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (d
 }`;
 
 export const RoundTwoCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Đâu tiên bạn học cách sử dụng thuật toán TextRank:
-1. Giới thiệu: TextRank là một thuật toán sử dụng trong xử lý ngôn ngữ tự nhiên (NLP) để xác định và sắp xếp các từ khóa quan trọng trong một văn bản. Dựa trên cơ sở của thuật toán PageRank, được Google sử dụng để xếp hạng các trang web trong kết quả tìm kiếm, TextRank giúp tổng hợp thông tin và trích xuất các khái niệm quan trọng từ văn bản.
-2. Cách hoạt động
-- Tiền xử lý văn bản: Bước đầu tiên của TextRank là tiền xử lý văn bản, bao gồm việc chia văn bản thành các câu và chuẩn hóa các từ (ví dụ: chuyển đổi thành chữ thường, loại bỏ các ký tự đặc biệt).
-- Tạo đồ thị từ (Word Graph): Các từ trong văn bản được biểu diễn bằng các đỉnh trong đồ thị từ, trong đó có các cạnh nối giữa các từ có mối quan hệ, chẳng hạn như sự xuất hiện cùng nhau trong một câu.
-- Xác định trọng số của các cạnh: Trọng số của mỗi cạnh trong đồ thị từ thường được xác định bằng cách sử dụng các phép đo sự tương đồng giữa các từ, chẳng hạn như số lần xuất hiện cùng nhau hoặc khoảng cách giữa các từ.
-- Thực hiện thuật toán PageRank trên đồ thị từ: TextRank sử dụng thuật toán PageRank để xác định sự quan trọng của mỗi từ dựa trên mối quan hệ với các từ khác trong văn bản. Điểm quan trọng của mỗi từ được tính dựa trên mối quan hệ với các từ khác thông qua các cạnh trong đồ thị từ.
-- Chọn ra các từ khóa: Các từ được sắp xếp theo độ quan trọng giảm dần để tạo ra danh sách các từ khóa quan trọng nhất trong văn bản.
-3. Công thức liên quan
-Công thức cụ thể cho điểm TextRank của mỗi từ có thể được biểu diễn như sau:
-- Đặt S(i) là điểm TextRank của từ i.
-- Đặt d là hệ số giảm (damping factor) của PageRank.
-- In(i) là tập hợp các từ có cạnh nối tới từ i.
-- Out(j) là tập hợp các từ có cạnh nối từ từ j.
-- |Out(j)| là số lượng từ có cạnh nối từ từ j.
-Công thức tổng quát cho điểm TextRank của một từ i là:
-S(i) = (1 - d) + d * sum(j in In(i)) (1/|Out(j)|) * S(j)
+${TextRank}
 Sau đó, hãy đọc chi tiết về hồ sơ xin việc (emplyee_Profile) và thông tin tuyển dụng (employer_Requirement) sau đó so sánh và đánh giá xem thông tin emplyee_Profile có phù hợp với thông tin tuyển dụng hay không. Hãy đánh giá xem emplyee_Profile theo các tiêu chí sau.
 Sử dụng sử dụng kết hợp thuật toán TextRank đã nêu trên để tìm ra ít nhất 30-40 từ khóa trong emplyee_Profile và ít nhất 30-40 từ khóa trong employer_Requirement
 Sử dụng các phương pháp mạng ngữ nghĩa (Semantic Networks) và Phân tích ngữ cảnh dựa trên ngữ nghĩa là nghề nghiệp để đánh giá mức độ tương đồng giữa các từ khóa trong emplyee_Profile và employer_Requirement. Ví dụ: React, NodeJS, Python, kĩ sư phần mềm, Khoa học Máy tính, Web, Frontend, Backend, phần mềm, công nghệ thông tin... là mức độ tương đồng cao; hoặc là quảng cáo, sale, bán sỉ, bán lẻ, Marketing, Bán hàng, Kinh doanh,... là mức độ tương đồng cao). Sau khi tìm được các từ khóa có mức độ tương đồng cao, hãy dùng thuật toán TextRank đã nêu trên để đánh giá mức độ quan trọng của từ khóa của đó so với nội dung trong thông tin tuyển dụng (employer_Requirement).
@@ -94,3 +66,15 @@ Sử dụng các phương pháp mạng ngữ nghĩa (Semantic Networks) và Phâ
     "id": 1,
     "result": 60
 }`;
+
+const RoundTwo = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu từ khóa trong phần kĩ năng cần thiết (skillRequirements) được xuất hiện trong hồ sơ xin việc (emplyee_Profile). Sau đó tính điểm result theo công thức sau:
+x = 100 / số từ khóa trong phần kĩ năng cần thiết (skillRequirements);
+y = x * từ khóa trong phần kĩ năng cần thiết (skillRequirements) được xuất hiện trong hồ sơ xin việc (emplyee_Profile);
+result = y;
+***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với application_id trong emplyee_Profile.application) và result (là con số result được tính toán ở trên) và không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, emplyee_Profile đạt yêu cầu thì trả về
+{
+    "id": 1,
+    "result": 60
+}`;
+
+const RoundThree = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu từ khóa trong hồ sơ xin việc (employee_Profile) xuất hiện trong tin tuyển dụng (employer_Requirement)`;

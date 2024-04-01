@@ -7,13 +7,26 @@ import {
   Divider,
   Button,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Avatar,
+  Grid,
+  Container
 } from '@mui/material';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import SearchIcon from '@mui/icons-material/Search';
 import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
+import professions from 'src/constants/professions';
 
-const iconsList = [
+const imageStyle = {
+  objectFit: 'cover',
+  width: '100px',
+  height: '100px',
+  borderRadius: 2
+};
+const iconsList = professions;
+const professionToShow = iconsList.slice(0, 7);
+
+const tmp = [
   {
     code: 1,
     name: 'Hành chính - Thư ký',
@@ -121,31 +134,51 @@ function ProfessionType() {
 
         <ProfessionListDialog open={open} handleClose={handleClose} />
 
-        <Box p={2} display="flex" justifyContent="center" columnGap={2}>
-          {iconsList.map((profession, index) => (
-            <Button
+        <Container
+          sx={{
+            overflow: 'hidden',
+            p: 2,
+            display: 'flex',
+            justifyContent: 'center'
+            // columnGap: 2
+          }}
+        >
+          {professionToShow.map((profession, index) => (
+            <Link
+              // fullWidth
               key={index}
+              // component={Link}
               href={`/profession/${profession.code}`}
               sx={{
-                width: 150,
-                height: 150,
+                width: 160,
+                height: 160,
+                display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'flex-start',
-                rowGap: '10px'
+                justifyContent: 'center',
+                alignItems: 'center',
+                rowGap: '10px',
+                mx: 2,
+                '&:hover': {
+                  textDecoration: 'none'
+                }
               }}
             >
               <img
                 src={profession.icon}
                 alt="shopping-bag"
-                width={80}
-                height={80}
+                style={{
+                  objectFit: 'cover',
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: 2
+                }}
               />
               <Typography color="secondary" fontWeight={700} textAlign="center">
                 {profession.name}
               </Typography>
-            </Button>
+            </Link>
           ))}
-        </Box>
+        </Container>
       </Card>
     </Box>
   );

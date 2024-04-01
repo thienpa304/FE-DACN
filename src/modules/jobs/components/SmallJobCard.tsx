@@ -1,26 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
+  Avatar,
   Box,
-  Grid,
-  Typography,
   Card,
-  CardHeader,
   CardContent,
-  Avatar
+  CardHeader,
+  Typography,
+  Grid
 } from '@mui/material';
+
 import BusinessIcon from '@mui/icons-material/Business';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import { useApp } from 'src/modules/app/hooks';
-import { defaultImage } from 'src/constants/uploadFileRule';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FollowButton from './FollowButton';
 import LinkText from 'src/components/LinkText';
+import { defaultImage } from 'src/constants/uploadFileRule';
+import FollowButton from './FollowButton';
 
-function JobCard({ job }) {
+function SmallJobCard({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
     job?.employer?.logo || defaultImage.companyAvatar
   );
@@ -28,22 +24,23 @@ function JobCard({ job }) {
   return (
     <Card
       sx={{
-        minHeight: 160,
         border: 1,
+        borderRadius: '3px',
         borderColor: '#98E4FF',
-        borderRadius: '3px'
+        height: 170
       }}
     >
       <CardHeader
         sx={{
-          pt: 1.5,
-          pb: 0,
-          color: '#ce8b0e',
+          py: 1,
+          color: '#aa720a',
           overflow: 'hidden',
           display: '-webkit-box',
           WebkitBoxOrient: 'vertical',
           WebkitLineClamp: 2,
-          whiteSpace: 'normal'
+          whiteSpace: 'normal',
+          maxHeight: '3.5em',
+          minHeight: '3.5em'
         }}
         title={
           <Box display={'flex'}>
@@ -63,22 +60,22 @@ function JobCard({ job }) {
           </Box>
         }
       />
-      <CardContent sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
-        <Grid container gap={2}>
-          <Grid item xs={2}>
+      <CardContent
+        sx={{ display: 'flex', flexDirection: 'row', gap: 4, pt: 1 }}
+      >
+        <Grid container spacing={2}>
+          <Grid item md={4} sm={6} xs={3}>
             <Avatar
               src={companyAvatar}
               variant="rounded"
               sx={{
-                bgcolor: '#a0b9cfc2',
-                height: 110,
-                width: '100%'
+                width: 100,
+                height: 90,
+                objectFit: 'cover'
               }}
-            >
-              <BusinessIcon />
-            </Avatar>
+            />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item md={8} sm={6} xs={9}>
             <Box display="flex" flexDirection="column" gap={1}>
               <Box display="flex">
                 <BusinessIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
@@ -88,7 +85,9 @@ function JobCard({ job }) {
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
                     WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: 2
+                    WebkitLineClamp: 2,
+                    whiteSpace: 'normal',
+                    maxWidth: '90%'
                   }}
                 >
                   {job?.employer?.companyName}
@@ -96,8 +95,7 @@ function JobCard({ job }) {
               </Box>
               <Box display="flex">
                 <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-                <Typography>
-                  Lương:{' '}
+                <Typography color="secondary" fontWeight={700}>
                   {job?.minSalary || job?.maxSalary
                     ? `${job?.minSalary || 'Thương lượng'} - ${
                         job?.maxSalary || 'Thương lượng'
@@ -113,28 +111,12 @@ function JobCard({ job }) {
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
+                    maxWidth: '90%'
                   }}
                 >
-                  Địa điểm: {job?.workAddress}
+                  {job?.workAddress}
                 </Typography>
-              </Box>
-            </Box>
-          </Grid>
-
-          <Grid item xs>
-            <Box display="flex" flexDirection="column" gap={1}>
-              <Box display="flex">
-                <WorkHistoryIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-                <Typography>Loại hình: {job?.employmentType}</Typography>
-              </Box>
-              <Box display="flex">
-                <HowToRegIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-                <Typography>Vị trí: {job?.positionLevel}</Typography>
-              </Box>
-              <Box display="flex">
-                <EventAvailableIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-                <Typography>Hạn nộp: {job?.applicationDeadline}</Typography>
               </Box>
             </Box>
           </Grid>
@@ -144,4 +126,4 @@ function JobCard({ job }) {
   );
 }
 
-export default JobCard;
+export default SmallJobCard;

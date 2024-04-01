@@ -77,7 +77,8 @@ const columns: GridColDef[] = [
     minWidth: 150,
     headerAlign: 'center',
     align: 'center',
-    renderCell: rederDate
+    renderCell: rederDate,
+    sortable: true
   },
   {
     field: 'applicationDeadline',
@@ -85,7 +86,8 @@ const columns: GridColDef[] = [
     minWidth: 150,
     headerAlign: 'center',
     align: 'center',
-    renderCell: rederDate
+    renderCell: rederDate,
+    sortable: true
   },
   {
     field: 'submit',
@@ -93,7 +95,8 @@ const columns: GridColDef[] = [
     minWidth: 100,
     headerAlign: 'center',
     align: 'center',
-    renderCell: () => <>0</>
+    renderCell: () => <>0</>,
+    sortable: true
   },
   {
     field: 'view',
@@ -101,7 +104,8 @@ const columns: GridColDef[] = [
     minWidth: 100,
     headerAlign: 'center',
     align: 'center',
-    renderCell: () => <>0</>
+    renderCell: () => <>0</>,
+    sortable: true
   },
   {
     field: 'status',
@@ -109,7 +113,8 @@ const columns: GridColDef[] = [
     minWidth: 120,
     headerAlign: 'center',
     align: 'center',
-    renderCell: renderStatus
+    renderCell: renderStatus,
+    sortable: true
   },
   {
     field: 'action',
@@ -123,8 +128,17 @@ const columns: GridColDef[] = [
 
 export default function TablePost({ data }) {
   return (
-    <Box sx={{ height: '75vh', width: '100%' }}>
-      <TableData rows={data} columns={columns} />
-    </Box>
+    <TableData
+      rows={data}
+      columns={columns}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 8
+          }
+        }
+      }}
+      sx={{ height: '72.7vh', width: '100%' }}
+    />
   );
 }

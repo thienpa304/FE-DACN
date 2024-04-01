@@ -6,6 +6,7 @@ import GppGoodIcon from '@mui/icons-material/GppGood';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import PeopleIcon from '@mui/icons-material/People';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import WcIcon from '@mui/icons-material/Wc';
 import {
   Avatar,
   Box,
@@ -20,8 +21,9 @@ import {
 import { styled } from '@mui/material/styles';
 import { TextParser } from 'src/components/TextEditor';
 import { Job } from '../model';
-import { toInputDateString } from 'src/utils/inputOutputFormat';
+import CakeIcon from '@mui/icons-material/Cake';
 import dayjs from 'dayjs';
+
 const CommonInfo = styled(Box)(({ theme }) => ({
   padding: 10,
   backgroundColor: '#F0FFF0',
@@ -110,6 +112,16 @@ const JobContent: React.FC<Props> = ({ data }) => {
               />
             </ListItem>
           </Grid>
+          <Grid item xs={12} md={4}>
+            <ListItem>
+              <ListItemAvatar>
+                <AvatarWrapper>
+                  <WcIcon />
+                </AvatarWrapper>
+              </ListItemAvatar>
+              <ListItemText primary={data.sex} secondary="Giới tính" />
+            </ListItem>
+          </Grid>
         </Grid>
         <Divider sx={{ width: '90%', margin: 'auto', my: 1 }} />
 
@@ -140,8 +152,25 @@ const JobContent: React.FC<Props> = ({ data }) => {
               />
             </ListItem>
           </Grid>
+          <Grid item xs={12} md={4}>
+            <ListItem>
+              <ListItemAvatar>
+                <AvatarWrapper>
+                  <CakeIcon />
+                </AvatarWrapper>
+              </ListItemAvatar>
+              <ListItemText
+                primary={`${data.minAge} - ${data.maxAge}`}
+                secondary="Độ tuổi"
+              />
+            </ListItem>
+          </Grid>
         </Grid>
       </CommonInfo>
+      <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
+        Kĩ năng bắt buộc
+      </Typography>
+      <Typography marginTop={2.5}>{data.skills}</Typography>
       <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
         Mô tả công việc
       </Typography>

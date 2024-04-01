@@ -8,9 +8,27 @@ import {
 } from '@mui/material';
 import useQueryCandidateProfiles from 'src/modules/application/hooks/useQueryCandidateProfiles';
 import Table from './Table';
+import SuspenseLoader from 'src/components/SuspenseLoader';
+import { useState } from 'react';
+import useQueryApplicationTotalResultsByEmployer from 'src/modules/application/hooks/useQueryApplicationTotalResultsByEmployer';
 
 const CandidateProfiles = () => {
-  const { data } = useQueryCandidateProfiles();
+  const [page, setPage] = useState(1);
+  const pageSize = 7;
+  const { data, isLoading } = useQueryCandidateProfiles({
+    page: page,
+    num: pageSize
+  });
+  const { totalResults, isLoading: isLoadingTotalResults } =
+    useQueryApplicationTotalResultsByEmployer();
+
+  const handleChangePage = (pageNum) => {
+    console.log(pageNum);
+    setPage(() => pageNum);
+  };
+
+  console.log(page);
+  if (isLoadingTotalResults) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
       <Grid
@@ -26,7 +44,14 @@ const CandidateProfiles = () => {
             <CardHeader title="Danh Sách ứng viên" />
             <Divider />
             <CardContent>
-              <Table data={data} />
+              <Table
+                data={data}
+                handleChangePage={handleChangePage}
+                pageSize={pageSize}
+                isLoading={isLoading}
+                totalResults={totalResults}
+                page={page}
+              />
             </CardContent>
           </Card>
         </Grid>

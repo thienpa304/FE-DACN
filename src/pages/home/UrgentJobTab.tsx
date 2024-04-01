@@ -8,7 +8,7 @@ import {
   Divider
 } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import CardItemJob from 'src/modules/jobs/components/CardItem';
+import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
 import { useState } from 'react';
@@ -61,7 +61,7 @@ function UrgentJobTab() {
         <Grid container mb={3} spacing={2}>
           {jobs.map((job, index) => (
             <Grid key={job.id} item xs={12} sm={6} md={4}>
-              <CardItemJob key={index} job={job} />
+              <SmallJobCard key={index} job={job} />
             </Grid>
           ))}
         </Grid>

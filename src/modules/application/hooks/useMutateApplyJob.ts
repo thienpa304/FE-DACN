@@ -17,7 +17,6 @@ const useMutateApplyJob = () => {
     onSuccess: (res) => {
       if (res.status === 200) {
         toast.success({ massage: 'Ứng tuyển thành công' });
-        navigate('/');
       } else {
         toast.error({ massage: res.message });
       }

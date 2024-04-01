@@ -24,12 +24,79 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DirectoryTreeView from './DirectoryTreeView';
 import Pagination from 'src/components/Pagination';
+import FormControl from 'src/components/FormControl';
+import professions from 'src/constants/professions';
+import TableData from 'src/components/TableData';
+import { GridColDef } from '@mui/x-data-grid';
+import { Link } from 'react-router-dom';
+
+const renderCellText = () => {
+  return <></>;
+};
+
+const columns: GridColDef[] = [
+  {
+    field: 'name',
+    headerName: 'Tên người dùng',
+    minWidth: 200,
+    renderCell: renderCellText
+  },
+  {
+    field: 'email',
+    headerName: 'Email',
+    minWidth: 200,
+    flex: 1,
+    renderCell: renderCellText
+  },
+  {
+    field: 'online',
+    headerName: 'Hồ sơ trực tuyến',
+    minWidth: 150,
+    renderCell: renderCellText
+  },
+  {
+    field: 'document',
+    headerName: 'Hồ sơ đính kèm',
+    minWidth: 150,
+    renderCell: renderCellText
+  },
+  {
+    field: 'actions',
+    headerName: 'Hành động',
+    minWidth: 150,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: (params) => (
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          to={`/edit-user/${params.row.id}`}
+          size="small"
+        >
+          Xem
+        </Button>
+        <Button
+          // onClick={() => handleDeleteUser(params.row.id)}
+          variant="contained"
+          color="error"
+          size="small"
+          sx={{ marginLeft: 1 }}
+        >
+          Xóa
+        </Button>
+      </div>
+    )
+  }
+];
 
 const UserProfileManagement = () => {
   const [users, setUsers] = useState([]);
   const [newUserName, setNewUserName] = useState('');
   const [newUserProfile, setNewUserProfile] = useState('');
   const [newUserCV, setNewUserCV] = useState('');
+  const [selectedProfession, setSelectedProfession] = useState(null);
 
   useEffect(() => {
     const generateSampleUserData = () => {
@@ -38,11 +105,9 @@ const UserProfileManagement = () => {
         sampleData.push({
           id: i,
           name: `User ${i}`,
-          profile: `Link to profile ${i}`,
-          cv: `Link to CV ${i}`,
-          email: `user${i}@example.com`,
-          registrationDate: `2023-01-${i < 10 ? `0${i}` : i}`,
-          role: i % 2 === 0 ? 'Admin' : 'User'
+          online: `Link to profile ${i}`,
+          document: `Link to CV ${i}`,
+          email: `user${i}@example.com`
         });
       }
       return sampleData;
@@ -86,146 +151,107 @@ const UserProfileManagement = () => {
         <CardHeader title="Quản lý Hồ sơ và CV Người Dùng" />
         <Divider />
         <CardContent>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <TextField
+              fullWidth
+              label="Tên Người Dùng"
+              variant="outlined"
+              value={newUserName}
+              onChange={(e) => setNewUserName(e.target.value)}
+              sx={{ height: '50%' }}
+              size="small"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddUser}
+              sx={{ width: 120, height: 35 }}
+            >
+              Tìm hồ sơ
+            </Button>
+          </Box>
+          {!selectedProfession && (
+            <>
+              <Typography
+                textAlign="center"
+                fontWeight={700}
+                fontSize={20}
+                mb={1}
+                lineHeight={3}
+              >
+                Chọn ngành nghề
+              </Typography>
+              <Grid
+                container
+                gap={3}
+                sx={{ display: 'flex', justifyContent: 'center' }}
+              >
+                {professions.map((item) => (
+                  <Grid
+                    key={item.code}
+                    item
+                    xs={12}
+                    sm={2}
+                    display="flex"
+                    justifyContent="center"
+                  >
+                    <IconButton
+                      color="secondary"
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%'
+                      }}
+                      onClick={() => setSelectedProfession(item.code)}
+                    >
+                      <img
+                        src={item.icon}
+                        alt={item.name}
+                        width="100"
+                        height="100"
+                      />
+                      <Typography sx={{ mt: 1 }}>{item.name}</Typography>
+                    </IconButton>
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Tên Người Dùng"
-                variant="outlined"
-                value={newUserName}
-                onChange={(e) => setNewUserName(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Link Hồ sơ Cá nhân"
-                variant="outlined"
-                value={newUserProfile}
-                onChange={(e) => setNewUserProfile(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Link CV"
-                variant="outlined"
-                value={newUserCV}
-                onChange={(e) => setNewUserCV(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddUser}
-              >
-                Thêm Người Dùng
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
               <Divider />
-              <Box display="flex">
-                <DirectoryTreeView />
-                <Box pl={5} borderLeft="2px solid #e5eaf2">
-                  <Typography
-                    textAlign="center"
-                    fontWeight={700}
-                    fontSize={20}
-                    mb={1}
-                    lineHeight={3}
-                  >
-                    Danh sách hồ sơ người dùng
-                  </Typography>
-                  <TableContainer
-                    sx={{
-                      border: '2px solid #e5eaf2',
-                      boxShadow: '1px 2px 4px #aae2f7',
-                      borderRadius: 2,
-                      mb: 2
-                    }}
-                  >
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Tên Người Dùng</TableCell>
-                          <TableCell>Email</TableCell>
-                          <TableCell>Hồ sơ Cá nhân</TableCell>
-                          <TableCell>CV</TableCell>
-                          <TableCell>Ngày Đăng Ký</TableCell>
-                          <TableCell>Vai Trò</TableCell>
-                          <TableCell>Thao Tác</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {users.map((user) => (
-                          <TableRow key={user.id}>
-                            <TableCell>
-                              <MuiLink
-                                href={user.profile}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {user.name}
-                              </MuiLink>
-                            </TableCell>
-                            <TableCell>{user.email}</TableCell>
-                            <TableCell>
-                              <MuiLink
-                                href={user.profile}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {user.profile}
-                              </MuiLink>
-                            </TableCell>
-                            <TableCell>
-                              <MuiLink
-                                href={user.cv}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {user.cv}
-                              </MuiLink>
-                            </TableCell>
-                            <TableCell>{user.registrationDate}</TableCell>
-                            <TableCell>{user.role}</TableCell>
-                            <TableCell style={{ display: 'flex' }}>
-                              <Tooltip title="Chỉnh Sửa">
-                                <IconButton
-                                  color="primary"
-                                  onClick={() => handleEditUser(user.id)}
-                                >
-                                  <EditIcon />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Xóa">
-                                <IconButton
-                                  color="secondary"
-                                  onClick={() => handleDeleteUser(user.id)}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <Pagination />
+              {selectedProfession && (
+                <Box display="flex">
+                  <DirectoryTreeView />
+                  <Box pl={5} borderLeft="2px solid #e5eaf2">
+                    <Typography
+                      textAlign="center"
+                      fontWeight={700}
+                      fontSize={20}
+                      mb={1}
+                      lineHeight={3}
+                    >
+                      Danh sách hồ sơ người dùng
+                    </Typography>
+                    <Box>
+                      <TableData
+                        columns={columns}
+                        rows={users}
+                        paginationModel={{ page: 0, pageSize: 9 }}
+                        hideFooter
+                      />
+                      <Pagination
+                        currentPage={1}
+                        totalPages={1}
+                        handlePageChange={() => {}}
+                      />
+                    </Box>
+                  </Box>
                 </Box>
-              </Box>
+              )}
             </Grid>
           </Grid>
         </CardContent>
-        <div>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-              <Grid></Grid>
-            </Grid>
-          </Grid>
-        </div>
       </Card>
     </Container>
   );
