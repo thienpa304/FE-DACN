@@ -7,6 +7,7 @@ import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import professions from 'src/constants/professions';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import { styled } from '@mui/styles';
+import { Button, Typography } from '@mui/material';
 
 // const TreeItem = styled(DefaultTreeItem)(({ theme }) => ({
 //   borderBottom: '2px solid #e5eaf2',
@@ -29,6 +30,23 @@ const treeItemStyle = {
 export default function DirectoryTreeView() {
   const { jobs } = useQueryAllJob();
   const [jobsPosted, setJobsPosted] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+
+  const totalPages = Math.ceil(professions.length / pageSize);
+
+  const handlePrevPage = () => {
+    setPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const visibleJobs = professions?.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
 
   useEffect(() => {
     setJobsPosted(jobs);
@@ -37,19 +55,18 @@ export default function DirectoryTreeView() {
   return (
     <Box
       sx={{
-        minHeight: 180,
-        flexGrow: 1,
         width: 300,
-        boxShadow: '2px 2px 6px #aae2f7'
+        boxShadow: '1px 1px 2px #aae2f7'
       }}
     >
       <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
+        sx={{ minHeight: 570 }}
       >
         <TreeItem
           nodeId={'root'}
-          label={'Tất cả' + ` (${jobsPosted.length})`}
+          label={<Typography fontWeight={700}>Tất cả</Typography>}
           sx={[
             treeItemStyle,
             {
@@ -59,40 +76,31 @@ export default function DirectoryTreeView() {
           onClick={(e) => {
             console.log('clicked ', e);
           }}
-        >
-          {professions.map((profession) => (
-            <TreeItem
-              key={profession.code}
-              nodeId={'A' + profession.code.toString()}
-              label={
-                profession.name +
-                ` (${
-                  jobsPosted?.filter(
-                    (job) => job.profession === profession.name
-                  ).length
-                })`
-              }
-              sx={[treeItemStyle, { borderBottom: '2px solid #e5eaf2' }]}
-            >
-              {jobsPosted
-                ?.filter((job) => job.profession === profession.name)
-                .map((job, index) => (
-                  <TreeItem
-                    key={job.postId}
-                    nodeId={'B' + job.postId.toString()}
-                    label={job.jobTitle}
-                    sx={[
-                      treeItemStyle,
-                      {
-                        borderTop: '2px solid #e5eaf2'
-                      }
-                    ]}
-                  />
-                ))}
-            </TreeItem>
-          ))}
-        </TreeItem>
+        />
+        {visibleJobs?.map((profession) => (
+          <TreeItem
+            key={profession.code}
+            nodeId={'A' + profession?.code?.toString()}
+            label={profession.name}
+            sx={[treeItemStyle, { borderBottom: '2px solid #e5eaf2' }]}
+          />
+        ))}
       </TreeView>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
+      >
+        <Button onClick={handlePrevPage} disabled={page === 1}>
+          Trước
+        </Button>
+        <Typography
+          sx={{ mx: 2, display: 'flex', alignItems: 'center', fontWeight: 700 }}
+        >
+          Trang {page} / {totalPages}
+        </Typography>
+        <Button onClick={handleNextPage} disabled={page === totalPages}>
+          Sau
+        </Button>
+      </Box>
     </Box>
   );
 }

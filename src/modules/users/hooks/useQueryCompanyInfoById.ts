@@ -2,19 +2,20 @@ import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { Company } from 'src/modules/users/model';
-import { GetCompany } from '../userService';
-import { useApp } from 'src/modules/app/hooks';
+import { GetCompanyInfoByUser } from '../userService';
 
-const useQueryCompany = () => {
-  const { isEmployer } = useApp();
+const useQueryCompanyInfoById = (params: { employerId: string }) => {
   const { data, isLoading } = useQuery<
     ResponseData<Company>,
     AxiosError<ResponseData<Company>>
-  >('get-Company', GetCompany.get, {
-    retry: 1,
-    refetchOnWindowFocus: false,
-    enabled: isEmployer
-  });
+  >(
+    ['get-CompanyInfo', params.employerId],
+    () => GetCompanyInfoByUser.get({ params }),
+    {
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  );
 
   return {
     company: data?.data,
@@ -22,4 +23,4 @@ const useQueryCompany = () => {
   };
 };
 
-export default useQueryCompany;
+export default useQueryCompanyInfoById;

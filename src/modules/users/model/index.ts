@@ -28,6 +28,7 @@ export type User = {
 };
 
 export type Company = {
+  userId: number;
   companyName: string;
   taxCode: string;
   companyLocation: string;

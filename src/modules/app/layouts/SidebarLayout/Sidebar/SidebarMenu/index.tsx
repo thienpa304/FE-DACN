@@ -29,6 +29,7 @@ import {
   AnalyticsTwoTone as AnalyzeProfileIcon,
   NotificationsActiveTwoTone as JobSuggestIcon
 } from '@mui/icons-material';
+
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
   .MuiList-root {
@@ -304,6 +305,17 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
+                      to={`/${rolePath}/job-follow`}
+                      startIcon={<FavoriteIcon />}
+                    >
+                      Việc làm đã theo dõi
+                    </Button>
+                  </ListItem>
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
                       to={`/${rolePath}/job-recommend`}
                       startIcon={<JobSuggestIcon />}
                     >
@@ -420,36 +432,6 @@ function SidebarMenu() {
                       startIcon={<ManageProfileIcon />}
                     >
                       Quản lý hồ sơ và CV
-                    </Button>
-                  </ListItem>
-                </List>
-              </SubMenuWrapper>
-              <SubMenuWrapper>
-                <List component="div">
-                  <ListItem component="div">
-                    <Button
-                      disableRipple
-                      component={RouterLink}
-                      onClick={closeSidebar}
-                      to={`/${rolePath}/analyze-profile`}
-                      startIcon={<AnalyzeProfileIcon />}
-                    >
-                      Phân tích hồ sơ cá nhân
-                    </Button>
-                  </ListItem>
-                </List>
-              </SubMenuWrapper>
-              <SubMenuWrapper>
-                <List component="div">
-                  <ListItem component="div">
-                    <Button
-                      disableRipple
-                      component={RouterLink}
-                      onClick={closeSidebar}
-                      to={`/${rolePath}/job-suggest`}
-                      startIcon={<JobSuggestIcon />}
-                    >
-                      Gợi ý việc làm
                     </Button>
                   </ListItem>
                 </List>

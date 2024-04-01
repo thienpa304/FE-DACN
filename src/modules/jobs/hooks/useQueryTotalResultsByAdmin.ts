@@ -11,7 +11,10 @@ const useQueryTotalResultsByAdmin = (params?) => {
   const { data, isLoading, refetch } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>
-  >('get-TotalResults', () => TotalResultsByAdmin.get({ params }));
+  >('get-TotalResults', () => TotalResultsByAdmin.get({ params }), {
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
   return {
     totalResults: data?.data?.totalResults,

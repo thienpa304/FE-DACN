@@ -7,3 +7,4 @@ export const JobUpdateStatusService = new BaseService('admin/job-postings');
 export const TotalResultsByAdmin = new BaseService(
   'admin/job-postings/totalResults'
 );
+export const FollowJobService = new BaseService('employee/follow-job');

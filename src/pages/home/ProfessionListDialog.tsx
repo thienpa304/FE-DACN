@@ -21,7 +21,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 function ProfessionListDialog(props) {
   const { open, handleClose } = props;
-  professions.sort((a, b) => a.name.localeCompare(b.name));
+  const professionToShow = [...professions];
+  professionToShow.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <BootstrapDialog onClose={handleClose} open={open} fullWidth maxWidth="lg">

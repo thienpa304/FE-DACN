@@ -64,13 +64,13 @@ const UserBoxDescription = styled(Typography)(
 
 function HeaderUserbox() {
   const {
-    user: { email, role }
+    user: { email, role, avatar }
   } = useApp();
   const signOut = useSignOutHook();
   const rolePath = role.toLowerCase();
   const user = {
     name: email.replace(/@.*/, ''),
-    avatar: '/static/images/avatars/avatar-empty.jpeg',
+    avatar: avatar?.trim() || '/static/images/avatars/avatar-empty.jpeg',
     jobtitle: `${rolePath}`
   };
 

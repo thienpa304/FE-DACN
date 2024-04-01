@@ -22,7 +22,10 @@ const JobDetail = () => {
       <Box marginTop={2}>
         <TabContent />
       </Box>
-      <CompanyInfoTab sx={{ mt: 2, borderRadius: 1 }} />
+      <CompanyInfoTab
+        sx={{ mt: 2, borderRadius: 1 }}
+        company={data?.employer}
+      />
     </Container>
   );
 };
