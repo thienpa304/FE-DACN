@@ -142,7 +142,7 @@ const columns: GridColDef[] = [
 export default function Table({ statusFilter }) {
   const { totalResults, refetch: refetchTotalResults } =
     useQueryTotalResultsByAdmin({
-      status: statusFilter
+      status: ApprovalStatus[statusFilter]
     });
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
@@ -155,7 +155,7 @@ export default function Table({ statusFilter }) {
   const { jobs, refetch, isLoading } = useQueryJob({
     page: currentPage,
     num: jobsPerPage,
-    status: statusFilter
+    status: ApprovalStatus[statusFilter]
   });
 
   const handlePageChange = (pageNumber: number) => {
