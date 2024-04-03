@@ -86,25 +86,25 @@ function Header({ showSideBar }) {
         {!showSideBar && (
           <Box display="flex">
             <Logo />
+            <Button
+              sx={{
+                color: '#b27300',
+                minWidth: '100px',
+                borderLeft: 1,
+                borderColor: '#dce2de'
+              }}
+              onClick={() => {
+                Navigate('company');
+              }}
+            >
+              Công ty
+            </Button>
             {isEmployee && (
               <>
                 <Button
                   sx={{
                     color: '#b27300',
-                    width: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('company');
-                  }}
-                >
-                  Công ty
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    width: '100px',
+                    minWidth: '100px',
                     borderLeft: 1,
                     borderColor: '#dce2de'
                   }}
@@ -117,7 +117,7 @@ function Header({ showSideBar }) {
                 <Button
                   sx={{
                     color: '#b27300',
-                    width: '150px',
+                    minWidth: '100px',
                     borderLeft: 1,
                     borderColor: '#dce2de'
                   }}
@@ -126,6 +126,105 @@ function Header({ showSideBar }) {
                   }}
                 >
                   Phân tích hồ sơ
+                </Button>
+              </>
+            )}
+            {isEmployer && (
+              <>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('employer/recruitment/create');
+                  }}
+                >
+                  Tuyển dụng
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('employer/recruitment/list');
+                  }}
+                >
+                  Danh sách tin đăng
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('employer/candidate/profile');
+                  }}
+                >
+                  Hồ sơ ứng tuyển
+                </Button>
+              </>
+            )}
+            {isAdmin && (
+              <>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('admin/user-manage');
+                  }}
+                >
+                  Quản lý người dùng
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('admin/manage-profile');
+                  }}
+                >
+                  Quản lý hồ sơ CV
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('admin/jobs-posting');
+                  }}
+                >
+                  Quản lý tin đăng
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
+                    Navigate('admin/statistic-report');
+                  }}
+                >
+                  Thống kê
                 </Button>
               </>
             )}

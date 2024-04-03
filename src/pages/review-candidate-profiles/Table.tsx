@@ -57,7 +57,7 @@ const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
   }
 );
 
-const FAIL_SCORE = 0; // 0 - 30
+const FAIL_SCORE = 0; // < 30
 const LOW_SCORE = 30; // 30 - 80
 const NORMAL_SCORE = 80; // 80 - 120
 const HIGH_SCORE = 120; // higher than 120
@@ -140,7 +140,7 @@ const renderMatchingScore = (data, isAnalyzing: boolean) => {
   ) : (
     <Box
       sx={{
-        width: '80%',
+        width: '90%',
         borderRadius: 3,
         p: 1,
         bgcolor:

@@ -34,9 +34,9 @@ function ProfessionType() {
 
   const matchProfessionWithCount = professions
     .map((profession) => {
-      const foundItem = dataList?.find(
-        (data) => data.profession_value === profession.name
-      );
+      const foundItem = Array.isArray(dataList)
+        ? dataList.find((data) => data.profession_value === profession.name)
+        : null;
 
       if (foundItem) {
         return {

@@ -29,6 +29,7 @@ import professions from 'src/constants/professions';
 import TableData from 'src/components/TableData';
 import { GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
+import ProfessionList from 'src/modules/admin/components/ProfessionList';
 
 const renderCellText = () => {
   return <></>;
@@ -98,6 +99,10 @@ const UserProfileManagement = () => {
   const [newUserCV, setNewUserCV] = useState('');
   const [selectedProfession, setSelectedProfession] = useState(null);
 
+  const handleSelectProfession = (code: number) => {
+    setSelectedProfession(code);
+  };
+
   useEffect(() => {
     const generateSampleUserData = () => {
       const sampleData = [];
@@ -128,7 +133,6 @@ const UserProfileManagement = () => {
     };
 
     setUsers((prevUsers) => [...prevUsers, newUser]);
-    // Clear input fields after adding a new user
     setNewUserName('');
     setNewUserProfile('');
     setNewUserCV('');
@@ -152,13 +156,24 @@ const UserProfileManagement = () => {
         <Divider />
         <CardContent>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            {selectedProfession && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  setSelectedProfession(null); 
+                }}
+                sx={{ width: 120, height: 35 }}
+              >
+                Trở về
+              </Button>
+            )}
             <TextField
-              fullWidth
               label="Tên Người Dùng"
               variant="outlined"
               value={newUserName}
               onChange={(e) => setNewUserName(e.target.value)}
-              sx={{ height: '50%' }}
+              sx={{ height: '50%', flex: 1 }}
               size="small"
             />
             <Button
@@ -171,51 +186,7 @@ const UserProfileManagement = () => {
             </Button>
           </Box>
           {!selectedProfession && (
-            <>
-              <Typography
-                textAlign="center"
-                fontWeight={700}
-                fontSize={20}
-                mb={1}
-                lineHeight={3}
-              >
-                Chọn ngành nghề
-              </Typography>
-              <Grid
-                container
-                gap={3}
-                sx={{ display: 'flex', justifyContent: 'center' }}
-              >
-                {professions.map((item) => (
-                  <Grid
-                    key={item.code}
-                    item
-                    xs={12}
-                    sm={2}
-                    display="flex"
-                    justifyContent="center"
-                  >
-                    <IconButton
-                      color="secondary"
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: '100%'
-                      }}
-                      onClick={() => setSelectedProfession(item.code)}
-                    >
-                      <img
-                        src={item.icon}
-                        alt={item.name}
-                        width="100"
-                        height="100"
-                      />
-                      <Typography sx={{ mt: 1 }}>{item.name}</Typography>
-                    </IconButton>
-                  </Grid>
-                ))}
-              </Grid>
-            </>
+            <ProfessionList handleSelectProfession={handleSelectProfession} />
           )}
           <Grid container spacing={2}>
             <Grid item xs={12}>

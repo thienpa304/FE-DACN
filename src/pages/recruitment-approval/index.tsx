@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -12,12 +13,24 @@ import Table from './Table';
 import SelectInput from 'src/components/SelectInput';
 import { APPROVAL_STATUS } from 'src/constants';
 import { useState } from 'react';
+import ProfessionList from 'src/modules/admin/components/ProfessionList';
 
 const RecruitmentApproval = () => {
   const [status, setStatus] = useState('');
-
+  const [selectedProfession, setSelectedProfession] = useState(null);
+  const [isProfessionView, setIsProfessionView] = useState(false);
   const handleChangeStatusFilter = (e) => {
     setStatus(e.target.value);
+  };
+
+  const handleSelectProfession = (name: string) => {
+    setSelectedProfession(name);
+    setIsProfessionView(false);
+  };
+
+  const handleToggleViewMode = () => {
+    setIsProfessionView((prev) => !prev);
+    setSelectedProfession(null);
   };
 
   return (
@@ -35,24 +48,49 @@ const RecruitmentApproval = () => {
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
+                justifyContent: 'space-between'
               }}
             >
               <CardHeader title="Danh sách tin tuyển dụng" />
-              <Box sx={{ margin: 'auto 25px auto auto', width: '120px' }}>
-                <SelectInput
-                  label="Trạng thái"
-                  value={status}
-                  options={APPROVAL_STATUS}
-                  onChange={(e) => handleChangeStatusFilter(e)}
-                ></SelectInput>
+              <Box
+                sx={{
+                  display: 'flex'
+                }}
+              >
+                {!isProfessionView && (
+                  <Box sx={{ margin: 'auto 25px auto auto', width: '120px' }}>
+                    <SelectInput
+                      label="Trạng thái"
+                      value={status}
+                      options={APPROVAL_STATUS}
+                      onChange={(e) => handleChangeStatusFilter(e)}
+                    />
+                  </Box>
+                )}
+                <Button
+                  variant="contained"
+                  color={!isProfessionView ? 'primary' : 'info'}
+                  onClick={handleToggleViewMode}
+                  sx={{ margin: 'auto 25px auto auto', height: 35, width: 150 }}
+                >
+                  {!isProfessionView ? 'Xem theo ngành' : 'Tất cả'}
+                </Button>
               </Box>
             </Box>
 
             <Divider />
             <CardContent>
-              <Table statusFilter={status} />
+              {isProfessionView && !selectedProfession && (
+                <ProfessionList
+                  handleSelectProfession={handleSelectProfession}
+                />
+              )}
+              {!isProfessionView && (
+                <Table
+                  statusFilter={status}
+                  selectedProfession={selectedProfession}
+                />
+              )}
             </CardContent>
           </Card>
         </Grid>

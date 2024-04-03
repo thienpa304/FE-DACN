@@ -4,11 +4,11 @@ import { ResponseData } from 'src/common/http-request';
 import { JobService } from '../jobService';
 import { Job } from '../model';
 
-const useQueryJobOwner = () => {
+const useQueryJobOwner = (params?) => {
   const { data, isLoading } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
-  >('jobOwner-getList', JobService.get, {
+  >(['jobOwner-getList'], () => JobService.get({ params }), {
     retry: 1,
     refetchOnWindowFocus: false
   });
