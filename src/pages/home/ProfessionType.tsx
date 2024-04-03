@@ -16,6 +16,7 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import SearchIcon from '@mui/icons-material/Search';
 import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
 import professions from 'src/constants/professions';
+import useQueryTotolJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotolJobsEachProfession';
 
 const imageStyle = {
   objectFit: 'cover',
@@ -24,49 +25,35 @@ const imageStyle = {
   borderRadius: 2
 };
 const iconsList = professions;
-const professionToShow = iconsList.slice(0, 7);
-
-const tmp = [
-  {
-    code: 1,
-    name: 'Hành chính - Thư ký',
-    icon: 'https://cdn-icons-png.flaticon.com/128/925/925025.png'
-  },
-  {
-    code: 2,
-    name: 'Khách sạn - Nhà hàng - Du lịch',
-    icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946788.png'
-  },
-  {
-    code: 3,
-    name: 'Bán sỉ - Bán lẻ - Quản lý cửa hàng',
-    icon: 'https://cdn-icons-png.flaticon.com/512/2611/2611215.png'
-  },
-  {
-    code: 4,
-    name: 'Marketing',
-    icon: 'https://cdn-icons-png.flaticon.com/128/3141/3141181.png'
-  },
-  {
-    code: 5,
-    name: 'Bán hàng - Kinh doanh',
-    icon: 'https://cdn-icons-png.flaticon.com/128/420/420199.png'
-  },
-  {
-    code: 6,
-    name: 'Kế toán',
-    icon: 'https://cdn-icons-png.flaticon.com/128/1570/1570998.png'
-  },
-  {
-    code: 7,
-    name: 'Tài chính - Đầu tư - Chứng khoán',
-    icon: 'https://cdn-icons-png.flaticon.com/128/3328/3328363.png'
-  }
-];
 
 function ProfessionType() {
   const [searchValue, setSearchValue] = useState('');
   const [open, setOpen] = React.useState(false);
+  const { dataList } = useQueryTotolJobsEachProfession();
+  console.log(dataList);
+
+  const matchProfessionWithCount = professions
+    .map((profession) => {
+      const foundItem = dataList?.find(
+        (data) => data.profession_value === profession.name
+      );
+
+      if (foundItem) {
+        return {
+          ...profession,
+          count: foundItem.count
+        };
+      } else
+        return {
+          ...profession,
+          count: 0
+        };
+    })
+    .sort((a, b) => {
+      return b.count - a.count;
+    });
+  console.log(matchProfessionWithCount);
+  const professionToShow = matchProfessionWithCount.slice(0, 7);
 
   const handleClose = () => {
     setOpen(false);
@@ -132,7 +119,11 @@ function ProfessionType() {
           </Link>
         </Box>
 
-        <ProfessionListDialog open={open} handleClose={handleClose} />
+        <ProfessionListDialog
+          open={open}
+          handleClose={handleClose}
+          professionList={matchProfessionWithCount}
+        />
 
         <Container
           sx={{
@@ -143,7 +134,7 @@ function ProfessionType() {
             // columnGap: 2
           }}
         >
-          {professionToShow.map((profession, index) => (
+          {professionToShow?.map((profession, index) => (
             <Link
               // fullWidth
               key={index}
@@ -156,7 +147,7 @@ function ProfessionType() {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                rowGap: '10px',
+                rowGap: '5px',
                 mx: 2,
                 '&:hover': {
                   textDecoration: 'none'
@@ -168,11 +159,30 @@ function ProfessionType() {
                 alt="shopping-bag"
                 style={{
                   objectFit: 'cover',
-                  width: '100px',
-                  height: '100px',
+                  width: '90px',
+                  height: '90px',
                   borderRadius: 2
                 }}
               />
+              <Box display={'flex'} columnGap="2px" alignItems="center">
+                <Typography
+                  fontWeight={700}
+                  fontSize={16}
+                  color="#379aff"
+                  textAlign="center"
+                  // sx={{ display: 'flex', alighItem: 'end' }}
+                >
+                  {profession.count}
+                </Typography>
+                <Typography
+                  fontWeight={700}
+                  color="#939295"
+                  textAlign="center"
+                  fontSize={13}
+                >
+                  việc
+                </Typography>
+              </Box>
               <Typography color="secondary" fontWeight={700} textAlign="center">
                 {profession.name}
               </Typography>

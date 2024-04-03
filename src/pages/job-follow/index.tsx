@@ -1,18 +1,14 @@
 import { Box, Grid, Pagination } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import JobList from 'src/modules/jobs/components/JobList';
+import { useEffect, useState } from 'react';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryFollowJobs from 'src/modules/jobs/hooks/useQueryFollowJobs';
 
 export default function JobFollow() {
   const { jobFollow } = useQueryFollowJobs();
-  console.log(jobFollow);
   const [jobList, setJobList] = useState([]);
 
   useEffect(() => {
     const newList = jobFollow?.map((job) => {
-      console.log(job);
-
       return {
         maxSalary: job?.maxSalary,
         minSalary: job?.minSalary,
@@ -26,7 +22,6 @@ export default function JobFollow() {
       };
     });
     setJobList(() => newList);
-    // console.log('newList', newList);
   }, [jobFollow]);
 
   return (

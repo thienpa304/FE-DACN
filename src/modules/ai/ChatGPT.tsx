@@ -31,8 +31,8 @@ const ChatGPT = ({ request, content, setAnswer, sendRequest }) => {
           headers: {
             'Content-Type': 'application/json',
             Authorization:
-              'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
-            // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
+              // 'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+              'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
           },
           body: JSON.stringify({
             model: 'gpt-3.5-turbo', // Chọn mô hình ChatGPT bạn muốn sử dụng

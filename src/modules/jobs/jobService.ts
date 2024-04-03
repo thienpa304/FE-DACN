@@ -8,3 +8,6 @@ export const TotalResultsByAdmin = new BaseService(
   'admin/job-postings/totalResults'
 );
 export const FollowJobService = new BaseService('employee/follow-job');
+export const TotolJobsEachProfession = new BaseService(
+  'job-postings/totalResultsOfProfession'
+);

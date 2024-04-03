@@ -11,10 +11,13 @@ import Table from './Table';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useState } from 'react';
 import useQueryApplicationTotalResultsByEmployer from 'src/modules/application/hooks/useQueryApplicationTotalResultsByEmployer';
+import { effect, signal } from '@preact/signals-react';
+
+export const dataList = signal([]);
 
 const CandidateProfiles = () => {
-  const [page, setPage] = useState(1);
   const pageSize = 7;
+  const [page, setPage] = useState(1);
   const { data, isLoading } = useQueryCandidateProfiles({
     page: page,
     num: pageSize
@@ -23,11 +26,10 @@ const CandidateProfiles = () => {
     useQueryApplicationTotalResultsByEmployer();
 
   const handleChangePage = (pageNum) => {
-    console.log(pageNum);
     setPage(() => pageNum);
   };
+  dataList.value = data;
 
-  console.log(page);
   if (isLoadingTotalResults) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
@@ -45,7 +47,7 @@ const CandidateProfiles = () => {
             <Divider />
             <CardContent>
               <Table
-                data={data}
+                data={dataList.value}
                 handleChangePage={handleChangePage}
                 pageSize={pageSize}
                 isLoading={isLoading}

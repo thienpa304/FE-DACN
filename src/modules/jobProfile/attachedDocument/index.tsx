@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Container,
@@ -23,8 +23,11 @@ import { AttachedDocument as AttachedDocumentType } from '../model';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useNavigate } from 'react-router';
 import SubmitBox from '../SubmitBox';
-import { findObjectKey } from 'src/utils/inputOutputFormat';
-import { Degree } from 'src/constants/enum';
+import { getFileByUrl } from 'src/common/firebaseService';
+import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import { cvAnalysist } from 'src/modules/ai/roles';
+import pdfToText from 'react-pdftotext';
+import { loadKeywords, preProcessData } from 'src/utils/keywords';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   background: '#ffff',
@@ -56,10 +59,57 @@ export default function AttachedDocument() {
   const { setProfile, profile } = useAttachedDocument();
   const { attachedDocument, isLoading } = useQueryAttachedDocument();
   const navigate = useNavigate();
+  const [finished, setFinished] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const handleSaveProfile = () => {
-    if (profile?.userId) onUpdateData(profile as AttachedDocumentType);
-    else onSaveData(profile as AttachedDocumentType);
+  // const preProcessData = (
+  //   profile: Partial<AttachedDocumentType>,
+  //   cvContent: string
+  // ) => {
+  //   return {
+  //     jobTitle: profile?.jobTitle,
+  //     profession: profile?.profession,
+  //     careerGoal: profile?.careerGoal,
+  //     CV: cvContent
+  //   };
+  // };
+
+  const handleSaveProfile = async () => {
+    setIsAnalyzing(true);
+    try {
+      const filePath = await getFileByUrl(profile?.CV);
+      const response = await fetch(filePath);
+      if (!response?.ok) {
+        throw new Error('Failed to fetch file');
+      }
+      const blob = await response?.blob();
+      const text = await pdfToText(blob);
+
+      const dataToAnalyze = preProcessData(profile, 'document', text);
+      sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
+        '58': 1,
+        '60': 1
+      }).then((analysisResults) => {
+        const keywords = loadKeywords(
+          analysisResults,
+          JSON.stringify(dataToAnalyze)
+        );
+        onUpdateData({
+          ...profile,
+          keywords: keywords
+        } as AttachedDocumentType);
+        setFinished(true);
+      });
+      if (profile?.userId) {
+        onUpdateData(profile as AttachedDocumentType);
+      } else {
+        onSaveData(profile as AttachedDocumentType);
+      }
+    } catch (error) {
+      console.error('Error creating local URL:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const goBack = () => {
@@ -67,10 +117,16 @@ export default function AttachedDocument() {
   };
 
   useEffect(() => {
+    if (finished) {
+      navigate('/employee/recruitment-profile');
+    }
+  }, [finished]);
+
+  useEffect(() => {
     setProfile(attachedDocument);
   }, [attachedDocument]);
 
-  if (isLoading) {
+  if (isLoading || isAnalyzing) {
     return <SuspenseLoader />;
   }
 
@@ -111,7 +167,7 @@ export default function AttachedDocument() {
           sx={{ width: 200 }}
           onClick={handleSaveProfile}
         >
-          Đăng hồ sơ
+          Lưu hồ sơ
         </Button>
       </SubmitBox>
     </>

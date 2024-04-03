@@ -15,13 +15,18 @@ import { useQueryCandidateProfileByIdList } from 'src/modules/application/hooks/
 import dayjs from 'dayjs';
 import { getFileByUrl } from 'src/common/firebaseService';
 import pdfToText from 'react-pdftotext';
-import { RoundOneCheck, RoundTwoCheck } from 'src/modules/ai/roles';
+import {
+  RoundOneCheck,
+  RoundThreeCheck,
+  RoundTwoCheck
+} from 'src/modules/ai/roles';
 import { Application } from 'src/modules/application/model';
 import { Job } from 'src/modules/jobs/model';
 import { User } from 'src/modules/users/model';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 import { preProcessText } from 'src/utils/inputOutputFormat';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import { dataList } from '.';
 
 interface CustomLinkProps {
   to?: string;
@@ -52,6 +57,11 @@ const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
   }
 );
 
+const FAIL_SCORE = 0; // 0 - 30
+const LOW_SCORE = 30; // 30 - 80
+const NORMAL_SCORE = 80; // 80 - 120
+const HIGH_SCORE = 120; // higher than 120
+
 type ProfileTypeInfo = {
   personal_information: User;
   online_profile?: OnlineProfile;
@@ -59,14 +69,14 @@ type ProfileTypeInfo = {
   application: Omit<Application, 'applicationType'> & {
     id: number;
     applicationType: string;
-    matchingRate: number; // Thay `number` bằng kiểu dữ liệu thích hợp nếu cần
+    matchingScore: number;
   };
 };
 
 type ProfileApplicationType = {
   id: number;
-  profile: ProfileTypeInfo;
-  job: Job;
+  employee_Profile: ProfileTypeInfo;
+  employer_Requirement: Partial<Job>;
 };
 
 const renderProfileName = (data) => {
@@ -115,13 +125,17 @@ const renderStatus = (data) => {
   );
 };
 
-const renderMatchingRate = (data, isAnalyzing: boolean) => {
+const renderMatchingScore = (data, isAnalyzing: boolean) => {
   if (isAnalyzing) return <CircularProgress />;
   let result = '';
-  if (data.value >= 70) result = 'Cao';
-  else if (data.value >= 30) result = 'Trung bình';
-  else result = 'Thấp';
-  return data.value === undefined ? (
+  if (data.value >= HIGH_SCORE) result = 'Cao';
+  else if (data.value >= NORMAL_SCORE && data.value < HIGH_SCORE)
+    result = 'Trung bình';
+  else if (data.value >= LOW_SCORE && data.value < NORMAL_SCORE)
+    result = 'Thấp';
+  else if (data.value < LOW_SCORE) result = 'Không phù hợp';
+
+  return data.value === undefined || data.value === null ? (
     <Typography>Chưa xác định</Typography>
   ) : (
     <Box
@@ -130,11 +144,13 @@ const renderMatchingRate = (data, isAnalyzing: boolean) => {
         borderRadius: 3,
         p: 1,
         bgcolor:
-          data.value >= 70
+          data.value >= HIGH_SCORE
             ? '#ffc107'
-            : data.value >= 30
+            : data.value >= NORMAL_SCORE
             ? '#4caf50'
-            : '#b5b5b5',
+            : data.value >= LOW_SCORE
+            ? '#b5b5b5'
+            : '#efefef',
         display: 'flex',
         justifyContent: 'center'
       }}
@@ -145,9 +161,8 @@ const renderMatchingRate = (data, isAnalyzing: boolean) => {
 };
 
 export default function Table(props) {
-  const { data, pageSize, handleChangePage, page, isLoading, totalResults } =
-    props;
-  console.log(totalResults);
+  const { pageSize, handleChangePage, page, isLoading, totalResults } = props;
+  const data = dataList.value;
 
   // data : danh sách Application
   const [analyzedProfile, setAnalyzedProfile] =
@@ -156,14 +171,20 @@ export default function Table(props) {
   const [showList, setShowList] = useState([]);
   const [roundOneFinished, setRoundOneFinished] = useState(false);
   const [roundTwoFinished, setRoundTwoFinished] = useState(false);
+  const [roundThreeFinished, setRoundThreeFinished] = useState(false);
   const [passRoundOneProfiles, setPassRoundOneProfiles] = useState<
+    ProfileApplicationType[]
+  >([]);
+  const [passRoundTwoProfiles, setPassRoundTwoProfiles] = useState<
     ProfileApplicationType[]
   >([]);
   const [start, setStart] = useState(false);
   const { jobs } = useQueryJobOwner();
+
   const idList = data.map((item) => item?.application_id);
   const { data: applicationDetailList } =
     useQueryCandidateProfileByIdList(idList);
+  const { mutate } = useMutateApplicationStatus();
 
   const firstRoundForGeneralInfo = (job, profile) => {
     const { personal_information, online_profile, attached_document } = profile;
@@ -176,12 +197,12 @@ export default function Table(props) {
       job?.minAge > age ||
       job?.maxAge < age
     )
-      return 0;
+      return -10;
 
-    if (online_profile && !isProfileQualified(online_profile, job)) return 0;
+    if (online_profile && !isProfileQualified(online_profile, job)) return -10;
 
     if (attached_document && !isProfileQualified(attached_document, job))
-      return 0;
+      return -10;
 
     return 30;
   };
@@ -213,10 +234,10 @@ export default function Table(props) {
     }
   };
 
-  const readCVData = async (profile) => {
-    if (profile?.attached_document) {
+  const readCVData = async (employee_Profile) => {
+    if (employee_Profile?.attached_document) {
       const text = await fetchDataFromUrl(
-        profile.attached_document.CV,
+        employee_Profile.attached_document.CV,
         'attached_document'
       );
       const preProcessText = text
@@ -224,9 +245,9 @@ export default function Table(props) {
         .replace(/\s+/g, ' ');
       return preProcessText
         ? {
-            ...profile,
+            ...employee_Profile,
             attached_document: {
-              ...profile.attached_document,
+              ...employee_Profile.attached_document,
               CV: preProcessText
             }
           }
@@ -235,13 +256,13 @@ export default function Table(props) {
     return null;
   };
 
-  const readEnclosedCVData = async (profile) => {
+  const readEnclosedCVData = async (employee_Profile) => {
     if (
-      profile?.application?.applicationType === 'Nộp nhanh' &&
-      profile?.application?.CV
+      employee_Profile?.application?.applicationType === 'Nộp nhanh' &&
+      employee_Profile?.application?.CV
     ) {
       const text = await fetchDataFromUrl(
-        profile.application.CV,
+        employee_Profile.application.CV,
         'enclosed_CV'
       );
       const preProcessText = text
@@ -250,79 +271,143 @@ export default function Table(props) {
 
       if (preProcessText) {
         return {
-          ...profile,
-          application: { ...profile.application, CV: preProcessText }
+          ...employee_Profile,
+          application: { ...employee_Profile.application, CV: preProcessText }
         };
       }
 
-      return profile;
+      return employee_Profile;
     }
     return null;
   };
 
-  const review = async (dataToAnalyze: ProfileApplicationType[]) => {
-    setIsAnalyzing(true);
-
-    if (!roundOneFinished) {
-      console.log('start');
-
-      const attachedDocumentPromises = dataToAnalyze.map(async (data) => ({
+  const fetchAndProcessCVData = async (dataToAnalyze, dataProcessor) => {
+    return Promise.all(
+      dataToAnalyze.map(async (data) => ({
         ...data,
-        profile: await readCVData(data.profile)
+        employee_Profile: await dataProcessor(data.employee_Profile)
+      }))
+    );
+  };
+
+  const filterAndMapProfiles = (dataList) => {
+    return dataList
+      .filter((data) => data.employee_Profile)
+      .map(({ employee_Profile, employer_Requirement }) => ({
+        employee_Profile,
+        employer_Requirement
       }));
+  };
 
-      const enclosedCVDataPromises = dataToAnalyze.map(async (data) => {
-        return {
-          ...data,
-          profile: await readEnclosedCVData(data.profile)
-        };
-      });
+  const matchProfileById = (
+    analyzedProfile,
+    cvEnclosedProfileList,
+    attachProfileList
+  ) => {
+    console.log(
+      '****',
+      analyzedProfile.map((item) => {
+        const matchedItem =
+          cvEnclosedProfileList.find(
+            (cvItem) => cvItem.employee_Profile.id === item.id
+          ) ||
+          attachProfileList.find(
+            (attachItem) => attachItem.employee_Profile.id === item.id
+          );
+        return matchedItem ? matchedItem.employee_Profile : item;
+      })
+    );
 
-      const attachedDocumentList = (
-        await Promise.all(attachedDocumentPromises)
-      ).filter((data) => data.profile);
+    return analyzedProfile.map((item) => {
+      const matchedItem =
+        cvEnclosedProfileList.find(
+          (cvItem) => cvItem.employee_Profile.id === item.id
+        ) ||
+        attachProfileList.find(
+          (attachItem) => attachItem.employee_Profile.id === item.id
+        );
+      return matchedItem ? matchedItem.employee_Profile : item;
+    });
+  };
 
-      const cvEnclosedList = (await Promise.all(enclosedCVDataPromises)).filter(
-        (data) => data.profile
-      );
-      const attachProfileList = attachedDocumentList.map((data) => ({
-        profile: data,
-        job: data.job
-      }));
+  const review = async (
+    dataToAnalyze: ProfileApplicationType[],
+    round: number,
+    resetMatchingScoreList?
+  ) => {
+    setIsAnalyzing(true);
+    let result;
+    console.log('dataToAnalyze', dataToAnalyze);
 
-      const cvEnclosedProfileList = cvEnclosedList.map((data) => ({
-        profile: data,
-        job: data.job
-      }));
-      console.log('Start round 1');
+    switch (round) {
+      case 1:
+        console.log('Start round 1');
+        const attachedDocumentList = await fetchAndProcessCVData(
+          dataToAnalyze,
+          readCVData
+        );
+        const cvEnclosedList = await fetchAndProcessCVData(
+          dataToAnalyze,
+          readEnclosedCVData
+        );
 
-      setAnalyzedProfile((prev) => {
-        return prev.map((item) => {
-          // Tìm phần tử có id giống với item.id trong cvEnclosedProfileList hoặc attachProfileList
-          const matchedItem =
-            cvEnclosedProfileList.find(
-              (cvItem) => cvItem.profile.id === item.id
-            ) ||
-            attachProfileList.find(
-              (attachItem) => attachItem.profile.id === item.id
-            );
+        const attachProfileList = filterAndMapProfiles(attachedDocumentList);
 
-          // Nếu tìm thấy phần tử khớp, trả về phần tử mới, nếu không, trả về item hiện tại
-          return matchedItem ? matchedItem.profile : item;
-        });
-      });
-      const result = await sendChatGPTRequest(
-        RoundOneCheck,
-        cvEnclosedProfileList
-      ).catch(() => []);
-      handleAnalyzeResult(result);
-    } else {
-      console.log('Start round 2');
-      const result = await sendChatGPTRequest(
-        RoundTwoCheck,
-        passRoundOneProfiles
-      ).catch(() => []);
-      handleAnalyzeResult(result);
+        const cvEnclosedProfileList = filterAndMapProfiles(cvEnclosedList);
+
+        console.log('cvEnclosedProfileList', cvEnclosedProfileList);
+
+        const cvContentProfile = matchProfileById(
+          resetMatchingScoreList,
+          cvEnclosedProfileList,
+          attachProfileList
+        );
+
+        setAnalyzedProfile(() => cvContentProfile);
+
+        result = await sendChatGPTRequest(
+          RoundOneCheck,
+          cvEnclosedProfileList
+        ).catch(() => []);
+        handleAnalyzeResult(result);
+        break;
+
+      case 2:
+        console.log('Start round 2');
+        result = await sendChatGPTRequest(
+          RoundTwoCheck,
+          passRoundOneProfiles.map((item) => {
+            return {
+              ...item,
+              employer_Requirement: {
+                skillRequirements: item.employer_Requirement.skillRequirements
+              }
+            };
+          })
+        ).catch(() => []);
+        handleAnalyzeResult(result);
+        break;
+
+      case 3:
+        console.log('Start round 3');
+        result = await sendChatGPTRequest(
+          RoundThreeCheck,
+          passRoundOneProfiles.map((item) => {
+            return {
+              id: item.id,
+              employee_Profile: {
+                keywords: item.employee_Profile.application.keywords
+              },
+              employer_Requirement: {
+                keywords: item.employer_Requirement.keywords
+              }
+            };
+          })
+        ).catch(() => []);
+        handleAnalyzeResult(result);
+        break;
+      default:
+        break;
     }
   };
 
@@ -335,21 +420,35 @@ export default function Table(props) {
     const updatedAnalyzedProfile = await Promise.all(
       analyzedProfile?.map(async (profile) => {
         const foundItem = responses.find((res) => res?.id === profile?.id);
-        const matchingRate =
-          foundItem?.result ??
-          (!roundOneFinished &&
-          (profile?.profile?.online_profile ||
-            profile?.profile?.attached_document)
-            ? firstRoundForGeneralInfo(profile.job, profile.profile)
-            : profile.profile.application.matchingRate);
+
+        let matchingScore: number;
+        if (foundItem?.result !== undefined) {
+          matchingScore = profile.employee_Profile.application.matchingScore
+            ? profile.employee_Profile.application.matchingScore +
+              foundItem.result
+            : foundItem.result;
+        } else if (
+          !roundOneFinished &&
+          (profile?.employee_Profile?.online_profile ||
+            profile?.employee_Profile?.attached_document)
+        ) {
+          matchingScore = firstRoundForGeneralInfo(
+            profile.employer_Requirement,
+            profile.employee_Profile
+          );
+        } else {
+          matchingScore = profile.employee_Profile.application.matchingScore;
+        }
+
+        console.log('matchingScore', matchingScore);
 
         return {
           ...profile,
-          profile: {
-            ...profile.profile,
+          employee_Profile: {
+            ...profile.employee_Profile,
             application: {
-              ...profile.profile.application,
-              matchingRate
+              ...profile.employee_Profile.application,
+              matchingScore: matchingScore
             }
           }
         };
@@ -358,37 +457,25 @@ export default function Table(props) {
 
     const passRoundDataThreshold = 30;
     const passRoundData = updatedAnalyzedProfile?.filter(
-      (data) => data.profile.application.matchingRate >= passRoundDataThreshold
+      (data) =>
+        data.employee_Profile.application.matchingScore >=
+        passRoundDataThreshold
     );
     setPassRoundOneProfiles(passRoundData);
 
-    setAnalyzedProfile(updatedAnalyzedProfile);
-
+    setAnalyzedProfile(() => updatedAnalyzedProfile);
     const resultList = updatedAnalyzedProfile?.map((profile) => ({
-      ...profile.profile.application,
+      ...profile.employee_Profile.application,
       id: profile.id
     }));
-    setShowList(resultList);
+    console.log('resultList', resultList);
 
+    setShowList(resultList);
     setIsAnalyzing(false);
     if (!roundOneFinished) setRoundOneFinished(true);
-    else setRoundTwoFinished(true);
+    else if (!roundTwoFinished) setRoundTwoFinished(true);
+    else if (!roundThreeFinished) setRoundThreeFinished(true);
   };
-
-  useEffect(() => {
-    if (start) {
-      if (roundOneFinished && !roundTwoFinished) {
-        console.log('passRoundOneProfiles', passRoundOneProfiles);
-        passRoundOneProfiles.length && review(passRoundOneProfiles);
-      }
-      if (roundTwoFinished) {
-        console.log('Round 2 finished');
-        setStart(false);
-        setRoundOneFinished(false);
-        setRoundTwoFinished(false);
-      }
-    }
-  }, [roundOneFinished, roundTwoFinished]);
 
   const preprocessJobData = (job) => ({
     id: job?.postId,
@@ -401,11 +488,12 @@ export default function Table(props) {
     minAge: job?.minAge,
     maxAge: job?.maxAge,
     sex: job?.sex,
-    skills: job?.skills,
+    requiredSkills: job?.requiredSkills,
     employmentType: job?.employmentType,
     degree: job?.degree,
     experience: job?.experience,
-    positionLevel: job?.positionLevel
+    positionLevel: job?.positionLevel,
+    keywords: job?.keywords
   });
 
   const preprocessProfileData = (profile) => ({
@@ -416,8 +504,8 @@ export default function Table(props) {
     }
   });
 
-  const matchJobAndProfile = () => {
-    return data
+  const matchJobAndProfile = (): ProfileApplicationType[] =>
+    data
       ?.map((item) => {
         const job = jobs?.find(
           (job) => job?.postId === item?.jobPosting?.postId
@@ -432,36 +520,97 @@ export default function Table(props) {
 
         return {
           id: item?.application_id,
-          job: preprocessedJobData,
-          profile: {
+          employer_Requirement: preprocessedJobData,
+          employee_Profile: {
             ...preprocessedProfileData,
             application: {
               ...preprocessedProfileData.application,
-              jobTitle: job?.jobTitle
+              jobTitle: job?.jobTitle,
+              keywords: preprocessedProfileData?.application?.keywords
+                ? preprocessedProfileData?.application?.keywords
+                : preprocessedProfileData?.online_profile
+                ? profile?.online_profile.keywords
+                : preprocessedProfileData?.attached_document?.keywords
             }
           }
         };
       })
       .filter(Boolean);
-  };
 
+  // First time render the page
   useEffect(() => {
     if (!jobs.length || !applicationDetailList.length) return;
 
     const dataToAnalyze = matchJobAndProfile();
+    console.log('dataToAnalyze', dataToAnalyze);
 
     const resultList = dataToAnalyze?.map((item) => {
-      item.profile.application.id = item.id;
-      return item.profile.application;
+      item.employee_Profile.application.id = item.id;
+      return item.employee_Profile.application;
     });
     setShowList(() => resultList);
     setAnalyzedProfile(() => dataToAnalyze);
   }, [data, jobs.length, applicationDetailList.length]);
 
+  // Start Round 1
   useEffect(() => {
     // go into round 1
-    start && review(analyzedProfile);
+    if (start) {
+      const resetMatchingScoreList = analyzedProfile.map((pofile) => {
+        return {
+          ...pofile,
+          employee_Profile: {
+            ...pofile.employee_Profile,
+            application: {
+              ...pofile.employee_Profile.application,
+              matchingScore: 0
+            }
+          }
+        };
+      });
+      setAnalyzedProfile(() => resetMatchingScoreList);
+      review(resetMatchingScoreList, 1, resetMatchingScoreList);
+    }
   }, [start]);
+
+  // Start Round 2, 3
+  useEffect(() => {
+    if (start) {
+      if (roundOneFinished && !roundTwoFinished) {
+        console.log('passRoundOneProfiles', passRoundOneProfiles);
+
+        // go to round 2
+        if (passRoundOneProfiles.length > 0) review(passRoundOneProfiles, 2);
+        else {
+          setStart(false);
+          setRoundOneFinished(false);
+          setRoundTwoFinished(false);
+          console.log('Finised All');
+          Promise.all(
+            showList.map((item) => {
+              mutate([item.id, { matchingScore: item.matchingScore }]);
+            })
+          );
+        }
+      } else if (roundTwoFinished && !roundThreeFinished) {
+        console.log('Round 2 finished');
+
+        // go to round 3
+        review(passRoundOneProfiles, 3);
+      } else if (roundThreeFinished) {
+        console.log('Round 3 finished');
+        setStart(false);
+        setRoundOneFinished(false);
+        setRoundTwoFinished(false);
+        console.log('Finised All');
+        Promise.all(
+          showList.map((item) => {
+            mutate([item.id, { matchingScore: item.matchingScore }]);
+          })
+        );
+      }
+    }
+  }, [roundOneFinished, roundTwoFinished, roundThreeFinished]);
 
   const columns: GridColDef[] = [
     {
@@ -492,12 +641,12 @@ export default function Table(props) {
       sortable: true
     },
     {
-      field: 'matchingRate',
+      field: 'matchingScore',
       headerName: 'Độ phù hợp',
       minWidth: 150,
       align: 'center',
       headerAlign: 'center',
-      renderCell: (data) => renderMatchingRate(data, isAnalyzing),
+      renderCell: (data) => renderMatchingScore(data, isAnalyzing),
       sortable: true
     }
   ];
@@ -510,6 +659,7 @@ export default function Table(props) {
           variant="contained"
           size="small"
           sx={{ mr: 4 }}
+          disabled={start}
         >
           Phân tích
         </Button>

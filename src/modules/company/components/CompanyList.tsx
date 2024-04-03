@@ -19,17 +19,16 @@ function CompanyList(props) {
     numOfJobPerPage,
     queryCompanys
   } = props;
-  const { companyList } = queryCompanys({ num: 10, page: 1 });
-  const totalResults = companyList?.length;
+  const { companyList, totalResults } = queryCompanys({ num: 9, page: 1 });
+  console.log(companyList);
+
+  // const totalResults = companyList?.length;
   const [currentPage, setCurrentPage] = useState(1);
   // const { totalResults } = useQueryTotalResults({});
   const jobsPerPage = numOfJobPerPage ? numOfJobPerPage : 15;
   const validTotalPages = Number.isInteger(totalResults) ? totalResults : 1;
   const totalPages = Math.ceil(validTotalPages / jobsPerPage);
-  const { jobs } = queryJobs({
-    page: currentPage,
-    num: jobsPerPage
-  });
+
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -60,7 +59,11 @@ function CompanyList(props) {
           {companyList?.length ? (
             companyList.map((company, index) => (
               <Grid key={company?.id} item xs={4}>
-                <CompanyCard key={index} company={company} />
+                <CompanyCard
+                  key={index}
+                  company={company}
+                  employerId={company?.userId}
+                />
               </Grid>
             ))
           ) : (

@@ -26,6 +26,7 @@ export type OnlineProfile = {
   work_experiences: WorkExperience[];
   education_informations: EducationInformation[];
   another_degrees: AnotherDegree[];
+  keywords: string;
 };
 
 export type WorkExperience = {
@@ -73,4 +74,5 @@ export type AttachedDocument = {
   view: number;
   isHidden: boolean;
   employee: Employee;
+  keywords: string;
 };
