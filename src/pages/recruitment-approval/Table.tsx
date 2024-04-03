@@ -38,7 +38,12 @@ const renderJobTitle = (data) => {
           xs={10}
           sx={{
             overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            textOverflow: 'ellipsis',
+            whiteSpace: 'wrap',
+            lineHeight: '1.5',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical'
           }}
         >
           <LinkText to={`/job/${data.id}`}>{data.value}</LinkText>
@@ -56,10 +61,15 @@ const renderCompany = (data) => {
         xs={10}
         sx={{
           overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          textOverflow: 'ellipsis',
+          whiteSpace: 'wrap',
+          lineHeight: '1.5',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical'
         }}
       >
-        <LinkText to={`/employer/recruitment/list/${data.id}`}>
+        <LinkText to={`/company/${data?.value?.userId}`}>
           {data.value?.companyName}
         </LinkText>
       </Grid>
@@ -84,6 +94,13 @@ const renderStatus = (data) => {
       value={value}
       options={APPROVAL_STATUS}
       onChange={handleChangeValue}
+      size="small"
+      sx={{
+        '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
+          {
+            fontSize: 13
+          }
+      }}
     />
   );
 };
@@ -97,7 +114,22 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Người đăng',
-    minWidth: 150
+    minWidth: 150,
+    renderCell: (data) => (
+      <Box
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'wrap',
+          lineHeight: '1.5',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical'
+        }}
+      >
+        {data.value}
+      </Box>
+    )
   },
   {
     field: 'employer',
@@ -110,8 +142,16 @@ const columns: GridColDef[] = [
     headerName: 'Ngày đăng',
     minWidth: 150,
     sortable: true,
-    renderCell: (data) =>
-      dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')
+    renderCell: (data) => (
+      <Box
+        sx={{
+          whiteSpace: 'wrap',
+          lineHeight: '1.5em'
+        }}
+      >
+        {dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')}
+      </Box>
+    )
   },
   {
     field: 'submissionCount',
@@ -124,7 +164,7 @@ const columns: GridColDef[] = [
   {
     field: 'view',
     headerName: 'Lượt xem',
-    minWidth: 110,
+    minWidth: 100,
     align: 'center',
     headerAlign: 'center',
     sortable: true
@@ -139,10 +179,11 @@ const columns: GridColDef[] = [
   }
 ];
 
-export default function Table({ statusFilter }) {
+export default function Table({ statusFilter, selectedProfession }) {
   const { totalResults, refetch: refetchTotalResults } =
     useQueryTotalResultsByAdmin({
-      status: ApprovalStatus[statusFilter]
+      status: ApprovalStatus[statusFilter],
+      profession: selectedProfession
     });
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
@@ -155,7 +196,8 @@ export default function Table({ statusFilter }) {
   const { jobs, refetch, isLoading } = useQueryJob({
     page: currentPage,
     num: jobsPerPage,
-    status: ApprovalStatus[statusFilter]
+    status: ApprovalStatus[statusFilter],
+    profession: selectedProfession
   });
 
   const handlePageChange = (pageNumber: number) => {

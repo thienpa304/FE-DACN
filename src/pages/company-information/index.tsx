@@ -5,7 +5,7 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 import JobList from 'src/modules/jobs/components/JobList';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
-import useQueryCompanyInfoByUser from 'src/modules/users/hooks/useQueryCompanyInfoById';
+import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyInfoById';
 import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({

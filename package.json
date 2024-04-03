@@ -20,6 +20,7 @@
     "@mui/x-data-grid-generator": "^6.16.3",
     "@mui/x-date-pickers": "^6.16.0",
     "@mui/x-tree-view": "^6.17.0",
+    "@preact/signals-react": "^2.0.1",
     "@react-pdf/renderer": "^3.4.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/react": "^18.2.21",

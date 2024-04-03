@@ -31,7 +31,9 @@ import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import useMutateOnlineProfile from './hooks/useMutateOnlineProfile';
 import { OnlineProfile as OnlineProfileType } from '../model';
 import useMutateEducation from './components/Education/hooks/useMutateEducation';
-import CVPage from 'src/pages/view-candidate-profile/ViewCV';
+import { loadKeywords, preProcessData, tfidfReview } from 'src/utils/keywords';
+import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import { cvAnalysist } from 'src/modules/ai/roles';
 
 const MyBox = ({ children }) => (
   <Box bgcolor="#ffff" sx={{ mb: 4, boxShadow: '2px 2px 6px #aae2f7' }}>
@@ -69,39 +71,63 @@ const sections = [
 
 export default function OnlineProfile() {
   const [missingInfo, setMissingInfo] = useState(false);
-  useMutateUpdateOnlineProfile();
+  const [finished, setFinished] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { onlineProfile, isLoading } = useQueryOnlineProfile();
   const { profile, setProfile } = useOnlineProfile();
-  const { onSaveData: onSaveGeneral } = useMutateOnlineProfile();
-  const { onSaveData: onSaveEducation } = useMutateEducation();
+  const { onUpdateData } = useMutateUpdateOnlineProfile();
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    if (profile?.userId) navigate('/employee/recruitment-profile');
-    else setMissingInfo(true);
+  // const preProcessData = (profile: Partial<OnlineProfileType>) => {
+  //   return {
+  //     jobTitle: profile?.jobTitle,
+  //     profession: profile?.profession,
+  //     careerGoal: profile?.careerGoal,
+  //     skill: profile?.skills,
+  //     work_experiences: profile?.work_experiences,
+  //     education_informations: profile?.education_informations,
+  //     another_degrees: profile?.another_degrees
+  //   };
+  // };
+
+  const handleSubmit = async () => {
     // debugger;
-    // const education_informations = profile?.education_informations
-    //   ? [...profile?.education_informations]
-    //   : [];
-    // const work_experiences = profile?.work_experiences
-    //   ? [...profile?.work_experiences]
-    //   : [];
-    // debugger;
-    // onSaveGeneral(profile as OnlineProfileType);
-    // debugger;
-    // for (let i = 0; i < education_informations.length; i++)
-    //   onSaveEducation(education_informations[i]);
+    setIsAnalyzing(true);
+    if (profile?.userId) {
+      const dataToAnalyze = preProcessData(profile, 'online');
+      sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
+        '58': 1,
+        '60': 1
+      }).then((analysisResults) => {
+        const keywords = loadKeywords(
+          analysisResults,
+          JSON.stringify(dataToAnalyze)
+        );
+        onUpdateData({ ...profile, keywords: keywords } as OnlineProfileType);
+        setFinished(true);
+        setIsAnalyzing(false);
+      });
+    } else {
+      setMissingInfo(true);
+      setIsAnalyzing(false);
+    }
   };
 
-  const goBack = () => {
-    navigate('/employee/recruitment-profile');
+  const goBack = async () => {
+    setFinished(true);
   };
+
+  useEffect(() => {
+    if (finished) {
+      navigate('/employee/recruitment-profile');
+    }
+  }, [finished]);
 
   useEffect(() => {
     setProfile(onlineProfile);
   }, [onlineProfile]);
 
-  if (isLoading) {
+  if (isLoading || isAnalyzing) {
     return <SuspenseLoader />;
   }
 
@@ -146,7 +172,7 @@ export default function OnlineProfile() {
           Quay lại
         </Button>
         <Button variant="contained" sx={{ width: 200 }} onClick={handleSubmit}>
-          Đăng hồ sơ
+          Lưu hồ sơ
         </Button>
       </SubmitBox>
       <Snackbar

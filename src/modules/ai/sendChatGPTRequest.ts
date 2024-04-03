@@ -1,7 +1,8 @@
 const sendChatGPTRequest = async (
   request: string,
   content: any[],
-  max_tokens?: number
+  max_tokens = null,
+  logit_bias = null
 ) => {
   const responses = [];
 
@@ -34,9 +35,10 @@ const sendChatGPTRequest = async (
             ],
             temperature: 0,
             top_p: 0,
-            presence_penalty: 1,
+            presence_penalty: 0.7,
             frequency_penalty: 0.7,
-            max_tokens: max_tokens ? max_tokens : null
+            max_tokens: max_tokens,
+            logit_bias: logit_bias
           })
         }
       );

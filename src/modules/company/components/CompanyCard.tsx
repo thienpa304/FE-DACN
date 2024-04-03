@@ -18,6 +18,7 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 import FollowButton from '../../jobs/components/FollowButton';
 import { makeStyles } from '@mui/styles';
 import { Company } from 'src/modules/users/model';
+import FollowCompanyButton from './FollowButton';
 const useStyles = makeStyles((theme) => ({
   coverImage: {
     width: '100%',
@@ -33,7 +34,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function CompanyCard({ company }: { company: Company }) {
+function CompanyCard({
+  company,
+  employerId
+}: {
+  company: Company;
+  employerId: number;
+}) {
   const classes = useStyles();
   const [companyAvatar, setCompanyAvatar] = useState(
     company?.logo || defaultImage.companyAvatar
@@ -45,7 +52,7 @@ function CompanyCard({ company }: { company: Company }) {
         border: 1,
         borderRadius: '3px',
         borderColor: '#98E4FF',
-        height: '380px'
+        height: '350px'
       }}
     >
       <CardHeader
@@ -77,25 +84,40 @@ function CompanyCard({ company }: { company: Company }) {
                   objectFit: 'cover'
                 }}
               />
-              <Box sx={{ py: 2 }}>
+              <Box
+                sx={{
+                  pt: 2,
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
                 <Typography
                   component={LinkText}
-                  to={`/company/${company?.userId}`}
+                  to={`/company/${employerId}`}
                   sx={{
                     ':hover': {
                       color: '#ce8b0e'
                     },
                     overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                     display: '-webkit-box',
                     WebkitBoxOrient: 'vertical',
                     WebkitLineClamp: 3,
-                    whiteSpace: 'normal'
+                    lineHeight: 1.5,
+                    height: 65
                   }}
                   fontWeight={700}
                 >
                   {company?.companyName}
                 </Typography>
-                {/* <FollowButton job={job} sx={{ mt: 2 }} /> */}
+                <FollowCompanyButton
+                  company={company}
+                  sx={{
+                    display: 'flex',
+                    alignSelf: 'end',
+                    justifySelf: 'self-end'
+                  }}
+                />
               </Box>
             </Box>
           </Box>
@@ -111,14 +133,13 @@ function CompanyCard({ company }: { company: Company }) {
                 textOverflow: 'ellipsis',
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 2,
-                whiteSpace: 'normal'
+                WebkitLineClamp: 1
               }}
             >
               Lĩnh vực: {company?.careerField}
             </Typography>
           </Box>
-          <Box display="flex">
+          <Box display="flex" my={1}>
             <LocationOnOutlinedIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
             <Typography
               sx={{
@@ -126,8 +147,7 @@ function CompanyCard({ company }: { company: Company }) {
                 textOverflow: 'ellipsis',
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 2,
-                whiteSpace: 'normal'
+                WebkitLineClamp: 2
               }}
             >
               Địa điểm: {company?.companyLocation}

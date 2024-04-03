@@ -25,7 +25,7 @@ import { getFileByUrl } from 'src/common/firebaseService';
 import FileUploader from 'src/components/FileUploader';
 import FileFormatInfo from 'src/components/FileFormatInfo';
 import ProfileInfo from './ProfileInfo';
-import { tfidfReview } from 'src/utils/keywords';
+import { loadKeywords, preProcessData, tfidfReview } from 'src/utils/keywords';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
@@ -45,7 +45,7 @@ const AnalyzeProfile = (props) => {
     url: ''
   });
   const [analysisResults, setAnalysisResults] = useState([]);
-  const [keywords, setKeywords] = useState([]);
+  const [keywords, setKeywords] = useState('');
   const [profile, setProfile] = useState<
     Partial<OnlineProfile> | Partial<AttachedDocument>
   >(null);
@@ -98,13 +98,18 @@ const AnalyzeProfile = (props) => {
     if (id === 'upload-cv' && !currentDoc.url) return;
     if (id !== 'upload-cv' && !profile?.userId) return;
 
+    if (profile?.keywords) {
+      setKeywords(profile?.keywords);
+      return;
+    }
+
     setIsAnalyzing(true);
     if (id === 'upload-cv') {
       const result = await sendChatGPTRequest(cvAnalysist, message);
       setAnalysisResults(result);
       return;
     }
-    const processedProfile = removeAttributes(profile);
+    const processedProfile = preProcessData(profile, id);
 
     if (id === 'document') {
       try {
@@ -131,66 +136,14 @@ const AnalyzeProfile = (props) => {
     }
   };
 
-  function removeDateAttributes(data) {
-    return data.map((item) => {
-      const { startDate, endDate, id, ...rest } = item;
-      return rest;
-    });
-  }
-
-  function removeAttributes(object) {
-    const includeDateAttributes = [
-      'work_experiences',
-      'education_informations'
-    ];
-    const { userId, view, isHidden, employee, ...rest } = object;
-    for (const attr in rest) {
-      if (includeDateAttributes.includes(attr)) {
-        rest[attr] = removeDateAttributes(rest[attr]);
-      }
-    }
-    return rest;
-  }
-
-  const loadKeywords = (analysisResults: any[]) => {
-    if (analysisResults.length <= 0) return;
-
-    const result = analysisResults[0];
-    const startIndex = result.indexOf('[');
-    if (startIndex === -1) {
-      console.log("Không tìm thấy ký tự '['");
-      return;
-    }
-
-    // Tìm vị trí kết thúc của ']'
-    const endIndex = result.lastIndexOf(']');
-    if (endIndex === -1) {
-      console.log("Không tìm thấy ký tự ']'");
-      return;
-    }
-
-    // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
-    const extractedString = result.substring(startIndex, endIndex + 1);
-
-    // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
-    const jsonString = extractedString
-      .replace(/'/g, '"')
-      .replace(/[_\!@#$%^&*;|<>]/g, '');
-    console.log('jsonString: ', jsonString);
-
-    // B2: Parse string sang array
-    const keywordArray = JSON.parse(jsonString);
-
-    setKeywords(() => tfidfReview(keywordArray, JSON.stringify(message)));
-  };
-
   useEffect(() => {
     if (id === 'online') setProfile(onlineProfile);
     else if (id === 'document') setProfile(documentProfile);
   }, [onlineProfile, documentProfile]);
 
   useEffect(() => {
-    loadKeywords(analysisResults);
+    const keywords = loadKeywords(analysisResults, JSON.stringify(message));
+    setKeywords(keywords);
     setIsAnalyzing(false);
   }, [analysisResults]);
 
@@ -256,20 +209,18 @@ const AnalyzeProfile = (props) => {
             />
           )}
           {isAnalyzing && <CircularProgress sx={{ mx: '50%' }} />}
-          {analysisResults.length > 0 && (
+          {keywords && (
             <Grid item xs={12}>
               <Divider />
               <Typography mt={2}>
-                <b>Từ khóa:</b> <em>{keywords?.join(', ')}</em>
+                <b>Từ khóa:</b> <em>{keywords}</em>
               </Typography>
             </Grid>
           )}
         </Box>
       </CustomContainer>
 
-      {analysisResults.length > 0 && (
-        <JobRecommendTab id={`recommend-upload-cv-profile`} />
-      )}
+      {keywords && <JobRecommendTab id={`recommend-upload-cv-profile`} />}
     </Box>
   );
 };

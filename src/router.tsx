@@ -37,7 +37,7 @@ const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
 
 // Candidate
 const CandidateProfiles = Loader(
-  lazy(() => import('src/pages/candidate-profiles'))
+  lazy(() => import('src/pages/review-candidate-profiles'))
 );
 const ViewCandidateProfile = Loader(
   lazy(() => import('src/pages/view-candidate-profile'))
@@ -77,6 +77,8 @@ const AttachedDocument = Loader(
 const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
 
 const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
+
+const CompanyFollow = Loader(lazy(() => import('src/pages/company-follow')));
 
 const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
 
@@ -165,6 +167,10 @@ const routes: RouteObject[] = [
           {
             path: 'job-follow',
             element: <JobFollow />
+          },
+          {
+            path: 'company-follow',
+            element: <CompanyFollow />
           }
         ]
       },

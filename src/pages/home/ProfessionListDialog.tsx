@@ -20,8 +20,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 function ProfessionListDialog(props) {
-  const { open, handleClose } = props;
-  const professionToShow = [...professions];
+  const { open, handleClose, professionList } = props;
+  const professionToShow = [...professionList];
   professionToShow.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -50,7 +50,7 @@ function ProfessionListDialog(props) {
         }}
       />
       <DialogContent sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        {professions.map((profession, index) => (
+        {professionToShow?.map((profession, index) => (
           <Link
             key={profession?.code}
             href={`/profession/${profession?.code}`}
@@ -64,7 +64,7 @@ function ProfessionListDialog(props) {
               }
             }}
           >
-            {profession.name}
+            {profession.name} ({profession.count})
           </Link>
         ))}
       </DialogContent>

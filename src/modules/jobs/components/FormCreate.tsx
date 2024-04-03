@@ -56,7 +56,7 @@ const defaultValues = {
   address: '',
   phone: '',
   contactAddress: '',
-  skills: ''
+  requiredSkills: ''
 };
 type Props = {
   title?: string;
@@ -70,6 +70,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [keywords, setKeywords] = useState([]);
   const [documentText, setDocumentText] = useState('');
+  const [onSaveNewData, setOnSaveNewData] = useState(null);
   const { profile } = useProfileHook();
 
   const methods = useForm({ defaultValues });
@@ -81,8 +82,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   } = methods;
 
   const handleSave = (newData) => {
-    if (selectedId) onSaveDataById([selectedId, newData]);
-    else onSaveData(newData);
+    setOnSaveNewData(newData);
+    handleAnalysis(newData);
   };
 
   const handleAnalysis = async (newData) => {
@@ -93,20 +94,23 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       JSON.stringify(newData.jobRequirements)
     );
     const benefits = preProcessText(JSON.stringify(newData.benefits));
-    const skills = preProcessText(JSON.stringify(newData.skills));
+    const requiredSkills = preProcessText(
+      JSON.stringify(newData.requiredSkills)
+    );
     const processedText = {
-      profession: newData.profession,
-      positionLevel: newData.positionLevel,
-      degree: newData.degree,
-      experience: newData.experience,
       jobDescription: jobDescription,
       jobRequirements: jobRequirements,
       benefits: benefits,
-      skills: skills
+      requiredSkills: requiredSkills
     };
     setDocumentText(JSON.stringify(processedText));
     setIsAnalyzing(true);
-    const result = await sendChatGPTRequest(jobAnalysist, [processedText]);
+    const result = await sendChatGPTRequest(
+      jobAnalysist,
+      [processedText],
+      null,
+      { '58': 1, '60': 1 }
+    );
     setAnalysisResults(result);
   };
 
@@ -122,7 +126,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   }, [data, profile]);
 
   useEffect(() => {
-    if (analysisResults.length > 0) {
+    if (analysisResults.length > 0 && analysisResults[0]) {
       const result = analysisResults[0];
 
       const startIndex = result.indexOf('[');
@@ -137,6 +141,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
         console.log("Không tìm thấy ký tự ']'");
         return;
       }
+      console.log(result);
 
       // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
       const extractedString = result.substring(startIndex, endIndex + 1);
@@ -148,6 +153,16 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       const keywordArray = JSON.parse(jsonString);
 
       setKeywords(() => tfidfReview(keywordArray, documentText));
+      const keywordToStore = tfidfReview(keywordArray, documentText)
+        .slice(0, 20)
+        ?.join(', ');
+
+      if (selectedId)
+        onSaveDataById([
+          selectedId,
+          { ...onSaveNewData, keywords: keywordToStore }
+        ]);
+      else onSaveData({ ...onSaveNewData, keywords: keywordToStore });
     }
     setIsAnalyzing(false);
   }, [analysisResults]);
@@ -398,14 +413,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         element={<TextField />}
                         control={control}
                         errors={errors}
-                        id="skills"
-                        name="skills"
+                        id="requiredSkills"
+                        name="requiredSkills"
                         label="Kĩ năng chuyên môn bắt buộc"
-                        placeholder="Hãy liệt kê ngắn gọn những từ khóa kĩ năng chuyên môn cần thiết nhất. Ví dụ: Python, ReactJS, HTML, CSS..."
+                        placeholder="Ví dụ: Python, ReactJS, HTML, CSS..."
                         required
                         multiline
                         minRows={2}
-                        inputProps={{ maxLength: 200 }}
                       />
                       <Typography
                         fontSize={12}
@@ -519,26 +533,9 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     >
                       {selectedId ? 'Lưu' : 'Tạo'}
                     </Button>
-                    <Button
-                      onClick={handleSubmit(handleAnalysis)}
-                      color="primary"
-                      variant="contained"
-                      sx={{ ml: 2, minWidth: 100 }}
-                      disabled={isAnalyzing}
-                    >
-                      Phân tích
-                    </Button>
                   </Grid>
                 </CardActions>
                 {isAnalyzing && <CircularProgress sx={{ mx: '50%' }} />}
-                {analysisResults && (
-                  <Container sx={{ mb: 2 }}>
-                    <Divider />
-                    <Typography mt={2}>
-                      <b>Từ khóa:</b> <em>{keywords?.join(', ')}</em>
-                    </Typography>
-                  </Container>
-                )}
               </Card>
             </Grid>
           </Grid>

@@ -29,6 +29,7 @@ import {
   AnalyticsTwoTone as AnalyzeProfileIcon,
   NotificationsActiveTwoTone as JobSuggestIcon
 } from '@mui/icons-material';
+import BusinessIcon from '@mui/icons-material/Business';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -309,6 +310,17 @@ function SidebarMenu() {
                       startIcon={<FavoriteIcon />}
                     >
                       Việc làm đã theo dõi
+                    </Button>
+                  </ListItem>
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/company-follow`}
+                      startIcon={<BusinessIcon />}
+                    >
+                      Công ty đã theo dõi
                     </Button>
                   </ListItem>
                   <ListItem component="div">

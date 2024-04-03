@@ -15,6 +15,8 @@ export type Application = {
   status: ApprovalStatus;
   employee: Employee;
   jobPosting: Job;
+  keywords: string;
+  matchingScore: number;
 };
 
 export type EmployeeApplication = {

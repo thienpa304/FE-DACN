@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { Application, EmployeeApplication } from '../model';
 import { CandidateProfilesService } from '../applicationService';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useQueryCandidateProfileById = (id) => {
   if (!id) return {};
@@ -38,8 +38,20 @@ export function useQueryCandidateProfileByIdList(idList: number[]) {
     ['application-getByIdList', idList],
     async () => {
       if (!idList.length) return [];
-      Promise.all(idList.map((id) => CandidateProfilesService.getById(id)))
-        .then((data) => setDataList(data))
+      Promise.allSettled(
+        idList.map((id) => CandidateProfilesService.getById(id))
+      )
+        .then((results) => {
+          // Lọc ra các kết quả thành công và chỉ lưu dữ liệu của các promise đã được giải quyết vào dataList
+          const fulfilledResults = results.filter(
+            (result): result is PromiseFulfilledResult<any> =>
+              result.status === 'fulfilled'
+          );
+          const dataList = fulfilledResults.map((result) => result.value);
+
+          // Cập nhật dataList
+          setDataList(dataList);
+        })
         .catch((e) => console.log(e));
     },
     {

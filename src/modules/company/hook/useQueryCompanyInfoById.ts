@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { Company } from 'src/modules/users/model';
-import { GetCompanyInfoByUser } from '../userService';
+import { GetCompanyInfoByUser } from '../CompanyService';
 
 const useQueryCompanyInfoById = (params: { employerId: string }) => {
   const { data, isLoading } = useQuery<
