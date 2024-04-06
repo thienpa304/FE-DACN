@@ -97,9 +97,9 @@ const renderStatus = (data) => {
       size="small"
       sx={{
         '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
-          {
-            fontSize: 13
-          }
+        {
+          fontSize: 13
+        }
       }}
     />
   );
