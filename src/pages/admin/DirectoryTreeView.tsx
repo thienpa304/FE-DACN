@@ -27,13 +27,13 @@ const treeItemStyle = {
   }
 };
 
-export default function DirectoryTreeView() {
-  const { jobs } = useQueryAllJob();
+export default function DirectoryTreeView(props) {
+  const { setSelectedProfession } = props;
   const [jobsPosted, setJobsPosted] = useState([]);
   const [page, setPage] = useState(1);
   const pageSize = 10;
-
   const totalPages = Math.ceil(professions.length / pageSize);
+  const { jobs, isLoading, refetch } = useQueryAllJob();
 
   const handlePrevPage = () => {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
@@ -73,8 +73,8 @@ export default function DirectoryTreeView() {
               borderBottom: '2px solid #e5eaf2'
             }
           ]}
-          onClick={(e) => {
-            console.log('clicked ', e);
+          onClick={() => {
+            setSelectedProfession(null);
           }}
         />
         {visibleJobs?.map((profession) => (
@@ -83,21 +83,43 @@ export default function DirectoryTreeView() {
             nodeId={'A' + profession?.code?.toString()}
             label={profession.name}
             sx={[treeItemStyle, { borderBottom: '2px solid #e5eaf2' }]}
+            onClick={() => {
+              setSelectedProfession(profession.name);
+            }}
           />
         ))}
       </TreeView>
       <Box
-        sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginY: '10px'
+        }}
       >
-        <Button onClick={handlePrevPage} disabled={page === 1}>
+        <Button
+          onClick={handlePrevPage}
+          disabled={page === 1}
+          size="small"
+          sx={{ fontSize: 12 }}
+        >
           Trước
         </Button>
         <Typography
-          sx={{ mx: 2, display: 'flex', alignItems: 'center', fontWeight: 700 }}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            fontWeight: 700,
+            fontSize: 12
+          }}
         >
           Trang {page} / {totalPages}
         </Typography>
-        <Button onClick={handleNextPage} disabled={page === totalPages}>
+        <Button
+          onClick={handleNextPage}
+          disabled={page === totalPages}
+          size="small"
+          sx={{ fontSize: 12 }}
+        >
           Sau
         </Button>
       </Box>

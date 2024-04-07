@@ -50,35 +50,19 @@ Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (d
     "result": 30
 }`;
 
-// export const RoundTwoCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Đâu tiên bạn học cách sử dụng thuật toán TextRank:
-// ${TextRank}
-// Sau đó, hãy đọc chi tiết về hồ sơ xin việc (emplyee_Profile) và thông tin tuyển dụng (employer_Requirement) sau đó so sánh và đánh giá xem thông tin emplyee_Profile có phù hợp với thông tin tuyển dụng hay không. Hãy đánh giá xem emplyee_Profile theo các tiêu chí sau.
-// Sử dụng sử dụng kết hợp thuật toán TextRank đã nêu trên để tìm ra ít nhất 30-40 cụm từ khóa trong emplyee_Profile và ít nhất 30-40 cụm từ khóa trong employer_Requirement
-// Sử dụng các phương pháp mạng ngữ nghĩa (Semantic Networks) và Phân tích ngữ cảnh dựa trên ngữ nghĩa là nghề nghiệp để đánh giá mức độ tương đồng giữa các cụm từ khóa trong emplyee_Profile và employer_Requirement. Ví dụ: React, NodeJS, Python, kĩ sư phần mềm, Khoa học Máy tính, Web, Frontend, Backend, phần mềm, công nghệ thông tin... là mức độ tương đồng cao; hoặc là quảng cáo, sale, bán sỉ, bán lẻ, Marketing, Bán hàng, Kinh doanh,... là mức độ tương đồng cao). Sau khi tìm được các cụm từ khóa có mức độ tương đồng cao, hãy dùng thuật toán TextRank đã nêu trên để đánh giá mức độ quan trọng của cụm từ khóa của đó so với nội dung trong thông tin tuyển dụng (employer_Requirement).
-// - result chỉ có thể là 1 trong các con số sau: 30, 50, 70, 90, 100.
-// - Nếu emplyee_Profile và employer_Requirement không có bất kì cặp cụm từ khóa mức độ tương đồng cao thì trả ra result là con số 30.
-// - Nếu emplyee_Profile có từ 2 đến 5 cụm từ khóa mức độ tương đồng cao và mức độ quan trọng cao thì trả ra result là con số 50.
-// - Nếu emplyee_Profile có từ 6 đến 8 cụm từ khóa mức độ tương đồng cao và mức độ quan trọng cao thì trả ra result là con số 70.
-// - Nếu emplyee_Profile có từ 9 đến 12 cụm từ khóa mức độ tương đồng cao và mức độ quan trọng cao thì trả ra result là con số 90.
-// - Nếu emplyee_Profile có từ 13 cụm từ khóa trở lên mức độ tương đồng cao và mức độ quan trọng cao thì trả ra result là con số 100.
-// ***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với application_id trong emplyee_Profile.application) và result (là con số result sau khi phân tích) và không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, emplyee_Profile đạt yêu cầu thì trả về
-// {
-//     "id": 1,
-//     "result": 60
-// }`;
-
 export const RoundTwoCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu cụm từ khóa trong phần kĩ năng cần thiết (requiredSkill) của tin tuyển dụng (employer_Requirement) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile). Sau đó tính điểm result theo công thức sau:
-x = 100 / số cụm từ khóa trong phần kĩ năng cần thiết (skillRequirements) của tin tuyển dụng, phân cách bằng dấu phẩy;
-result = x * số cụm từ khóa trong phần kĩ năng cần thiết (skillRequirements) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile);
-***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với application_id trong emplyee_Profile.application) và result (là con số result được tính toán ở trên, tối đa là 100, tối thiểu là 0) và không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 60 thì trả về
+x = 100 / số cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) của tin tuyển dụng, phân cách bằng dấu phẩy;
+result = x * số cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile);
+***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với application_id trong emplyee_Profile) và result (là con số result được tính toán ở trên, tối đa là 100, tối thiểu là 0) và không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 60 thì trả về
 {
     "id": 1,
     "result": 60
 }`;
 
 export const RoundThreeCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu cụm từ khóa trong phần keywords của hồ sơ xin việc (employee_Profile) xuất hiện hoặc có từ đồng nghĩa trong phần keywords của tin tuyển dụng (employer_Requirement) Sau đó tính điểm result theo công thức sau: Cứ tìm được 1 từ trong employee_Profile xuất hiện hoặc có từ đồng nghĩa trong employee_Profile thì result được cộng thêm 5. Ví dụ:
-- Nếu tìm được 1 từ thì result là 5
-- Nếu tìm được 2 từ thì result là 10
+- Nếu tìm được 1 từ thì result bằng 5
+- Nếu tìm được 2 từ thì result bằng 10
+- Nếu tìm được 3 từ thì result bằng 15
 **Lưu ý là nếu keywords trong employee_Profile hoặc trong employer_Requirement là null thì result là 0.
 ***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với id trong emplyee_Profile) và result (là con số result được tính toán ở trên, tối thiểu là 0) và không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 30 (tìm được 6 từ) thì trả về
 {

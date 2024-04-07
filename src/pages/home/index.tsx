@@ -4,6 +4,7 @@ import { Box, Container } from '@mui/material';
 import UrgentJobTab from './UrgentJobTab';
 import ProfessionType from './ProfessionType';
 import Casousel from './Casousel';
+import SearchBar from './SearchBar';
 const OverviewWrapper = styled(Box)(
   () => `
     overflow: auto;
@@ -16,7 +17,8 @@ const Home = () => {
   return (
     <OverviewWrapper>
       <Casousel />
-      <Container sx={{ pb: 3 }}>
+      <Container>
+        <SearchBar />
         <ProfessionType />
         <UrgentJobTab />
       </Container>

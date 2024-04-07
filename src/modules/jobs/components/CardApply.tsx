@@ -152,6 +152,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
             onClose={onCloseFormApply}
             position={data.jobTitle}
             company={data?.employer?.companyName}
+            job={data}
           />
         </Container>
       </CardContent>

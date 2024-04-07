@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -23,6 +24,9 @@ import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import { v4 } from 'uuid';
 import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
 import useAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useDocument';
+import { review } from 'src/utils/reviewProfile';
+import AnayzeProfileButton from './AnayzeProfileButton';
+import { Job } from 'src/modules/jobs/model';
 
 const Title = styled('div')(() => ({
   fontWeight: 600,
@@ -40,12 +44,13 @@ type Props = {
   open: boolean;
   position: string;
   company?: string;
+  job?: Partial<Job>;
   onClose: () => void;
 };
 
 export default function ModalApply(props: Props) {
   const { onSaveData } = useMutateApplyJob();
-  const { open, onClose, position, company, postId } = props;
+  const { open, onClose, position, company, postId, job } = props;
   const { profile: user } = useProfileHook();
   const { onlineProfile } = useQueryOnlineProfile();
   const { attachedDocument } = useQueryAttachedDocument();
@@ -53,6 +58,9 @@ export default function ModalApply(props: Props) {
   const { profile: document, setProfile: setDocument } = useAttachedDocument();
   const [isChecked, setIsChecked] = useState('');
   const [missInfo, setMissInfo] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [showResult, setShowResult] = useState(false);
+  const [url, setUrl] = useState('');
 
   const buttonStyle = {
     width: '100%',
@@ -98,6 +106,16 @@ export default function ModalApply(props: Props) {
 
   useEffect(() => {
     reset(user);
+    setShowResult(false);
+    if (isChecked === ApplicationType.online_profile) {
+      setSelectedProfile(online);
+    }
+    if (isChecked === ApplicationType.attached_document) {
+      setSelectedProfile(document);
+    }
+    if (isChecked === ApplicationType.cv_enclosed) {
+      setSelectedProfile(job);
+    }
   }, [isChecked]);
 
   useEffect(() => {
@@ -187,6 +205,7 @@ export default function ModalApply(props: Props) {
                     }
                   ]}
                   setIsChecked={setIsChecked}
+                  setUrl={setUrl}
                 />
               </FormControl>
             </Grid>
@@ -239,13 +258,25 @@ export default function ModalApply(props: Props) {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} variant="outlined">
-            Hủy
-          </Button>
-          <Button onClick={handleSubmit(handleApply)} variant="contained">
-            Nộp hồ sơ
-          </Button>
+        <DialogActions
+          sx={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <AnayzeProfileButton
+            job={job}
+            selectedProfile={selectedProfile}
+            profileType={isChecked}
+            setShowResult={setShowResult}
+            showResult={showResult}
+            fileUrl={url}
+          />
+          <Box sx={{ display: 'flex', columnGap: 2 }}>
+            <Button onClick={handleClose} variant="outlined">
+              Hủy
+            </Button>
+            <Button onClick={handleSubmit(handleApply)} variant="contained">
+              Nộp hồ sơ
+            </Button>
+          </Box>
         </DialogActions>
       </Dialog>
     </div>

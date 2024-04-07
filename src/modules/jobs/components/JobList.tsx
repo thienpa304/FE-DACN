@@ -9,8 +9,15 @@ import useQueryTotalResults from '../hooks/useQueryTotalResults';
 import WorkIcon from '@mui/icons-material/Work';
 
 function JobList(props) {
-  const { pageTitle, profession, queryJobs, sx, numOfJobPerPage, employerId } =
-    props;
+  const {
+    pageTitle,
+    profession,
+    queryJobs,
+    sx,
+    numOfJobPerPage,
+    employerId,
+    jobTitle
+  } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState({
     employerId: employerId,
@@ -19,14 +26,15 @@ function JobList(props) {
     degree: '',
     experience: '',
     positionLevel: '',
-    sex: ''
+    sex: '',
+    jobTitle: jobTitle
   });
   const { totalResults, refetch: refetchTotalResults } = useQueryTotalResults({
     ...filter
   });
   const jobsPerPage = numOfJobPerPage ? numOfJobPerPage : 15;
-  const validTotalPages = Number.isInteger(totalResults) ? totalResults : 1;
-  const totalPages = Math.ceil(validTotalPages / jobsPerPage);
+  const validTotalResult = Number.isInteger(totalResults) ? totalResults : 1;
+  const totalPages = Math.ceil(validTotalResult / jobsPerPage);
   const { jobs, refetch } = queryJobs({
     page: currentPage,
     num: jobsPerPage,

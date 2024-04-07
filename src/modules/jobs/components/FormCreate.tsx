@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -36,10 +36,17 @@ import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
 import DatePicker from 'src/components/DatePicker';
 import _ from 'lodash';
-import { preProcessText } from 'src/utils/inputOutputFormat';
+import {
+  convertObjectListToStringForSkill,
+  convertToObjectsForSkill,
+  preProcessText
+} from 'src/utils/inputOutputFormat';
 import { tfidfReview } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import { ReactTags } from 'react-tag-autocomplete';
+import skills from 'src/constants/skills';
+import TagInput from 'src/components/TagInput';
 
 const defaultValues = {
   sex: '',
@@ -62,6 +69,7 @@ type Props = {
   title?: string;
   selectedId?: string;
 };
+
 const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
   const { onSaveDataById } = useMutateJobById();
@@ -71,7 +79,10 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const [keywords, setKeywords] = useState([]);
   const [documentText, setDocumentText] = useState('');
   const [onSaveNewData, setOnSaveNewData] = useState(null);
+  const [requiredSkills, setRequiredSkills] = useState(null);
   const { profile } = useProfileHook();
+
+  const ref = React.useRef(null);
 
   const methods = useForm({ defaultValues });
   const {
@@ -82,7 +93,10 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   } = methods;
 
   const handleSave = (newData) => {
-    setOnSaveNewData(newData);
+    setOnSaveNewData({
+      ...newData,
+      requiredSkills: convertObjectListToStringForSkill(requiredSkills)
+    });
     handleAnalysis(newData);
   };
 
@@ -93,15 +107,9 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     const jobRequirements = preProcessText(
       JSON.stringify(newData.jobRequirements)
     );
-    const benefits = preProcessText(JSON.stringify(newData.benefits));
-    const requiredSkills = preProcessText(
-      JSON.stringify(newData.requiredSkills)
-    );
     const processedText = {
       jobDescription: jobDescription,
-      jobRequirements: jobRequirements,
-      benefits: benefits,
-      requiredSkills: requiredSkills
+      jobRequirements: jobRequirements
     };
     setDocumentText(JSON.stringify(processedText));
     setIsAnalyzing(true);
@@ -115,14 +123,18 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   };
 
   useEffect(() => {
-    if (data) reset(data);
-    else if (!selectedId)
+    if (data) {
+      reset(data);
+      data.requiredSkills &&
+        setRequiredSkills(convertToObjectsForSkill(data?.requiredSkills));
+    } else if (!selectedId) {
       reset({
         name: profile?.name,
         email: profile.email,
         phone: profile?.phone,
         contactAddress: profile?.address
       });
+    }
   }, [data, profile]);
 
   useEffect(() => {
@@ -152,11 +164,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       // B2: Parse string sang array
       const keywordArray = JSON.parse(jsonString);
 
-      setKeywords(() => tfidfReview(keywordArray, documentText));
-      const keywordToStore = tfidfReview(keywordArray, documentText)
-        .slice(0, 20)
-        ?.join(', ');
+      setKeywords(() => keywordArray);
+      const keywordToStore =
+        onSaveNewData.requiredSkills +
+        ', ' +
+        keywordArray.slice(0, 20)?.join(', ');
 
+      debugger;
       if (selectedId)
         onSaveDataById([
           selectedId,
@@ -409,17 +423,14 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <FormControl
-                        element={<TextField />}
-                        control={control}
-                        errors={errors}
-                        id="requiredSkills"
-                        name="requiredSkills"
-                        label="Kĩ năng chuyên môn bắt buộc"
-                        placeholder="Ví dụ: Python, ReactJS, HTML, CSS..."
-                        required
-                        multiline
-                        minRows={2}
+                      <Typography variant="h6" marginBottom={1}>
+                        Kĩ năng bắt buộc
+                      </Typography>
+                      <TagInput
+                        suggestions={skills}
+                        forwardedRef={ref}
+                        initialValue={requiredSkills}
+                        onTagsChange={setRequiredSkills}
                       />
                       <Typography
                         fontSize={12}
@@ -427,9 +438,9 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         fontStyle={'italic'}
                         sx={{ display: 'flex', justifyContent: 'center' }}
                       >
-                        Hãy liệt kê ngắn gọn ở dạng từ khóa. Ví dụ: Python,
-                        ReactJS, HTML, Go... Sẽ giúp hệ thống tìm kiếm được hồ
-                        sơ phù hợp với doanh nghiệp bạn nhất
+                        Hãy liệt kê tối đa 10 từ khóa. Ví dụ: Python, ReactJS,
+                        HTML, Go... Sẽ giúp hệ thống tìm kiếm được hồ sơ phù hợp
+                        với doanh nghiệp bạn nhất
                       </Typography>
                     </Grid>
                   </Grid>

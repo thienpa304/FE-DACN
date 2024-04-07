@@ -26,8 +26,6 @@ function AttachedGeneral() {
   };
 
   const handleSaveProfile = (data: AttachedDocument) => {
-    console.log(data.degree, DEGREE[data.degree]);
-
     setProfile({ ...data });
   };
 

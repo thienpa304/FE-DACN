@@ -86,6 +86,7 @@ export default function AttachedDocument() {
       const text = await pdfToText(blob);
 
       const dataToAnalyze = preProcessData(profile, 'document', text);
+
       sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
         '58': 1,
         '60': 1
@@ -94,17 +95,20 @@ export default function AttachedDocument() {
           analysisResults,
           JSON.stringify(dataToAnalyze)
         );
-        onUpdateData({
-          ...profile,
-          keywords: keywords
-        } as AttachedDocumentType);
+
+        if (profile?.userId) {
+          onUpdateData({
+            ...profile,
+            keywords: profile?.skills?.toLocaleLowerCase() + ', ' + keywords
+          } as AttachedDocumentType);
+        } else {
+          onSaveData({
+            ...profile,
+            keywords: profile?.skills?.toLocaleLowerCase() + ', ' + keywords
+          } as AttachedDocumentType);
+        }
         setFinished(true);
       });
-      if (profile?.userId) {
-        onUpdateData(profile as AttachedDocumentType);
-      } else {
-        onSaveData(profile as AttachedDocumentType);
-      }
     } catch (error) {
       console.error('Error creating local URL:', error);
     } finally {

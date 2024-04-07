@@ -42,7 +42,7 @@ const renderJobTitle = (data) => {
             whiteSpace: 'wrap',
             lineHeight: '1.5',
             display: '-webkit-box',
-            WebkitLineClamp: 3,
+            WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical'
           }}
         >
@@ -65,7 +65,7 @@ const renderCompany = (data) => {
           whiteSpace: 'wrap',
           lineHeight: '1.5',
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical'
         }}
       >
@@ -123,7 +123,7 @@ const columns: GridColDef[] = [
           whiteSpace: 'wrap',
           lineHeight: '1.5',
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical'
         }}
       >
@@ -186,7 +186,7 @@ export default function Table({ statusFilter, selectedProfession }) {
       profession: selectedProfession
     });
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 10;
+  const jobsPerPage = 9;
 
   const validvalidTotalPages = Number.isInteger(totalResults)
     ? totalResults
@@ -204,10 +204,10 @@ export default function Table({ statusFilter, selectedProfession }) {
     setCurrentPage(pageNumber);
   };
 
-  useEffect(() => {
-    refetch();
-    refetchTotalResults();
-  }, [statusFilter]);
+  // useEffect(() => {
+  //   refetch();
+  //   refetchTotalResults();
+  // }, [statusFilter]);
 
   if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
 

@@ -35,12 +35,12 @@ function SmallJobCard({ job }) {
           py: 1,
           color: '#aa720a',
           overflow: 'hidden',
+          textOverflow: 'ellipsis',
           display: '-webkit-box',
           WebkitBoxOrient: 'vertical',
           WebkitLineClamp: 2,
           whiteSpace: 'normal',
-          maxHeight: '3.5em',
-          minHeight: '3.5em'
+          height: '3.5em'
         }}
         title={
           <Box display={'flex'}>

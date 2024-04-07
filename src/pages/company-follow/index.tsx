@@ -1,28 +1,29 @@
-import { Box, Grid, Pagination } from '@mui/material';
+import { Box, Container, Grid, Pagination, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 import CompanyCard from 'src/modules/company/components/CompanyCard';
 import useQueryFollowCompany from 'src/modules/company/hook/useQueryFollowCompany';
 
 export default function JobFollow() {
-  const { companyFollow } = useQueryFollowCompany();
-  const [companyList, setCompanyList] = useState([]);
+  const { companyFollow, isLoading } = useQueryFollowCompany();
 
-  useEffect(() => {
-    const newList = companyFollow?.map((company) => {
-      return {
-        maxSalary: company?.maxSalary,
-        minSalary: company?.minSalary,
-        postId: company?.postId,
-        workAddress: company?.workAddress,
-        jobTitle: company?.jobTitle,
-        employer: {
-          companyName: company?.companyName,
-          logo: company?.logo
-        }
-      };
-    });
-    setCompanyList(() => newList);
-  }, [companyFollow]);
+  if (isLoading) return <SuspenseLoader />;
+  if (!companyFollow?.length) {
+    return (
+      <Container
+        sx={{
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Typography fontSize={18} fontStyle="italic">
+          Bạn chưa theo dõi công ty nào cả
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Box p={3}>

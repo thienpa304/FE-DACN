@@ -78,18 +78,6 @@ export default function OnlineProfile() {
   const { onUpdateData } = useMutateUpdateOnlineProfile();
   const navigate = useNavigate();
 
-  // const preProcessData = (profile: Partial<OnlineProfileType>) => {
-  //   return {
-  //     jobTitle: profile?.jobTitle,
-  //     profession: profile?.profession,
-  //     careerGoal: profile?.careerGoal,
-  //     skill: profile?.skills,
-  //     work_experiences: profile?.work_experiences,
-  //     education_informations: profile?.education_informations,
-  //     another_degrees: profile?.another_degrees
-  //   };
-  // };
-
   const handleSubmit = async () => {
     // debugger;
     setIsAnalyzing(true);
@@ -103,7 +91,10 @@ export default function OnlineProfile() {
           analysisResults,
           JSON.stringify(dataToAnalyze)
         );
-        onUpdateData({ ...profile, keywords: keywords } as OnlineProfileType);
+        onUpdateData({
+          ...profile,
+          keywords: profile?.skills?.toLocaleLowerCase() + ', ' + keywords
+        } as OnlineProfileType);
         setFinished(true);
         setIsAnalyzing(false);
       });

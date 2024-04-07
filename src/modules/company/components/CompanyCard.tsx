@@ -111,7 +111,7 @@ function CompanyCard({
                   {company?.companyName}
                 </Typography>
                 <FollowCompanyButton
-                  company={company}
+                  employerId={employerId}
                   sx={{
                     display: 'flex',
                     alignSelf: 'end',

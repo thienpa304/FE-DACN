@@ -220,7 +220,12 @@ const AnalyzeProfile = (props) => {
         </Box>
       </CustomContainer>
 
-      {keywords && <JobRecommendTab id={`recommend-upload-cv-profile`} />}
+      {keywords && (
+        <JobRecommendTab
+          id={`recommend-upload-cv-profile`}
+          profile={profile || { keywords: keywords }}
+        />
+      )}
     </Box>
   );
 };

@@ -9,15 +9,12 @@ import {
   Grid,
   TextField,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Link as MuiLink,
   IconButton,
-  Tooltip
+  Tooltip,
+  DialogTitle,
+  Dialog,
+  DialogContent
 } from '@mui/material';
 import { Box } from '@mui/system';
 import EditIcon from '@mui/icons-material/Edit';
@@ -30,51 +27,75 @@ import TableData from 'src/components/TableData';
 import { GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
+import useQueryEmployeesByAdmin from 'src/modules/admin/hooks/useQueryEmployeesByAdmin';
+import useQueryTotalEmployeeResultByAdmin from 'src/modules/admin/hooks/useQueryTotalEmployeeResultByAdmin';
+import CVPage from '../view-candidate-profile/ViewCV';
+import CloseIcon from '@mui/icons-material/Close';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
-const renderCellText = () => {
-  return <></>;
-};
+const UserProfileManagement = () => {
+  const [users, setUsers] = useState([]);
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserProfile, setNewUserProfile] = useState('');
+  const [newUserCV, setNewUserCV] = useState('');
+  const [selectedProfession, setSelectedProfession] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [viewProfile, setViewProfile] = useState({
+    isOpen: false,
+    profile: null
+  });
 
-const columns: GridColDef[] = [
-  {
-    field: 'name',
-    headerName: 'Tên người dùng',
-    minWidth: 200,
-    renderCell: renderCellText
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    minWidth: 200,
-    flex: 1,
-    renderCell: renderCellText
-  },
-  {
-    field: 'online',
-    headerName: 'Hồ sơ trực tuyến',
-    minWidth: 150,
-    renderCell: renderCellText
-  },
-  {
-    field: 'document',
-    headerName: 'Hồ sơ đính kèm',
-    minWidth: 150,
-    renderCell: renderCellText
-  },
-  {
-    field: 'actions',
-    headerName: 'Hành động',
-    minWidth: 150,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: (params) => (
-      <div>
+  const { totalResults } = useQueryTotalEmployeeResultByAdmin({
+    profession: selectedProfession
+  });
+  const pageSize = 10;
+  const validTotalResult = Number.isInteger(totalResults) ? totalResults : 1;
+  const totalPages = Math.ceil(validTotalResult / pageSize) || 1;
+  const { employeeList, isLoading } = useQueryEmployeesByAdmin({
+    profession: selectedProfession,
+    page: currentPage,
+    num: pageSize
+  });
+
+  const renderName = (params) => {
+    return (
+      <Typography
+        fontStyle={!params.row?.user?.name ? 'italic' : 'normal'}
+        color={!params.row?.user?.name ? 'text.disabled' : 'text.primary'}
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'wrap',
+          lineHeight: '1.5',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical'
+        }}
+      >
+        {params.row?.user?.name ? params.row?.user?.name : 'Chưa cập nhật'}
+      </Typography>
+    );
+  };
+
+  const renderEmail = (params) => {
+    return (
+      <Typography
+        fontStyle={!params.row?.user?.email ? 'italic' : 'normal'}
+        color={!params.row?.user?.email ? 'text.disabled' : 'text.primary'}
+      >
+        {params.row?.user?.email ? params.row?.user?.email : 'Chưa cập nhật'}
+      </Typography>
+    );
+  };
+
+  const renderProfile = (params) => {
+    return (
+      <Box>
         <Button
           variant="contained"
           color="primary"
-          component={Link}
-          to={`/edit-user/${params.row.id}`}
           size="small"
+          onClick={() => handleViewProfile(params)}
         >
           Xem
         </Button>
@@ -87,17 +108,60 @@ const columns: GridColDef[] = [
         >
           Xóa
         </Button>
-      </div>
-    )
-  }
-];
+      </Box>
+    );
+  };
 
-const UserProfileManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [newUserName, setNewUserName] = useState('');
-  const [newUserProfile, setNewUserProfile] = useState('');
-  const [newUserCV, setNewUserCV] = useState('');
-  const [selectedProfession, setSelectedProfession] = useState(null);
+  const columns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Tên người dùng',
+      minWidth: 200,
+      renderCell: renderName
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      minWidth: 200,
+      maxWidth: 250,
+      renderCell: renderEmail
+    },
+    {
+      field: 'online',
+      headerName: 'Hồ sơ trực tuyến',
+      minWidth: 250,
+      renderCell: renderProfile,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'document',
+      headerName: 'Hồ sơ đính kèm',
+      minWidth: 250,
+      renderCell: renderProfile,
+      align: 'center',
+      headerAlign: 'center'
+    }
+  ];
+
+  const handleViewProfile = (params) => {
+    let profile;
+    if (params.field === 'online')
+      profile = {
+        online_profile: params?.row?.online_profile,
+        personal_information: params?.row?.user
+      };
+    if (params.field === 'document')
+      profile = {
+        attached_document: params?.row?.attached_document,
+        personal_information: params?.row?.user
+      };
+
+    setViewProfile({
+      isOpen: true,
+      profile: profile
+    });
+  };
 
   const handleSelectProfession = (code: number) => {
     setSelectedProfession(code);
@@ -138,16 +202,7 @@ const UserProfileManagement = () => {
     setNewUserCV('');
   };
 
-  const handleEditUser = (userId) => {
-    // Implement the logic to edit the user with the given userId
-    console.log(`Editing user with ID: ${userId}`);
-  };
-
-  const handleDeleteUser = (userId) => {
-    // Implement the logic to delete the user with the given userId
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-    console.log(`Deleting user with ID: ${userId}`);
-  };
+  if (isLoading) return <SuspenseLoader />;
 
   return (
     <Container maxWidth="lg" style={{ marginTop: 30 }}>
@@ -161,7 +216,7 @@ const UserProfileManagement = () => {
                 variant="contained"
                 color="secondary"
                 onClick={() => {
-                  setSelectedProfession(null); 
+                  setSelectedProfession(null);
                 }}
                 sx={{ width: 120, height: 35 }}
               >
@@ -190,10 +245,12 @@ const UserProfileManagement = () => {
           )}
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Divider />
+              <Divider sx={{ mt: 2 }} />
               {selectedProfession && (
                 <Box display="flex">
-                  <DirectoryTreeView />
+                  <DirectoryTreeView
+                    setSelectedProfession={setSelectedProfession}
+                  />
                   <Box pl={5} borderLeft="2px solid #e5eaf2">
                     <Typography
                       textAlign="center"
@@ -207,14 +264,14 @@ const UserProfileManagement = () => {
                     <Box>
                       <TableData
                         columns={columns}
-                        rows={users}
-                        paginationModel={{ page: 0, pageSize: 9 }}
+                        rows={employeeList}
                         hideFooter
+                        sx={{ minHeight: '65vh' }}
                       />
                       <Pagination
-                        currentPage={1}
-                        totalPages={1}
-                        handlePageChange={() => {}}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageChange={setCurrentPage}
                       />
                     </Box>
                   </Box>
@@ -224,6 +281,40 @@ const UserProfileManagement = () => {
           </Grid>
         </CardContent>
       </Card>
+      <Dialog open={viewProfile.isOpen} fullWidth maxWidth="md">
+        <DialogTitle
+          sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}
+        >
+          Hồ sơ người dùng
+          <IconButton
+            aria-label="close"
+            onClick={() => {
+              setViewProfile({ profile: null, isOpen: false });
+            }}
+            sx={{
+              position: 'absolute',
+              right: 14,
+              top: 14,
+              color: (theme) => theme.palette.grey[500]
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <Divider
+          sx={{
+            bgcolor: '#B6FFFA',
+            height: 2
+          }}
+        />
+        <DialogContent>
+          <CVPage
+            user={viewProfile?.profile}
+            bgcolor="none"
+            showTitle={false}
+          />
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };

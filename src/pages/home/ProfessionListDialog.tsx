@@ -1,5 +1,4 @@
 import {
-  Link,
   Divider,
   Dialog,
   DialogTitle,
@@ -9,6 +8,8 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import professions from 'src/constants/professions';
+import Link from 'src/components/Link';
+import { fontWeight } from 'html2canvas/dist/types/css/property-descriptors/font-weight';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -53,15 +54,14 @@ function ProfessionListDialog(props) {
         {professionToShow?.map((profession, index) => (
           <Link
             key={profession?.code}
-            href={`/profession/${profession?.code}`}
+            to={`/profession/${profession?.code}`}
+            state={{ profession: profession?.name }}
             sx={{
               flexBasis: '33%',
-              padding: 1.5,
-              color: '#000',
+              padding: '10px',
+              fontSize: 14,
               justifyContent: 'left',
-              '&:hover': {
-                color: '#FF7D55'
-              }
+              color: 'black'
             }}
           >
             {profession.name} ({profession.count})

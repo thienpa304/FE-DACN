@@ -9,7 +9,7 @@ const useQueryJob = (params?) => {
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
   >(
-    ['get-AllJobs', params?.page],
+    ['get-AllJobs', params?.page, params?.profession, params?.status],
     () => JobUpdateStatusService.get({ params }),
     {
       keepPreviousData: true,

@@ -38,7 +38,7 @@ const userManagementColumns: GridColDef[] = [
     field: 'email',
     headerName: 'Email',
     minWidth: 200,
-    flex: 1,
+    maxWidth: 250,
     renderCell: renderCellText
   },
   {
@@ -151,7 +151,7 @@ const UserManagement = () => {
       >
         <Grid item xs={12}>
           <Card>
-            <CardHeader title="Danh sách người dùng" />
+            <CardHeader title="Quản lý tài khoản" />
             <Divider />
             <CardContent>
               <TableData

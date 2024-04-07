@@ -1,10 +1,11 @@
-import { Box, Grid, Pagination } from '@mui/material';
+import { Box, Container, Grid, Pagination, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryFollowJobs from 'src/modules/jobs/hooks/useQueryFollowJobs';
 
 export default function JobFollow() {
-  const { jobFollow } = useQueryFollowJobs();
+  const { jobFollow, isLoading } = useQueryFollowJobs();
   const [jobList, setJobList] = useState([]);
 
   useEffect(() => {
@@ -23,6 +24,24 @@ export default function JobFollow() {
     });
     setJobList(() => newList);
   }, [jobFollow]);
+
+  if (isLoading) return <SuspenseLoader />;
+  if (!jobFollow?.length) {
+    return (
+      <Container
+        sx={{
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Typography fontSize={18} fontStyle="italic">
+          Bạn chưa theo dõi tin tuyển dụng nào cả
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Box p={3}>

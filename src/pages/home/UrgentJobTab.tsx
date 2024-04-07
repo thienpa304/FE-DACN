@@ -1,18 +1,11 @@
-import {
-  Box,
-  Container,
-  Grid,
-  Link,
-  Typography,
-  Card,
-  Divider
-} from '@mui/material';
+import { Box, Container, Grid, Typography, Card, Divider } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
 import { useState } from 'react';
 import Pagination from 'src/components/Pagination';
+import Link from 'src/components/Link';
 
 function UrgentJobTab() {
   const { totalResults } = useQueryTotalResults();
@@ -29,7 +22,7 @@ function UrgentJobTab() {
   };
 
   return (
-    <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1 }}>
+    <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1, mt: 2 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -43,15 +36,10 @@ function UrgentJobTab() {
           </Typography>
         </Box>
         <Link
-          href="/urgent-hiring-job"
-          underline="none"
-          color="secondary"
-          fontSize={16}
-          fontWeight={700}
+          to="/urgent-hiring-job"
           sx={{
-            '&:hover': {
-              color: '#FF7D55'
-            }
+            fontSize: 16,
+            fontWeight: 700
           }}
         >
           Xem thêm

@@ -20,8 +20,6 @@ function CompanyList(props) {
     queryCompanys
   } = props;
   const { companyList, totalResults } = queryCompanys({ num: 9, page: 1 });
-  console.log(companyList);
-
   // const totalResults = companyList?.length;
   const [currentPage, setCurrentPage] = useState(1);
   // const { totalResults } = useQueryTotalResults({});

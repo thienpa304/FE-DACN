@@ -3,10 +3,6 @@ import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { GetTotalResultByAdmin } from '../../users/userService';
 
-interface responseType {
-  totalResults: number;
-}
-
 const useQueryTotalUserResultByAdmin = (params?) => {
   const { data, isLoading, refetch } = useQuery<
     ResponseData<number>,

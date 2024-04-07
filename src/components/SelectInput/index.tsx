@@ -11,12 +11,15 @@ export type Option = {
 };
 export type PropsSelectInput = SelectProps & {
   options?: Option[];
+  labelMarginTop?: string;
 };
 export default function SelectInput(props: PropsSelectInput) {
-  const { options = [], label } = props;
+  const { options = [], label, labelMarginTop = 0 } = props;
   return (
     <FormControl fullWidth>
-      <InputLabel size="small">{label}</InputLabel>
+      <InputLabel size="small" sx={{ mt: labelMarginTop }}>
+        {label}
+      </InputLabel>
       <Select size="small" {...props}>
         {options.map((item, idx) => (
           <MenuItem key={idx} value={item.value}>

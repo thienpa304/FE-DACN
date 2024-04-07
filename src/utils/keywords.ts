@@ -10,7 +10,6 @@ export function tfidfReview(keywordArray: string[], documentText: string) {
   }, {});
 
   const totalWords = documentText.split(/\s+/).length;
-  console.log('totl word', totalWords);
 
   const tfidf = {};
 
@@ -59,10 +58,7 @@ export const loadKeywords = (analysisResults: any[], document: any) => {
 
   // B2: Parse string sang array
   const keywordArray = JSON.parse(jsonString);
-  const keywordList = tfidfReview(keywordArray, JSON.stringify(document)).slice(
-    0,
-    20
-  );
+  const keywordList = keywordArray.slice(0, 20);
   return keywordList?.join(', ');
 };
 
@@ -84,19 +80,24 @@ const removeAttributes = (
     return {
       jobTitle: profileData?.jobTitle,
       profession: profileData?.profession,
-      careerGoal: profileData?.careerGoal,
       skills: profileData?.skills,
-      work_experiences: profileData?.work_experiences,
-      education_informations: profileData?.education_informations,
-      another_degrees: profileData?.another_degrees
+      work_experiences: profileData?.work_experiences.map((experience) => {
+        return {
+          jobTitle: experience.jobTitle,
+          jobDescription: experience.jobDescription
+        };
+      }),
+      education_informations: profileData?.education_informations.map(
+        (education) => education.specialization
+      ),
+      another_degrees: profileData?.another_degrees?.map(
+        (degree) => degree.degreeName
+      )
     };
   } else {
-    console.log(cvText);
-
     return {
       jobTitle: profile?.jobTitle,
       profession: profile?.profession,
-      careerGoal: profile?.careerGoal,
       skills: profile?.skills,
       cvContent: cvText
     };
@@ -109,12 +110,6 @@ export function preProcessData(
   profileType: profileType,
   cvText?: string
 ) {
-  const includeDateAttributes = ['work_experiences', 'education_informations'];
   const dataToAnalyze = removeAttributes(object, profileType, cvText);
-  for (const attr in dataToAnalyze) {
-    if (includeDateAttributes.includes(attr)) {
-      dataToAnalyze[attr] = removeDateAttributes(dataToAnalyze[attr]);
-    }
-  }
   return dataToAnalyze;
 }

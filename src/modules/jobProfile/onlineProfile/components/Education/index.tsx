@@ -107,8 +107,6 @@ export default function Education() {
   };
 
   const handleDateChange = (params, date) => {
-    console.log(params, date);
-
     params.api.setEditCellValue({
       ...params,
       value: date // Cập nhật giá trị đã chọn từ DatePicker vào row

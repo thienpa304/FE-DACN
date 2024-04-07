@@ -67,8 +67,8 @@ const columns: GridColDef[] = [
     field: 'jobTitle',
     headerName: 'Tên tin đăng',
     minWidth: 400,
+    maxWidth: 450,
     headerAlign: 'center',
-    flex: 1,
     renderCell: renderJobTitle
   },
   {

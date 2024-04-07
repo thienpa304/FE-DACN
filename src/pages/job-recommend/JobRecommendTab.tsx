@@ -1,29 +1,49 @@
-import { Box, Card, Grid, Link, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Card, Grid, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import Link from 'src/components/Link';
 import Pagination from 'src/components/Pagination';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
+import { Job } from 'src/modules/jobs/model';
+import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
 
 export default function JobRecommendTab(props) {
-  const { totalResults } = useQueryTotalResults();
+  debugger;
+  const { id, profile } = props;
+  const { keywords, profession, degree, experience } = profile;
+
+  const { totalResults } = useQueryTotalResults({ profession: profession });
   const [currentPage, setCurrentPage] = useState(1);
+  const [filteredJob, setFilteredJob] = useState<Job[]>([]);
+
   const jobsPerPage = 4;
   const validvalidTotalPages = Number.isInteger(totalResults)
     ? totalResults
     : 1;
-  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
-  const { jobs } = useQueryAllJob({ page: currentPage, num: jobsPerPage });
+  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage) || 1;
+  const { jobs } = useQueryAllJob({
+    keywords: keywords
+  });
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
+  useEffect(() => {
+    // filter jobs by profession, degree, experience
+    const result = jobs.filter(
+      (job) =>
+        job.profession.includes(profession) &&
+        compareDegrees(degree, job.degree) > 0 &&
+        compareExperience(experience, job.experience) > 0
+    );
+    if (JSON.stringify(result) === JSON.stringify(filteredJob)) return;
+    setFilteredJob(result);
+  }, [jobs]);
+
   return (
-    <Card
-      sx={{ borderRadius: 0, boxShadow: '2px 2px 6px #aae2f7' }}
-      id={props.id}
-    >
+    <Card sx={{ borderRadius: 0, boxShadow: '2px 2px 6px #aae2f7' }} id={id}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -35,28 +55,36 @@ export default function JobRecommendTab(props) {
             Việc làm phù hợp
           </Typography>
         </Box>
-        <Link
-          href="/urgent-hiring-job"
-          underline="none"
-          color="secondary"
-          fontSize={16}
-          fontWeight={700}
+        {/* <Link
+          to="/profession/recommend"
           sx={{
-            '&:hover': {
-              color: '#FF7D55'
-            }
+            fontSize: 16,
+            fontWeight: 700
           }}
+          state={{ filteredJob: filteredJob, pageTitle: 'Gợi ý' }}
         >
           Xem thêm
-        </Link>
+        </Link> */}
       </Box>
       <Box p={3}>
         <Grid container mb={3} spacing={2}>
-          {jobs.map((job, index) => (
-            <Grid key={job.id} item xs={12} sm={6}>
+          {filteredJob.map((job, index) => (
+            <Grid key={job?.postId} item xs={12} sm={6}>
               <SmallJobCard key={index} job={job} />
             </Grid>
           ))}
+          {filteredJob.length === 0 && (
+            <Grid item xs={12}>
+              <Typography
+                fontSize={16}
+                color="#9999"
+                fontStyle="italic"
+                textAlign="center"
+              >
+                Không tìm được việc làm phù hợp
+              </Typography>
+            </Grid>
+          )}
         </Grid>
         <Pagination
           totalPages={totalPages}
