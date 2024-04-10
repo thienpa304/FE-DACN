@@ -8,7 +8,7 @@ const useQueryAllUserByAdmin = (params?) => {
   const { data, isLoading, refetch } = useQuery<
     ResponseData<User[]>,
     AxiosError<ResponseData<User[]>>
-  >(['get-AllJobs', params?.page], () => GetAllUser.get({ params }), {
+  >(['get-Alluser', params?.page], () => GetAllUser.get({ params }), {
     keepPreviousData: true,
     retry: 1,
     refetchOnWindowFocus: false

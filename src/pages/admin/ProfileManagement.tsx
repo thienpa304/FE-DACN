@@ -28,14 +28,14 @@ import { GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
 import useQueryEmployeesByAdmin from 'src/modules/admin/hooks/useQueryEmployeesByAdmin';
-import useQueryTotalEmployeeResultByAdmin from 'src/modules/admin/hooks/useQueryTotalEmployeeResultByAdmin';
+import useQueryTotalResultOfEmployeeByAdmin from 'src/modules/admin/hooks/useQueryTotalResultOfEmployeeByAdmin';
 import CVPage from '../view-candidate-profile/ViewCV';
 import CloseIcon from '@mui/icons-material/Close';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 
-const UserProfileManagement = () => {
+const ProfileManagement = () => {
   const [users, setUsers] = useState([]);
-  const [newUserName, setNewUserName] = useState('');
+  const [searchUserName, setSearchUserName] = useState('');
   const [newUserProfile, setNewUserProfile] = useState('');
   const [newUserCV, setNewUserCV] = useState('');
   const [selectedProfession, setSelectedProfession] = useState(null);
@@ -44,18 +44,23 @@ const UserProfileManagement = () => {
     isOpen: false,
     profile: null
   });
+  const [viewProfessionMode, setViewProfessionMode] = useState(true);
 
-  const { totalResults } = useQueryTotalEmployeeResultByAdmin({
+  const { totalResults } = useQueryTotalResultOfEmployeeByAdmin({
     profession: selectedProfession
   });
   const pageSize = 10;
   const validTotalResult = Number.isInteger(totalResults) ? totalResults : 1;
   const totalPages = Math.ceil(validTotalResult / pageSize) || 1;
-  const { employeeList, isLoading } = useQueryEmployeesByAdmin({
-    profession: selectedProfession,
-    page: currentPage,
-    num: pageSize
-  });
+  const { employeeList, isLoading, refetch } = useQueryEmployeesByAdmin(
+    {
+      profession: selectedProfession,
+      page: currentPage,
+      num: pageSize,
+      name: searchUserName
+    },
+    !viewProfessionMode
+  );
 
   const renderName = (params) => {
     return (
@@ -89,26 +94,44 @@ const UserProfileManagement = () => {
   };
 
   const renderProfile = (params) => {
+    let profile = null;
+    console.log(params);
+
+    if (params?.field === 'online') {
+      profile = params?.row?.online_profile;
+    }
+    if (params?.field === 'document') {
+      profile = params?.row?.attached_document;
+    }
+    console.log(profile);
     return (
-      <Box>
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => handleViewProfile(params)}
-        >
-          Xem
-        </Button>
-        <Button
-          // onClick={() => handleDeleteUser(params.row.id)}
-          variant="contained"
-          color="error"
-          size="small"
-          sx={{ marginLeft: 1 }}
-        >
-          Xóa
-        </Button>
-      </Box>
+      <>
+        {profile ? (
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => handleViewProfile(params)}
+            >
+              Xem
+            </Button>
+            <Button
+              // onClick={() => handleDeleteUser(params.row.id)}
+              variant="contained"
+              color="error"
+              size="small"
+              sx={{ marginLeft: 1 }}
+            >
+              Xóa
+            </Button>
+          </Box>
+        ) : (
+          <Typography fontStyle="italic" color="text.disabled">
+            Chưa cập nhật
+          </Typography>
+        )}
+      </>
     );
   };
 
@@ -167,6 +190,10 @@ const UserProfileManagement = () => {
     setSelectedProfession(code);
   };
 
+  const handleViewProfessionMode = (data) => {
+    setViewProfessionMode(data);
+  };
+
   useEffect(() => {
     const generateSampleUserData = () => {
       const sampleData = [];
@@ -185,21 +212,9 @@ const UserProfileManagement = () => {
     setUsers(generateSampleUserData());
   }, []);
 
-  const handleAddUser = () => {
-    const newUser = {
-      id: users.length + 1,
-      name: newUserName,
-      profile: newUserProfile,
-      cv: newUserCV,
-      email: `user${users.length + 1}@example.com`,
-      registrationDate: '2023-01-01',
-      role: 'User'
-    };
-
-    setUsers((prevUsers) => [...prevUsers, newUser]);
-    setNewUserName('');
-    setNewUserProfile('');
-    setNewUserCV('');
+  const handleSearchUser = () => {
+    // setSearchUserName('');
+    refetch();
   };
 
   if (isLoading) return <SuspenseLoader />;
@@ -207,51 +222,71 @@ const UserProfileManagement = () => {
   return (
     <Container maxWidth="lg" style={{ marginTop: 30 }}>
       <Card>
-        <CardHeader title="Quản lý Hồ sơ và CV Người Dùng" />
-        <Divider />
-        <CardContent>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            {selectedProfession && (
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => {
-                  setSelectedProfession(null);
-                }}
-                sx={{ width: 120, height: 35 }}
-              >
-                Trở về
-              </Button>
-            )}
-            <TextField
-              label="Tên Người Dùng"
-              variant="outlined"
-              value={newUserName}
-              onChange={(e) => setNewUserName(e.target.value)}
-              sx={{ height: '50%', flex: 1 }}
-              size="small"
-            />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
+          <CardHeader title="Danh sách tin tuyển dụng" />
+          <Box
+            sx={{
+              display: 'flex'
+            }}
+          >
             <Button
               variant="contained"
-              color="primary"
-              onClick={handleAddUser}
-              sx={{ width: 120, height: 35 }}
+              color={!viewProfessionMode ? 'primary' : 'info'}
+              onClick={() => {
+                setViewProfessionMode((prev) => !prev);
+              }}
+              sx={{ margin: 'auto 25px auto auto', height: 35, width: 150 }}
             >
-              Tìm hồ sơ
+              {!viewProfessionMode ? 'Xem theo ngành' : 'Tất cả'}
             </Button>
           </Box>
-          {!selectedProfession && (
-            <ProfessionList handleSelectProfession={handleSelectProfession} />
+        </Box>
+        <Divider />
+
+        <CardContent>
+          {!viewProfessionMode && (
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <TextField
+                label="Tên Người Dùng"
+                variant="outlined"
+                value={searchUserName}
+                onChange={(e) => setSearchUserName(e.target.value)}
+                sx={{ height: '50%', flex: 1 }}
+                size="small"
+              />
+              <Button
+                variant="contained"
+                color="info"
+                onClick={handleSearchUser}
+                sx={{ width: 120, height: 35 }}
+              >
+                Tìm hồ sơ
+              </Button>
+            </Box>
           )}
-          <Grid container spacing={2}>
+          {viewProfessionMode && (
+            <ProfessionList
+              handleSelectProfession={setSelectedProfession}
+              handleViewProfessionMode={setViewProfessionMode}
+            />
+          )}
+          <Grid container>
             <Grid item xs={12}>
               <Divider sx={{ mt: 2 }} />
-              {selectedProfession && (
-                <Box display="flex">
-                  <DirectoryTreeView
-                    setSelectedProfession={setSelectedProfession}
-                  />
-                  <Box pl={5} borderLeft="2px solid #e5eaf2">
+              {!viewProfessionMode && (
+                <Grid container spacing={2}>
+                  <Grid item xs={2.5}>
+                    <DirectoryTreeView
+                      setSelectedProfession={setSelectedProfession}
+                      setViewProfessionMode={setViewProfessionMode}
+                    />
+                  </Grid>
+                  <Grid item xs={9.5}>
                     <Typography
                       textAlign="center"
                       fontWeight={700}
@@ -261,21 +296,32 @@ const UserProfileManagement = () => {
                     >
                       Danh sách hồ sơ người dùng
                     </Typography>
-                    <Box>
-                      <TableData
-                        columns={columns}
-                        rows={employeeList}
-                        hideFooter
-                        sx={{ minHeight: '65vh' }}
-                      />
-                      <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        handlePageChange={setCurrentPage}
-                      />
-                    </Box>
-                  </Box>
-                </Box>
+                    {employeeList.length > 0 ? (
+                      <Box>
+                        <TableData
+                          columns={columns}
+                          rows={employeeList}
+                          hideFooter
+                          sx={{ minHeight: '65vh' }}
+                        />
+                        <Pagination
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          handlePageChange={setCurrentPage}
+                        />
+                      </Box>
+                    ) : (
+                      <Typography
+                        mt={10}
+                        textAlign="center"
+                        fontStyle="italic"
+                        color="#9999"
+                      >
+                        Không có hồ sơ nào
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
               )}
             </Grid>
           </Grid>
@@ -319,4 +365,4 @@ const UserProfileManagement = () => {
   );
 };
 
-export default UserProfileManagement;
+export default ProfileManagement;

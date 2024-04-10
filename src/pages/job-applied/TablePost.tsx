@@ -100,8 +100,18 @@ const columns: GridColDef[] = [
 
 export default function TablePost({ data }) {
   return (
-    <Box sx={{ height: '75vh', width: '100%' }}>
-      <TableData rows={data} columns={columns} />
+    <Box sx={{ height: '72.7vh', width: '100%' }}>
+      <TableData
+        rows={data}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 8
+            }
+          }
+        }}
+      />
     </Box>
   );
 }

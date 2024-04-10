@@ -79,13 +79,12 @@ export default function OnlineProfile() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    // debugger;
     setIsAnalyzing(true);
     if (profile?.userId) {
       const dataToAnalyze = preProcessData(profile, 'online');
       sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
-        '58': 1,
-        '60': 1
+        '58': 5,
+        '60': 5
       }).then((analysisResults) => {
         const keywords = loadKeywords(
           analysisResults,
@@ -93,7 +92,7 @@ export default function OnlineProfile() {
         );
         onUpdateData({
           ...profile,
-          keywords: profile?.skills?.toLocaleLowerCase() + ', ' + keywords
+          keywords: (profile?.skills + ', ' + keywords)?.toLocaleLowerCase()
         } as OnlineProfileType);
         setFinished(true);
         setIsAnalyzing(false);

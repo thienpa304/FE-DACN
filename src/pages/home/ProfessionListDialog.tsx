@@ -55,7 +55,7 @@ function ProfessionListDialog(props) {
           <Link
             key={profession?.code}
             to={`/profession/${profession?.code}`}
-            state={{ profession: profession?.name }}
+            state={{ profession: profession?.name, pageTitle: profession.name }}
             sx={{
               flexBasis: '33%',
               padding: '10px',

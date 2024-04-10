@@ -15,12 +15,12 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import SearchIcon from '@mui/icons-material/Search';
 import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
 import professions from 'src/constants/professions';
-import useQueryTotolJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotolJobsEachProfession';
+import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 import Link from 'src/components/Link';
 
 function ProfessionType() {
   const [open, setOpen] = React.useState(false);
-  const { dataList } = useQueryTotolJobsEachProfession();
+  const { dataList } = useQueryTotalJobsEachProfession();
 
   const matchProfessionWithCount = professions
     .map((profession) => {

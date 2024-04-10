@@ -30,10 +30,11 @@ export function tfidfReview(keywordArray: string[], documentText: string) {
     .map((entry) => entry[0]);
 }
 
-export const loadKeywords = (analysisResults: any[], document: any) => {
-  if (analysisResults.length <= 0) return;
+export const loadKeywords = (analysisResults: any[], document?: any) => {
+  if (analysisResults.length <= 0 && !Boolean(analysisResults[0])) return;
 
   const result = analysisResults[0];
+
   const startIndex = result.indexOf('[');
   if (startIndex === -1) {
     console.log("Không tìm thấy ký tự '['");
@@ -48,17 +49,21 @@ export const loadKeywords = (analysisResults: any[], document: any) => {
   }
 
   // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
-  const extractedString = result.substring(startIndex, endIndex + 1);
+  const extractedString = result
+    .substring(startIndex + 1, endIndex)
+    .replace(/["]/g, '');
+  console.log('extractedString: ', extractedString);
 
   // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
-  const jsonString = extractedString
-    .replace(/'/g, '"')
-    .replace(/[_\!@#$%^&*;|<>]/g, '');
+  const jsonString = extractedString.replace(/[_!@#$%^&*;|<>'"\n\t\r]/g, '');
   console.log('jsonString: ', jsonString);
 
   // B2: Parse string sang array
-  const keywordArray = JSON.parse(jsonString);
+  const keywordArray = jsonString.split(',');
+  console.log('keywordArray', keywordArray);
+
   const keywordList = keywordArray.slice(0, 20);
+  console.log('keywordList?.join(', ')', keywordList?.join(', '));
   return keywordList?.join(', ');
 };
 
@@ -80,7 +85,6 @@ const removeAttributes = (
     return {
       jobTitle: profileData?.jobTitle,
       profession: profileData?.profession,
-      skills: profileData?.skills,
       work_experiences: profileData?.work_experiences.map((experience) => {
         return {
           jobTitle: experience.jobTitle,
@@ -98,7 +102,6 @@ const removeAttributes = (
     return {
       jobTitle: profile?.jobTitle,
       profession: profile?.profession,
-      skills: profile?.skills,
       cvContent: cvText
     };
   }

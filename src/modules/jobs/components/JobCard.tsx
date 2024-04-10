@@ -17,7 +17,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { useApp } from 'src/modules/app/hooks';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import FollowButton from './FollowButton';
+import FollowJobButton from './FollowJobButton';
 import LinkText from 'src/components/LinkText';
 
 function JobCard({ job }) {
@@ -59,7 +59,7 @@ function JobCard({ job }) {
             >
               {job?.jobTitle}
             </Box>
-            <FollowButton job={job} />
+            <FollowJobButton job={job} />
           </Box>
         }
       />

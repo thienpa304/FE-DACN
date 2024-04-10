@@ -4,16 +4,17 @@ import Link from 'src/components/Link';
 import Pagination from 'src/components/Pagination';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
-import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
+import useQueryTotalResultOfJobs from 'src/modules/jobs/hooks/useQueryTotalResultOfJobs';
 import { Job } from 'src/modules/jobs/model';
 import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
 
 export default function JobRecommendTab(props) {
-  debugger;
   const { id, profile } = props;
   const { keywords, profession, degree, experience } = profile;
 
-  const { totalResults } = useQueryTotalResults({ profession: profession });
+  const { totalResults } = useQueryTotalResultOfJobs({
+    keywords: keywords
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredJob, setFilteredJob] = useState<Job[]>([]);
 
@@ -32,18 +33,25 @@ export default function JobRecommendTab(props) {
 
   useEffect(() => {
     // filter jobs by profession, degree, experience
-    const result = jobs.filter(
-      (job) =>
-        job.profession.includes(profession) &&
-        compareDegrees(degree, job.degree) > 0 &&
-        compareExperience(experience, job.experience) > 0
-    );
-    if (JSON.stringify(result) === JSON.stringify(filteredJob)) return;
-    setFilteredJob(result);
-  }, [jobs]);
+    console.log(1);
+
+    if (profession && degree && experience) {
+      const result = jobs.filter(
+        (job) =>
+          profession.includes(job.profession) &&
+          compareDegrees(degree, job.degree) > 0 &&
+          compareExperience(experience, job.experience) > 0
+      );
+      // if (JSON.stringify(result) === JSON.stringify(filteredJob)) return;
+      setFilteredJob(result);
+    } else setFilteredJob(jobs);
+
+    const section = document.getElementById(id);
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
+  }, [JSON.stringify(jobs)]);
 
   return (
-    <Card sx={{ borderRadius: 0, boxShadow: '2px 2px 6px #aae2f7' }} id={id}>
+    <Card sx={{ borderRadius: 0, boxShadow: '2px 2px 6px #aae2f7' }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -55,16 +63,6 @@ export default function JobRecommendTab(props) {
             Việc làm phù hợp
           </Typography>
         </Box>
-        {/* <Link
-          to="/profession/recommend"
-          sx={{
-            fontSize: 16,
-            fontWeight: 700
-          }}
-          state={{ filteredJob: filteredJob, pageTitle: 'Gợi ý' }}
-        >
-          Xem thêm
-        </Link> */}
       </Box>
       <Box p={3}>
         <Grid container mb={3} spacing={2}>

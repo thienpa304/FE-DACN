@@ -6,6 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   Typography
 } from '@mui/material';
@@ -61,7 +62,7 @@ export default function ModalApply(props: Props) {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [url, setUrl] = useState('');
-
+  const [hintsMessage, setHintsMessage] = useState('');
   const buttonStyle = {
     width: '100%',
     px: 1,
@@ -102,6 +103,7 @@ export default function ModalApply(props: Props) {
 
   const uploadProfile = (id) => {
     setIsChecked(id);
+    setHintsMessage('');
   };
 
   useEffect(() => {
@@ -118,18 +120,18 @@ export default function ModalApply(props: Props) {
     }
   }, [isChecked]);
 
-  useEffect(() => {
-    if (onlineProfile) {
-      setOnline(onlineProfile);
-    }
-    if (attachedDocument) {
-      setDocument(attachedDocument);
-    }
-  }, [onlineProfile, attachedDocument]);
+  // useEffect(() => {
+  //   if (onlineProfile) {
+  //     setOnline(onlineProfile);
+  //   }
+  //   if (attachedDocument) {
+  //     setDocument(attachedDocument);
+  //   }
+  // }, [onlineProfile, attachedDocument]);
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose} maxWidth="md">
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>
           <SubTitle> Vị trí ứng tuyển</SubTitle>
           <Title>{position}</Title>
@@ -259,7 +261,7 @@ export default function ModalApply(props: Props) {
           </Grid>
         </DialogContent>
         <DialogActions
-          sx={{ display: 'flex', justifyContent: 'space-between' }}
+          sx={{ display: 'flex', justifyContent: 'space-between', px: 2 }}
         >
           <AnayzeProfileButton
             job={job}
@@ -268,16 +270,32 @@ export default function ModalApply(props: Props) {
             setShowResult={setShowResult}
             showResult={showResult}
             fileUrl={url}
+            setHintsMessage={setHintsMessage}
           />
           <Box sx={{ display: 'flex', columnGap: 2 }}>
-            <Button onClick={handleClose} variant="outlined">
+            <Button onClick={handleClose} variant="outlined" color="secondary">
               Hủy
             </Button>
-            <Button onClick={handleSubmit(handleApply)} variant="contained">
+            <Button
+              onClick={handleSubmit(handleApply)}
+              variant="contained"
+              color="info"
+            >
               Nộp hồ sơ
             </Button>
           </Box>
         </DialogActions>
+        {hintsMessage && (
+          <Box mb={1} p={2} gap={1} display="flex" flexDirection="column">
+            <Divider sx={{ mb: 1, color: '#f29c00' }} />
+            <Typography fontWeight={700} fontSize={16}>
+              Gợi ý :
+            </Typography>
+            <Typography fontStyle="italic" mx={2}>
+              {hintsMessage}
+            </Typography>
+          </Box>
+        )}
       </Dialog>
     </div>
   );

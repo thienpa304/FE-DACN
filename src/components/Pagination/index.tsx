@@ -1,8 +1,11 @@
 import { Pagination as Page } from '@mui/material';
 import React from 'react';
 
-export default function Pagination(props) {
-  const { currentPage, totalPages, handlePageChange } = props;
+export default function Pagination({
+  currentPage,
+  totalPages,
+  handlePageChange
+}) {
   return (
     <Page
       count={totalPages}

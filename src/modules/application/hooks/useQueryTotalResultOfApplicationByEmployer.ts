@@ -1,19 +1,19 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
-import { TotalResultsByAdmin } from '../jobService';
+import { ApplicationTotalResults } from '../applicationService';
 
 interface responseType {
   totalResults: number;
 }
 
-const useQueryTotalResultsByAdmin = (params?) => {
-  const { data, isLoading, refetch } = useQuery<
+const useQueryTotalResultOfApplicationByEmployer = (params?) => {
+  const { data, isLoading } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>
   >(
-    ['get-TotalResults', params?.professiion, params?.status],
-    () => TotalResultsByAdmin.get({ params }),
+    ['application-getList', params?.page, params?.status],
+    () => ApplicationTotalResults.get({ params }),
     {
       retry: 1,
       refetchOnWindowFocus: false
@@ -22,9 +22,8 @@ const useQueryTotalResultsByAdmin = (params?) => {
 
   return {
     totalResults: data?.data?.totalResults,
-    isLoading,
-    refetch
+    isLoading
   };
 };
 
-export default useQueryTotalResultsByAdmin;
+export default useQueryTotalResultOfApplicationByEmployer;

@@ -5,7 +5,7 @@ import LinkText from 'src/components/LinkText';
 import JobCard from './JobCard';
 import Pagination from 'src/components/Pagination';
 import JobFilter from './JobFilter';
-import useQueryTotalResults from '../hooks/useQueryTotalResults';
+import useQueryTotalResultOfJobs from '../hooks/useQueryTotalResultOfJobs';
 import WorkIcon from '@mui/icons-material/Work';
 
 function JobList(props) {
@@ -29,9 +29,10 @@ function JobList(props) {
     sex: '',
     jobTitle: jobTitle
   });
-  const { totalResults, refetch: refetchTotalResults } = useQueryTotalResults({
-    ...filter
-  });
+  const { totalResults, refetch: refetchTotalResults } =
+    useQueryTotalResultOfJobs({
+      ...filter
+    });
   const jobsPerPage = numOfJobPerPage ? numOfJobPerPage : 15;
   const validTotalResult = Number.isInteger(totalResults) ? totalResults : 1;
   const totalPages = Math.ceil(validTotalResult / jobsPerPage);
@@ -45,11 +46,6 @@ function JobList(props) {
   };
 
   const handleFilter = (data: any) => {
-    for (const key in data) {
-      if (data[key] === 'Tất cả') {
-        data[key] = '';
-      }
-    }
     setFilter((prev) => ({ ...prev, ...data }));
   };
 

@@ -18,7 +18,7 @@ export default function JobFollow() {
           alignItems: 'center'
         }}
       >
-        <Typography fontSize={18} fontStyle="italic">
+        <Typography fontSize={18} fontStyle="italic" color="#9999">
           Bạn chưa theo dõi công ty nào cả
         </Typography>
       </Container>
@@ -26,7 +26,10 @@ export default function JobFollow() {
   }
 
   return (
-    <Box p={3}>
+    <Container sx={{ p: 3 }}>
+      <Typography mb={2} fontSize={22} fontWeight={700}>
+        Công ty đã theo dõi
+      </Typography>
       <Grid container mb={3} spacing={2}>
         {companyFollow?.map((company, index) => (
           <Grid key={company.postId} item xs={12} sm={4}>
@@ -43,6 +46,6 @@ export default function JobFollow() {
         currentPage={currentPage}
         handlePageChange={handlePageChange}
       /> */}
-    </Box>
+    </Container>
   );
 }

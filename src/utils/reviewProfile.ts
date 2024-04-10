@@ -224,11 +224,11 @@ const handleRoundThree = async (
     RoundThreeCheck,
     passRoundOneProfiles.map((item) => ({
       id: item.id,
-      employee_Profile: {
-        keywords: item.employee_Profile.application.keywords
-      },
       employer_Requirement: {
         keywords: item.employer_Requirement.keywords
+      },
+      employee_Profile: {
+        keywords: item.employee_Profile.application.keywords
       }
     }))
   ).catch(() => []);

@@ -5,12 +5,10 @@ import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
-import { ApprovalStatus } from 'src/constants/enum';
 import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
 import { v4 } from 'uuid';
-import useQueryJobOwner from 'src/modules/jobs/hooks/useQueryJobOwner';
-import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
+import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import { useQueryCandidateProfileByIdList } from 'src/modules/application/hooks/useQueryCandidateProfileById';
 import {
   ProfileApplicationType,
@@ -23,6 +21,7 @@ import {
   firstRoundForGeneralInfo
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
 
 interface CustomLinkProps {
   to?: string;
@@ -98,7 +97,7 @@ const renderProfileName = (data) => {
 };
 
 const renderStatus = (data) => {
-  const { mutate } = useMutateApplicationStatus();
+  const { onSaveApplicationStatus } = useMutateApplicationStatus();
   const [value, setValue] = useState(null); // Initialize value as null
 
   useEffect(() => {
@@ -111,9 +110,11 @@ const renderStatus = (data) => {
   }, [data.value]); // Run this effect whenever data.value changes
 
   const handleChangeValue = (newValue) => {
-    mutate([data.id, { status: newValue }]).then(() => {
-      setValue(newValue);
-    });
+    onSaveApplicationStatus([data.id, { status: newValue.target.value }]).then(
+      () => {
+        setValue(newValue.target.value);
+      }
+    );
   };
 
   // Return the SelectInput component
@@ -162,9 +163,7 @@ export const renderMatchingScore = (data, isAnalyzing: boolean) => {
 };
 
 export default function Table(props) {
-  const { pageSize, handleChangePage, page, isLoading, totalResults, data } =
-    props;
-  // const data = dataList.value;
+  const { pageSize, data } = props;
   // data : danh sách Application
   const [analyzedProfile, setAnalyzedProfile] = useState<
     ProfileApplicationType[]
@@ -181,19 +180,27 @@ export default function Table(props) {
     ProfileApplicationType[]
   >([]);
   const [start, setStart] = useState(false);
-  debugger;
   const [goToAnalyzeResult, setGoToAnalyzeResult] = useState({
     signal: false,
     resultData: null
   });
+  const applicationIdList = data?.map((item) => item?.application_id);
+  const jobsIdList: Set<number> = new Set(
+    data?.map((item) => {
+      return item?.jobPosting?.postId;
+    })
+  );
 
-  const { jobs, isLoading: isLoadingJobs } = useQueryJobOwner();
+  // Convert Set back to an array if needed
+  const uniqueJobsIdList: number[] = [...jobsIdList];
 
-  const idList = data.map((item) => item?.application_id);
+  const { jobs, isLoading: isLoadingJobs } =
+    useQueryJobByIdList(uniqueJobsIdList);
+
   const { data: applicationDetailList, isLoading: isLoadingApplication } =
-    useQueryCandidateProfileByIdList(idList);
+    useQueryCandidateProfileByIdList(applicationIdList);
 
-  const { mutate } = useMutateApplicationStatus();
+  const { onSaveApplicationStatus } = useMutateApplicationStatus();
 
   const finishedAll = () => {
     setStart(false);
@@ -202,7 +209,6 @@ export default function Table(props) {
     setRoundThreeFinished(false);
     setResetMatchingScoreList([]);
     setIsAnalyzing(false);
-    setAnalyzedProfile(null);
     setPassRoundOneProfiles([]);
     setGoToAnalyzeResult({ signal: false, resultData: null });
   };
@@ -220,7 +226,6 @@ export default function Table(props) {
   };
 
   const handleAnalyzeResult = async (result: any[]) => {
-    debugger;
     const responses = result?.map((data) => {
       if (data) return JSON.parse(data);
     });
@@ -228,7 +233,6 @@ export default function Table(props) {
     const updatedAnalyzedProfile = await Promise.all(
       analyzedProfile?.map(async (profile) => {
         const foundItem = responses?.find((res) => res?.id === profile?.id);
-        debugger;
         let matchingScore: number;
         if (foundItem?.result !== undefined) {
           matchingScore = profile?.employee_Profile?.application?.matchingScore
@@ -320,8 +324,6 @@ export default function Table(props) {
       .filter(Boolean);
 
   useEffect(() => {
-    debugger;
-
     if (goToAnalyzeResult.signal) {
       console.log('analyzedProfile', analyzedProfile);
       handleAnalyzeResult(goToAnalyzeResult.resultData);
@@ -330,8 +332,6 @@ export default function Table(props) {
 
   // First time render the page
   useEffect(() => {
-    console.log('goToAnalyzeResult', goToAnalyzeResult);
-
     if (!jobs.length || !applicationDetailList.length || start) return;
 
     const dataToAnalyze = matchJobAndProfile();
@@ -351,13 +351,11 @@ export default function Table(props) {
     if (JSON.stringify(dataToAnalyze) !== JSON.stringify(analyzedProfile)) {
       setAnalyzedProfile(() => dataToAnalyze);
     }
-  }, [jobs, applicationDetailList]);
+  }, [JSON.stringify(jobs), JSON.stringify(applicationDetailList)]);
 
   // Start Round 1
   useEffect(() => {
     // go into round 1
-    console.log('goToAnalyzeResult', goToAnalyzeResult);
-    debugger;
     if (start) {
       const resetMatchingScoreList: ProfileApplicationType[] =
         analyzedProfile.map((pofile) => {
@@ -388,7 +386,7 @@ export default function Table(props) {
         setAnalyzedProfile: handleSetAnalyzedProfile,
         handleGoToAnalyzeResult: handleGoToAnalyzeResult
       });
-  }, [resetMatchingScoreList]);
+  }, [JSON.stringify(resetMatchingScoreList)]);
 
   // Start Round 2, 3
   useEffect(() => {
@@ -409,7 +407,10 @@ export default function Table(props) {
         console.log('Finised All');
         Promise.all(
           showList.map((item) => {
-            mutate([item.id, { matchingScore: item.matchingScore }]);
+            onSaveApplicationStatus([
+              item.id,
+              { matchingScore: item.matchingScore }
+            ]);
           })
         );
       }
@@ -427,7 +428,10 @@ export default function Table(props) {
       console.log('Round 3 finished');
       Promise.all(
         showList.map((item) => {
-          mutate([item.id, { matchingScore: item.matchingScore }]);
+          onSaveApplicationStatus([
+            item.id,
+            { matchingScore: item.matchingScore }
+          ]);
         })
       );
       console.log('Finised All');
@@ -492,13 +496,15 @@ export default function Table(props) {
       <TableData
         rows={showList}
         columns={columns}
-        pagination
-        paginationModel={{ page: page - 1, pageSize: pageSize }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: pageSize
+            }
+          }
+        }}
+        hideFooter
         sx={{ height: '65.7vh', width: '100%' }}
-        paginationMode="server"
-        onPaginationModelChange={(e) => handleChangePage(e.page + 1)}
-        loading={isLoading}
-        rowCount={totalResults}
       />
     </>
   );

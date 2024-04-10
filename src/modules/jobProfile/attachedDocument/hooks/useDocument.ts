@@ -2,7 +2,8 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
   selectDocument,
-  setProfile as setProfileAction
+  setProfile as setProfileAction,
+  resetProfile
 } from '../documentSlice';
 import { AttachedDocument } from '../../model';
 
@@ -14,9 +15,14 @@ const useAttachedDocument = () => {
     dispatch(setProfileAction(data));
   };
 
+  const resetDocumentProfile = () => {
+    dispatch(resetProfile());
+  };
+
   return {
     profile,
-    setProfile
+    setProfile,
+    resetDocumentProfile
   };
 };
 

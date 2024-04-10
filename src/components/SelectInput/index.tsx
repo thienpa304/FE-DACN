@@ -11,13 +11,13 @@ export type Option = {
 };
 export type PropsSelectInput = SelectProps & {
   options?: Option[];
-  labelMarginTop?: string;
+  labelmargintop?: string;
 };
 export default function SelectInput(props: PropsSelectInput) {
-  const { options = [], label, labelMarginTop = 0 } = props;
+  const { options = [], label, labelmargintop = 0 } = props;
   return (
     <FormControl fullWidth>
-      <InputLabel size="small" sx={{ mt: labelMarginTop }}>
+      <InputLabel size="small" sx={{ mt: labelmargintop }}>
         {label}
       </InputLabel>
       <Select size="small" {...props}>

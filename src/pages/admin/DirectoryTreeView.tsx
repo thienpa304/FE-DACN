@@ -55,7 +55,6 @@ export default function DirectoryTreeView(props) {
   return (
     <Box
       sx={{
-        width: 300,
         boxShadow: '1px 1px 2px #aae2f7'
       }}
     >

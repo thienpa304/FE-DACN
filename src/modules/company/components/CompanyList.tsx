@@ -1,28 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Box, Grid, Container, Typography } from '@mui/material';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import LinkText from 'src/components/LinkText';
-import JobCard from '../../jobs/components/JobCard';
 import Pagination from 'src/components/Pagination';
-import JobFilter from '../../jobs/components/JobFilter';
-import useQueryTotalResults from '../../jobs/hooks/useQueryTotalResults';
-import WorkIcon from '@mui/icons-material/Work';
 import CompanyCard from './CompanyCard';
 import BusinessIcon from '@mui/icons-material/Business';
 
 function CompanyList(props) {
-  const {
-    pageTitle,
-    profession,
-    queryJobs,
-    sx,
-    numOfJobPerPage,
-    queryCompanys
-  } = props;
+  const { pageTitle, sx, numOfJobPerPage, queryCompanys } = props;
   const { companyList, totalResults } = queryCompanys({ num: 9, page: 1 });
   // const totalResults = companyList?.length;
   const [currentPage, setCurrentPage] = useState(1);
-  // const { totalResults } = useQueryTotalResults({});
   const jobsPerPage = numOfJobPerPage ? numOfJobPerPage : 15;
   const validTotalPages = Number.isInteger(totalResults) ? totalResults : 1;
   const totalPages = Math.ceil(validTotalPages / jobsPerPage);
@@ -56,12 +42,8 @@ function CompanyList(props) {
         <Grid container spacing={2} minHeight={300}>
           {companyList?.length ? (
             companyList.map((company, index) => (
-              <Grid key={company?.id} item xs={4}>
-                <CompanyCard
-                  key={index}
-                  company={company}
-                  employerId={company?.userId}
-                />
+              <Grid key={company?.userId} item xs={4}>
+                <CompanyCard company={company} employerId={company?.userId} />
               </Grid>
             ))
           ) : (

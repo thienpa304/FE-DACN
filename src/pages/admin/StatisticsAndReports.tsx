@@ -23,6 +23,7 @@ import {
   Cell
 } from 'recharts';
 import useQueryJobPostingsReport from 'src/modules/admin/hooks/useQueryPostingsReport';
+import useQueryCandidateStatistics from 'src/modules/admin/hooks/useQueryCandidateStatistics';
 
 const StatisticsAndReports = () => {
   // Example Data
@@ -51,6 +52,7 @@ const StatisticsAndReports = () => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#814289'];
 
   const { jobPostingData } = useQueryJobPostingsReport();
+  const { candidateStatistics } = useQueryCandidateStatistics();
 
   return (
     <Container maxWidth="xl">
@@ -97,7 +99,7 @@ const StatisticsAndReports = () => {
                     <Tooltip />
                     <Legend />
                     <Pie
-                      data={applicantData}
+                      data={candidateStatistics}
                       dataKey="value"
                       nameKey="name"
                       outerRadius={80}

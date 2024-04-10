@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
@@ -7,6 +7,11 @@ import {
   Button,
   IconButton,
   Link,
+  List,
+  ListItem,
+  ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   Tooltip,
   alpha,
@@ -23,6 +28,9 @@ import HeaderUserbox from './Userbox';
 import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
 import { useNavigate } from 'react-router';
+import { NavLink } from 'react-router-dom';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const HeaderWrapper = styled(Box)<{ showSideBar: boolean }>(
   ({ theme, showSideBar }) => `
@@ -53,6 +61,14 @@ function Header({ showSideBar }) {
   } = useApp();
   const theme = useTheme();
   const Navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <HeaderWrapper
@@ -97,7 +113,7 @@ function Header({ showSideBar }) {
                 Navigate('company');
               }}
             >
-              Công ty
+              Công ty nổi bật
             </Button>
             {isEmployee && (
               <>
@@ -122,11 +138,54 @@ function Header({ showSideBar }) {
                     borderColor: '#dce2de'
                   }}
                   onClick={() => {
+                    Navigate('employee/job-applied');
+                  }}
+                >
+                  Đã ứng tuyển
+                </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={() => {
                     Navigate('employee/job-recommend');
                   }}
                 >
-                  Phân tích hồ sơ
+                  Gợi ý việc làm
                 </Button>
+                <Button
+                  sx={{
+                    color: '#b27300',
+                    minWidth: '100px',
+                    borderLeft: 1,
+                    borderColor: '#dce2de'
+                  }}
+                  onClick={handleClick}
+                >
+                  Theo dõi
+                  {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </Button>
+                <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+                  <MenuItem
+                    sx={{ fontWeight: 700 }}
+                    onClick={() => {
+                      Navigate('employee/job-follow');
+                    }}
+                  >
+                    Việc làm
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontWeight: 700 }}
+                    onClick={() => {
+                      Navigate('employee/company-follow');
+                    }}
+                  >
+                    Công ty
+                  </MenuItem>
+                </Menu>
               </>
             )}
             {isEmployer && (
@@ -164,12 +223,45 @@ function Header({ showSideBar }) {
                     borderLeft: 1,
                     borderColor: '#dce2de'
                   }}
-                  onClick={() => {
-                    Navigate('employer/candidate/profile');
-                  }}
+                  onClick={handleClick}
                 >
-                  Hồ sơ ứng tuyển
+                  Hồ sơ ứng viên
+                  {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </Button>
+                <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+                  <MenuItem
+                    sx={{ fontWeight: 700 }}
+                    onClick={() => {
+                      Navigate('employer/candidate/profile');
+                    }}
+                  >
+                    Hồ sơ ứng tuyển
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontWeight: 700 }}
+                    onClick={() => {
+                      Navigate('employer/recommend-profiles');
+                    }}
+                  >
+                    Hồ sơ tiềm năng
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontWeight: 700 }}
+                    onClick={() => {
+                      Navigate('employer/find-profiles');
+                    }}
+                  >
+                    Tìm kiếm hồ sơ
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontWeight: 700 }}
+                    onClick={() => {
+                      Navigate('employer/follow-profile');
+                    }}
+                  >
+                    Hồ sơ đã lưu
+                  </MenuItem>
+                </Menu>
               </>
             )}
             {isAdmin && (
@@ -211,7 +303,7 @@ function Header({ showSideBar }) {
                     Navigate('admin/jobs-posting');
                   }}
                 >
-                  Quản lý tin đăng
+                  Quản lý tuyển dụng
                 </Button>
                 <Button
                   sx={{

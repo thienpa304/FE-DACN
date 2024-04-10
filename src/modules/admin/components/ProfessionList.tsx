@@ -3,8 +3,21 @@ import { random } from '@mui/x-data-grid-generator';
 import React from 'react';
 import professions from 'src/constants/professions';
 
+const professionButtons = [
+  {
+    code: 0,
+    name: 'Tất cả',
+    icon: 'https://cdn-icons-png.flaticon.com/512/5110/5110785.png'
+  },
+  ...professions
+];
 export default function ProfessionList(props) {
-  const { handleSelectProfession } = props;
+  const { handleSelectProfession, handleViewProfessionMode } = props;
+
+  const handleOption = (professionName) => {
+    handleSelectProfession(professionName);
+    handleViewProfessionMode(false);
+  };
 
   return (
     <>
@@ -22,7 +35,7 @@ export default function ProfessionList(props) {
         gap={3}
         sx={{ display: 'flex', justifyContent: 'center' }}
       >
-        {professions.map((item) => (
+        {professionButtons.map((item) => (
           <Grid
             key={item.code}
             item
@@ -38,7 +51,7 @@ export default function ProfessionList(props) {
                 flexDirection: 'column',
                 width: '100%'
               }}
-              onClick={() => handleSelectProfession(item.name)}
+              onClick={() => handleOption(item.name)}
             >
               <img src={item.icon} alt={item.name} width="100" height="100" />
               <Typography sx={{ mt: 1 }}>{item.name}</Typography>

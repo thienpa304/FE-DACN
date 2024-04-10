@@ -2,7 +2,6 @@ import React from 'react';
 import { Navigate } from 'react-router';
 import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
-
 interface Props {
   children: React.ReactElement;
   role: Role[];

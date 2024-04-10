@@ -41,7 +41,7 @@ export default function SearchBar() {
                   borderRadius: '0px',
                   height: '51px'
                 }}
-                labelMarginTop="5px"
+                labelmargintop="5px"
               />
             </InputAdornment>
           )

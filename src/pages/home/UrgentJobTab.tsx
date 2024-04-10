@@ -2,24 +2,27 @@ import { Box, Container, Grid, Typography, Card, Divider } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
-import useQueryTotalResults from 'src/modules/jobs/hooks/useQueryTotalResults';
-import { useState } from 'react';
+import useQueryTotalResultOfJobs from 'src/modules/jobs/hooks/useQueryTotalResultOfJobs';
+import { useEffect, useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import Link from 'src/components/Link';
 
 function UrgentJobTab() {
-  const { totalResults } = useQueryTotalResults();
+  const { totalResults } = useQueryTotalResultOfJobs();
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 9;
-  const validvalidTotalPages = Number.isInteger(totalResults)
+  const validvalidTotalResults = Number.isInteger(totalResults)
     ? totalResults
     : 1;
-  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
+  const totalPages = Math.ceil(validvalidTotalResults / jobsPerPage);
   const { jobs } = useQueryAllJob({ page: currentPage, num: jobsPerPage });
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+  useEffect(() => {
+    console.log(totalResults, jobs);
+  }, [totalResults]);
 
   return (
     <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1, mt: 2 }}>

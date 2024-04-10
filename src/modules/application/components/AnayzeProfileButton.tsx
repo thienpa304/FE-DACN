@@ -1,8 +1,14 @@
-import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ApplicationType } from 'src/constants/enum';
 import { useApp } from 'src/modules/app/hooks';
-import { renderMatchingScore } from 'src/pages/review-candidate-profiles/Table';
+import GradeIcon from '@mui/icons-material/Grade';
 import {
   ProfileApplicationType,
   LOW_SCORE,
@@ -21,7 +27,8 @@ export default function AnayzeProfileButton(props) {
     profileType,
     setShowResult,
     showResult,
-    fileUrl
+    fileUrl,
+    setHintsMessage
   } = props;
   const { user } = useApp();
   const [start, setStart] = useState(false);
@@ -39,15 +46,16 @@ export default function AnayzeProfileButton(props) {
     signal: false,
     resultData: null
   });
+  const [hints, setHints] = useState('');
 
   const finishedAll = () => {
+    setHintsMessage(hints);
     setStart(false);
     setRoundOneFinished(false);
     setRoundTwoFinished(false);
     setRoundThreeFinished(false);
     setShowResult(true);
     setIsAnalyzing(false);
-    setAnalyzedProfile(null);
     setPassRoundOneProfiles([]);
     setGoToAnalyzeResult({ signal: false, resultData: null });
   };
@@ -81,11 +89,17 @@ export default function AnayzeProfileButton(props) {
         setAnalyzeResult(() => matchingScore);
         if (matchingScore >= LOW_SCORE)
           setPassRoundOneProfiles(() => [analyzedProfile]);
-        else setIsAnalyzing(false);
+        else {
+          setHints(
+            'Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm'
+          );
+          setIsAnalyzing(false);
+        }
       }
     } else {
       const response = JSON.parse(result[0]);
       const matchingScore: number = response?.result;
+      setHints(response?.hints);
       setAnalyzeResult((prev) => prev + matchingScore);
     }
 
@@ -108,7 +122,6 @@ export default function AnayzeProfileButton(props) {
   };
 
   useEffect(() => {
-    debugger;
     console.log('analyzedProfile', analyzedProfile);
 
     if (goToAnalyzeResult.signal)
@@ -167,12 +180,13 @@ export default function AnayzeProfileButton(props) {
       setAnalyzedProfile(() => analyzeResultData);
       console.log(analyzeResultData);
     }
-  }, [job, selectedProfile, fileUrl]);
+  }, [JSON.stringify(job), selectedProfile, fileUrl]);
 
   // go to round 1
   useEffect(() => {
     console.log(analyzedProfile);
-    if (start) {
+    if (start && selectedProfile) {
+      setAnalyzeResult(null);
       setShowResult(false);
       handleReviewProfile();
     }
@@ -180,7 +194,6 @@ export default function AnayzeProfileButton(props) {
 
   // go to round 2 and 3
   useEffect(() => {
-    debugger;
     if (!start) return;
     if (roundOneFinished && !roundTwoFinished) {
       console.log('passRoundOneProfiles', passRoundOneProfiles);
@@ -225,10 +238,13 @@ export default function AnayzeProfileButton(props) {
           setStart(true);
         }}
         variant="contained"
-        color="info"
-        sx={{ minWidth: 200 }}
+        color="primary"
+        sx={{
+          minWidth: 200
+        }}
         disabled={showResult || isAnalyzing}
       >
+        <GradeIcon fontSize="small" />
         Phân tích độ phù hợp
       </Button>
       {isAnalyzing && <CircularProgress />}

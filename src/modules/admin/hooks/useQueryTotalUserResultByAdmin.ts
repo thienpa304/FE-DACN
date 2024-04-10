@@ -7,7 +7,7 @@ const useQueryTotalUserResultByAdmin = (params?) => {
   const { data, isLoading, refetch } = useQuery<
     ResponseData<number>,
     AxiosError<ResponseData<number>>
-  >('get-TotalResults', () => GetTotalResultByAdmin.get({ params }), {
+  >('get-Alluser', () => GetTotalResultByAdmin.get({ params }), {
     retry: 1,
     refetchOnWindowFocus: false
   });

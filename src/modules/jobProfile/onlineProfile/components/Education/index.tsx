@@ -90,7 +90,7 @@ export default function Education() {
       // const index = profile?.education_informations?.findIndex(
       //   (item) => item.id === data.id
       // );
-      // debugger;
+
       // if (index !== -1) {
       //   const eduList = [...profile?.education_informations] || [];
       //   eduList[index] = data;

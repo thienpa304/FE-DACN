@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 
-const renderJobTitle = (data) => {
+export const renderJobTitle = (data) => {
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
     navigate(`/job/${data?.row?.postId}`);
@@ -126,7 +126,7 @@ const columns: GridColDef[] = [
   }
 ];
 
-export default function TablePost({ data }) {
+export default function TablePost({ data, pageSize }) {
   return (
     <TableData
       rows={data}
@@ -134,11 +134,12 @@ export default function TablePost({ data }) {
       initialState={{
         pagination: {
           paginationModel: {
-            pageSize: 8
+            pageSize: pageSize
           }
         }
       }}
-      sx={{ height: '72.7vh', width: '100%' }}
+      hideFooter
+      sx={{ height: '68vh', width: '100%' }}
     />
   );
 }

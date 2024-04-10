@@ -20,7 +20,7 @@ import { toInputDateString } from 'src/utils/inputOutputFormat';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import { useApp } from 'src/modules/app/hooks';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import FollowButton from './FollowButton';
+import FollowJobButton from './FollowJobButton';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
@@ -131,7 +131,9 @@ const CardApply: React.FC<Props> = ({ data }) => {
                         isEmployee
                           ? handleOpenFormApply
                           : () => {
-                              navigate('/login');
+                              navigate('/login', {
+                                state: { from: window.location.pathname }
+                              });
                             }
                       }
                       variant="contained"
@@ -140,7 +142,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
                     >
                       Nộp hồ sơ
                     </Button>
-                    <FollowButton job={data} />
+                    <FollowJobButton job={data} />
                   </Box>
                 )}
               </Box>

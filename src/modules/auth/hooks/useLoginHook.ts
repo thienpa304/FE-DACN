@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { localStorage } from 'src/utils';
@@ -16,7 +16,11 @@ const useLogin = () => {
   } = useApp();
 
   const navigate = useNavigate();
-  if (userId) navigate('/');
+  const { state } = useLocation();
+  const locationState = state as any;
+  console.log(useLocation());
+
+  if (userId) navigate(locationState?.from || '/');
 
   const { mutate: onLogin, isLoading } = useMutation<
     ResponseData<LoginResponse>,
@@ -30,7 +34,7 @@ const useLogin = () => {
         setUserApp(userData);
         setAccessTokenApp(access_token);
         localStorage.setAccessToken(access_token);
-        location.replace('/');
+        location.replace(locationState?.from || '/');
       } else toast.error({ massage: res.message });
     },
     onError: (error) => {

@@ -15,7 +15,7 @@ const useMutateApplicationStatus = () => {
   >(([id, data]) => UpdateStatusService.update(id, data), {
     onSuccess: (res) => {
       if (res.status === 200) {
-        queryClient.invalidateQueries('application-getByIdList');
+        queryClient.invalidateQueries(['application-getList']);
         toast.success({ massage: res.message });
       } else {
         toast.error({ massage: res.message });
@@ -27,7 +27,7 @@ const useMutateApplicationStatus = () => {
   });
 
   return {
-    mutate: mutateAsync,
+    onSaveApplicationStatus: mutateAsync,
     isLoading
   };
 };

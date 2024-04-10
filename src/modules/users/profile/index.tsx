@@ -6,14 +6,7 @@ import { styled } from '@mui/material/styles';
 import InfoAccountTab from './InfoAccountTab';
 import InfoCompanyTab from './InfoCompanyTab';
 import { useApp } from 'src/modules/app/hooks';
-
-const TabsWrapper = styled(Tabs)(
-  () => `
-    .MuiTabs-scrollableX {
-      overflow-x: auto !important;
-    }
-`
-);
+import TabsWrapper from 'src/components/TabWrapper';
 
 export default function ManagementUserSettings() {
   const { isEmployer } = useApp();

@@ -5,12 +5,12 @@ import { AdminEmployeesTotalResultService } from '../adminService';
 
 type ResponseType = { totalResults: number };
 
-const useQueryTotalEmployeeResultByAdmin = (params?) => {
+const useQueryTotalResultOfEmployeeByAdmin = (params?) => {
   const { data, isLoading } = useQuery<
     ResponseData<ResponseType>,
     AxiosError<ResponseData<ResponseType>>
   >(
-    ['get-TotalEmployeeResult', params?.profession],
+    ['get-AllEmployees', params?.profession],
     () => AdminEmployeesTotalResultService.get({ params }),
     {
       retry: 1,
@@ -24,4 +24,4 @@ const useQueryTotalEmployeeResultByAdmin = (params?) => {
   };
 };
 
-export default useQueryTotalEmployeeResultByAdmin;
+export default useQueryTotalResultOfEmployeeByAdmin;

@@ -75,6 +75,8 @@ export default function AttachedDocument() {
   // };
 
   const handleSaveProfile = async () => {
+    debugger;
+    if (!profile?.CV) return;
     setIsAnalyzing(true);
     try {
       const filePath = await getFileByUrl(profile?.CV);
@@ -88,8 +90,8 @@ export default function AttachedDocument() {
       const dataToAnalyze = preProcessData(profile, 'document', text);
 
       sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
-        '58': 1,
-        '60': 1
+        '58': 5,
+        '60': 5
       }).then((analysisResults) => {
         const keywords = loadKeywords(
           analysisResults,
@@ -99,19 +101,19 @@ export default function AttachedDocument() {
         if (profile?.userId) {
           onUpdateData({
             ...profile,
-            keywords: profile?.skills?.toLocaleLowerCase() + ', ' + keywords
+            keywords: (profile?.skills + ', ' + keywords)?.toLocaleLowerCase()
           } as AttachedDocumentType);
         } else {
           onSaveData({
             ...profile,
-            keywords: profile?.skills?.toLocaleLowerCase() + ', ' + keywords
+            keywords: (profile?.skills + ', ' + keywords)?.toLocaleLowerCase()
           } as AttachedDocumentType);
         }
         setFinished(true);
+        setIsAnalyzing(false);
       });
     } catch (error) {
       console.error('Error creating local URL:', error);
-    } finally {
       setIsAnalyzing(false);
     }
   };
@@ -126,9 +128,9 @@ export default function AttachedDocument() {
     }
   }, [finished]);
 
-  useEffect(() => {
-    setProfile(attachedDocument);
-  }, [attachedDocument]);
+  // useEffect(() => {
+  //   setProfile(attachedDocument);
+  // }, [attachedDocument]);
 
   if (isLoading || isAnalyzing) {
     return <SuspenseLoader />;

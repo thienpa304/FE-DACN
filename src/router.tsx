@@ -11,7 +11,7 @@ import UserManagementTable from './pages/admin/UserManagement';
 import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManagement';
 import EmailNotification from './pages/admin/EmailNotification';
 import CandidateProfileAnalysis from './pages/admin/CandidateProfileAnalysis ';
-import UserProfileManagement from './pages/admin/UserProfileManagement';
+import ProfileManagement from './pages/admin/ProfileManagement';
 
 const Loader = (Component) => (props) =>
   (
@@ -66,7 +66,7 @@ const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
 const EmployeeProfile = Loader(
-  lazy(() => import('src/pages/employee/JobProfile'))
+  lazy(() => import('src/pages/employee-profile/JobProfile'))
 );
 const OnlineProfile = Loader(
   lazy(() => import('src/modules/jobProfile/onlineProfile'))
@@ -81,6 +81,15 @@ const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
 const CompanyFollow = Loader(lazy(() => import('src/pages/company-follow')));
 
 const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
+
+// Employer
+const EmployeeFollow = Loader(lazy(() => import('src/pages/employee-follow')));
+
+const FindProfiles = Loader(lazy(() => import('src/pages/find-profiles')));
+
+const RecommendProfile = Loader(
+  lazy(() => import('src/pages/recommend-profiles'))
+);
 
 // Status
 const Status404 = Loader(lazy(() => import('src/modules/status/Status404')));
@@ -272,6 +281,22 @@ const routes: RouteObject[] = [
             element: <ViewCandidateProfile />
           }
         ]
+      },
+      {
+        path: 'find-profiles',
+        element: <FindProfiles />
+      },
+      {
+        path: 'find-profiles/:id',
+        element: <FindProfiles />
+      },
+      {
+        path: 'recommend-profiles',
+        element: <RecommendProfile />
+      },
+      {
+        path: 'follow-profile',
+        element: <EmployeeFollow />
       }
     ]
   },
@@ -327,7 +352,7 @@ const routes: RouteObject[] = [
       },
       {
         path: 'manage-profile',
-        element: <UserProfileManagement />
+        element: <ProfileManagement />
       }
     ]
   },

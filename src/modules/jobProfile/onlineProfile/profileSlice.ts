@@ -17,11 +17,14 @@ export const OnlineProfileSlice = createSlice({
   reducers: {
     setProfile: (state, action: PayloadAction<Partial<OnlineProfile>>) => {
       state.profile = { ...state.profile, ...action.payload };
+    },
+    resetProfile: (state) => {
+      state.profile = {};
     }
   }
 });
 
-export const { setProfile } = OnlineProfileSlice.actions;
+export const { setProfile, resetProfile } = OnlineProfileSlice.actions;
 
 export const selectOnlineProfile = (state: RootState) => state.onlineProfile;
 

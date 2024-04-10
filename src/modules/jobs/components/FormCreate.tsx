@@ -41,7 +41,7 @@ import {
   convertToObjectsForSkill,
   preProcessText
 } from 'src/utils/inputOutputFormat';
-import { tfidfReview } from 'src/utils/keywords';
+import { loadKeywords, tfidfReview } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { ReactTags } from 'react-tag-autocomplete';
@@ -76,7 +76,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { data, isLoading } = useQueryJobById(selectedId);
   const [analysisResults, setAnalysisResults] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [keywords, setKeywords] = useState([]);
   const [documentText, setDocumentText] = useState('');
   const [onSaveNewData, setOnSaveNewData] = useState(null);
   const [requiredSkills, setRequiredSkills] = useState(null);
@@ -117,7 +116,10 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       jobAnalysist,
       [processedText],
       null,
-      { '58': 1, '60': 1 }
+      {
+        '58': 5,
+        '60': 5
+      }
     );
     setAnalysisResults(result);
   };
@@ -139,38 +141,10 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
   useEffect(() => {
     if (analysisResults.length > 0 && analysisResults[0]) {
-      const result = analysisResults[0];
+      const keywords = loadKeywords(analysisResults);
 
-      const startIndex = result.indexOf('[');
-      if (startIndex === -1) {
-        console.log("Không tìm thấy ký tự '['");
-        return;
-      }
+      const keywordToStore = onSaveNewData.requiredSkills + ', ' + keywords;
 
-      // Tìm vị trí kết thúc của ']'
-      const endIndex = result.lastIndexOf(']');
-      if (endIndex === -1) {
-        console.log("Không tìm thấy ký tự ']'");
-        return;
-      }
-      console.log(result);
-
-      // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
-      const extractedString = result.substring(startIndex, endIndex + 1);
-
-      // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
-      const jsonString = extractedString.replace(/'/g, '"');
-
-      // B2: Parse string sang array
-      const keywordArray = JSON.parse(jsonString);
-
-      setKeywords(() => keywordArray);
-      const keywordToStore =
-        onSaveNewData.requiredSkills +
-        ', ' +
-        keywordArray.slice(0, 20)?.join(', ');
-
-      debugger;
       if (selectedId)
         onSaveDataById([
           selectedId,

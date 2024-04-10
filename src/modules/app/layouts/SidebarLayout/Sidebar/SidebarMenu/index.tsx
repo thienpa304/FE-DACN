@@ -17,7 +17,9 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CheckBoxTwoToneIcon from '@mui/icons-material/CheckBoxTwoTone';
+import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import { useApp } from 'src/modules/app/hooks';
+import BusinessIcon from '@mui/icons-material/Business';
 import { Role } from 'src/modules/users/model';
 import {
   AccountCircleTwoTone as UserManageIcon,
@@ -29,7 +31,7 @@ import {
   AnalyticsTwoTone as AnalyzeProfileIcon,
   NotificationsActiveTwoTone as JobSuggestIcon
 } from '@mui/icons-material';
-import BusinessIcon from '@mui/icons-material/Business';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -246,6 +248,39 @@ function SidebarMenu() {
                       startIcon={<CheckBoxTwoToneIcon />}
                     >
                       Hồ sơ ứng tuyển
+                    </Button>
+                  </ListItem>
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/recommend-profiles`}
+                      startIcon={<StarBorderIcon />}
+                    >
+                      Hồ sơ tiềm năng
+                    </Button>
+                  </ListItem>
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/find-profiles`}
+                      startIcon={<ContentPasteSearchIcon />}
+                    >
+                      Tìm kiếm ứng viên
+                    </Button>
+                  </ListItem>
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to={`/${rolePath}/follow-profile`}
+                      startIcon={<FavoriteIcon />}
+                    >
+                      Hồ sơ đã lưu
                     </Button>
                   </ListItem>
                 </List>

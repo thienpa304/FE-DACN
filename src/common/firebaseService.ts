@@ -88,7 +88,7 @@ export async function downloadFileByUrl(url: string) {
       xhr.onload = (event) => {
         const blob = xhr.response;
       };
-      debugger;
+
       xhr.open('GET', url);
       xhr.send();
 
