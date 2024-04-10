@@ -7,11 +7,15 @@ const useQueryCandidateStatistics = () => {
   const { data, isLoading } = useQuery<
     ResponseData<any[]>,
     AxiosError<ResponseData<any[]>>
-  >(['get-candidate-statistics'], () => AdminCandidateStatisticsService.get({}), {
-    keepPreviousData: true,
-    retry: 1,
-    refetchOnWindowFocus: false
-  });
+  >(
+    ['get-candidate-statistics'],
+    () => AdminCandidateStatisticsService.get({}),
+    {
+      keepPreviousData: true,
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  );
 
   return {
     candidateStatistics: data?.data?.map((item) => ({ ...item })) || [],

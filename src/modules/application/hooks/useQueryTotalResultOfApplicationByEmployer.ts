@@ -7,12 +7,12 @@ interface responseType {
   totalResults: number;
 }
 
-const useQueryApplicationTotalResultsByEmployer = (params?) => {
+const useQueryTotalResultOfApplicationByEmployer = (params?) => {
   const { data, isLoading } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>
   >(
-    'get-TotalApplicationResults',
+    ['application-getList', params?.page, params?.status],
     () => ApplicationTotalResults.get({ params }),
     {
       retry: 1,
@@ -26,4 +26,4 @@ const useQueryApplicationTotalResultsByEmployer = (params?) => {
   };
 };
 
-export default useQueryApplicationTotalResultsByEmployer;
+export default useQueryTotalResultOfApplicationByEmployer;

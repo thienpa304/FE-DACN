@@ -28,7 +28,7 @@ class BaseService {
       .then((res) => res.data);
   };
 
-  updateAtEndPoint = (data = {}) => {
+  updateWithoutId = (data = {}) => {
     return httpRequest.put(`${this.endPoint}`, data).then((res) => res.data);
   };
 

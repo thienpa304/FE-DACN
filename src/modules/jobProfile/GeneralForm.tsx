@@ -8,6 +8,8 @@ import Autocomplete from 'src/components/Autocomplete';
 import { useForm } from 'react-hook-form';
 import {
   convertObjectListToString,
+  convertObjectListToStringForSkill,
+  convertToObjectsForSkill,
   findObjectKey
 } from 'src/utils/inputOutputFormat';
 import NumericFormatCustom from 'src/components/NumberFormatCustom';
@@ -20,6 +22,8 @@ import {
   PositionLevel
 } from 'src/constants/enum';
 import GeneralViewUI from './GeneralViewUI';
+import TagInput from 'src/components/TagInput';
+import skills from 'src/constants/skills';
 interface Option {
   value: any;
   label: any;
@@ -80,7 +84,9 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
     defaultValues: defaultValues
   });
 
+  const ref = React.useRef(null);
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [employeeSkills, setSetEmployeeSkills] = useState(null);
 
   const handleSaveProfile = (data: FormProps) => {
     const newData = processDataPayload(data);
@@ -99,13 +105,15 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
     return {
       ...data,
       profession: convertObjectListToString(data?.profession as Option[]),
-      workAddress: convertObjectListToString(data?.workAddress as Option[])
-      // degree: findObjectKey(data.degree, Degree)
+      workAddress: convertObjectListToString(data?.workAddress as Option[]),
+      skills: convertObjectListToStringForSkill(employeeSkills)
     };
   };
 
   useEffect(() => {
     reset(data);
+    data?.skills &&
+      setSetEmployeeSkills(convertToObjectsForSkill(data?.skills));
   }, [data]);
 
   return (
@@ -276,16 +284,22 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                fullWidth
-                id="skills"
-                label="Kĩ năng"
-                name="skills"
-                disabled={isReadOnly}
+              <TagInput
+                suggestions={skills}
+                forwardedRef={ref}
+                initialValue={employeeSkills}
+                onTagsChange={setSetEmployeeSkills}
               />
+              <Typography
+                fontSize={12}
+                color="secondary"
+                fontStyle={'italic'}
+                sx={{ display: 'flex', justifyContent: 'center' }}
+              >
+                Hãy liệt kê tối đa 10 từ khóa. Ví dụ: Python, ReactJS, HTML,
+                Go... Sẽ giúp hệ thống tìm kiếm được doanh nghiệp phù hợp với hồ
+                sơ bạn nhất
+              </Typography>
             </Grid>
           </Grid>
           {!isReadOnly && (

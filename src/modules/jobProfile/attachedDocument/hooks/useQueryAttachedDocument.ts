@@ -6,10 +6,21 @@ import { AttachedDocumentService } from 'src/modules/jobProfile/employeeService'
 import { useEffect, useState } from 'react';
 import { getAccessToken } from 'src/utils/localStorage';
 import { useApp } from 'src/modules/app/hooks';
+import useAttachedDocument from './useDocument';
 
 const useQueryAttachedDocument = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isEmployee } = useApp();
+  const { setProfile } = useAttachedDocument();
+
+  const { data, isLoading, isSuccess } = useQuery<
+    ResponseData<AttachedDocument>,
+    AxiosError<ResponseData<AttachedDocument>>
+  >(['get-AttachedDocument'], AttachedDocumentService.get, {
+    retry: 1,
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn && isEmployee
+  });
 
   useEffect(() => {
     const token = getAccessToken();
@@ -20,14 +31,12 @@ const useQueryAttachedDocument = () => {
     }
   }, []);
 
-  const { data, isLoading } = useQuery<
-    ResponseData<AttachedDocument>,
-    AxiosError<ResponseData<AttachedDocument>>
-  >('get-AttachedDocument', AttachedDocumentService.get, {
-    retry: 1,
-    refetchOnWindowFocus: false,
-    enabled: isLoggedIn && isEmployee
-  });
+  useEffect(() => {
+    // Handle the data or error here
+    if (data) {
+      setProfile(data.data);
+    }
+  }, [isSuccess]);
 
   return {
     attachedDocument: data?.data,

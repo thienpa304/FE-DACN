@@ -16,7 +16,7 @@ const useMutateUpdateAttachedDocument = () => {
     ResponseData<AttachedDocument>,
     AxiosError<ResponseData<AttachedDocument>>,
     AttachedDocument
-  >((data) => AttachedDocumentService.updateAtEndPoint(data), {
+  >((data) => AttachedDocumentService.updateWithoutId(data), {
     onSuccess: (res) => {
       if (res.status === 200) {
         queryClient.invalidateQueries('get-AttachedDocument');

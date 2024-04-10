@@ -12,9 +12,9 @@ import SelectInput from 'src/components/SelectInput';
 import { useEffect, useState } from 'react';
 import useMutateJobStatus from 'src/modules/jobs/hooks/useMutateJobStatus';
 import { ApprovalStatus } from 'src/constants/enum';
-import useQueryTotalResultsByAdmin from 'src/modules/jobs/hooks/useQueryTotalResultsByAdmin';
+import useQueryTotalResultOfJobsByAdmin from 'src/modules/jobs/hooks/useQueryTotalResultOfJobsByAdmin';
 import Pagination from 'src/components/Pagination';
-import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
+import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import dayjs from 'dayjs';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 
@@ -42,7 +42,7 @@ const renderJobTitle = (data) => {
             whiteSpace: 'wrap',
             lineHeight: '1.5',
             display: '-webkit-box',
-            WebkitLineClamp: 3,
+            WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical'
           }}
         >
@@ -65,7 +65,7 @@ const renderCompany = (data) => {
           whiteSpace: 'wrap',
           lineHeight: '1.5',
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical'
         }}
       >
@@ -97,9 +97,9 @@ const renderStatus = (data) => {
       size="small"
       sx={{
         '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
-        {
-          fontSize: 13
-        }
+          {
+            fontSize: 13
+          }
       }}
     />
   );
@@ -123,7 +123,7 @@ const columns: GridColDef[] = [
           whiteSpace: 'wrap',
           lineHeight: '1.5',
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical'
         }}
       >
@@ -180,20 +180,19 @@ const columns: GridColDef[] = [
 ];
 
 export default function Table({ statusFilter, selectedProfession }) {
-  const { totalResults, refetch: refetchTotalResults } =
-    useQueryTotalResultsByAdmin({
-      status: ApprovalStatus[statusFilter],
-      profession: selectedProfession
-    });
+  const { totalResults } = useQueryTotalResultOfJobsByAdmin({
+    status: ApprovalStatus[statusFilter],
+    profession: selectedProfession
+  });
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 10;
+  const jobsPerPage = 9;
 
   const validvalidTotalPages = Number.isInteger(totalResults)
     ? totalResults
     : 1;
   const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
 
-  const { jobs, refetch, isLoading } = useQueryJob({
+  const { jobs, isLoading } = useQueryJobByAdmin({
     page: currentPage,
     num: jobsPerPage,
     status: ApprovalStatus[statusFilter],
@@ -203,11 +202,6 @@ export default function Table({ statusFilter, selectedProfession }) {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
-
-  useEffect(() => {
-    refetch();
-    refetchTotalResults();
-  }, [statusFilter]);
 
   if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
 

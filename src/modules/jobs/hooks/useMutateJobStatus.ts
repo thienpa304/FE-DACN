@@ -15,7 +15,7 @@ const useMutateJobStatus = () => {
   >(([id, data]) => JobUpdateStatusService.update(id, data), {
     onSuccess: (res) => {
       if (res.status === 200) {
-        queryClient.invalidateQueries(['job-getById']);
+        queryClient.invalidateQueries(['get-AllJobsByAdmin']);
         toast.success({ massage: res.message });
       } else {
         toast.error({ massage: res.message });

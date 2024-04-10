@@ -5,28 +5,23 @@ import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
-import { ApprovalStatus } from 'src/constants/enum';
 import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
 import { v4 } from 'uuid';
-import useQueryJobOwner from 'src/modules/jobs/hooks/useQueryJobOwner';
-import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
+import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import { useQueryCandidateProfileByIdList } from 'src/modules/application/hooks/useQueryCandidateProfileById';
-import dayjs from 'dayjs';
-import { getFileByUrl } from 'src/common/firebaseService';
-import pdfToText from 'react-pdftotext';
 import {
-  RoundOneCheck,
-  RoundThreeCheck,
-  RoundTwoCheck
-} from 'src/modules/ai/roles';
-import { Application } from 'src/modules/application/model';
-import { Job } from 'src/modules/jobs/model';
-import { User } from 'src/modules/users/model';
-import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
-import { preProcessText } from 'src/utils/inputOutputFormat';
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import { dataList } from '.';
+  ProfileApplicationType,
+  preprocessJobData,
+  preprocessProfileData,
+  review,
+  LOW_SCORE,
+  NORMAL_SCORE,
+  HIGH_SCORE,
+  firstRoundForGeneralInfo
+} from 'src/utils/reviewProfile';
+import SuspenseLoader from 'src/components/SuspenseLoader';
+import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
 
 interface CustomLinkProps {
   to?: string;
@@ -57,26 +52,24 @@ const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
   }
 );
 
-const FAIL_SCORE = 0; // < 30
-const LOW_SCORE = 30; // 30 - 80
-const NORMAL_SCORE = 80; // 80 - 120
-const HIGH_SCORE = 120; // higher than 120
-
-type ProfileTypeInfo = {
-  personal_information: User;
-  online_profile?: OnlineProfile;
-  attached_document?: AttachedDocument;
-  application: Omit<Application, 'applicationType'> & {
-    id: number;
-    applicationType: string;
-    matchingScore: number;
-  };
-};
-
-type ProfileApplicationType = {
-  id: number;
-  employee_Profile: ProfileTypeInfo;
-  employer_Requirement: Partial<Job>;
+const renderJobTitle = (data) => {
+  if (data.value) {
+    return (
+      <Typography
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'wrap',
+          lineHeight: '1.5',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical'
+        }}
+      >
+        {data.value}
+      </Typography>
+    );
+  }
 };
 
 const renderProfileName = (data) => {
@@ -104,18 +97,27 @@ const renderProfileName = (data) => {
 };
 
 const renderStatus = (data) => {
-  const initValue = APPROVAL_STATUS.find(
-    (item) => item.label === data.value
-  ).value;
+  const { onSaveApplicationStatus } = useMutateApplicationStatus();
+  const [value, setValue] = useState(null); // Initialize value as null
 
-  const { mutate } = useMutateApplicationStatus();
-  const [value, setValue] = useState(initValue);
-  const handleChangeValue = (e) => {
-    const value = e.target.value as ApprovalStatus;
-    mutate([data.id, { status: value }]).then(() => {
-      setValue(e.target.value);
-    });
+  useEffect(() => {
+    if (!data.value || !APPROVAL_STATUS) return;
+    const initValue = APPROVAL_STATUS.find(
+      (item) => item.label === data.value
+    )?.value;
+
+    setValue(initValue); // Set the initial value
+  }, [data.value]); // Run this effect whenever data.value changes
+
+  const handleChangeValue = (newValue) => {
+    onSaveApplicationStatus([data.id, { status: newValue.target.value }]).then(
+      () => {
+        setValue(newValue.target.value);
+      }
+    );
   };
+
+  // Return the SelectInput component
   return (
     <SelectInput
       value={value}
@@ -125,7 +127,7 @@ const renderStatus = (data) => {
   );
 };
 
-const renderMatchingScore = (data, isAnalyzing: boolean) => {
+export const renderMatchingScore = (data, isAnalyzing: boolean) => {
   if (isAnalyzing) return <CircularProgress />;
   let result = '';
   if (data.value >= HIGH_SCORE) result = 'Cao';
@@ -133,7 +135,7 @@ const renderMatchingScore = (data, isAnalyzing: boolean) => {
     result = 'Trung bình';
   else if (data.value >= LOW_SCORE && data.value < NORMAL_SCORE)
     result = 'Thấp';
-  else if (data.value < LOW_SCORE) result = 'Không phù hợp';
+  else if (data.value < 0) result = 'Không phù hợp';
 
   return data.value === undefined || data.value === null ? (
     <Typography>Chưa xác định</Typography>
@@ -161,12 +163,11 @@ const renderMatchingScore = (data, isAnalyzing: boolean) => {
 };
 
 export default function Table(props) {
-  const { pageSize, handleChangePage, page, isLoading, totalResults } = props;
-  const data = dataList.value;
-
+  const { pageSize, data } = props;
   // data : danh sách Application
-  const [analyzedProfile, setAnalyzedProfile] =
-    useState<ProfileApplicationType[]>(data);
+  const [analyzedProfile, setAnalyzedProfile] = useState<
+    ProfileApplicationType[]
+  >([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showList, setShowList] = useState([]);
   const [roundOneFinished, setRoundOneFinished] = useState(false);
@@ -175,256 +176,67 @@ export default function Table(props) {
   const [passRoundOneProfiles, setPassRoundOneProfiles] = useState<
     ProfileApplicationType[]
   >([]);
-  const [passRoundTwoProfiles, setPassRoundTwoProfiles] = useState<
+  const [resetMatchingScoreList, setResetMatchingScoreList] = useState<
     ProfileApplicationType[]
   >([]);
   const [start, setStart] = useState(false);
-  const { jobs } = useQueryJobOwner();
+  const [goToAnalyzeResult, setGoToAnalyzeResult] = useState({
+    signal: false,
+    resultData: null
+  });
+  const applicationIdList = data?.map((item) => item?.application_id);
+  const jobsIdList: Set<number> = new Set(
+    data?.map((item) => {
+      return item?.jobPosting?.postId;
+    })
+  );
 
-  const idList = data.map((item) => item?.application_id);
-  const { data: applicationDetailList } =
-    useQueryCandidateProfileByIdList(idList);
-  const { mutate } = useMutateApplicationStatus();
+  // Convert Set back to an array if needed
+  const uniqueJobsIdList: number[] = [...jobsIdList];
 
-  const firstRoundForGeneralInfo = (job, profile) => {
-    const { personal_information, online_profile, attached_document } = profile;
+  const { jobs, isLoading: isLoadingJobs } =
+    useQueryJobByIdList(uniqueJobsIdList);
 
-    const age =
-      dayjs().year() - dayjs(personal_information?.dob, 'YYYY-MM-DD').year();
+  const { data: applicationDetailList, isLoading: isLoadingApplication } =
+    useQueryCandidateProfileByIdList(applicationIdList);
 
-    if (
-      job?.sex !== personal_information?.sex ||
-      job?.minAge > age ||
-      job?.maxAge < age
-    )
-      return -10;
+  const { onSaveApplicationStatus } = useMutateApplicationStatus();
 
-    if (online_profile && !isProfileQualified(online_profile, job)) return -10;
-
-    if (attached_document && !isProfileQualified(attached_document, job))
-      return -10;
-
-    return 30;
+  const finishedAll = () => {
+    setStart(false);
+    setRoundOneFinished(false);
+    setRoundTwoFinished(false);
+    setRoundThreeFinished(false);
+    setResetMatchingScoreList([]);
+    setIsAnalyzing(false);
+    setPassRoundOneProfiles([]);
+    setGoToAnalyzeResult({ signal: false, resultData: null });
   };
 
-  const isProfileQualified = (profile, job) => {
-    const { profession, degree, experience } = profile;
-
-    if (!profession.includes(job?.profession)) return false;
-
-    if (compareDegrees(degree, job?.degree) < 0) return false;
-
-    if (compareExperience(experience, job?.experience) < 0) return false;
-
-    return true;
+  const handleSetAnalyzedProfile = async (data: ProfileApplicationType[]) => {
+    setAnalyzedProfile(() => data);
   };
 
-  const fetchDataFromUrl = async (url, type) => {
-    try {
-      const filePath = await getFileByUrl(url);
-      const response = await fetch(filePath);
-      if (!response.ok) {
-        throw new Error('Failed to fetch file');
-      }
-      const blob = await response.blob();
-      return pdfToText(blob);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return null;
-    }
+  const handleIsAnalyzing = (data: boolean) => {
+    setIsAnalyzing(() => data);
   };
 
-  const readCVData = async (employee_Profile) => {
-    if (employee_Profile?.attached_document) {
-      const text = await fetchDataFromUrl(
-        employee_Profile.attached_document.CV,
-        'attached_document'
-      );
-      const preProcessText = text
-        ?.replace(/[^\w\s,+()@.:\/-]/g, '')
-        .replace(/\s+/g, ' ');
-      return preProcessText
-        ? {
-            ...employee_Profile,
-            attached_document: {
-              ...employee_Profile.attached_document,
-              CV: preProcessText
-            }
-          }
-        : null;
-    }
-    return null;
-  };
-
-  const readEnclosedCVData = async (employee_Profile) => {
-    if (
-      employee_Profile?.application?.applicationType === 'Nộp nhanh' &&
-      employee_Profile?.application?.CV
-    ) {
-      const text = await fetchDataFromUrl(
-        employee_Profile.application.CV,
-        'enclosed_CV'
-      );
-      const preProcessText = text
-        ?.replace(/[^\w\s,+()@.:\/-]/g, '')
-        .replace(/\s+/g, ' ');
-
-      if (preProcessText) {
-        return {
-          ...employee_Profile,
-          application: { ...employee_Profile.application, CV: preProcessText }
-        };
-      }
-
-      return employee_Profile;
-    }
-    return null;
-  };
-
-  const fetchAndProcessCVData = async (dataToAnalyze, dataProcessor) => {
-    return Promise.all(
-      dataToAnalyze.map(async (data) => ({
-        ...data,
-        employee_Profile: await dataProcessor(data.employee_Profile)
-      }))
-    );
-  };
-
-  const filterAndMapProfiles = (dataList) => {
-    return dataList
-      .filter((data) => data.employee_Profile)
-      .map(({ employee_Profile, employer_Requirement }) => ({
-        employee_Profile,
-        employer_Requirement
-      }));
-  };
-
-  const matchProfileById = (
-    analyzedProfile,
-    cvEnclosedProfileList,
-    attachProfileList
-  ) => {
-    console.log(
-      '****',
-      analyzedProfile.map((item) => {
-        const matchedItem =
-          cvEnclosedProfileList.find(
-            (cvItem) => cvItem.employee_Profile.id === item.id
-          ) ||
-          attachProfileList.find(
-            (attachItem) => attachItem.employee_Profile.id === item.id
-          );
-        return matchedItem ? matchedItem.employee_Profile : item;
-      })
-    );
-
-    return analyzedProfile.map((item) => {
-      const matchedItem =
-        cvEnclosedProfileList.find(
-          (cvItem) => cvItem.employee_Profile.id === item.id
-        ) ||
-        attachProfileList.find(
-          (attachItem) => attachItem.employee_Profile.id === item.id
-        );
-      return matchedItem ? matchedItem.employee_Profile : item;
-    });
-  };
-
-  const review = async (
-    dataToAnalyze: ProfileApplicationType[],
-    round: number,
-    resetMatchingScoreList?
-  ) => {
-    setIsAnalyzing(true);
-    let result;
-    console.log('dataToAnalyze', dataToAnalyze);
-
-    switch (round) {
-      case 1:
-        console.log('Start round 1');
-        const attachedDocumentList = await fetchAndProcessCVData(
-          dataToAnalyze,
-          readCVData
-        );
-        const cvEnclosedList = await fetchAndProcessCVData(
-          dataToAnalyze,
-          readEnclosedCVData
-        );
-
-        const attachProfileList = filterAndMapProfiles(attachedDocumentList);
-
-        const cvEnclosedProfileList = filterAndMapProfiles(cvEnclosedList);
-
-        console.log('cvEnclosedProfileList', cvEnclosedProfileList);
-
-        const cvContentProfile = matchProfileById(
-          resetMatchingScoreList,
-          cvEnclosedProfileList,
-          attachProfileList
-        );
-
-        setAnalyzedProfile(() => cvContentProfile);
-
-        result = await sendChatGPTRequest(
-          RoundOneCheck,
-          cvEnclosedProfileList
-        ).catch(() => []);
-        handleAnalyzeResult(result);
-        break;
-
-      case 2:
-        console.log('Start round 2');
-        result = await sendChatGPTRequest(
-          RoundTwoCheck,
-          passRoundOneProfiles.map((item) => {
-            return {
-              ...item,
-              employer_Requirement: {
-                skillRequirements: item.employer_Requirement.skillRequirements
-              }
-            };
-          })
-        ).catch(() => []);
-        handleAnalyzeResult(result);
-        break;
-
-      case 3:
-        console.log('Start round 3');
-        result = await sendChatGPTRequest(
-          RoundThreeCheck,
-          passRoundOneProfiles.map((item) => {
-            return {
-              id: item.id,
-              employee_Profile: {
-                keywords: item.employee_Profile.application.keywords
-              },
-              employer_Requirement: {
-                keywords: item.employer_Requirement.keywords
-              }
-            };
-          })
-        ).catch(() => []);
-        handleAnalyzeResult(result);
-        break;
-      default:
-        break;
-    }
+  const handleGoToAnalyzeResult = (signal: boolean, resultData) => {
+    setGoToAnalyzeResult({ signal: signal, resultData: resultData });
   };
 
   const handleAnalyzeResult = async (result: any[]) => {
     const responses = result?.map((data) => {
       if (data) return JSON.parse(data);
     });
-    console.log('analyzedProfile', analyzedProfile);
 
     const updatedAnalyzedProfile = await Promise.all(
       analyzedProfile?.map(async (profile) => {
-        const foundItem = responses.find((res) => res?.id === profile?.id);
-
+        const foundItem = responses?.find((res) => res?.id === profile?.id);
         let matchingScore: number;
         if (foundItem?.result !== undefined) {
-          matchingScore = profile.employee_Profile.application.matchingScore
-            ? profile.employee_Profile.application.matchingScore +
+          matchingScore = profile?.employee_Profile?.application?.matchingScore
+            ? profile?.employee_Profile?.application?.matchingScore +
               foundItem.result
             : foundItem.result;
         } else if (
@@ -433,11 +245,11 @@ export default function Table(props) {
             profile?.employee_Profile?.attached_document)
         ) {
           matchingScore = firstRoundForGeneralInfo(
-            profile.employer_Requirement,
-            profile.employee_Profile
+            profile?.employer_Requirement,
+            profile?.employee_Profile
           );
         } else {
-          matchingScore = profile.employee_Profile.application.matchingScore;
+          matchingScore = profile?.employee_Profile?.application?.matchingScore;
         }
 
         console.log('matchingScore', matchingScore);
@@ -445,9 +257,9 @@ export default function Table(props) {
         return {
           ...profile,
           employee_Profile: {
-            ...profile.employee_Profile,
+            ...profile?.employee_Profile,
             application: {
-              ...profile.employee_Profile.application,
+              ...profile?.employee_Profile?.application,
               matchingScore: matchingScore
             }
           }
@@ -455,54 +267,28 @@ export default function Table(props) {
       })
     );
 
-    const passRoundDataThreshold = 30;
-    const passRoundData = updatedAnalyzedProfile?.filter(
-      (data) =>
-        data.employee_Profile.application.matchingScore >=
-        passRoundDataThreshold
-    );
-    setPassRoundOneProfiles(passRoundData);
+    if (!roundOneFinished) {
+      const passRoundData = updatedAnalyzedProfile?.filter(
+        (data) => data?.employee_Profile.application?.matchingScore >= LOW_SCORE
+      );
+      setPassRoundOneProfiles(passRoundData);
+    }
 
     setAnalyzedProfile(() => updatedAnalyzedProfile);
     const resultList = updatedAnalyzedProfile?.map((profile) => ({
-      ...profile.employee_Profile.application,
+      ...profile?.employee_Profile?.application,
       id: profile.id
     }));
     console.log('resultList', resultList);
 
     setShowList(resultList);
     setIsAnalyzing(false);
-    if (!roundOneFinished) setRoundOneFinished(true);
-    else if (!roundTwoFinished) setRoundTwoFinished(true);
-    else if (!roundThreeFinished) setRoundThreeFinished(true);
-  };
-
-  const preprocessJobData = (job) => ({
-    id: job?.postId,
-    jobTitle: job?.jobTitle,
-    profession: job?.profession,
-    jobDescription: preProcessText(job?.jobDescription),
-    jobRequirements: preProcessText(job?.jobRequirements),
-    benefits: preProcessText(job?.benefits),
-    workAddress: job?.workAddress,
-    minAge: job?.minAge,
-    maxAge: job?.maxAge,
-    sex: job?.sex,
-    requiredSkills: job?.requiredSkills,
-    employmentType: job?.employmentType,
-    degree: job?.degree,
-    experience: job?.experience,
-    positionLevel: job?.positionLevel,
-    keywords: job?.keywords
-  });
-
-  const preprocessProfileData = (profile) => ({
-    ...profile,
-    personal_information: {
-      dob: profile?.personal_information?.dob,
-      sex: profile?.personal_information?.sex
+    if (start) {
+      if (!roundOneFinished) setRoundOneFinished(true);
+      else if (!roundTwoFinished) setRoundTwoFinished(true);
+      else if (!roundThreeFinished) setRoundThreeFinished(true);
     }
-  });
+  };
 
   const matchJobAndProfile = (): ProfileApplicationType[] =>
     data
@@ -537,9 +323,16 @@ export default function Table(props) {
       })
       .filter(Boolean);
 
+  useEffect(() => {
+    if (goToAnalyzeResult.signal) {
+      console.log('analyzedProfile', analyzedProfile);
+      handleAnalyzeResult(goToAnalyzeResult.resultData);
+    }
+  }, [goToAnalyzeResult.signal]);
+
   // First time render the page
   useEffect(() => {
-    if (!jobs.length || !applicationDetailList.length) return;
+    if (!jobs.length || !applicationDetailList.length || start) return;
 
     const dataToAnalyze = matchJobAndProfile();
     console.log('dataToAnalyze', dataToAnalyze);
@@ -548,67 +341,101 @@ export default function Table(props) {
       item.employee_Profile.application.id = item.id;
       return item.employee_Profile.application;
     });
-    setShowList(() => resultList);
-    setAnalyzedProfile(() => dataToAnalyze);
-  }, [data, jobs.length, applicationDetailList.length]);
+
+    if (JSON.stringify(resultList) !== JSON.stringify(showList)) {
+      setShowList(() => resultList);
+    }
+
+    // Check if the profile values are really different
+    // if not, do not set the state
+    if (JSON.stringify(dataToAnalyze) !== JSON.stringify(analyzedProfile)) {
+      setAnalyzedProfile(() => dataToAnalyze);
+    }
+  }, [JSON.stringify(jobs), JSON.stringify(applicationDetailList)]);
 
   // Start Round 1
   useEffect(() => {
     // go into round 1
     if (start) {
-      const resetMatchingScoreList = analyzedProfile.map((pofile) => {
-        return {
-          ...pofile,
-          employee_Profile: {
-            ...pofile.employee_Profile,
-            application: {
-              ...pofile.employee_Profile.application,
-              matchingScore: 0
+      const resetMatchingScoreList: ProfileApplicationType[] =
+        analyzedProfile.map((pofile) => {
+          return {
+            ...pofile,
+            employee_Profile: {
+              ...pofile.employee_Profile,
+              application: {
+                ...pofile.employee_Profile.application,
+                matchingScore: null
+              }
             }
-          }
-        };
-      });
+          };
+        });
       setAnalyzedProfile(() => resetMatchingScoreList);
-      review(resetMatchingScoreList, 1, resetMatchingScoreList);
+      setResetMatchingScoreList(() => resetMatchingScoreList);
     }
   }, [start]);
 
+  useEffect(() => {
+    resetMatchingScoreList.length > 0 &&
+      review({
+        round: 1,
+        handleAnalyzeResult: handleAnalyzeResult,
+        setIsAnalyzing: handleIsAnalyzing,
+        dataToAnalyze: resetMatchingScoreList,
+        resetMatchingScoreList: resetMatchingScoreList,
+        setAnalyzedProfile: handleSetAnalyzedProfile,
+        handleGoToAnalyzeResult: handleGoToAnalyzeResult
+      });
+  }, [JSON.stringify(resetMatchingScoreList)]);
+
   // Start Round 2, 3
   useEffect(() => {
-    if (start) {
-      if (roundOneFinished && !roundTwoFinished) {
-        console.log('passRoundOneProfiles', passRoundOneProfiles);
+    if (!start) return;
+    if (roundOneFinished && !roundTwoFinished) {
+      console.log('passRoundOneProfiles', passRoundOneProfiles);
 
-        // go to round 2
-        if (passRoundOneProfiles.length > 0) review(passRoundOneProfiles, 2);
-        else {
-          setStart(false);
-          setRoundOneFinished(false);
-          setRoundTwoFinished(false);
-          console.log('Finised All');
-          Promise.all(
-            showList.map((item) => {
-              mutate([item.id, { matchingScore: item.matchingScore }]);
-            })
-          );
-        }
-      } else if (roundTwoFinished && !roundThreeFinished) {
-        console.log('Round 2 finished');
-
-        // go to round 3
-        review(passRoundOneProfiles, 3);
-      } else if (roundThreeFinished) {
-        console.log('Round 3 finished');
-        setStart(false);
-        setRoundOneFinished(false);
-        setRoundTwoFinished(false);
+      // go to round 2
+      if (passRoundOneProfiles.length > 0)
+        review({
+          round: 2,
+          handleAnalyzeResult: handleAnalyzeResult,
+          setIsAnalyzing: handleIsAnalyzing,
+          passRoundOneProfiles: passRoundOneProfiles
+        });
+      else {
+        finishedAll();
         console.log('Finised All');
         Promise.all(
           showList.map((item) => {
-            mutate([item.id, { matchingScore: item.matchingScore }]);
+            onSaveApplicationStatus([
+              item.id,
+              { matchingScore: item.matchingScore }
+            ]);
           })
         );
       }
+    } else if (roundTwoFinished && !roundThreeFinished) {
+      console.log('Round 2 finished');
+
+      // go to round 3
+      review({
+        round: 3,
+        handleAnalyzeResult: handleAnalyzeResult,
+        setIsAnalyzing: handleIsAnalyzing,
+        passRoundOneProfiles: passRoundOneProfiles
+      });
+    } else if (roundThreeFinished) {
+      console.log('Round 3 finished');
+      Promise.all(
+        showList.map((item) => {
+          onSaveApplicationStatus([
+            item.id,
+            { matchingScore: item.matchingScore }
+          ]);
+        })
+      );
+      console.log('Finised All');
+      finishedAll();
     }
   }, [roundOneFinished, roundTwoFinished, roundThreeFinished]);
 
@@ -623,8 +450,8 @@ export default function Table(props) {
     {
       field: 'jobTitle',
       headerName: 'Vị trí ứng tuyển',
-      minWidth: 250,
-      flex: 1,
+      minWidth: 450,
+      renderCell: renderJobTitle,
       sortable: true
     },
     {
@@ -651,6 +478,8 @@ export default function Table(props) {
     }
   ];
 
+  if (isLoadingJobs || isLoadingApplication) return <SuspenseLoader />;
+
   return (
     <>
       <Box sx={{ justifyContent: 'right', display: 'flex' }}>
@@ -667,13 +496,15 @@ export default function Table(props) {
       <TableData
         rows={showList}
         columns={columns}
-        pagination
-        paginationModel={{ page: page - 1, pageSize: pageSize }}
-        sx={{ height: '72.7vh', width: '100%' }}
-        paginationMode="server"
-        onPaginationModelChange={(e) => handleChangePage(e.page + 1)}
-        loading={isLoading}
-        rowCount={totalResults}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: pageSize
+            }
+          }
+        }}
+        hideFooter
+        sx={{ height: '65.7vh', width: '100%' }}
       />
     </>
   );

@@ -8,11 +8,22 @@ const useQueryAllJob = (params?) => {
   const { data, isLoading, refetch } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
-  >(['get-AllJobs', params?.page], () => JobViewService.get({ params }), {
-    keepPreviousData: true,
-    retry: 1,
-    refetchOnWindowFocus: false
-  });
+  >(
+    ['get-AllJobs', params?.page, params?.professiion, params?.keywords],
+    () => {
+      for (const key in params) {
+        if (params[key] === 'Tất cả') {
+          params[key] = '';
+        }
+      }
+      return JobViewService.get({ params });
+    },
+    {
+      keepPreviousData: true,
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  );
 
   return {
     jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],

@@ -15,7 +15,8 @@ const useQueryCandidateProfileById = (id) => {
     async () => CandidateProfilesService.getById(id),
     {
       retry: 1,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      keepPreviousData: true
     }
   );
 
@@ -35,7 +36,7 @@ export function useQueryCandidateProfileByIdList(idList: number[]) {
     ResponseData<EmployeeApplication>[],
     AxiosError<ResponseData<EmployeeApplication>[]>
   >(
-    ['application-getByIdList', idList],
+    ['application-getByIdList', JSON.stringify(idList)],
     async () => {
       if (!idList.length) return [];
       Promise.allSettled(
@@ -56,7 +57,9 @@ export function useQueryCandidateProfileByIdList(idList: number[]) {
     },
     {
       retry: 1,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      keepPreviousData: true
+      // refetchOnMount :false
     }
   );
 

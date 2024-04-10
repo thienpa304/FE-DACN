@@ -78,32 +78,22 @@ export default function OnlineProfile() {
   const { onUpdateData } = useMutateUpdateOnlineProfile();
   const navigate = useNavigate();
 
-  // const preProcessData = (profile: Partial<OnlineProfileType>) => {
-  //   return {
-  //     jobTitle: profile?.jobTitle,
-  //     profession: profile?.profession,
-  //     careerGoal: profile?.careerGoal,
-  //     skill: profile?.skills,
-  //     work_experiences: profile?.work_experiences,
-  //     education_informations: profile?.education_informations,
-  //     another_degrees: profile?.another_degrees
-  //   };
-  // };
-
   const handleSubmit = async () => {
-    // debugger;
     setIsAnalyzing(true);
     if (profile?.userId) {
       const dataToAnalyze = preProcessData(profile, 'online');
       sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
-        '58': 1,
-        '60': 1
+        '58': 5,
+        '60': 5
       }).then((analysisResults) => {
         const keywords = loadKeywords(
           analysisResults,
           JSON.stringify(dataToAnalyze)
         );
-        onUpdateData({ ...profile, keywords: keywords } as OnlineProfileType);
+        onUpdateData({
+          ...profile,
+          keywords: (profile?.skills + ', ' + keywords)?.toLocaleLowerCase()
+        } as OnlineProfileType);
         setFinished(true);
         setIsAnalyzing(false);
       });

@@ -105,12 +105,15 @@ const AnalyzeProfile = (props) => {
 
     setIsAnalyzing(true);
     if (id === 'upload-cv') {
-      const result = await sendChatGPTRequest(cvAnalysist, message);
+      const result = await sendChatGPTRequest(cvAnalysist, message, null, {
+        '58': 5,
+        '60': 5
+      });
       setAnalysisResults(result);
       return;
     }
     const processedProfile = preProcessData(profile, id);
-
+    const skillsArray = profile?.skills?.split(', ');
     if (id === 'document') {
       try {
         const filePath = await getFileByUrl(documentProfile?.CV);
@@ -122,17 +125,31 @@ const AnalyzeProfile = (props) => {
         const text = await pdfToText(blob);
 
         setMessage((prev) => [{ ...prev, CV: text }]);
-        const result = await sendChatGPTRequest(cvAnalysist, [
-          { ...processedProfile, CV: text }
-        ]);
-        setAnalysisResults(result);
+        const result = await sendChatGPTRequest(
+          cvAnalysist,
+          [{ ...processedProfile, CV: text }],
+          null,
+          {
+            '58': 5,
+            '60': 5
+          }
+        );
+        setAnalysisResults([...skillsArray, ...result]);
       } catch (error) {
         console.error('Error creating local URL:', error);
       }
     } else {
       setMessage(() => [processedProfile]);
-      const result = await sendChatGPTRequest(cvAnalysist, [processedProfile]);
-      setAnalysisResults(result);
+      const result = await sendChatGPTRequest(
+        cvAnalysist,
+        [processedProfile],
+        null,
+        {
+          '58': 5,
+          '60': 5
+        }
+      );
+      setAnalysisResults([...skillsArray, ...result]);
     }
   };
 
@@ -145,6 +162,11 @@ const AnalyzeProfile = (props) => {
     const keywords = loadKeywords(analysisResults, JSON.stringify(message));
     setKeywords(keywords);
     setIsAnalyzing(false);
+    const section = document.getElementById(`recommend-${id}`);
+
+    console.log(section);
+
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
   }, [analysisResults]);
 
   return (
@@ -220,7 +242,9 @@ const AnalyzeProfile = (props) => {
         </Box>
       </CustomContainer>
 
-      {keywords && <JobRecommendTab id={`recommend-upload-cv-profile`} />}
+      {keywords && (
+        <JobRecommendTab id={id} profile={profile || { keywords: keywords }} />
+      )}
     </Box>
   );
 };

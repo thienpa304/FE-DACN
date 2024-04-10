@@ -8,12 +8,21 @@ import {
   Divider,
   Grid
 } from '@mui/material';
-import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
+import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import Table from './Table';
 import SelectInput from 'src/components/SelectInput';
 import { APPROVAL_STATUS } from 'src/constants';
 import { useState } from 'react';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
+
+const ApprovalStatusOption = [
+  {
+    value: '',
+    label: 'Tất cả',
+    color: 'info'
+  },
+  ...APPROVAL_STATUS
+];
 
 const RecruitmentApproval = () => {
   const [status, setStatus] = useState('');
@@ -62,7 +71,7 @@ const RecruitmentApproval = () => {
                     <SelectInput
                       label="Trạng thái"
                       value={status}
-                      options={APPROVAL_STATUS}
+                      options={ApprovalStatusOption}
                       onChange={(e) => handleChangeStatusFilter(e)}
                     />
                   </Box>
@@ -83,6 +92,7 @@ const RecruitmentApproval = () => {
               {isProfessionView && !selectedProfession && (
                 <ProfessionList
                   handleSelectProfession={handleSelectProfession}
+                  handleViewProfessionMode={setIsProfessionView}
                 />
               )}
               {!isProfessionView && (

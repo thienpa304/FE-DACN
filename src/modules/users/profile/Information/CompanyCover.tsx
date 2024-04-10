@@ -77,9 +77,6 @@ function CompanyCover() {
   const open = Boolean(anchorEl);
 
   const getImage = async () => {
-    console.log(
-      company?.logo?.trim() !== '' ? company?.logo : defaultImage.companyAvatar
-    );
     setCompanyAvatar({
       ...companyAvatar,
       img:

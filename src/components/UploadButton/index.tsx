@@ -27,10 +27,11 @@ type Props = ButtonProps & {
   value?: string;
   onChange?: (url: string) => void;
   setIsChecked?: (value: string) => void;
+  setUrl?: (value: string) => void;
 };
 
 function UploadButton(props: Props) {
-  const { label, sx, onChange, setIsChecked } = props;
+  const { label, sx, onChange, setIsChecked, setUrl } = props;
   // State to store uploaded file
   const [file, setFile] = useState<File>();
 
@@ -77,6 +78,7 @@ function UploadButton(props: Props) {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
           setPercent(null);
           setFileUrl(url);
+          setUrl(url);
           onChange(url);
         });
       }

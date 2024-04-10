@@ -14,7 +14,7 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
-import FollowButton from './FollowButton';
+import FollowJobButton from './FollowJobButton';
 
 function SmallJobCard({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
@@ -35,12 +35,12 @@ function SmallJobCard({ job }) {
           py: 1,
           color: '#aa720a',
           overflow: 'hidden',
+          textOverflow: 'ellipsis',
           display: '-webkit-box',
           WebkitBoxOrient: 'vertical',
           WebkitLineClamp: 2,
           whiteSpace: 'normal',
-          maxHeight: '3.5em',
-          minHeight: '3.5em'
+          height: '3.5em'
         }}
         title={
           <Box display={'flex'}>
@@ -56,7 +56,7 @@ function SmallJobCard({ job }) {
             >
               {job?.jobTitle}
             </Box>
-            <FollowButton job={job} />
+            <FollowJobButton job={job} />
           </Box>
         }
       />

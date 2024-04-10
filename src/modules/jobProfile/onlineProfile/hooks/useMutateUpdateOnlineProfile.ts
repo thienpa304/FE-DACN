@@ -9,7 +9,7 @@ const useMutateUpdateOnlineProfile = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
   const useMutateFunction = (data) =>
-    OnlineProfileService.updateAtEndPoint(data);
+    OnlineProfileService.updateWithoutId(data);
 
   const {
     mutate: onUpdateData,

@@ -7,14 +7,25 @@ interface responseType {
   totalResults: number;
 }
 
-const useQueryTotalResults = (params?) => {
+const useQueryTotalResultOfJobs = (params?) => {
   const { data, isLoading, refetch } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>
-  >('get-TotalResults', () => TotalResults.get({ params }), {
-    retry: 1,
-    refetchOnWindowFocus: false
-  });
+  >(
+    ['get-TotalResultOfJobs'],
+    () => {
+      for (const key in params) {
+        if (params[key] === 'Tất cả') {
+          params[key] = '';
+        }
+      }
+      return TotalResults.get({ params });
+    },
+    {
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  );
 
   return {
     totalResults: data?.data?.totalResults,
@@ -23,4 +34,4 @@ const useQueryTotalResults = (params?) => {
   };
 };
 
-export default useQueryTotalResults;
+export default useQueryTotalResultOfJobs;

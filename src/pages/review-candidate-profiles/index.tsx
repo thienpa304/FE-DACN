@@ -4,31 +4,50 @@ import {
   CardHeader,
   Container,
   Divider,
-  Grid
+  Grid,
+  Tab,
+  Tabs,
+  styled
 } from '@mui/material';
 import useQueryCandidateProfiles from 'src/modules/application/hooks/useQueryCandidateProfiles';
 import Table from './Table';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { useState } from 'react';
-import useQueryApplicationTotalResultsByEmployer from 'src/modules/application/hooks/useQueryApplicationTotalResultsByEmployer';
-import { effect, signal } from '@preact/signals-react';
+import { useEffect, useState } from 'react';
+import useQueryTotalResultOfApplicationByEmployer from 'src/modules/application/hooks/useQueryTotalResultOfApplicationByEmployer';
+import TabsWrapper from 'src/components/TabWrapper';
+import Pagination from 'src/components/Pagination';
 
-export const dataList = signal([]);
+const tabs = [
+  { label: 'Tất cả', value: '' },
+  { label: 'Đã duyệt', value: 'Đã duyệt' },
+  { label: 'Chờ duyệt', value: 'Chờ duyệt' },
+  { label: 'Từ chối', value: 'Từ chối' },
+  { label: 'Hết hạn', value: 'Hết hạn' }
+];
 
 const CandidateProfiles = () => {
   const pageSize = 7;
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentTab, setCurrentTab] = useState('');
+  const [dataToShow, setDataToShow] = useState([]);
   const { data, isLoading } = useQueryCandidateProfiles({
-    page: page,
-    num: pageSize
+    page: currentPage,
+    num: pageSize,
+    status: currentTab
   });
   const { totalResults, isLoading: isLoadingTotalResults } =
-    useQueryApplicationTotalResultsByEmployer();
+    useQueryTotalResultOfApplicationByEmployer({ status: currentTab });
 
-  const handleChangePage = (pageNum) => {
-    setPage(() => pageNum);
+  const handleTabsChange = (e, value) => {
+    setCurrentTab(value);
+    setCurrentPage(1);
   };
-  dataList.value = data;
+
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
+
+  // useEffect(() => {
+  //   setDataToShow(data);
+  // }, [data]);
 
   if (isLoadingTotalResults) return <SuspenseLoader />;
   return (
@@ -46,13 +65,31 @@ const CandidateProfiles = () => {
             <CardHeader title="Danh Sách ứng viên" />
             <Divider />
             <CardContent>
-              <Table
-                data={dataList.value}
-                handleChangePage={handleChangePage}
-                pageSize={pageSize}
-                isLoading={isLoading}
-                totalResults={totalResults}
-                page={page}
+              <TabsWrapper
+                onChange={handleTabsChange}
+                value={currentTab}
+                variant="scrollable"
+                scrollButtons="auto"
+                textColor="primary"
+                indicatorColor="primary"
+                sx={{
+                  mb: -4,
+                  display: 'inline-flex',
+                  borderBottom: 1,
+                  borderColor: 'divider'
+                }}
+              >
+                {tabs.map((tab) => {
+                  return (
+                    <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  );
+                })}
+              </TabsWrapper>
+              <Table data={data} pageSize={pageSize} />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={setCurrentPage}
               />
             </CardContent>
           </Card>

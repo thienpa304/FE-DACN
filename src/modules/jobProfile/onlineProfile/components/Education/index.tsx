@@ -90,7 +90,7 @@ export default function Education() {
       // const index = profile?.education_informations?.findIndex(
       //   (item) => item.id === data.id
       // );
-      // debugger;
+
       // if (index !== -1) {
       //   const eduList = [...profile?.education_informations] || [];
       //   eduList[index] = data;
@@ -107,8 +107,6 @@ export default function Education() {
   };
 
   const handleDateChange = (params, date) => {
-    console.log(params, date);
-
     params.api.setEditCellValue({
       ...params,
       value: date // Cập nhật giá trị đã chọn từ DatePicker vào row

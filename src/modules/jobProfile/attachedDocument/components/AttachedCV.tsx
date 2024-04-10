@@ -115,6 +115,7 @@ const AttachCV = (props) => {
                   id="CV"
                   label="CV đính kèm"
                   onChange={handleUploadFile}
+                  required
                 />
                 Tải file
               </Button>

@@ -27,10 +27,10 @@ const JobRecommend = () => {
   const { attachedDocument } = useQueryAttachedDocument();
   const { setProfile: setDocumentProfile } = useAttachedDocument();
 
-  useEffect(() => {
-    setOnline(onlineProfile);
-    setDocumentProfile(attachedDocument);
-  }, [onlineProfile, attachedDocument]);
+  // useEffect(() => {
+  //   setOnline(onlineProfile);
+  //   setDocumentProfile(attachedDocument);
+  // }, [onlineProfile, attachedDocument]);
 
   return (
     <Container maxWidth="md" style={{ marginTop: 30 }}>

@@ -81,3 +81,25 @@ export function preProcessText(documentText: string) {
   // Tách từ và gộp lại
   return textOnlyLetters.split(/\s+/).join(' ');
 }
+
+export function convertToObjectsForSkill(str) {
+  // Tách chuỗi thành các từ riêng biệt bằng dấu phẩy
+  const words = str.split(',').map((word) => word.trim());
+
+  // Chuyển đổi từng từ thành object với id và text
+  const objects = words.map((word) => ({
+    id: word,
+    text: word
+  }));
+
+  return objects;
+}
+
+export function convertObjectListToStringForSkill(objectList): string {
+  if (!objectList) return '';
+  const text = objectList
+    .map((item) => item.text)
+    .filter((text) => text !== null);
+
+  return text.join(', ');
+}

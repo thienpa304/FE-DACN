@@ -17,11 +17,14 @@ export const DocumentSlice = createSlice({
   reducers: {
     setProfile: (state, action: PayloadAction<Partial<AttachedDocument>>) => {
       state.profile = { ...state.profile, ...action.payload };
+    },
+    resetProfile: (state) => {
+      state.profile = {};
     }
   }
 });
 
-export const { setProfile } = DocumentSlice.actions;
+export const { setProfile, resetProfile } = DocumentSlice.actions;
 
 export const selectDocument = (state: RootState) => state.document;
 

@@ -15,10 +15,10 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
-import FollowButton from '../../jobs/components/FollowButton';
+import FollowButton from '../../jobs/components/FollowJobButton';
 import { makeStyles } from '@mui/styles';
 import { Company } from 'src/modules/users/model';
-import FollowCompanyButton from './FollowButton';
+import FollowCompanyButton from './FollowJobButton';
 const useStyles = makeStyles((theme) => ({
   coverImage: {
     width: '100%',
@@ -111,7 +111,7 @@ function CompanyCard({
                   {company?.companyName}
                 </Typography>
                 <FollowCompanyButton
-                  company={company}
+                  employerId={employerId}
                   sx={{
                     display: 'flex',
                     alignSelf: 'end',

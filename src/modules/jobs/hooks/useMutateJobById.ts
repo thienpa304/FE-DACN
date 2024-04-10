@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { JobService } from '../jobService';
@@ -7,6 +7,7 @@ import { Job } from '../model';
 import { useNavigate } from 'react-router';
 
 const useMutateJobById = () => {
+  const queryClient = useQueryClient();
   const { toast } = useApp();
   const navigate = useNavigate();
   const { mutate: onSaveDataById, isLoading } = useMutation<
@@ -16,6 +17,7 @@ const useMutateJobById = () => {
   >(([id, data]) => JobService.update(id, data), {
     onSuccess: (res) => {
       if (res.status === 200) {
+        queryClient.invalidateQueries(['job-getById']);
         toast.success({ massage: res.message });
         navigate('/employer/recruitment/list');
       } else {

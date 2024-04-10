@@ -39,6 +39,6 @@ export type Job = {
   view: number;
   isHidden: boolean;
   employer: Company;
-  skillRequirements: string;
+  requiredSkills: string;
   keywords: string;
 };

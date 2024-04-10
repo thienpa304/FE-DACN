@@ -6,11 +6,11 @@ import {
   Divider,
   Grid
 } from '@mui/material';
-import useQueryJobApplied from 'src/modules/application/hooks/useQueryJobApplied';
+import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQueryJobAppliedByEmployee';
 import TablePost from './TablePost';
 
 const JobApplied = () => {
-  const { data } = useQueryJobApplied();
+  const { data } = useQueryJobAppliedByEmployee();
   return (
     <Container maxWidth="xl">
       <Grid

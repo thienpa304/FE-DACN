@@ -27,16 +27,16 @@ interface FormProps {
   gender: Option | string;
 }
 
-const addAllOption = (optionsArray, allLabel) => {
-  return [...optionsArray, { value: '', label: allLabel }];
+const addAllOption = (optionsArray) => {
+  return [{ value: 'Tất cả', label: 'Tất cả' }, ...optionsArray];
 };
 
 const options = {
-  experience: addAllOption(EXPERIENCE, 'Tất cả'),
-  positionLevel: addAllOption(POSITION_LEVEL, 'Tất cả'),
-  degree: addAllOption(DEGREE, 'Tất cả'),
-  employmentType: addAllOption(WORKING_FORM, 'Tất cả'),
-  sex: addAllOption(GENDER_OPTION, 'Tất cả')
+  experience: addAllOption(EXPERIENCE),
+  positionLevel: addAllOption(POSITION_LEVEL),
+  degree: addAllOption(DEGREE),
+  employmentType: addAllOption(WORKING_FORM),
+  sex: addAllOption(GENDER_OPTION)
 };
 
 const defaultValues = {
@@ -54,12 +54,14 @@ export default function JobFilter({ handleFilter }) {
     handleSubmit,
     formState: { errors }
   } = useForm<FormProps>({ defaultValues: defaultValues });
+  const [currentValue, setCurrentValue] = React.useState<any>({});
 
   const filter = (data) => {
     handleFilter(data);
   };
 
   const clear = () => {
+    setCurrentValue({});
     reset(defaultValues);
     handleFilter(defaultValues);
   };
@@ -75,6 +77,12 @@ export default function JobFilter({ handleFilter }) {
         id={option}
         label={label}
         name={option}
+        onChange={(e) => {
+          filter({ [option]: e.target.value });
+          const curr = { ...currentValue, [option]: e.target.value };
+          setCurrentValue(() => curr);
+          reset(curr);
+        }}
         sx={{ bgcolor: '#ffff', borderRadius: '5px' }}
       />
     </Grid>

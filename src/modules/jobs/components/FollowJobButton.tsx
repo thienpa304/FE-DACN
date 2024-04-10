@@ -7,8 +7,9 @@ import useMutateFollowJobById from '../hooks/useMutateFollowJobById';
 import { useApp } from 'src/modules/app/hooks';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { Job } from '../model';
+import FollowButton from 'src/components/FollowButton';
 
-export default function FollowButton(props) {
+export default function FollowJobButton(props) {
   const { job, sx } = props;
   const { jobFollow } = useQueryFollowJobs();
   const { onFollowJobById } = useMutateFollowJobById();
@@ -17,7 +18,7 @@ export default function FollowButton(props) {
 
   const handleToggleFollow = (id) => {
     onFollowJobById([id]);
-    setIsFollow(!isFollow);
+    setIsFollow((prev) => !prev);
   };
 
   useEffect(() => {
@@ -32,27 +33,7 @@ export default function FollowButton(props) {
       onClick={() => handleToggleFollow(job?.postId)}
       sx={{ display: 'flex', alignItem: 'center', ...sx }}
     >
-      {isFollow ? (
-        <FavoriteIcon
-          sx={{
-            display: 'flex',
-            color: 'red',
-            '&:hover': {
-              color: 'darkred'
-            }
-          }}
-        />
-      ) : (
-        <FavoriteBorderIcon
-          sx={{
-            display: 'flex',
-            color: 'red',
-            '&:hover': {
-              color: 'darkred'
-            }
-          }}
-        />
-      )}
+      <FollowButton isFollow={isFollow} />
     </Box>
   );
 }

@@ -9,7 +9,12 @@ const useQueryCandidateProfiles = (params?) => {
     ResponseData<Application[]>,
     AxiosError<ResponseData<Application[]>>
   >(
-    ['application-getList', params?.page],
+    [
+      'application-getList',
+      params?.page,
+      params?.status,
+      params?.matchingScore
+    ],
     () => CandidateProfilesService.get({ params }),
     {
       keepPreviousData: true,

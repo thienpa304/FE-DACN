@@ -3,8 +3,10 @@ import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { JobViewService } from '../jobService';
+import { useApp } from 'src/modules/app/hooks';
+import { useState } from 'react';
 
-const useQueryJobById = (id) => {
+export default function useQueryJobById(id) {
   if (!id) return {};
   const { data, isLoading } = useQuery<
     ResponseData<Job>,
@@ -18,26 +20,43 @@ const useQueryJobById = (id) => {
     data: data?.data,
     isLoading
   };
-};
-
-export default useQueryJobById;
+}
 
 export function useQueryJobByIdList(idList: number[]) {
-  if (!idList.length) return {};
+  const { isEmployer } = useApp();
+  const [dataList, setDataList] = useState<ResponseData<Job>[]>([]);
   const { data, isLoading } = useQuery<
     ResponseData<Job>[],
     AxiosError<ResponseData<Job>[]>
   >(
-    ['job-getByIdList', idList],
-    async () => Promise.all(idList.map((id) => JobViewService.getById(id))),
+    ['jobs-getByIdList', JSON.stringify(idList)],
+    async () => {
+      if (!idList.length) return [];
+      Promise.allSettled(idList.map((id) => JobViewService.getById(id)))
+        .then((results) => {
+          // Lọc ra các kết quả thành công và chỉ lưu dữ liệu của các promise đã được giải quyết vào dataList
+          const fulfilledResults = results.filter(
+            (result): result is PromiseFulfilledResult<any> =>
+              result.status === 'fulfilled'
+          );
+          const dataList = fulfilledResults.map((result) => result.value);
+
+          // Cập nhật dataList
+          setDataList(dataList);
+        })
+        .catch((e) => console.log(e));
+    },
     {
       retry: 1,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+      enabled: isEmployer
     }
   );
-
   return {
-    data: data?.map((item) => item?.data),
+    jobs:
+      dataList?.map((item) => ({ ...item?.data, id: item?.data?.postId })) ||
+      [],
     isLoading
   };
 }

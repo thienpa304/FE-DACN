@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Link,
   Typography,
   Card,
   Divider,
@@ -16,21 +15,12 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import SearchIcon from '@mui/icons-material/Search';
 import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
 import professions from 'src/constants/professions';
-import useQueryTotolJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotolJobsEachProfession';
-
-const imageStyle = {
-  objectFit: 'cover',
-  width: '100px',
-  height: '100px',
-  borderRadius: 2
-};
-const iconsList = professions;
+import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
+import Link from 'src/components/Link';
 
 function ProfessionType() {
-  const [searchValue, setSearchValue] = useState('');
   const [open, setOpen] = React.useState(false);
-  const { dataList } = useQueryTotolJobsEachProfession();
-  console.log(dataList);
+  const { dataList } = useQueryTotalJobsEachProfession();
 
   const matchProfessionWithCount = professions
     .map((profession) => {
@@ -52,145 +42,115 @@ function ProfessionType() {
     .sort((a, b) => {
       return b.count - a.count;
     });
-  console.log(matchProfessionWithCount);
   const professionToShow = matchProfessionWithCount.slice(0, 7);
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchValue(e.target.value);
-  };
-
   return (
-    <Box mb={5}>
-      <Box display="flex" columnGap={1} mb={2}>
-        <TextField
-          value={searchValue}
-          onChange={handleSearchChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            )
-          }}
-          placeholder="Nhập vị trí muốn ứng tuyển"
-          fullWidth
+    <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1, mt: 2 }}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ bgcolor: '#f0e9fe', borderTopRadius: 1, p: 2 }}
+      >
+        <Box display="flex" justifyContent="space-between">
+          <BusinessCenterIcon color="secondary" sx={{ fontSize: 35 }} />
+          <Typography fontWeight={700} fontSize={18} alignSelf="end">
+            Nghề nghiệp nổi bật
+          </Typography>
+        </Box>
+        <Divider />
+        <Link
+          to="#"
           sx={{
-            backgroundColor: 'white',
-            boxShadow: '2px 2px 6px #98E4FF'
+            fontSize: 16,
+            fontWeight: 700
           }}
-        />
-        <Button variant="contained" sx={{ width: 200, opacity: 0.8 }}>
-          <SearchIcon />
-          Tìm kiếm
-        </Button>
-      </Box>
-      <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ bgcolor: '#f0e9fe', borderTopRadius: 1, p: 2 }}
+          onClick={() => setOpen(true)}
         >
-          <Box display="flex" justifyContent="space-between">
-            <BusinessCenterIcon color="secondary" sx={{ fontSize: 35 }} />
-            <Typography fontWeight={700} fontSize={18} alignSelf="end">
-              Nghề nghiệp nổi bật
-            </Typography>
-          </Box>
-          <Divider />
+          Xem thêm
+        </Link>
+      </Box>
+
+      <ProfessionListDialog
+        open={open}
+        handleClose={handleClose}
+        professionList={matchProfessionWithCount}
+      />
+
+      <Container
+        sx={{
+          overflow: 'hidden',
+          p: 2,
+          display: 'flex',
+          justifyContent: 'center'
+        }}
+      >
+        {professionToShow?.map((profession, index) => (
           <Link
-            href="#"
-            color="secondary"
-            underline="none"
-            fontSize={16}
-            fontWeight={700}
+            key={index}
+            to={`/profession/${profession.code}`}
+            state={{ profession: profession.name, pageTitle: profession.name }}
             sx={{
+              width: 170,
+              height: 170,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              marginX: 2,
+              gap: '5px',
+              textDecoration: 'none',
               '&:hover': {
                 color: '#FF7D55'
               }
             }}
-            onClick={() => setOpen(true)}
           >
-            Xem thêm
-          </Link>
-        </Box>
-
-        <ProfessionListDialog
-          open={open}
-          handleClose={handleClose}
-          professionList={matchProfessionWithCount}
-        />
-
-        <Container
-          sx={{
-            overflow: 'hidden',
-            p: 2,
-            display: 'flex',
-            justifyContent: 'center'
-            // columnGap: 2
-          }}
-        >
-          {professionToShow?.map((profession, index) => (
-            <Link
-              // fullWidth
-              key={index}
-              // component={Link}
-              href={`/profession/${profession.code}`}
+            <img
+              src={profession.icon}
+              alt="shopping-bag"
+              style={{
+                objectFit: 'cover',
+                width: '90px',
+                height: '90px',
+                borderRadius: 2
+              }}
+            />
+            <Box display={'flex'} columnGap="2px" alignItems="center">
+              <Typography
+                fontWeight={700}
+                fontSize={16}
+                color="#379aff"
+                textAlign="center"
+              >
+                {profession.count}
+              </Typography>
+              <Typography
+                fontWeight={700}
+                color="#939295"
+                textAlign="center"
+                fontSize={13}
+              >
+                việc
+              </Typography>
+            </Box>
+            <Typography
+              fontWeight={700}
+              textAlign="center"
               sx={{
-                width: 160,
-                height: 160,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                rowGap: '5px',
-                mx: 2,
                 '&:hover': {
-                  textDecoration: 'none'
+                  color: '#FF7D55'
                 }
               }}
             >
-              <img
-                src={profession.icon}
-                alt="shopping-bag"
-                style={{
-                  objectFit: 'cover',
-                  width: '90px',
-                  height: '90px',
-                  borderRadius: 2
-                }}
-              />
-              <Box display={'flex'} columnGap="2px" alignItems="center">
-                <Typography
-                  fontWeight={700}
-                  fontSize={16}
-                  color="#379aff"
-                  textAlign="center"
-                  // sx={{ display: 'flex', alighItem: 'end' }}
-                >
-                  {profession.count}
-                </Typography>
-                <Typography
-                  fontWeight={700}
-                  color="#939295"
-                  textAlign="center"
-                  fontSize={13}
-                >
-                  việc
-                </Typography>
-              </Box>
-              <Typography color="secondary" fontWeight={700} textAlign="center">
-                {profession.name}
-              </Typography>
-            </Link>
-          ))}
-        </Container>
-      </Card>
-    </Box>
+              {profession.name}
+            </Typography>
+          </Link>
+        ))}
+      </Container>
+    </Card>
   );
 }
 
