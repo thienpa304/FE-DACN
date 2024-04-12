@@ -6,12 +6,12 @@ import { AttachedDocumentService } from 'src/modules/jobProfile/employeeService'
 import { useEffect, useState } from 'react';
 import { getAccessToken } from 'src/utils/localStorage';
 import { useApp } from 'src/modules/app/hooks';
-import useAttachedDocument from './useDocument';
+import useDocumentHook from './useDocumentHook';
 
 const useQueryAttachedDocument = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isEmployee } = useApp();
-  const { setProfile } = useAttachedDocument();
+  const { setProfile } = useDocumentHook();
 
   const { data, isLoading, isSuccess } = useQuery<
     ResponseData<AttachedDocument>,

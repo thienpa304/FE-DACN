@@ -21,7 +21,7 @@ import {
   removeFileByUrl
 } from 'src/common/firebaseService';
 import { CVFormat } from 'src/constants/uploadFileRule';
-import useAttachedDocument from '../hooks/useDocument';
+import useDocumentHook from '../hooks/useDocumentHook';
 import { applicationErrorText } from 'src/components/UploadError';
 import FileFormatInfo from 'src/components/FileFormatInfo';
 
@@ -33,7 +33,7 @@ const ACCEPTED_FILE_SIZE_MB = CVFormat.acceptSize / 1024 / 1024;
 
 const AttachCV = (props) => {
   const { user } = useApp();
-  const { setProfile, profile } = useAttachedDocument();
+  const { setProfile, profile } = useDocumentHook();
   const { acceptTypes, acceptSize } = CVFormat;
   const defaultUserValues = { ...user };
 

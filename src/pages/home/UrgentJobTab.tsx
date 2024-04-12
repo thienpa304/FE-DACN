@@ -10,12 +10,9 @@ import Link from 'src/components/Link';
 function UrgentJobTab() {
   const { totalResults } = useQueryTotalResultOfJobs();
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 9;
-  const validvalidTotalResults = Number.isInteger(totalResults)
-    ? totalResults
-    : 1;
-  const totalPages = Math.ceil(validvalidTotalResults / jobsPerPage);
-  const { jobs } = useQueryAllJob({ page: currentPage, num: jobsPerPage });
+  const pageSize = 9;
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
+  const { jobs } = useQueryAllJob({ page: currentPage, num: pageSize });
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);

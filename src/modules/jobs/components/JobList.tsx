@@ -33,12 +33,11 @@ function JobList(props) {
     useQueryTotalResultOfJobs({
       ...filter
     });
-  const jobsPerPage = numOfJobPerPage ? numOfJobPerPage : 15;
-  const validTotalResult = Number.isInteger(totalResults) ? totalResults : 1;
-  const totalPages = Math.ceil(validTotalResult / jobsPerPage);
+  const pageSize = numOfJobPerPage ? numOfJobPerPage : 15;
+  const totalPages = Math.ceil(totalResults / pageSize);
   const { jobs, refetch } = queryJobs({
     page: currentPage,
-    num: jobsPerPage,
+    num: pageSize,
     ...filter
   });
   const handlePageChange = (pageNumber: number) => {

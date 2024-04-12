@@ -1,19 +1,22 @@
 import { Box, Container, Grid, Pagination, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import FollowProfileCard from 'src/modules/getEmployee/components/FollowProfileCard';
 import ProfileCard from 'src/modules/getEmployee/components/ProfileCard';
 import useQueryEmployee from 'src/modules/getEmployee/hook/useQueryEmployee';
+import useQueryFollowEmployee from 'src/modules/getEmployee/hook/useQueryFollowEmployee';
 
 export default function EmployeeFollow() {
-  const { profile, isLoading } = useQueryEmployee();
-  const [employeeList, setEmployeeList] = useState([]);
+  const { profile } = useQueryEmployee();
+  const { employeeFollow, isLoading } = useQueryFollowEmployee();
+  const [employeeList, setEmployeeList] = useState(employeeFollow);
 
   useEffect(() => {
-    const newList = profile?.map((item) => {
+    const newList = employeeFollow?.map((item) => {
       return {};
     });
     setEmployeeList(() => newList);
-  }, [profile]);
+  }, [employeeFollow]);
 
   if (isLoading) return <SuspenseLoader />;
   if (!profile?.length) {
@@ -27,7 +30,7 @@ export default function EmployeeFollow() {
         }}
       >
         <Typography fontSize={18} fontStyle="italic" color="#9999">
-          Bạn chưa theo dõi tin tuyển dụng nào cả
+          Bạn chưa theo dõi hồ sơ nào cả
         </Typography>
       </Container>
     );
@@ -39,9 +42,9 @@ export default function EmployeeFollow() {
         Hồ sơ đã lưu
       </Typography>
       <Grid container mb={3} spacing={2}>
-        {employeeList?.map((item, index) => (
+        {employeeFollow?.map((item, index) => (
           <Grid key={index} item xs={12} sm={3}>
-            <ProfileCard profile={item} />
+            <FollowProfileCard profile={item} />
           </Grid>
         ))}
       </Grid>

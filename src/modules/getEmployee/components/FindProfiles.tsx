@@ -1,6 +1,5 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import JobList from '../../jobs/components/JobList';
+import { useState } from 'react';
 import ProfileCard from './ProfileCard';
 import useQueryEmployee from '../hook/useQueryEmployee';
 import SearchBar from 'src/components/SearchBar/SearchBar';
@@ -13,7 +12,6 @@ export default function FindProfiles() {
   const [filter, setFilter] = useState(null);
   const { state } = useLocation();
   const locationState = state as any;
-  console.log(state);
 
   const pageSize = 12;
   const { profile, isLoading } = useQueryEmployee({
@@ -25,12 +23,6 @@ export default function FindProfiles() {
   });
 
   const handleFilter = (data: any) => {
-    // for (const key in data) {
-    //   if (data[key] === 'Tất cả') {
-    //     data[key] = '';
-    //   }
-    // }
-
     setFilter((prev) => ({
       ...prev,
       ...data

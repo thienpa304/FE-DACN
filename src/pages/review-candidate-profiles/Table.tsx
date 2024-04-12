@@ -9,7 +9,7 @@ import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
 import { v4 } from 'uuid';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
-import { useQueryCandidateProfileByIdList } from 'src/modules/application/hooks/useQueryCandidateProfileById';
+import { useQueryCandidateApplicationByIdList } from 'src/modules/application/hooks/useQueryCandidateApplicationById';
 import {
   ProfileApplicationType,
   preprocessJobData,
@@ -22,6 +22,7 @@ import {
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
+import Pagination from 'src/components/Pagination';
 
 interface CustomLinkProps {
   to?: string;
@@ -128,7 +129,7 @@ const renderStatus = (data) => {
 };
 
 export const renderMatchingScore = (data, isAnalyzing: boolean) => {
-  if (isAnalyzing) return <CircularProgress />;
+  // if (isAnalyzing) return <CircularProgress />;
   let result = '';
   if (data.value >= HIGH_SCORE) result = 'Cao';
   else if (data.value >= NORMAL_SCORE && data.value < HIGH_SCORE)
@@ -163,7 +164,7 @@ export const renderMatchingScore = (data, isAnalyzing: boolean) => {
 };
 
 export default function Table(props) {
-  const { pageSize, data } = props;
+  const { pageSize, data, currentPage, totalPages, handlePageChange } = props;
   // data : danh sách Application
   const [analyzedProfile, setAnalyzedProfile] = useState<
     ProfileApplicationType[]
@@ -198,7 +199,7 @@ export default function Table(props) {
     useQueryJobByIdList(uniqueJobsIdList);
 
   const { data: applicationDetailList, isLoading: isLoadingApplication } =
-    useQueryCandidateProfileByIdList(applicationIdList);
+    useQueryCandidateApplicationByIdList(applicationIdList);
 
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
 
@@ -483,6 +484,7 @@ export default function Table(props) {
   return (
     <>
       <Box sx={{ justifyContent: 'right', display: 'flex' }}>
+        {isAnalyzing && <CircularProgress />}
         <Button
           onClick={() => setStart(true)}
           variant="contained"
@@ -490,7 +492,7 @@ export default function Table(props) {
           sx={{ mr: 4 }}
           disabled={start}
         >
-          Phân tích
+          {!start ? 'Phân tích' : 'Đang phân tích...'}
         </Button>
       </Box>
       <TableData
@@ -505,6 +507,12 @@ export default function Table(props) {
         }}
         hideFooter
         sx={{ height: '65.7vh', width: '100%' }}
+      />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={handlePageChange}
+        disabled={start}
       />
     </>
   );

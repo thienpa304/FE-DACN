@@ -1,34 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import useQueryFollowEmmployee from '../hook/useQueryFollowEmployee';
+import useQueryFollowEmployee from '../hook/useQueryFollowEmployee';
 import { Box, IconButton } from '@mui/material';
 import useMutateFollowEmployeeById from '../hook/useMutateFollowEmployeeById';
 import { useApp } from 'src/modules/app/hooks';
 import FollowButton from 'src/components/FollowButton';
 
 export default function FollowEmployeeButton(props) {
-  const { employee, sx } = props;
-  const { jobFollow } = useQueryFollowEmmployee();
+  const { employeeProfile, sx } = props;
+  const { employeeFollow } = useQueryFollowEmployee();
   const { onFollowEmployeeById } = useMutateFollowEmployeeById();
   const { isEmployer } = useApp();
   const [isFollow, setIsFollow] = useState(false);
 
-  const handleToggleFollow = (id) => {
-    onFollowEmployeeById([id]);
+  const handleToggleFollow = (id, isOnlineProfile) => {
+    onFollowEmployeeById([id, isOnlineProfile]);
     setIsFollow((prev) => !prev);
   };
 
-  useEffect(() => {
-    const foundItem = jobFollow?.find(
-      (item) => item?.userId === employee?.userId
-    );
-    foundItem && setIsFollow(true);
-  }, [jobFollow, employee]);
+  const isFollowedProfile = (followProfile, currentProfile) => {
+    if (!followProfile) return false;
 
-  if (!employee || !isEmployer) return;
+    if (currentProfile.isOnlineProfile !== undefined)
+      return (
+        followProfile?.userId === currentProfile?.userId &&
+        followProfile?.isOnlineProfile === currentProfile.isOnlineProfile
+      );
+    else {
+      return (
+        followProfile?.userId === currentProfile?.userId &&
+        followProfile?.isOnlineProfile === (currentProfile?.CV === undefined)
+      );
+    }
+  };
+
+  useEffect(() => {
+    const foundItem = employeeFollow?.find((item) => {
+      return isFollowedProfile(item, employeeProfile);
+    });
+    console.log(foundItem);
+
+    foundItem && setIsFollow(true);
+  }, [JSON.stringify(employeeFollow), JSON.stringify(employeeProfile)]);
+
+  if (!employeeProfile || !isEmployer) return;
 
   return (
     <Box
-      onClick={() => handleToggleFollow(employee?.userId)}
+      onClick={() =>
+        handleToggleFollow(
+          employeeProfile?.userId,
+          !employeeProfile?.CV &&
+            (employeeProfile?.isOnlineProfile !== undefined
+              ? employeeProfile?.isOnlineProfile
+              : true)
+            ? '1'
+            : '0'
+        )
+      }
       sx={{ display: 'flex', alignItem: 'center', ...sx }}
     >
       <FollowButton isFollow={isFollow} />

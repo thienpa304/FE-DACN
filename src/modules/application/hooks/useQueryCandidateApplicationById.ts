@@ -4,8 +4,10 @@ import { ResponseData } from 'src/common/http-request';
 import { Application, EmployeeApplication } from '../model';
 import { CandidateProfilesService } from '../applicationService';
 import { useEffect, useState } from 'react';
+import { useApp } from 'src/modules/app/hooks';
 
-const useQueryCandidateProfileById = (id) => {
+export default function useQueryCandidateApplicationById(id) {
+  const { isEmployer } = useApp();
   if (!id) return {};
   const { data, isLoading } = useQuery<
     ResponseData<EmployeeApplication>,
@@ -16,7 +18,8 @@ const useQueryCandidateProfileById = (id) => {
     {
       retry: 1,
       refetchOnWindowFocus: false,
-      keepPreviousData: true
+      keepPreviousData: true,
+      enabled: isEmployer
     }
   );
 
@@ -24,11 +27,9 @@ const useQueryCandidateProfileById = (id) => {
     data: data?.data,
     isLoading
   };
-};
+}
 
-export default useQueryCandidateProfileById;
-
-export function useQueryCandidateProfileByIdList(idList: number[]) {
+export function useQueryCandidateApplicationByIdList(idList: number[]) {
   const [dataList, setDataList] = useState<ResponseData<EmployeeApplication>[]>(
     []
   );

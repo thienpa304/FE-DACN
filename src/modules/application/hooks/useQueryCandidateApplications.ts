@@ -3,8 +3,10 @@ import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { Application } from '../model';
 import { CandidateProfilesService } from '../applicationService';
+import { useApp } from 'src/modules/app/hooks';
 
-const useQueryCandidateProfiles = (params?) => {
+const useQueryCandidateApplications = (params?) => {
+  const { isEmployer } = useApp();
   const { data, isLoading, refetch } = useQuery<
     ResponseData<Application[]>,
     AxiosError<ResponseData<Application[]>>
@@ -19,7 +21,8 @@ const useQueryCandidateProfiles = (params?) => {
     {
       keepPreviousData: true,
       retry: 1,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      enabled: isEmployer
     }
   );
 
@@ -31,4 +34,4 @@ const useQueryCandidateProfiles = (params?) => {
   };
 };
 
-export default useQueryCandidateProfiles;
+export default useQueryCandidateApplications;

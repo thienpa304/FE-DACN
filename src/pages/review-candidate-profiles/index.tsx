@@ -9,7 +9,7 @@ import {
   Tabs,
   styled
 } from '@mui/material';
-import useQueryCandidateProfiles from 'src/modules/application/hooks/useQueryCandidateProfiles';
+import useQueryCandidateApplications from 'src/modules/application/hooks/useQueryCandidateApplications';
 import Table from './Table';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useEffect, useState } from 'react';
@@ -29,8 +29,7 @@ const CandidateProfiles = () => {
   const pageSize = 7;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentTab, setCurrentTab] = useState('');
-  const [dataToShow, setDataToShow] = useState([]);
-  const { data, isLoading } = useQueryCandidateProfiles({
+  const { data } = useQueryCandidateApplications({
     page: currentPage,
     num: pageSize,
     status: currentTab
@@ -85,8 +84,9 @@ const CandidateProfiles = () => {
                   );
                 })}
               </TabsWrapper>
-              <Table data={data} pageSize={pageSize} />
-              <Pagination
+              <Table
+                data={data}
+                pageSize={pageSize}
                 currentPage={currentPage}
                 totalPages={totalPages}
                 handlePageChange={setCurrentPage}

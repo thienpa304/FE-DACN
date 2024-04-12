@@ -10,20 +10,27 @@ const useMutateFollowEmployeeById = () => {
   const { mutate: onFollowEmployeeById, isLoading } = useMutation<
     ResponseData<any[]>,
     AxiosError<ResponseData<any[]>>,
-    [id: number]
-  >(([id]) => FollowEmployeesService.create({ employeeId: id }), {
-    onSuccess: (res) => {
-      if (res.status === 200) {
-        queryClient.invalidateQueries(['get-FollowEmployees']);
-        toast.success({ massage: res.message });
-      } else {
-        toast.error({ massage: res.message });
+    [id: number, isOnlineProfile: string]
+  >(
+    ([id, isOnlineProfile]) =>
+      FollowEmployeesService.create({
+        employeeId: id,
+        isOnlineProfile: isOnlineProfile
+      }),
+    {
+      onSuccess: (res) => {
+        if (res.status === 200) {
+          queryClient.invalidateQueries(['get-FollowEmployees']);
+          toast.success({ massage: res.message });
+        } else {
+          toast.error({ massage: res.message });
+        }
+      },
+      onError: (error) => {
+        toast.error({ massage: error.response.data.message });
       }
-    },
-    onError: (error) => {
-      toast.error({ massage: error.response.data.message });
     }
-  });
+  );
 
   return {
     onFollowEmployeeById,

@@ -9,9 +9,8 @@ function CompanyList(props) {
   const { companyList, totalResults } = queryCompanys({ num: 9, page: 1 });
   // const totalResults = companyList?.length;
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = numOfJobPerPage ? numOfJobPerPage : 15;
-  const validTotalPages = Number.isInteger(totalResults) ? totalResults : 1;
-  const totalPages = Math.ceil(validTotalPages / jobsPerPage);
+  const pageSize = numOfJobPerPage ? numOfJobPerPage : 15;
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);

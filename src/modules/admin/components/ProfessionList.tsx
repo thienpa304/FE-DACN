@@ -1,6 +1,4 @@
 import { Grid, IconButton, Typography } from '@mui/material';
-import { random } from '@mui/x-data-grid-generator';
-import React from 'react';
 import professions from 'src/constants/professions';
 
 const professionButtons = [
@@ -12,7 +10,7 @@ const professionButtons = [
   ...professions
 ];
 export default function ProfessionList(props) {
-  const { handleSelectProfession, handleViewProfessionMode } = props;
+  const { handleSelectProfession, handleViewProfessionMode, total } = props;
 
   const handleOption = (professionName) => {
     handleSelectProfession(professionName);
@@ -54,7 +52,15 @@ export default function ProfessionList(props) {
               onClick={() => handleOption(item.name)}
             >
               <img src={item.icon} alt={item.name} width="100" height="100" />
-              <Typography sx={{ mt: 1 }}>{item.name}</Typography>
+              <Typography sx={{ mt: 1 }}>
+                {item.name}
+                {total &&
+                  ' (' +
+                    (total?.find(
+                      (profession) => profession.profession_value === item.name
+                    )?.count || 0) +
+                    ')'}
+              </Typography>
             </IconButton>
           </Grid>
         ))}

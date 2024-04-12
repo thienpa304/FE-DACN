@@ -19,8 +19,30 @@ const useQueryEmployeeByKeywords = (params?) => {
     ResponseData<PropsType>,
     AxiosError<ResponseData<PropsType>>
   >(
-    ['get-ProfileByKeywords', params?.keywords, params?.page],
-    () => RecommendEmployeeService.get({ params }),
+    [
+      'get-ProfileByKeywords',
+      params?.keywords,
+      params?.page,
+      params?.profession,
+      params?.experience,
+      params?.degree,
+      params?.employmentType,
+      params?.sex,
+      params?.jobTitle,
+      params?.currentPosition,
+      params?.positionLevel
+    ],
+    () => {
+      for (const key in params) {
+        if (params[key] === 'Tất cả' || params[key] === undefined) {
+          params[key] = '';
+        }
+      }
+      const item = { ...params, currentPosition: params?.positionLevel };
+      delete item.positionLevel;
+
+      return RecommendEmployeeService.get({ params: item });
+    },
     {
       retry: 1,
       refetchOnWindowFocus: false,
