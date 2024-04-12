@@ -10,10 +10,10 @@ import {
   WORK_AT
 } from 'src/constants/option';
 import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
-import useAttachedDocument from '../hooks/useDocument';
+import useDocumentHook from '../hooks/useDocumentHook';
 import { Degree } from 'src/constants/enum';
 function AttachedGeneral() {
-  const { setProfile, profile } = useAttachedDocument();
+  const { setProfile, profile } = useDocumentHook();
   const [newData, setNewData] = useState(null);
 
   const options = {

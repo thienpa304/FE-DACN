@@ -4,7 +4,8 @@ import React from 'react';
 export default function Pagination({
   currentPage,
   totalPages,
-  handlePageChange
+  handlePageChange,
+  disabled = false
 }) {
   return (
     <Page
@@ -16,6 +17,7 @@ export default function Pagination({
       shape="rounded"
       size="large"
       sx={{ display: 'flex', justifyContent: 'center' }}
+      disabled={disabled}
     />
   );
 }

@@ -90,12 +90,11 @@ const columns: GridColDef[] = [
     sortable: true
   },
   {
-    field: 'submit',
+    field: 'submissionCount',
     headerName: 'Lượt nộp',
     minWidth: 100,
     headerAlign: 'center',
     align: 'center',
-    renderCell: () => <>0</>,
     sortable: true
   },
   {
@@ -104,7 +103,6 @@ const columns: GridColDef[] = [
     minWidth: 100,
     headerAlign: 'center',
     align: 'center',
-    renderCell: () => <>0</>,
     sortable: true
   },
   {

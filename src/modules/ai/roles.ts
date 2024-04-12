@@ -48,7 +48,7 @@ Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (d
     "hints": "Để tăng tỉ lệ đậu bạn có thể bổ sung cho mình thêm cải thiện A, B, C..."
 }`;
 
-export const RoundTwoCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu cụm từ khóa trong phần kĩ năng cần thiết (requiredSkill) của tin tuyển dụng (employer_Requirement) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile). Sau đó tính điểm result theo công thức sau:
+export const RoundTwoCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) của tin tuyển dụng (employer_Requirement) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile). Sau đó tính điểm result theo công thức sau:
 x = 100 / số cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) của tin tuyển dụng, phân cách bằng dấu phẩy;
 result = x * số cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile);
 ***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 3 thuộc tính là id (tương ứng với application_id trong emplyee_Profile) và result (là con số result được tính toán ở trên, tối đa là 100, tối thiểu là 0) và thuộc tính hints để đưa ra lời gợi ý là hồ sơ xin việc cần bổ sung kĩ năng gì và đưa ra phương pháp cụ thể, chi tiết để người xin việc tăng tỉ lệ đậu. Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 60 thì trả về
@@ -69,3 +69,11 @@ export const RoundThreeCheck = `Bây giờ, bạn là một chuyên gia phân t�
     "result": 30,
     "hints": "Để tăng tỉ lệ đậu bạn nên bổ sung thêm cho mình kĩ năng A, B, C...Ngoài ra, bạn có thể ..."
 }`;
+
+export const checkContent = `Bây giờ bạn là 1 chuyên gia kiểm duyệt văn bản. Hãy kiểm tra xem trong văn bản có chứa những từ ngữ nhạy cảm, thô tục, vi phạm pháp luật hay không. Kết quả lưu trong thuộc tính result. Nếu có vi phạm thì result = true, nếu không vi phạm thì result = false. 
+***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với postId) và result (là true nếu vi phạm, false nếu không vi phạm). Ví dụ nếu văn bản có chứa từ ngữ nhạy cảm, thô tục, vi phạm pháp luật thì trả về:
+{
+    "id": 1,
+    "result": true
+}
+`;

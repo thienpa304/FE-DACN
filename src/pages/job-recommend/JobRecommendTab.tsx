@@ -18,11 +18,8 @@ export default function JobRecommendTab(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredJob, setFilteredJob] = useState<Job[]>([]);
 
-  const jobsPerPage = 4;
-  const validvalidTotalPages = Number.isInteger(totalResults)
-    ? totalResults
-    : 1;
-  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage) || 1;
+  const pageSize = 4;
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
   const { jobs } = useQueryAllJob({
     keywords: keywords
   });

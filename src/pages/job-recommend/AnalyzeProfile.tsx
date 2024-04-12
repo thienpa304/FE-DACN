@@ -20,7 +20,7 @@ import {
 import { CVFormat } from 'src/constants/uploadFileRule';
 import { pdfjs } from 'react-pdf';
 import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
-import useAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useDocument';
+import useDocumentHook from 'src/modules/jobProfile/attachedDocument/hooks/useDocumentHook';
 import { getFileByUrl } from 'src/common/firebaseService';
 import FileUploader from 'src/components/FileUploader';
 import FileFormatInfo from 'src/components/FileFormatInfo';
@@ -52,7 +52,7 @@ const AnalyzeProfile = (props) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [message, setMessage] = useState([]);
   const { profile: onlineProfile } = useOnlineProfile();
-  const { profile: documentProfile } = useAttachedDocument();
+  const { profile: documentProfile } = useDocumentHook();
 
   const handleUploadFile = async (e) => {
     setFailedOCR(false);

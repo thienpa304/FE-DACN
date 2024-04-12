@@ -7,7 +7,7 @@ import {
 } from '../documentSlice';
 import { AttachedDocument } from '../../model';
 
-const useAttachedDocument = () => {
+const useDocumentHook = () => {
   const { profile } = useAppSelector(selectDocument);
   const dispatch = useAppDispatch();
 
@@ -26,4 +26,4 @@ const useAttachedDocument = () => {
   };
 };
 
-export default useAttachedDocument;
+export default useDocumentHook;

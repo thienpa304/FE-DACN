@@ -33,7 +33,6 @@ const useQueryEmployee = (params?) => {
       }
       const item = { ...params, currentPosition: params?.positionLevel };
       delete item.positionLevel;
-      console.log(item);
       return GetEmployeeService.get({ params: item });
     },
     {

@@ -5,12 +5,7 @@ import { ProfileShowType } from '../model';
 import { FollowEmployeesService } from '../getEmployeeService';
 import { useApp } from 'src/modules/app/hooks';
 
-interface responseType {
-  userId: number;
-  jobs: any[];
-}
-
-const useQueryFollowEmmployee = (params?) => {
+const useQueryFollowEmployee = (params?) => {
   const { isEmployer } = useApp();
   const { data, isLoading, refetch } = useQuery<
     ResponseData<any[]>,
@@ -27,10 +22,10 @@ const useQueryFollowEmmployee = (params?) => {
   );
 
   return {
-    jobFollow: data?.data,
+    employeeFollow: data?.data,
     isLoading,
     refetch
   };
 };
 
-export default useQueryFollowEmmployee;
+export default useQueryFollowEmployee;

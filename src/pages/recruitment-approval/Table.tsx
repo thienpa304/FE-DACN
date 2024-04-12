@@ -3,7 +3,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import LinkText from 'src/components/LinkText';
 import TableData from 'src/components/TableData';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Grid } from '@mui/material';
+import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
@@ -17,6 +17,10 @@ import Pagination from 'src/components/Pagination';
 import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import dayjs from 'dayjs';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { Job } from 'src/modules/jobs/model';
+import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import { checkContent } from 'src/modules/ai/roles';
+import { signal } from '@preact/signals-react';
 
 const renderJobTitle = (data) => {
   const navigate = useNavigate();
@@ -58,7 +62,7 @@ const renderCompany = (data) => {
     <Grid container alignItems={'center'}>
       <Grid
         item
-        xs={10}
+        xs={12}
         sx={{
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -104,6 +108,46 @@ const renderStatus = (data) => {
     />
   );
 };
+
+const renderCheckInvalid = [
+  {
+    label: 'Chưa xác định',
+    value: null,
+    color: '#efefef'
+  },
+  {
+    label: 'Hợp quy định',
+    value: false,
+    color: '#A5DD9B'
+  },
+  {
+    label: 'Vi phạm',
+    value: true,
+    color: '#F94C10'
+  }
+];
+
+const renderCheck = (data) => {
+  debugger;
+  const initCheckValue = renderCheckInvalid.find(
+    (item) => item.value === data.value
+  );
+
+  return (
+    <Typography
+      bgcolor={initCheckValue?.color}
+      sx={{
+        width: '90%',
+        borderRadius: 3,
+        p: 1,
+        textAlign: 'center'
+      }}
+    >
+      {initCheckValue?.label}
+    </Typography>
+  );
+};
+
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
@@ -114,7 +158,7 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Người đăng',
-    minWidth: 150,
+    minWidth: 120,
     renderCell: (data) => (
       <Box
         sx={{
@@ -134,13 +178,13 @@ const columns: GridColDef[] = [
   {
     field: 'employer',
     headerName: 'Tên công ty',
-    minWidth: 250,
+    minWidth: 200,
     renderCell: renderCompany
   },
   {
     field: 'createAt',
     headerName: 'Ngày đăng',
-    minWidth: 150,
+    minWidth: 120,
     sortable: true,
     renderCell: (data) => (
       <Box
@@ -156,7 +200,7 @@ const columns: GridColDef[] = [
   {
     field: 'submissionCount',
     headerName: 'Lượt nộp',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
     headerAlign: 'center',
     sortable: true
@@ -164,7 +208,7 @@ const columns: GridColDef[] = [
   {
     field: 'view',
     headerName: 'Lượt xem',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
     headerAlign: 'center',
     sortable: true
@@ -176,6 +220,15 @@ const columns: GridColDef[] = [
     headerAlign: 'center',
     renderCell: renderStatus,
     sortable: true
+  },
+  {
+    field: 'check',
+    headerName: 'Kiểm duyệt',
+    minWidth: 140,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: renderCheck,
+    sortable: true
   }
 ];
 
@@ -184,13 +237,11 @@ export default function Table({ statusFilter, selectedProfession }) {
     status: ApprovalStatus[statusFilter],
     profession: selectedProfession
   });
+  const [start, setStart] = useState(false);
+  const [showList, setShowList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 9;
-
-  const validvalidTotalPages = Number.isInteger(totalResults)
-    ? totalResults
-    : 1;
-  const totalPages = Math.ceil(validvalidTotalPages / jobsPerPage);
+  const totalPages = Math.ceil(totalResults / jobsPerPage) || 1;
 
   const { jobs, isLoading } = useQueryJobByAdmin({
     page: currentPage,
@@ -203,13 +254,79 @@ export default function Table({ statusFilter, selectedProfession }) {
     setCurrentPage(pageNumber);
   };
 
-  if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
+  const preProcessData = (job: Job) => {
+    return {
+      postId: job?.postId,
+      jobTitle: job?.jobTitle,
+      jobDescription: job?.jobDescription,
+      jobRequirements: job?.jobRequirements,
+      benefits: job?.benefits,
+      requiredSkills: job?.requiredSkills
+    };
+  };
 
+  const handleCheck = async (dataToSend: Partial<Job>[]) => {
+    const result = await sendChatGPTRequest(checkContent, dataToSend);
+    debugger;
+    const jsonResult = result.map((item) => JSON.parse(item));
+    const resultList = jobs.map((job) => {
+      const found = jsonResult.find((item) => item.id === job.postId);
+      if (found) {
+        return {
+          ...job,
+          check: found.result
+        };
+      }
+    });
+    setShowList(resultList);
+    setStart(false);
+  };
+
+  useEffect(() => {
+    if (!start) return;
+    const dataToSend = jobs.map((job) => preProcessData(job));
+    handleCheck(dataToSend);
+  }, [start]);
+
+  useEffect(() => {
+    if (jobs) {
+      const newList = jobs.map((job) => {
+        return {
+          ...job,
+          check: null
+        };
+      });
+      setShowList(() => newList);
+    }
+  }, [JSON.stringify(jobs)]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter]);
+
+  if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
   return (
     <Box>
+      <Box sx={{ justifyContent: 'right', display: 'flex' }}>
+        {start && <CircularProgress />}
+        <Button
+          onClick={() => {
+            console.log(start);
+            setStart(true);
+            console.log(start);
+          }}
+          variant="contained"
+          size="small"
+          color="secondary"
+          disabled={start}
+          sx={{ mr: 1 }}
+        >
+          {!start ? 'Kiểm duyệt' : 'Đang kiểm duyệt...'}
+        </Button>
+      </Box>
       <TableData
         sx={{ height: '72vh', width: '100%' }}
-        rows={jobs}
+        rows={showList}
         columns={columns}
         hideFooter
       />
@@ -217,6 +334,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         totalPages={totalPages}
         currentPage={currentPage}
         handlePageChange={handlePageChange}
+        disabled={start}
       />
     </Box>
   );

@@ -24,7 +24,7 @@ import { useApp } from 'src/modules/app/hooks';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import { v4 } from 'uuid';
 import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
-import useAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useDocument';
+import useDocumentHook from 'src/modules/jobProfile/attachedDocument/hooks/useDocumentHook';
 import { review } from 'src/utils/reviewProfile';
 import AnayzeProfileButton from './AnayzeProfileButton';
 import { Job } from 'src/modules/jobs/model';
@@ -56,7 +56,7 @@ export default function ModalApply(props: Props) {
   const { onlineProfile } = useQueryOnlineProfile();
   const { attachedDocument } = useQueryAttachedDocument();
   const { profile: online, setProfile: setOnline } = useOnlineProfile();
-  const { profile: document, setProfile: setDocument } = useAttachedDocument();
+  const { profile: document, setProfile: setDocument } = useDocumentHook();
   const [isChecked, setIsChecked] = useState('');
   const [missInfo, setMissInfo] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);

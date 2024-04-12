@@ -1,10 +1,10 @@
 import { useApp } from 'src/modules/app/hooks';
-import useAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useDocument';
+import useDocumentHook from 'src/modules/jobProfile/attachedDocument/hooks/useDocumentHook';
 import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
 
 const useSignOutHook = () => {
   const { setAccessTokenApp, resetUserApp } = useApp();
-  const { resetDocumentProfile } = useAttachedDocument();
+  const { resetDocumentProfile } = useDocumentHook();
   const { resetOnlineProfile } = useOnlineProfile();
   const signOut = () => {
     resetUserApp();

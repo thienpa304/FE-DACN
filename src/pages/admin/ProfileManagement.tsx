@@ -50,8 +50,7 @@ const ProfileManagement = () => {
     profession: selectedProfession
   });
   const pageSize = 10;
-  const validTotalResult = Number.isInteger(totalResults) ? totalResults : 1;
-  const totalPages = Math.ceil(validTotalResult / pageSize) || 1;
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
   const { employeeList, isLoading, refetch } = useQueryEmployeesByAdmin(
     {
       profession: selectedProfession,

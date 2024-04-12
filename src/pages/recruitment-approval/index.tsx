@@ -14,6 +14,7 @@ import SelectInput from 'src/components/SelectInput';
 import { APPROVAL_STATUS } from 'src/constants';
 import { useState } from 'react';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
+import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 
 const ApprovalStatusOption = [
   {
@@ -28,6 +29,9 @@ const RecruitmentApproval = () => {
   const [status, setStatus] = useState('');
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [isProfessionView, setIsProfessionView] = useState(false);
+
+  const { dataList } = useQueryTotalJobsEachProfession();
+
   const handleChangeStatusFilter = (e) => {
     setStatus(e.target.value);
   };
@@ -93,6 +97,7 @@ const RecruitmentApproval = () => {
                 <ProfessionList
                   handleSelectProfession={handleSelectProfession}
                   handleViewProfessionMode={setIsProfessionView}
+                  total={dataList}
                 />
               )}
               {!isProfessionView && (

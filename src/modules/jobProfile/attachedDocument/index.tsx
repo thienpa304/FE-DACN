@@ -17,7 +17,7 @@ import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import useMutateAttachedDocument from './hooks/useMutateAttachedDocument';
 import useMutateUpdateAttachedDocument from './hooks/useMutateUpdateAttachedDocument';
-import useAttachedDocument from './hooks/useDocument';
+import useDocumentHook from './hooks/useDocumentHook';
 import useQueryAttachedDocument from './hooks/useQueryAttachedDocument';
 import { AttachedDocument as AttachedDocumentType } from '../model';
 import SuspenseLoader from 'src/components/SuspenseLoader';
@@ -56,7 +56,7 @@ const sections = [
 export default function AttachedDocument() {
   const { onSaveData } = useMutateAttachedDocument();
   const { onUpdateData } = useMutateUpdateAttachedDocument();
-  const { setProfile, profile } = useAttachedDocument();
+  const { setProfile, profile } = useDocumentHook();
   const { attachedDocument, isLoading } = useQueryAttachedDocument();
   const navigate = useNavigate();
   const [finished, setFinished] = useState(false);

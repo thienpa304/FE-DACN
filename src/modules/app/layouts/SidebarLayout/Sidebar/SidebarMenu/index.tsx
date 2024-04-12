@@ -421,21 +421,6 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to={`/${rolePath}/manage-access`}
-                      startIcon={<ManageAccessIcon />}
-                    >
-                      Bảo mật và quản lý quyền truy cập
-                    </Button>
-                  </ListItem>
-                </List>
-              </SubMenuWrapper>
-              <SubMenuWrapper>
-                <List component="div">
-                  <ListItem component="div">
-                    <Button
-                      disableRipple
-                      component={RouterLink}
-                      onClick={closeSidebar}
                       to={`/${rolePath}/mailer`}
                       startIcon={<MailerIcon />}
                     >

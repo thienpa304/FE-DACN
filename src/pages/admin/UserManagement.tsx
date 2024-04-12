@@ -21,20 +21,17 @@ import Pagination from 'src/components/Pagination';
 import useDeleteUserById from 'src/modules/admin/hooks/useDeleteUserByAdmin';
 
 const UserManagement = () => {
-  const userPerPage = 8;
+  const pageSize = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
   const { userList, isLoading } = useQueryAllUserByAdmin({
     page: currentPage,
-    num: userPerPage
+    num: pageSize
   });
   const { onDeleteUser } = useDeleteUserById();
 
   const { totalResults } = useQueryTotalUserResultByAdmin();
-  const validvalidTotalPages = Number.isInteger(totalResults)
-    ? totalResults
-    : 1;
-  const totalPages = Math.ceil(validvalidTotalPages / userPerPage);
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -100,7 +97,7 @@ const UserManagement = () => {
       align: 'center',
       renderCell: (params) => (
         <div>
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             component={RouterLink}
@@ -108,7 +105,7 @@ const UserManagement = () => {
             size="small"
           >
             Xem
-          </Button>
+          </Button> */}
           <Button
             onClick={() => handleDeleteUser(params.row.id)}
             variant="contained"

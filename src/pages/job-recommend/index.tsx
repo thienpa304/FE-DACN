@@ -16,7 +16,7 @@ import {
   Checkbox
 } from '@mui/material';
 import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
-import useAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useDocument';
+import useDocumentHook from 'src/modules/jobProfile/attachedDocument/hooks/useDocumentHook';
 import useQueryOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useQueryOnlineProfile';
 import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 import AnalyzeProfile from './AnalyzeProfile';
@@ -25,7 +25,7 @@ const JobRecommend = () => {
   const { onlineProfile } = useQueryOnlineProfile();
   const { setProfile: setOnline } = useOnlineProfile();
   const { attachedDocument } = useQueryAttachedDocument();
-  const { setProfile: setDocumentProfile } = useAttachedDocument();
+  const { setProfile: setDocumentProfile } = useDocumentHook();
 
   // useEffect(() => {
   //   setOnline(onlineProfile);
