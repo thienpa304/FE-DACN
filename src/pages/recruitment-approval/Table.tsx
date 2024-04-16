@@ -128,7 +128,6 @@ const renderCheckInvalid = [
 ];
 
 const renderCheck = (data) => {
-  debugger;
   const initCheckValue = renderCheckInvalid.find(
     (item) => item.value === data.value
   );
@@ -237,6 +236,7 @@ export default function Table({ statusFilter, selectedProfession }) {
     status: ApprovalStatus[statusFilter],
     profession: selectedProfession
   });
+  const { mutate } = useMutateJobStatus();
   const [start, setStart] = useState(false);
   const [showList, setShowList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -272,6 +272,7 @@ export default function Table({ statusFilter, selectedProfession }) {
     const resultList = jobs.map((job) => {
       const found = jsonResult.find((item) => item.id === job.postId);
       if (found) {
+        mutate([found.id, { check: found.result }]);
         return {
           ...job,
           check: found.result
@@ -296,7 +297,7 @@ export default function Table({ statusFilter, selectedProfession }) {
           check: null
         };
       });
-      setShowList(() => newList);
+      setShowList(() => jobs);
     }
   }, [JSON.stringify(jobs)]);
 

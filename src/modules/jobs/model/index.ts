@@ -41,4 +41,5 @@ export type Job = {
   employer: Company;
   requiredSkills: string;
   keywords: string;
+  check: boolean;
 };

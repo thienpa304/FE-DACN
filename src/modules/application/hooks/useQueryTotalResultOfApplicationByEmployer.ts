@@ -2,12 +2,14 @@ import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { ApplicationTotalResults } from '../applicationService';
+import { useApp } from 'src/modules/app/hooks';
 
 interface responseType {
   totalResults: number;
 }
 
 const useQueryTotalResultOfApplicationByEmployer = (params?) => {
+  const { isEmployer } = useApp();
   const { data, isLoading } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>
@@ -16,7 +18,9 @@ const useQueryTotalResultOfApplicationByEmployer = (params?) => {
     () => ApplicationTotalResults.get({ params }),
     {
       retry: 1,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+      enabled: isEmployer
     }
   );
 

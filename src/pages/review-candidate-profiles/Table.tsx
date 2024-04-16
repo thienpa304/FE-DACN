@@ -128,7 +128,7 @@ const renderStatus = (data) => {
   );
 };
 
-export const renderMatchingScore = (data, isAnalyzing: boolean) => {
+export const renderMatchingScore = (data) => {
   // if (isAnalyzing) return <CircularProgress />;
   let result = '';
   if (data.value >= HIGH_SCORE) result = 'Cao';
@@ -163,6 +163,45 @@ export const renderMatchingScore = (data, isAnalyzing: boolean) => {
   );
 };
 
+const columns: GridColDef[] = [
+  {
+    field: 'name',
+    headerName: 'Tên hồ sơ',
+    minWidth: 220,
+    renderCell: renderProfileName,
+    sortable: true
+  },
+  {
+    field: 'jobTitle',
+    headerName: 'Vị trí ứng tuyển',
+    minWidth: 450,
+    renderCell: renderJobTitle,
+    sortable: true
+  },
+  {
+    field: 'applicationType',
+    headerName: 'Loại hồ sơ',
+    minWidth: 150,
+    sortable: true
+  },
+  {
+    field: 'status',
+    headerName: 'Trạng thái tuyển dụng',
+    minWidth: 180,
+    renderCell: renderStatus,
+    sortable: true
+  },
+  {
+    field: 'matchingScore',
+    headerName: 'Độ phù hợp',
+    minWidth: 150,
+    align: 'center',
+    headerAlign: 'center',
+    renderCell: renderMatchingScore,
+    sortable: true
+  }
+];
+
 export default function Table(props) {
   const { pageSize, data, currentPage, totalPages, handlePageChange } = props;
   // data : danh sách Application
@@ -185,7 +224,10 @@ export default function Table(props) {
     signal: false,
     resultData: null
   });
+
   const applicationIdList = data?.map((item) => item?.application_id);
+  console.log(applicationIdList);
+
   const jobsIdList: Set<number> = new Set(
     data?.map((item) => {
       return item?.jobPosting?.postId;
@@ -215,11 +257,11 @@ export default function Table(props) {
   };
 
   const handleSetAnalyzedProfile = async (data: ProfileApplicationType[]) => {
-    setAnalyzedProfile(() => data);
+    setAnalyzedProfile(data);
   };
 
   const handleIsAnalyzing = (data: boolean) => {
-    setIsAnalyzing(() => data);
+    setIsAnalyzing(data);
   };
 
   const handleGoToAnalyzeResult = (signal: boolean, resultData) => {
@@ -331,12 +373,14 @@ export default function Table(props) {
     }
   }, [goToAnalyzeResult.signal]);
 
+  console.log('rerender 2');
+
   // First time render the page
   useEffect(() => {
     if (!jobs.length || !applicationDetailList.length || start) return;
 
     const dataToAnalyze = matchJobAndProfile();
-    console.log('dataToAnalyze', dataToAnalyze);
+    // console.log('dataToAnalyze', dataToAnalyze);
 
     const resultList = dataToAnalyze?.map((item) => {
       item.employee_Profile.application.id = item.id;
@@ -350,16 +394,20 @@ export default function Table(props) {
     // Check if the profile values are really different
     // if not, do not set the state
     if (JSON.stringify(dataToAnalyze) !== JSON.stringify(analyzedProfile)) {
-      setAnalyzedProfile(() => dataToAnalyze);
+      setAnalyzedProfile(dataToAnalyze);
     }
-  }, [JSON.stringify(jobs), JSON.stringify(applicationDetailList)]);
+  }, [
+    JSON.stringify(data),
+    JSON.stringify(jobs),
+    JSON.stringify(applicationDetailList)
+  ]);
 
   // Start Round 1
   useEffect(() => {
     // go into round 1
     if (start) {
-      const resetMatchingScoreList: ProfileApplicationType[] =
-        analyzedProfile.map((pofile) => {
+      const resetScoreList: ProfileApplicationType[] = analyzedProfile.map(
+        (pofile) => {
           return {
             ...pofile,
             employee_Profile: {
@@ -370,24 +418,34 @@ export default function Table(props) {
               }
             }
           };
-        });
-      setAnalyzedProfile(() => resetMatchingScoreList);
-      setResetMatchingScoreList(() => resetMatchingScoreList);
-    }
-  }, [start]);
-
-  useEffect(() => {
-    resetMatchingScoreList.length > 0 &&
+        }
+      );
+      setAnalyzedProfile(resetScoreList);
+      setResetMatchingScoreList(resetScoreList);
       review({
         round: 1,
         handleAnalyzeResult: handleAnalyzeResult,
         setIsAnalyzing: handleIsAnalyzing,
-        dataToAnalyze: resetMatchingScoreList,
-        resetMatchingScoreList: resetMatchingScoreList,
+        dataToAnalyze: resetScoreList,
+        resetMatchingScoreList: resetScoreList,
         setAnalyzedProfile: handleSetAnalyzedProfile,
         handleGoToAnalyzeResult: handleGoToAnalyzeResult
       });
-  }, [JSON.stringify(resetMatchingScoreList)]);
+    }
+  }, [start]);
+
+  // useEffect(() => {
+  //   resetMatchingScoreList.length > 0 &&
+  //     review({
+  //       round: 1,
+  //       handleAnalyzeResult: handleAnalyzeResult,
+  //       setIsAnalyzing: handleIsAnalyzing,
+  //       dataToAnalyze: resetMatchingScoreList,
+  //       resetMatchingScoreList: resetMatchingScoreList,
+  //       setAnalyzedProfile: handleSetAnalyzedProfile,
+  //       handleGoToAnalyzeResult: handleGoToAnalyzeResult
+  //     });
+  // }, [JSON.stringify(resetMatchingScoreList)]);
 
   // Start Round 2, 3
   useEffect(() => {
@@ -404,8 +462,6 @@ export default function Table(props) {
           passRoundOneProfiles: passRoundOneProfiles
         });
       else {
-        finishedAll();
-        console.log('Finised All');
         Promise.all(
           showList.map((item) => {
             onSaveApplicationStatus([
@@ -414,6 +470,8 @@ export default function Table(props) {
             ]);
           })
         );
+        finishedAll();
+        console.log('Finised All');
       }
     } else if (roundTwoFinished && !roundThreeFinished) {
       console.log('Round 2 finished');
@@ -440,46 +498,7 @@ export default function Table(props) {
     }
   }, [roundOneFinished, roundTwoFinished, roundThreeFinished]);
 
-  const columns: GridColDef[] = [
-    {
-      field: 'name',
-      headerName: 'Tên hồ sơ',
-      minWidth: 220,
-      renderCell: renderProfileName,
-      sortable: true
-    },
-    {
-      field: 'jobTitle',
-      headerName: 'Vị trí ứng tuyển',
-      minWidth: 450,
-      renderCell: renderJobTitle,
-      sortable: true
-    },
-    {
-      field: 'applicationType',
-      headerName: 'Loại hồ sơ',
-      minWidth: 150,
-      sortable: true
-    },
-    {
-      field: 'status',
-      headerName: 'Trạng thái tuyển dụng',
-      minWidth: 180,
-      renderCell: renderStatus,
-      sortable: true
-    },
-    {
-      field: 'matchingScore',
-      headerName: 'Độ phù hợp',
-      minWidth: 150,
-      align: 'center',
-      headerAlign: 'center',
-      renderCell: (data) => renderMatchingScore(data, isAnalyzing),
-      sortable: true
-    }
-  ];
-
-  if (isLoadingJobs || isLoadingApplication) return <SuspenseLoader />;
+  // if (isLoadingJobs || isLoadingApplication) return <SuspenseLoader />;
 
   return (
     <>

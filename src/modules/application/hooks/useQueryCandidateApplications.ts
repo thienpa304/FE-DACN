@@ -7,7 +7,7 @@ import { useApp } from 'src/modules/app/hooks';
 
 const useQueryCandidateApplications = (params?) => {
   const { isEmployer } = useApp();
-  const { data, isLoading, refetch } = useQuery<
+  const { data, isLoading, refetch, isFetching } = useQuery<
     ResponseData<Application[]>,
     AxiosError<ResponseData<Application[]>>
   >(
@@ -30,7 +30,8 @@ const useQueryCandidateApplications = (params?) => {
     data:
       data?.data?.map((item) => ({ ...item, id: item.application_id })) || [],
     isLoading,
-    refetch
+    refetch,
+    isFetching
   };
 };
 
