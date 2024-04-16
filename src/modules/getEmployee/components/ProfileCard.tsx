@@ -8,7 +8,7 @@ function ProfileCard({ profile }: { profile: ProfileShowType }) {
   const employeeProfile = {
     ...profile,
     avatar: profile?.employee?.user?.avatar,
-    ...profile?.employee?.user,
+    ...profile?.employee?.user
   };
 
   useEffect(() => {

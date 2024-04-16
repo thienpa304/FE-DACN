@@ -18,7 +18,8 @@ import {
   LOW_SCORE,
   NORMAL_SCORE,
   HIGH_SCORE,
-  firstRoundForGeneralInfo
+  firstRoundForGeneralInfo,
+  parseResponseJSONData
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
@@ -216,9 +217,6 @@ export default function Table(props) {
   const [passRoundOneProfiles, setPassRoundOneProfiles] = useState<
     ProfileApplicationType[]
   >([]);
-  const [resetMatchingScoreList, setResetMatchingScoreList] = useState<
-    ProfileApplicationType[]
-  >([]);
   const [start, setStart] = useState(false);
   const [goToAnalyzeResult, setGoToAnalyzeResult] = useState({
     signal: false,
@@ -240,8 +238,11 @@ export default function Table(props) {
   const { jobs, isLoading: isLoadingJobs } =
     useQueryJobByIdList(uniqueJobsIdList);
 
-  const { data: applicationDetailList, isLoading: isLoadingApplication } =
-    useQueryCandidateApplicationByIdList(applicationIdList);
+  const {
+    data: applicationDetailList,
+    isLoading: isLoadingApplication,
+    refetch
+  } = useQueryCandidateApplicationByIdList(applicationIdList);
 
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
 
@@ -250,10 +251,10 @@ export default function Table(props) {
     setRoundOneFinished(false);
     setRoundTwoFinished(false);
     setRoundThreeFinished(false);
-    setResetMatchingScoreList([]);
     setIsAnalyzing(false);
     setPassRoundOneProfiles([]);
     setGoToAnalyzeResult({ signal: false, resultData: null });
+    setAnalyzedProfile([]);
   };
 
   const handleSetAnalyzedProfile = async (data: ProfileApplicationType[]) => {
@@ -269,63 +270,64 @@ export default function Table(props) {
   };
 
   const handleAnalyzeResult = async (result: any[]) => {
-    const responses = result?.map((data) => {
-      if (data) return JSON.parse(data);
-    });
+    const responses = await parseResponseJSONData(result);
+    const updatedAnalyzedProfile = updateAnalyzedProfile(responses);
 
-    const updatedAnalyzedProfile = await Promise.all(
-      analyzedProfile?.map(async (profile) => {
-        const foundItem = responses?.find((res) => res?.id === profile?.id);
-        let matchingScore: number;
-        if (foundItem?.result !== undefined) {
-          matchingScore = profile?.employee_Profile?.application?.matchingScore
-            ? profile?.employee_Profile?.application?.matchingScore +
-              foundItem.result
-            : foundItem.result;
-        } else if (
-          !roundOneFinished &&
-          (profile?.employee_Profile?.online_profile ||
-            profile?.employee_Profile?.attached_document)
-        ) {
-          matchingScore = firstRoundForGeneralInfo(
-            profile?.employer_Requirement,
-            profile?.employee_Profile
-          );
-        } else {
-          matchingScore = profile?.employee_Profile?.application?.matchingScore;
-        }
+    updateRoundStates(updatedAnalyzedProfile);
+  };
 
-        console.log('matchingScore', matchingScore);
-
-        return {
-          ...profile,
-          employee_Profile: {
-            ...profile?.employee_Profile,
-            application: {
-              ...profile?.employee_Profile?.application,
-              matchingScore: matchingScore
-            }
+  const updateAnalyzedProfile = (responses: any[]) => {
+    return analyzedProfile.map((profile) => {
+      const matchingScore = calculateMatchingScore(profile, responses);
+      return {
+        ...profile,
+        employee_Profile: {
+          ...profile?.employee_Profile,
+          application: {
+            ...profile?.employee_Profile?.application,
+            matchingScore
           }
-        };
-      })
-    );
+        }
+      };
+    });
+  };
 
+  const calculateMatchingScore = (profile: any, responses: any[]) => {
+    const foundItem = responses.find((res) => res?.id === profile?.id);
+    if (foundItem?.result !== undefined) {
+      return profile?.employee_Profile?.application?.matchingScore !== undefined
+        ? profile?.employee_Profile?.application?.matchingScore +
+            foundItem.result
+        : foundItem.result;
+    } else if (
+      !roundOneFinished &&
+      (profile?.employee_Profile?.online_profile ||
+        profile?.employee_Profile?.attached_document)
+    ) {
+      return firstRoundForGeneralInfo(
+        profile?.employer_Requirement,
+        profile?.employee_Profile
+      );
+    } else {
+      return profile?.employee_Profile?.application?.matchingScore;
+    }
+  };
+
+  const updateRoundStates = (updatedAnalyzedProfile: any[]) => {
     if (!roundOneFinished) {
-      const passRoundData = updatedAnalyzedProfile?.filter(
+      const passRoundData = updatedAnalyzedProfile.filter(
         (data) => data?.employee_Profile.application?.matchingScore >= LOW_SCORE
       );
       setPassRoundOneProfiles(passRoundData);
     }
 
-    setAnalyzedProfile(() => updatedAnalyzedProfile);
-    const resultList = updatedAnalyzedProfile?.map((profile) => ({
+    setAnalyzedProfile(updatedAnalyzedProfile);
+    const resultList = updatedAnalyzedProfile.map((profile) => ({
       ...profile?.employee_Profile?.application,
       id: profile.id
     }));
-    console.log('resultList', resultList);
-
     setShowList(resultList);
-    setIsAnalyzing(false);
+
     if (start) {
       if (!roundOneFinished) setRoundOneFinished(true);
       else if (!roundTwoFinished) setRoundTwoFinished(true);
@@ -342,6 +344,9 @@ export default function Table(props) {
         const profile = applicationDetailList?.find(
           (app) => app?.application?.application_id === item?.application_id
         );
+
+        console.log('applicationDetailList', applicationDetailList);
+
         if (!job || !profile) return null;
 
         const preprocessedJobData = preprocessJobData(job);
@@ -366,14 +371,66 @@ export default function Table(props) {
       })
       .filter(Boolean);
 
+  const handleReview = () => {
+    if (!roundOneFinished) {
+      // Round 1: Reset matching scores and start round 1
+      const resetScoreList = analyzedProfile.map((profile) => ({
+        ...profile,
+        employee_Profile: {
+          ...profile.employee_Profile,
+          application: {
+            ...profile.employee_Profile.application,
+            matchingScore: null
+          }
+        }
+      }));
+      setAnalyzedProfile(resetScoreList);
+      review({
+        round: 1,
+        handleAnalyzeResult,
+        setIsAnalyzing: handleIsAnalyzing,
+        resetMatchingScoreList: resetScoreList,
+        setAnalyzedProfile: handleSetAnalyzedProfile,
+        handleGoToAnalyzeResult
+      });
+    } else if (!roundTwoFinished && passRoundOneProfiles.length > 0) {
+      // Round 2: Proceed to round 2 if round 1 is finished
+      review({
+        round: 2,
+        handleAnalyzeResult,
+        setIsAnalyzing: handleIsAnalyzing,
+        passRoundOneProfiles
+      });
+    } else if (!roundThreeFinished) {
+      // Round 3: Proceed to round 3 if round 2 is finished
+      review({
+        round: 3,
+        handleAnalyzeResult,
+        setIsAnalyzing: handleIsAnalyzing,
+        passRoundOneProfiles
+      });
+    } else {
+      // All rounds finished, save matching scores and finish all
+      Promise.all(
+        showList.map((item) =>
+          onSaveApplicationStatus([
+            item.id,
+            { matchingScore: item.matchingScore }
+          ])
+        )
+      ).then(() => {
+        refetch();
+      });
+      finishedAll();
+      console.log('Finished All');
+    }
+  };
+
   useEffect(() => {
     if (goToAnalyzeResult.signal) {
-      console.log('analyzedProfile', analyzedProfile);
       handleAnalyzeResult(goToAnalyzeResult.resultData);
     }
   }, [goToAnalyzeResult.signal]);
-
-  console.log('rerender 2');
 
   // First time render the page
   useEffect(() => {
@@ -388,11 +445,12 @@ export default function Table(props) {
     });
 
     if (JSON.stringify(resultList) !== JSON.stringify(showList)) {
+      console.log('showList', resultList);
+
       setShowList(() => resultList);
     }
 
     // Check if the profile values are really different
-    // if not, do not set the state
     if (JSON.stringify(dataToAnalyze) !== JSON.stringify(analyzedProfile)) {
       setAnalyzedProfile(dataToAnalyze);
     }
@@ -402,103 +460,11 @@ export default function Table(props) {
     JSON.stringify(applicationDetailList)
   ]);
 
-  // Start Round 1
-  useEffect(() => {
-    // go into round 1
-    if (start) {
-      const resetScoreList: ProfileApplicationType[] = analyzedProfile.map(
-        (pofile) => {
-          return {
-            ...pofile,
-            employee_Profile: {
-              ...pofile.employee_Profile,
-              application: {
-                ...pofile.employee_Profile.application,
-                matchingScore: null
-              }
-            }
-          };
-        }
-      );
-      setAnalyzedProfile(resetScoreList);
-      setResetMatchingScoreList(resetScoreList);
-      review({
-        round: 1,
-        handleAnalyzeResult: handleAnalyzeResult,
-        setIsAnalyzing: handleIsAnalyzing,
-        dataToAnalyze: resetScoreList,
-        resetMatchingScoreList: resetScoreList,
-        setAnalyzedProfile: handleSetAnalyzedProfile,
-        handleGoToAnalyzeResult: handleGoToAnalyzeResult
-      });
-    }
-  }, [start]);
-
-  // useEffect(() => {
-  //   resetMatchingScoreList.length > 0 &&
-  //     review({
-  //       round: 1,
-  //       handleAnalyzeResult: handleAnalyzeResult,
-  //       setIsAnalyzing: handleIsAnalyzing,
-  //       dataToAnalyze: resetMatchingScoreList,
-  //       resetMatchingScoreList: resetMatchingScoreList,
-  //       setAnalyzedProfile: handleSetAnalyzedProfile,
-  //       handleGoToAnalyzeResult: handleGoToAnalyzeResult
-  //     });
-  // }, [JSON.stringify(resetMatchingScoreList)]);
-
-  // Start Round 2, 3
+  // Start Round 1, 2, 3
   useEffect(() => {
     if (!start) return;
-    if (roundOneFinished && !roundTwoFinished) {
-      console.log('passRoundOneProfiles', passRoundOneProfiles);
-
-      // go to round 2
-      if (passRoundOneProfiles.length > 0)
-        review({
-          round: 2,
-          handleAnalyzeResult: handleAnalyzeResult,
-          setIsAnalyzing: handleIsAnalyzing,
-          passRoundOneProfiles: passRoundOneProfiles
-        });
-      else {
-        Promise.all(
-          showList.map((item) => {
-            onSaveApplicationStatus([
-              item.id,
-              { matchingScore: item.matchingScore }
-            ]);
-          })
-        );
-        finishedAll();
-        console.log('Finised All');
-      }
-    } else if (roundTwoFinished && !roundThreeFinished) {
-      console.log('Round 2 finished');
-
-      // go to round 3
-      review({
-        round: 3,
-        handleAnalyzeResult: handleAnalyzeResult,
-        setIsAnalyzing: handleIsAnalyzing,
-        passRoundOneProfiles: passRoundOneProfiles
-      });
-    } else if (roundThreeFinished) {
-      console.log('Round 3 finished');
-      Promise.all(
-        showList.map((item) => {
-          onSaveApplicationStatus([
-            item.id,
-            { matchingScore: item.matchingScore }
-          ]);
-        })
-      );
-      console.log('Finised All');
-      finishedAll();
-    }
-  }, [roundOneFinished, roundTwoFinished, roundThreeFinished]);
-
-  // if (isLoadingJobs || isLoadingApplication) return <SuspenseLoader />;
+    handleReview();
+  }, [start, roundOneFinished, roundTwoFinished, roundThreeFinished]);
 
   return (
     <>

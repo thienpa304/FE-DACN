@@ -115,7 +115,6 @@ const isProfileQualified = (profile, job) => {
 };
 
 const handleRoundOne = async (
-  dataToAnalyze: ProfileApplicationType[],
   resetMatchingScoreList: ProfileApplicationType[],
   setAnalyzedProfile: (data: ProfileApplicationType[]) => Promise<void>,
   handleAnalyzeResult: (result: any[]) => Promise<void>,
@@ -351,7 +350,6 @@ export const review = async ({
   handleAnalyzeResult,
   setIsAnalyzing,
   setAnalyzedProfile,
-  dataToAnalyze,
   passRoundOneProfiles,
   resetMatchingScoreList,
   handleGoToAnalyzeResult
@@ -360,18 +358,15 @@ export const review = async ({
   handleAnalyzeResult: (result: any[]) => Promise<void>;
   setIsAnalyzing: (data: boolean) => void;
   setAnalyzedProfile?: (data: ProfileApplicationType[]) => Promise<void>;
-  dataToAnalyze?: ProfileApplicationType[];
   passRoundOneProfiles?: ProfileApplicationType[];
   resetMatchingScoreList?: ProfileApplicationType[];
   handleGoToAnalyzeResult?: any;
 }) => {
   setIsAnalyzing(true);
-  console.log('dataToAnalyze', dataToAnalyze);
 
   switch (round) {
     case 1:
       await handleRoundOne(
-        dataToAnalyze,
         resetMatchingScoreList,
         setAnalyzedProfile,
         handleAnalyzeResult,
@@ -387,4 +382,8 @@ export const review = async ({
     default:
       break;
   }
+};
+
+export const parseResponseJSONData = async (result: any[]) => {
+  return Promise.all(result.map(async (data) => data && JSON.parse(data)));
 };
