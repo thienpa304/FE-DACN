@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { EducationInformation } from 'src/modules/jobProfile/model/index';
-import { EducationService } from 'src/modules/jobProfile/employeeService';
+import { EducationService } from 'src/modules/jobProfile/employeeProfileService';
 
 const useMutateEducation = () => {
   const queryClient = useQueryClient();

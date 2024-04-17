@@ -20,7 +20,7 @@ import useMutateDeleteExperience from './hooks/useMutateDeleteExperience';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 import useWorkExperience from '../../hooks/useWorkExperience';
 import { toOutputDateString } from 'src/utils/inputOutputFormat';
-import DeleteAlertDialog from 'src/components/DeleteAlertDialog';
+import alertDialog from 'src/utils/alertDialog';
 
 export default function ExperienceView(props) {
   const { onDeleteDataById } = useMutateDeleteExperience();
@@ -30,7 +30,6 @@ export default function ExperienceView(props) {
   const [selectedWorkId, setSelectedWorkId] = useState(null);
   const [isEditWorkVisible, setIsEditWorkVisible] = useState(false);
   const [isNoProfile, setIsNoProfile] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
 
   const handleEditWork = (workId) => {
     if (workId) setSelectedWorkId(workId);
@@ -47,26 +46,14 @@ export default function ExperienceView(props) {
   };
 
   const handleDeleteWork = (id) => {
-    setSelectedWorkId(id);
-    setOpenDialog(true);
-
-    // if (profile?.work_experiences?.length > 1)
-    // onDeleteDataById(workId);
-    // else {
-    //   const newList = work_experiences.filter((work) => work.id !== workId);
-    //   setWorkExperience(newList);
-    // }
+    alertDialog({
+      selectedId: id,
+      handleConfirmDelete
+    });
   };
 
-  const handleConfirmDelete = (id) => () => {
+  const handleConfirmDelete = (id) => {
     onDeleteDataById(id);
-    setSelectedWorkId(null);
-    setOpenDialog(false);
-  };
-
-  const handleCloseDialog = () => {
-    setSelectedWorkId(null);
-    setOpenDialog(false);
   };
 
   useEffect(() => {
@@ -159,12 +146,6 @@ export default function ExperienceView(props) {
           </Snackbar>
         </>
       )}
-      <DeleteAlertDialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        handleConfirmDelete={handleConfirmDelete}
-        selectedId={selectedWorkId}
-      />
     </>
   );
 }

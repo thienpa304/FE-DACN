@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { OnlineProfile } from 'src/modules/jobProfile/model/index';
-import { OnlineProfileService } from 'src/modules/jobProfile/employeeService';
+import { OnlineProfileService } from 'src/modules/jobProfile/employeeProfileService';
 
 const useMutateOnlineProfile = () => {
   const queryClient = useQueryClient();

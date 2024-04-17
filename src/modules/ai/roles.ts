@@ -15,17 +15,21 @@ Công thức cụ thể cho điểm TextRank của mỗi từ có thể được
 Công thức tổng quát cho điểm TextRank của một từ i là:
 S(i) = (1 - d) + d * sum(j in In(i)) (1/|Out(j)|) * S(j)`;
 
-export const cvAnalysist = `Bây giờ, bạn là một chuyên gia phân tích cụm từ khóa hồ sơ xin việc. Đầu tiên hãy ghi nhớ rằng 1 cụm từ khóa chứa tối đa 4 từ (token). Ví dụ "bán sản phẩm vay" là 1 từ khóa, nhưng "chịu trách nhiệm bán các sản phẩm vay" không phải là 1 cụm từ khóa vì chứa nhiều hơn 4 từ (token). Hãy đọc hồ sơ xin việc và tìm ra những cụm từ khóa quan trọng trong nội dung. Thông qua phân tích những cụm từ khóa có nghĩa, tần suất xuất hiện cao trong hồ sơ xin việc để xác định những yếu tố mà người xin việc này có thể quan tâm.
-Hãy tìm ra từ 20 cụm từ khóa nói trên trong hồ sơ xin việc dưới đây. Sắp xếp kết quả các từ khóa theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được cụm từ khóa nào thì trả về danh sách rỗng []).
+export const cvAnalysist = `Bây giờ, bạn là một chuyên gia phân tích cụm từ khóa hồ sơ xin việc. Đầu tiên hãy học và ghi nhớ giải thuật TextRank như sau:
+${TextRank}
+Hãy đọc hồ sơ xin việc và tìm ra những cụm từ khóa quan trọng trong nội dung. Thông qua phân tích những cụm từ khóa có nghĩa, tần suất xuất hiện cao trong hồ sơ xin việc để xác định những yếu tố mà người xin việc này có thể quan tâm.
+Hãy tìm ra từ 20 cụm từ khóa liên quan tới công việc trong hồ sơ xin việc dưới đây. Sắp xếp kết quả các từ khóa theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được cụm từ khóa nào thì trả về danh sách rỗng []).
 Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm", "lương tháng 13", "nghỉ lễ"]
-***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) chứa 20 cụm từ khóa, cụm từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
+***Lưu ý quan trọng: Mỗi cụm từ khóa tìm được không được quá 20 kí tự. Câu trả lời của bạn (ChatGPT) chứa 20 cụm từ khóa, cụm từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
 Nội dung tin hồ sơ xin việc cung cấp như sau:\n
 `;
 
-export const jobAnalysist = `Bây giờ, bạn là một chuyên gia phân tích cụm từ khóa tin tuyển dụng. Đầu tiên hãy ghi nhớ rằng 1 cụm từ khóa chứa tối đa 4 từ (token). Ví dụ "bán sản phẩm vay" là 1 từ khóa, nhưng "chịu trách nhiệm bán các sản phẩm vay" không phải là 1 cụm từ khóa vì chứa nhiều hơn 4 từ (token). Hãy đọc tin tuyển dụng và tìm ra những cụm từ khóa quan trọng trong nội dung. Thông qua phân tích những cụm từ khóa quan trọng, có nghĩa, có tần suất xuất hiện cao nhất trong tin tuyển dụng để xác định những yếu tố mà nhà tuyển dụng quan tâm.
-Hãy tìm ra từ 20 cụm từ khóa nói trên trong tin tuyển dụng dưới đây. Sắp xếp kết quả các từ khóa theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được cụm từ khóa nào thì trả về danh sách rỗng []).
+export const jobAnalysist = `Bây giờ, bạn là một chuyên gia phân tích cụm từ khóa tin tuyển dụng. Đầu tiên hãy học và ghi nhớ giải thuật TextRank như sau:
+${TextRank}
+Hãy đọc tin tuyển dụng và sử dụng giải thuật TextRank tìm ra những cụm từ khóa quan trọng trong nội dung. Thông qua phân tích những cụm từ khóa quan trọng, có nghĩa, có tần suất xuất hiện cao nhất trong tin tuyển dụng để xác định những yếu tố mà nhà tuyển dụng quan tâm.
+Hãy tìm ra từ 20 cụm từ khóa liên quan tới công việc trong tin tuyển dụng dưới đây. Sắp xếp kết quả các từ khóa theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được cụm từ khóa nào thì trả về danh sách rỗng []).
 Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm", "lương tháng 13", "nghỉ lễ"]
-***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) chứa 20 cụm từ khóa, cụm từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), và câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
+***Lưu ý quan trọng: Mỗi cụm từ khóa tìm được không được quá 20 kí tự. Câu trả lời của bạn (ChatGPT) chứa 20 cụm từ khóa, cụm từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), và câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
 Nội dung tin tuyển dụng cung cấp như sau:\n
 `;
 
@@ -41,7 +45,7 @@ Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (d
 * result chỉ có thể là 1 trong 2 con số -10 hoặc 30.
 * Nếu đạt hết TẤT CẢ 6 tiêu chí trên thì result là con số 30. Ví dụ result là: 30
 * Nếu có bất kì 1 tiêu chí nào không đạt yêu cầu thì dừng phân tích ngay, đồng thời trả ra result là con số -10. Ví dụ result là: -10
-***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON bao gồm 3 thuộc tính là id (tương ứng với application_id trong emplyee_Profile.application) và result (là con số result sau khi phân tích, là 1 trong 2 con số 30 hoặc -10) và thuộc tính hints để đưa ra lý do tại sao hồ không đạt yêu cầu, trong trường hợp đạt yêu cầu (result bằng 30) thì hints là "Hồ sơ bạn đạt yêu cầu". Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, emplyee_Profile đạt hết tất cả tiêu chí thì trả về:
+***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON bao gồm 3 thuộc tính là id (tương ứng với application_id trong emplyee_Profile.application) và result (là con số result sau khi phân tích, là 1 trong 2 con số 30 hoặc -10) và thuộc tính hints để đưa ra lý do tại sao hồ không đạt yêu cầu, trong trường hợp đạt yêu cầu (result bằng 30) thì hints là "Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm" (nội dung trong hints như các từ sex, dob, profession, experience, degree phải dịch sang tiếng Việt). Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, emplyee_Profile đạt hết tất cả tiêu chí thì trả về:
 {
     "id": 1,
     "result": 30,

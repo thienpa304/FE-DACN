@@ -120,15 +120,6 @@ export default function ModalApply(props: Props) {
     }
   }, [isChecked]);
 
-  // useEffect(() => {
-  //   if (onlineProfile) {
-  //     setOnline(onlineProfile);
-  //   }
-  //   if (attachedDocument) {
-  //     setDocument(attachedDocument);
-  //   }
-  // }, [onlineProfile, attachedDocument]);
-
   return (
     <div>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>

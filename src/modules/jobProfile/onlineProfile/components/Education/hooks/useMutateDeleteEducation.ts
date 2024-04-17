@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { EducationService } from 'src/modules/jobProfile/employeeService';
+import { EducationService } from 'src/modules/jobProfile/employeeProfileService';
 import { EducationInformation } from 'src/modules/jobProfile/model';
 
 const useMutateDeleteEducation = () => {

@@ -2,21 +2,21 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { ExperienceService } from 'src/modules/jobProfile/employeeProfileService';
-import { WorkExperience } from 'src/modules/jobProfile/model';
+import { JobService } from '../jobService';
+import { Job } from '../model';
 
-const useMutateDeleteExperience = () => {
+const useDeleteJobById = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-  const { mutate: onDeleteDataById, isLoading } = useMutation<
-    ResponseData<WorkExperience>,
-    AxiosError<ResponseData<WorkExperience>>,
-    string
-  >((id) => ExperienceService.remove(id), {
+  const { mutate: onDeleteById, isLoading } = useMutation<
+    ResponseData<Job>,
+    AxiosError<ResponseData<Job>>,
+    [id: string]
+  >(([id]) => JobService.remove(id), {
     onSuccess: (res) => {
       if (res.status === 200) {
+        queryClient.invalidateQueries(['jobOwner-getList']);
         toast.success({ massage: res.message });
-        queryClient.invalidateQueries('get-OnlineProfile');
       } else {
         toast.error({ massage: res.message });
       }
@@ -27,9 +27,9 @@ const useMutateDeleteExperience = () => {
   });
 
   return {
-    onDeleteDataById,
+    onDeleteById,
     isLoading
   };
 };
 
-export default useMutateDeleteExperience;
+export default useDeleteJobById;

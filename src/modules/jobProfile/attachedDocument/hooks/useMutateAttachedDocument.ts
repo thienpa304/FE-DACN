@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { AttachedDocument } from 'src/modules/jobProfile/model';
-import { AttachedDocumentService } from 'src/modules/jobProfile/employeeService';
+import { AttachedDocumentService } from 'src/modules/jobProfile/employeeProfileService';
 import { useNavigate } from 'react-router';
 
 const useMutateAttachedDocument = () => {

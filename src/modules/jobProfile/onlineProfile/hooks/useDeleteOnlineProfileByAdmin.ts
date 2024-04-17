@@ -3,26 +3,21 @@ import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { OnlineProfile } from 'src/modules/jobProfile/model/index';
-import { OnlineProfileService } from 'src/modules/jobProfile/employeeProfileService';
+import { RemoveOnlineProfileService } from 'src/modules/jobProfile/employeeProfileService';
 
-const useMutateUpdateOnlineProfile = () => {
+const useDeleteOnlineProfileByAdmin = () => {
   const queryClient = useQueryClient();
   const { toast } = useApp();
-  const useMutateFunction = (data) =>
-    OnlineProfileService.updateWithoutId(data);
+  const useMutateFunction = (id) => RemoveOnlineProfileService.remove(id);
 
-  const {
-    mutate: onUpdateData,
-    isLoading,
-    isSuccess
-  } = useMutation<
+  const { mutate: onDeleteOnlineProfile } = useMutation<
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>,
     OnlineProfile
   >(useMutateFunction, {
     onSuccess: (res) => {
       if (res.status === 200) {
-        queryClient.invalidateQueries('get-OnlineProfile');
+        queryClient.invalidateQueries(['get-AllEmployees']);
         toast.success({ massage: res.message });
       } else {
         toast.error({ massage: res.message });
@@ -34,9 +29,8 @@ const useMutateUpdateOnlineProfile = () => {
   });
 
   return {
-    onUpdateData,
-    isSuccess
+    onDeleteOnlineProfile
   };
 };
 
-export default useMutateUpdateOnlineProfile;
+export default useDeleteOnlineProfileByAdmin;

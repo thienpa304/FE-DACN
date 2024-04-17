@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { DegreeService } from 'src/modules/jobProfile/employeeService';
+import { DegreeService } from 'src/modules/jobProfile/employeeProfileService';
 import { AnotherDegree } from 'src/modules/jobProfile/model';
 
 const useMutateDeleteDegree = () => {

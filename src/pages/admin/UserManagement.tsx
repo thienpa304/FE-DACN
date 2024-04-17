@@ -19,6 +19,95 @@ import useQueryTotalUserResultByAdmin from 'src/modules/admin/hooks/useQueryTota
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import Pagination from 'src/components/Pagination';
 import useDeleteUserById from 'src/modules/admin/hooks/useDeleteUserByAdmin';
+import DeleteAlertDialog from 'src/components/DeleteAlertDialog';
+import alertDialog from 'src/utils/alertDialog';
+
+const renderCellText = (params) => (
+  <Typography
+    fontStyle={!params.value ? 'italic' : 'normal'}
+    color={!params.value ? 'text.disabled' : 'text.primary'}
+  >
+    {params.value ? params.value : 'Chưa cập nhật'}
+  </Typography>
+);
+
+const renderActionsCell = (params) => {
+  const { onDeleteUser } = useDeleteUserById();
+
+  const handleDeleteUser = (userId) => {
+    // Implement the logic to delete the user with the given userId
+    console.log(userId);
+    alertDialog({
+      selectedId: userId,
+      handleConfirmDelete: handleConfirmDelete
+    });
+  };
+
+  const handleConfirmDelete = (userId) => {
+    if (userId) onDeleteUser([userId]);
+  };
+
+  return (
+    <>
+      <Button
+        onClick={() => handleDeleteUser(params.id)}
+        variant="contained"
+        color="error"
+        size="small"
+        sx={{ marginLeft: 1 }}
+      >
+        Xóa
+      </Button>
+    </>
+  );
+};
+
+const userManagementColumns: GridColDef[] = [
+  {
+    field: 'name',
+    headerName: 'Tên người dùng',
+    minWidth: 200,
+    renderCell: renderCellText
+  },
+  {
+    field: 'email',
+    headerName: 'Email',
+    minWidth: 200,
+    maxWidth: 250,
+    renderCell: renderCellText
+  },
+  {
+    field: 'phone',
+    headerName: 'Số điện thoại',
+    minWidth: 150,
+    renderCell: renderCellText
+  },
+  {
+    field: 'dob',
+    headerName: 'Ngày sinh',
+    minWidth: 150,
+    renderCell: renderCellText
+  },
+  {
+    field: 'sex',
+    headerName: 'Giới tính',
+    minWidth: 120,
+    renderCell: renderCellText
+  },
+  {
+    field: 'role',
+    headerName: 'Vai trò',
+    minWidth: 150
+  },
+  {
+    field: 'actions',
+    headerName: 'Hành động',
+    minWidth: 150,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: renderActionsCell
+  }
+];
 
 const UserManagement = () => {
   const pageSize = 8;
@@ -28,7 +117,6 @@ const UserManagement = () => {
     page: currentPage,
     num: pageSize
   });
-  const { onDeleteUser } = useDeleteUserById();
 
   const { totalResults } = useQueryTotalUserResultByAdmin();
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
@@ -36,89 +124,6 @@ const UserManagement = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
-  const handleDeleteUser = (userId) => {
-    // Implement the logic to delete the user with the given userId
-    console.log(`Deleting user with ID: ${userId}`);
-
-    onDeleteUser([userId]);
-  };
-
-  const renderCellText = (params) => (
-    <Typography
-      fontStyle={!params.value ? 'italic' : 'normal'}
-      color={!params.value ? 'text.disabled' : 'text.primary'}
-    >
-      {params.value ? params.value : 'Chưa cập nhật'}
-    </Typography>
-  );
-  const userManagementColumns: GridColDef[] = [
-    {
-      field: 'name',
-      headerName: 'Tên người dùng',
-      minWidth: 200,
-      renderCell: renderCellText
-    },
-    {
-      field: 'email',
-      headerName: 'Email',
-      minWidth: 200,
-      maxWidth: 250,
-      renderCell: renderCellText
-    },
-    {
-      field: 'phone',
-      headerName: 'Số điện thoại',
-      minWidth: 150,
-      renderCell: renderCellText
-    },
-    {
-      field: 'dob',
-      headerName: 'Ngày sinh',
-      minWidth: 150,
-      renderCell: renderCellText
-    },
-    {
-      field: 'sex',
-      headerName: 'Giới tính',
-      minWidth: 120,
-      renderCell: renderCellText
-    },
-    {
-      field: 'role',
-      headerName: 'Vai trò',
-      minWidth: 150
-    },
-    {
-      field: 'actions',
-      headerName: 'Hành động',
-      minWidth: 150,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: (params) => (
-        <div>
-          {/* <Button
-            variant="contained"
-            color="primary"
-            component={RouterLink}
-            to={`/edit-user/${params.row.id}`}
-            size="small"
-          >
-            Xem
-          </Button> */}
-          <Button
-            onClick={() => handleDeleteUser(params.row.id)}
-            variant="contained"
-            color="error"
-            size="small"
-            sx={{ marginLeft: 1 }}
-          >
-            Xóa
-          </Button>
-        </div>
-      )
-    }
-  ];
 
   useEffect(() => {
     if (userList) {

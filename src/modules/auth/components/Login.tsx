@@ -33,7 +33,7 @@ export default function Login() {
   return (
     <>
       <Box
-        style={{
+        sx={{
           width: '100%',
           height: '100%',
           position: 'absolute',
@@ -52,7 +52,7 @@ export default function Login() {
             bgcolor: 'white',
             p: 3,
             border: 1,
-            borderColor: '#98E4FF',
+            borderColor: '#79b6cc',
             borderRadius: 2,
             boxShadow: '2px 2px 6px #98E4FF'
           }}

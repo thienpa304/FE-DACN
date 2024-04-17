@@ -287,8 +287,8 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
               <TagInput
                 suggestions={skills}
                 forwardedRef={ref}
-                initialValue={employeeSkills}
-                onTagsChange={setSetEmployeeSkills}
+                value={employeeSkills}
+                onChange={setSetEmployeeSkills}
               />
               <Typography
                 fontSize={12}

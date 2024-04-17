@@ -68,11 +68,16 @@ export function findObjectKey(stringValue: string, object): string | undefined {
   return undefined;
 }
 
+export function removeHTMLTag(text) {
+  if (!text) return;
+  return text.replace(/<\/?[^>]+(>|$)/g, '');
+}
+
 export function preProcessText(documentText: string) {
   if (!documentText) return;
   const str = JSON.stringify(documentText);
   // Loại bỏ các thẻ HTML
-  const textWithoutHTML = str.replace(/<\/?[^>]+(>|$)/g, '');
+  const textWithoutHTML = str.replace(/<\/?[^>]+(>|$)/g, ',');
   // Loại bỏ các ký tự không phải chữ cái và chuyển về chữ thường
   const textOnlyLetters = textWithoutHTML
     // .replace(/[^a-zA-Z\s]/g, '')

@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
-import DeleteAlertDialog from 'src/components/DeleteAlertDialog';
+import alertDialog from 'src/utils/alertDialog';
 
 const randomId = () =>
   `${Math.floor(Math.random() * 10000)}${Math.random()
@@ -40,8 +40,6 @@ const EditDataGrid = (props) => {
   const [initialRows, setInitialRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [error, setError] = useState({ type: null, errorField: null });
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     setCurrentRows(rows?.length > 0 ? rows : []);
@@ -94,32 +92,27 @@ const EditDataGrid = (props) => {
     }
   };
 
-  const handleEditClick = (id: GridRowId) => () => {
+  const handleEditClick = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (id: GridRowId) => () => {
+  const handleSaveClick = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setSelectedId(id);
-    setOpenDialog(true);
+  const handleDeleteClick = (id: GridRowId) => {
+    alertDialog({
+      selectedId: id,
+      handleConfirmDelete
+    });
   };
 
-  const handleClose = () => {
-    setSelectedId(null);
-    setOpenDialog(false);
-  };
-
-  const handleConfirmDelete = (id: GridRowId) => () => {
+  const handleConfirmDelete = (id: GridRowId) => {
     setCurrentRows(currentRows.filter((row) => row.id !== id));
     handleDelete(id);
-    setSelectedId(null);
-    setOpenDialog(false);
   };
 
-  const handleCancelClick = (id: GridRowId) => () => {
+  const handleCancelClick = (id: GridRowId) => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true }
@@ -198,14 +191,14 @@ const EditDataGrid = (props) => {
               sx={{
                 color: 'primary.main'
               }}
-              onClick={handleSaveClick(id)}
+              onClick={() => handleSaveClick(id)}
               key="save"
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
               className="textPrimary"
-              onClick={handleCancelClick(id)}
+              onClick={() => handleCancelClick(id)}
               color="inherit"
               key="cancel"
             />
@@ -216,14 +209,14 @@ const EditDataGrid = (props) => {
             icon={<EditIcon />}
             label="Edit"
             className="textPrimary"
-            onClick={handleEditClick(id)}
+            onClick={() => handleEditClick(id)}
             color="inherit"
             key="edit"
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            onClick={handleDeleteClick(id)}
+            onClick={() => handleDeleteClick(id)}
             color="inherit"
             key="delete"
           />
@@ -293,12 +286,6 @@ const EditDataGrid = (props) => {
           <strong>{error?.errorField}</strong>
         </Alert>
       </Snackbar>
-      <DeleteAlertDialog
-        open={openDialog}
-        onClose={handleClose}
-        handleConfirmDelete={handleConfirmDelete}
-        selectedId={selectedId}
-      />
     </>
   );
 };

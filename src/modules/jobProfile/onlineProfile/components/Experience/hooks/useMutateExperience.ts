@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { WorkExperience } from 'src/modules/jobProfile/model/index';
-import { WorkExperienceService } from 'src/modules/jobProfile/employeeService';
+import { WorkExperienceService } from 'src/modules/jobProfile/employeeProfileService';
 
 const useMutateExperience = () => {
   const queryClient = useQueryClient();

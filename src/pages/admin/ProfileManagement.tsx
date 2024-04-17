@@ -32,12 +32,12 @@ import useQueryTotalResultOfEmployeeByAdmin from 'src/modules/admin/hooks/useQue
 import CVPage from '../view-candidate-profile/ViewCV';
 import CloseIcon from '@mui/icons-material/Close';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import alertDialog from 'src/utils/alertDialog';
+import useDeleteDocumentProfileByAdmin from 'src/modules/jobProfile/attachedDocument/hooks/useDeleteDocumentProfileByAdmin';
+import useDeleteOnlineProfileByAdmin from 'src/modules/jobProfile/onlineProfile/hooks/useDeleteOnlineProfileByAdmin';
 
 const ProfileManagement = () => {
-  const [users, setUsers] = useState([]);
   const [searchUserName, setSearchUserName] = useState('');
-  const [newUserProfile, setNewUserProfile] = useState('');
-  const [newUserCV, setNewUserCV] = useState('');
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewProfile, setViewProfile] = useState({
@@ -60,6 +60,8 @@ const ProfileManagement = () => {
     },
     !viewProfessionMode
   );
+  const { onDeleteDocumentProfile } = useDeleteDocumentProfileByAdmin();
+  const { onDeleteOnlineProfile } = useDeleteOnlineProfileByAdmin();
 
   const renderName = (params) => {
     return (
@@ -94,15 +96,31 @@ const ProfileManagement = () => {
 
   const renderProfile = (params) => {
     let profile = null;
-    console.log(params);
-
     if (params?.field === 'online') {
       profile = params?.row?.online_profile;
     }
     if (params?.field === 'document') {
       profile = params?.row?.attached_document;
     }
-    console.log(profile);
+
+    const handleConfirmDelete = (id) => {
+      if (!id) return;
+      if (params?.field === 'online') {
+        onDeleteOnlineProfile(id);
+      }
+      if (params?.field === 'document') {
+        onDeleteDocumentProfile(id);
+      }
+    };
+
+    const handleDeleteUser = (selectedId) => {
+      console.log(selectedId);
+      alertDialog({
+        selectedId,
+        handleConfirmDelete
+      });
+    };
+
     return (
       <>
         {profile ? (
@@ -116,7 +134,7 @@ const ProfileManagement = () => {
               Xem
             </Button>
             <Button
-              // onClick={() => handleDeleteUser(params.row.id)}
+              onClick={() => handleDeleteUser(params.id)}
               variant="contained"
               color="error"
               size="small"
@@ -132,6 +150,25 @@ const ProfileManagement = () => {
         )}
       </>
     );
+  };
+
+  const handleViewProfile = (params) => {
+    let profile;
+    if (params.field === 'online')
+      profile = {
+        online_profile: params?.row?.online_profile,
+        personal_information: params?.row?.user
+      };
+    if (params.field === 'document')
+      profile = {
+        attached_document: params?.row?.attached_document,
+        personal_information: params?.row?.user
+      };
+
+    setViewProfile({
+      isOpen: true,
+      profile: profile
+    });
   };
 
   const columns: GridColDef[] = [
@@ -166,53 +203,7 @@ const ProfileManagement = () => {
     }
   ];
 
-  const handleViewProfile = (params) => {
-    let profile;
-    if (params.field === 'online')
-      profile = {
-        online_profile: params?.row?.online_profile,
-        personal_information: params?.row?.user
-      };
-    if (params.field === 'document')
-      profile = {
-        attached_document: params?.row?.attached_document,
-        personal_information: params?.row?.user
-      };
-
-    setViewProfile({
-      isOpen: true,
-      profile: profile
-    });
-  };
-
-  const handleSelectProfession = (code: number) => {
-    setSelectedProfession(code);
-  };
-
-  const handleViewProfessionMode = (data) => {
-    setViewProfessionMode(data);
-  };
-
-  useEffect(() => {
-    const generateSampleUserData = () => {
-      const sampleData = [];
-      for (let i = 1; i <= 20; i++) {
-        sampleData.push({
-          id: i,
-          name: `User ${i}`,
-          online: `Link to profile ${i}`,
-          document: `Link to CV ${i}`,
-          email: `user${i}@example.com`
-        });
-      }
-      return sampleData;
-    };
-
-    setUsers(generateSampleUserData());
-  }, []);
-
   const handleSearchUser = () => {
-    // setSearchUserName('');
     refetch();
   };
 
@@ -227,7 +218,7 @@ const ProfileManagement = () => {
             justifyContent: 'space-between'
           }}
         >
-          <CardHeader title="Danh sách tin tuyển dụng" />
+          <CardHeader title="Quản lý hồ sơ và CV" />
           <Box
             sx={{
               display: 'flex'

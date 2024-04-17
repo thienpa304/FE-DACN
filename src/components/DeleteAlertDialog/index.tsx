@@ -1,11 +1,15 @@
+import React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Typography } from '@mui/material';
 
-export default function DeleteAlertDialog(props) {
-  const { open, selectedId, handleConfirmDelete, onClose } = props;
+export default function DeleteAlertDialog({
+  open,
+  selectedId,
+  handleConfirmDelete,
+  onClose
+}) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
@@ -16,9 +20,9 @@ export default function DeleteAlertDialog(props) {
         alignItems="center"
         variant="h4"
       >
-        Bạn có chắc chắn muốn xóa dòng này?
+        Bạn có chắc chắn muốn xóa?
       </DialogTitle>
-      <DialogActions sx={{ p: 2, gap: 2 }}>
+      <DialogActions style={{ padding: 16, gap: 16 }}>
         <Button
           onClick={onClose}
           color="secondary"
@@ -28,7 +32,7 @@ export default function DeleteAlertDialog(props) {
           Hủy
         </Button>
         <Button
-          onClick={handleConfirmDelete(selectedId)}
+          onClick={() => handleConfirmDelete(selectedId)}
           color="primary"
           variant="contained"
           fullWidth
