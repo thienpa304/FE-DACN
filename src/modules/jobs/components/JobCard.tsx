@@ -19,8 +19,10 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FollowJobButton from './FollowJobButton';
 import LinkText from 'src/components/LinkText';
+import { Job } from '../model';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
 
-function JobCard({ job }) {
+function JobCard({ job }: { job: Job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
     job?.employer?.logo || defaultImage.companyAvatar
   );
@@ -49,12 +51,16 @@ function JobCard({ job }) {
           <Box display={'flex'}>
             <Box
               component={LinkText}
-              to={`/job/${job?.postId}`}
+              to={`/job/${convertVietNamString(job?.jobTitle)}`}
               flex={1}
               sx={{
                 ':hover': {
                   color: '#ce8b0e'
                 }
+              }}
+              state={{
+                jobTitle: job?.jobTitle,
+                postId: job?.postId
               }}
             >
               {job?.jobTitle}

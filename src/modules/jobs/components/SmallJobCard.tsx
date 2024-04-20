@@ -15,6 +15,7 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import FollowJobButton from './FollowJobButton';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
 
 function SmallJobCard({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
@@ -46,12 +47,16 @@ function SmallJobCard({ job }) {
           <Box display={'flex'}>
             <Box
               component={LinkText}
-              to={`/job/${job?.postId}`}
+              to={`/job/${convertVietNamString(job?.jobTitle)}`}
               flex={1}
               sx={{
                 ':hover': {
                   color: '#ce8b0e'
                 }
+              }}
+              state={{
+                jobTitle: job?.jobTitle,
+                postId: job?.postId
               }}
             >
               {job?.jobTitle}

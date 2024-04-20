@@ -13,8 +13,6 @@ import dayjs from 'dayjs';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import useDeleteJobById from 'src/modules/jobs/hooks/useDeleteJobById';
-import DeleteAlertDialog from 'src/components/DeleteAlertDialog';
-import { useState } from 'react';
 import alertDialog from 'src/utils/alertDialog';
 
 export const renderJobTitle = (data) => {
@@ -152,7 +150,7 @@ export default function TablePost({ data, pageSize }) {
         }
       }}
       hideFooter
-      sx={{ height: '68vh', width: '100%' }}
+      sx={{ minHeight: '68vh', width: '100%' }}
     />
   );
 }

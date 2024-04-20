@@ -491,7 +491,7 @@ export default function Table(props) {
           }
         }}
         hideFooter
-        sx={{ height: '65.7vh', width: '100%' }}
+        sx={{ minHeight: '65.7vh', width: '100%' }}
       />
       <Pagination
         currentPage={currentPage}

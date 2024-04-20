@@ -35,6 +35,7 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import alertDialog from 'src/utils/alertDialog';
 import useDeleteDocumentProfileByAdmin from 'src/modules/jobProfile/attachedDocument/hooks/useDeleteDocumentProfileByAdmin';
 import useDeleteOnlineProfileByAdmin from 'src/modules/jobProfile/onlineProfile/hooks/useDeleteOnlineProfileByAdmin';
+import { removeFileByUrl } from 'src/common/firebaseService';
 
 const ProfileManagement = () => {
   const [searchUserName, setSearchUserName] = useState('');
@@ -109,12 +110,14 @@ const ProfileManagement = () => {
         onDeleteOnlineProfile(id);
       }
       if (params?.field === 'document') {
-        onDeleteDocumentProfile(id);
+        console.log(params);
+        removeFileByUrl(params?.row?.attached_document?.CV).then(() => {
+          onDeleteDocumentProfile(id);
+        });
       }
     };
 
     const handleDeleteUser = (selectedId) => {
-      console.log(selectedId);
       alertDialog({
         selectedId,
         handleConfirmDelete
@@ -307,7 +310,7 @@ const ProfileManagement = () => {
                         fontStyle="italic"
                         color="#9999"
                       >
-                        Không có hồ sơ nào
+                        Chưa có hồ sơ nào
                       </Typography>
                     )}
                   </Grid>

@@ -19,7 +19,6 @@ import useQueryTotalUserResultByAdmin from 'src/modules/admin/hooks/useQueryTota
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import Pagination from 'src/components/Pagination';
 import useDeleteUserById from 'src/modules/admin/hooks/useDeleteUserByAdmin';
-import DeleteAlertDialog from 'src/components/DeleteAlertDialog';
 import alertDialog from 'src/utils/alertDialog';
 
 const renderCellText = (params) => (
@@ -125,22 +124,22 @@ const UserManagement = () => {
     setCurrentPage(pageNumber);
   };
 
-  useEffect(() => {
-    if (userList) {
-      const list = [...userList];
-      list.forEach((obj) => {
-        // Duyệt qua từng thuộc tính của đối tượng
-        for (let key in obj) {
-          // Kiểm tra nếu giá trị của thuộc tính là rỗng, null hoặc undefined
-          if (!obj[key] && obj[key] !== 0) {
-            // Đặt giá trị của thuộc tính là 'Chưa cập nhật'
-            obj[key] = 'Chưa cập nhật';
-          }
-        }
-      });
-      setUsers(list);
-    }
-  }, [JSON.stringify(userList)]);
+  // useEffect(() => {
+  //   if (userList) {
+  //     const list = [...userList];
+  //     list.forEach((obj) => {
+  //       // Duyệt qua từng thuộc tính của đối tượng
+  //       for (let key in obj) {
+  //         // Kiểm tra nếu giá trị của thuộc tính là rỗng, null hoặc undefined
+  //         if (!obj[key] && obj[key] !== 0) {
+  //           // Đặt giá trị của thuộc tính là 'Chưa cập nhật'
+  //           obj[key] = 'Chưa cập nhật';
+  //         }
+  //       }
+  //     });
+  //     setUsers(list);
+  //   }
+  // }, [JSON.stringify(userList)]);
 
   if (isLoading || !userList[0]?.id) {
     return <SuspenseLoader />;
@@ -162,7 +161,7 @@ const UserManagement = () => {
             <Divider />
             <CardContent>
               <TableData
-                sx={{ height: '72vh', width: '100%' }}
+                sx={{ minHeight: '72vh', width: '100%' }}
                 rows={userList}
                 columns={userManagementColumns}
                 hideFooter

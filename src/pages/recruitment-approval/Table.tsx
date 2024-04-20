@@ -21,11 +21,17 @@ import { Job } from 'src/modules/jobs/model';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { checkContent } from 'src/modules/ai/roles';
 import { signal } from '@preact/signals-react';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
 
 const renderJobTitle = (data) => {
+  const jobTitle = convertVietNamString(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
-    navigate(`/job/${data.id}`);
+    navigate(`/job/${jobTitle}`, {
+      state: {
+        postId: data?.id
+      }
+    });
   };
   return (
     <>
@@ -50,7 +56,9 @@ const renderJobTitle = (data) => {
             WebkitBoxOrient: 'vertical'
           }}
         >
-          <LinkText to={`/job/${data.id}`}>{data.value}</LinkText>
+          <LinkText to={`/job/${jobTitle}`} state={{ postId: data.id }}>
+            {data.value}
+          </LinkText>
         </Grid>
       </Grid>
     </>
@@ -326,7 +334,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         </Button>
       </Box>
       <TableData
-        sx={{ height: '72vh', width: '100%' }}
+        sx={{ minHeight: '72vh', width: '100%' }}
         rows={showList}
         columns={columns}
         hideFooter

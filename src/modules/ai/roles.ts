@@ -55,11 +55,10 @@ Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (d
 export const RoundTwoCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) của tin tuyển dụng (employer_Requirement) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile). Sau đó tính điểm result theo công thức sau:
 x = 100 / số cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) của tin tuyển dụng, phân cách bằng dấu phẩy;
 result = x * số cụm từ khóa trong phần kĩ năng cần thiết (requiredSkills) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile);
-***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 3 thuộc tính là id (tương ứng với application_id trong emplyee_Profile) và result (là con số result được tính toán ở trên, tối đa là 100, tối thiểu là 0) và thuộc tính hints để đưa ra lời gợi ý là hồ sơ xin việc cần bổ sung kĩ năng gì và đưa ra phương pháp cụ thể, chi tiết để người xin việc tăng tỉ lệ đậu. Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 60 thì trả về
+***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với application_id trong emplyee_Profile) và result (là con số result được tính toán ở trên, tối đa là 100, tối thiểu là 0). Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 60 thì trả về
 {
     "id": 1,
-    "result": 60,
-    "hints": "Để tăng tỉ lệ đậu bạn có thể bổ sung cho mình thêm kĩ năng A, B, C..."
+    "result": 60
 }`;
 
 export const RoundThreeCheck = `Bây giờ, bạn là một chuyên gia phân tích từ vựng. Hãy tính xem có bao nhiêu cụm từ khóa trong phần keywords của hồ sơ xin việc (employee_Profile) xuất hiện hoặc có từ đồng nghĩa trong phần keywords của tin tuyển dụng (employer_Requirement) Sau đó tính điểm result theo công thức sau: Cứ tìm được 1 từ trong employee_Profile xuất hiện hoặc có từ đồng nghĩa trong employee_Profile thì result được cộng thêm 5. Ví dụ:
@@ -67,7 +66,7 @@ export const RoundThreeCheck = `Bây giờ, bạn là một chuyên gia phân t�
 - Nếu tìm được 2 từ thì result bằng 10
 - Nếu tìm được 3 từ thì result bằng 15
 **Lưu ý là nếu keywords trong employee_Profile hoặc trong employer_Requirement là null thì result là 0.
-***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 3 thuộc tính là id (tương ứng với id trong emplyee_Profile) và result (là con số result được tính toán ở trên, tối thiểu là 0) và thuộc tính hints để đưa ra lời gợi ý là hồ sơ xin việc cần bổ sung kĩ năng gì (dựa vào yêu cầu trong employer_Requirement) và đưa ra phương pháp cụ thể, chi tiết để người xin việc tăng tỉ lệ đậu. Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 30 (tìm được 6 từ) thì trả về
+***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON như ví dụ bên dưới bao gồm 3 thuộc tính là id (tương ứng với id trong emplyee_Profile) và result (là con số result được tính toán ở trên, tối thiểu là 0) và thuộc tính hints để đưa ra lời gợi ý dựa trên kỹ năng trong employer_Requirement, để biết là hồ sơ xin việc cần bổ sung kĩ năng gì để tăng tỉ lệ đậu. Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, result tính ra là 30 (tìm được 6 từ) thì trả về
 {
     "id": 1,
     "result": 30,

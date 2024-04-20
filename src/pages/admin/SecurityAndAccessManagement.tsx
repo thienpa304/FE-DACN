@@ -61,7 +61,7 @@ const UserActivityTable: React.FC = () => {
   const sampleUserActivityData = generateSampleUserActivityData();
 
   return (
-    <Box sx={{ height: '75vh', width: '100%' }}>
+    <Box sx={{ minHeight: '75vh', width: '100%' }}>
       <TableData rows={sampleUserActivityData} columns={userActivityColumns} />
     </Box>
   );

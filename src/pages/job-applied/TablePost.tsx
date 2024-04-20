@@ -10,11 +10,18 @@ import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
 import dayjs from 'dayjs';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
+import Link from 'src/components/Link';
 
 const renderJobTitle = (data) => {
+  const jobTitle = convertVietNamString(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
-    navigate(`/job/${data?.row?.postId}`);
+    navigate(`/job/${jobTitle}`, {
+      state: {
+        postId: data?.row?.postId
+      }
+    });
   };
   return (
     <>
@@ -27,7 +34,10 @@ const renderJobTitle = (data) => {
           </Tooltip>
         </Grid>
         <Grid item xs={10}>
-          <LinkText to={`/job/${data?.row?.postId}`}>
+          <LinkText
+            to={`/job/${jobTitle}`}
+            state={{ postId: data?.row?.postId }}
+          >
             <TypographyEllipsis> {data.value}</TypographyEllipsis>
           </LinkText>
         </Grid>
