@@ -88,7 +88,7 @@ export const firstRoundForGeneralInfo = (job, profile) => {
   const age = dayjs().year() - birthday.year();
 
   if (
-    job?.sex !== personal_information?.sex ||
+    (job?.sex !== null && job?.sex !== personal_information?.sex) ||
     job?.minAge > age ||
     job?.maxAge < age
   )
