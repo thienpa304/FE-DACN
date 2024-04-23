@@ -16,3 +16,9 @@ export const DegreeService = new BaseService(
 export const ExperienceService = new BaseService(
   'employee/online-profile/work-experience'
 );
+export const RemoveOnlineProfileService = new BaseService(
+  'admin/online-profile'
+);
+export const RemoveDocumentProfileService = new BaseService(
+  'admin/attached-document'
+);

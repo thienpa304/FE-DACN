@@ -23,10 +23,6 @@ export const GENDER = [
   {
     value: 2,
     label: 'Nữ'
-  },
-  {
-    value: 0,
-    label: 'Khác'
   }
 ];
 
@@ -64,10 +60,17 @@ export const APPROVAL_STATUS: ApprovalStatusOption[] = [
   }
 ];
 
-export const GENDER_OPTION = GENDER.map((item) => ({
-  value: item.label,
-  label: item.label
-}));
+export const GENDER_OPTION = [
+  {
+    value: 'Tất cả',
+    label: 'Tất cả'
+  },
+  ...GENDER.map((item) => ({
+    value: item.label,
+    label: item.label
+  }))
+];
+
 export const DEGREE = Object.keys(Degree).map((key) => ({
   value: Degree[key],
   label: Degree[key]

@@ -39,12 +39,12 @@ import _ from 'lodash';
 import {
   convertObjectListToStringForSkill,
   convertToObjectsForSkill,
-  preProcessText
+  preProcessText,
+  removeHTMLTag
 } from 'src/utils/inputOutputFormat';
 import { loadKeywords, tfidfReview } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import { ReactTags } from 'react-tag-autocomplete';
 import skills from 'src/constants/skills';
 import TagInput from 'src/components/TagInput';
 
@@ -79,7 +79,9 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const [documentText, setDocumentText] = useState('');
   const [onSaveNewData, setOnSaveNewData] = useState(null);
   const [requiredSkills, setRequiredSkills] = useState(null);
+  const [isEmpty, setIsEmpty] = useState([]);
   const { profile } = useProfileHook();
+  console.log(requiredSkills);
 
   const ref = React.useRef(null);
 
@@ -92,9 +94,36 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   } = methods;
 
   const handleSave = (newData) => {
+    debugger;
+    console.log(newData);
+    const fieldsToCheck = {
+      jobDescription: 'jobDescription',
+      jobRequirements: 'jobRequirements',
+      benefits: 'benefits'
+    };
+
+    const emptyList = [];
+
+    if (!requiredSkills) {
+      setIsEmpty((prev) => [...prev, 'requiredSkills']);
+      emptyList.push('requiredSkills');
+    }
+
+    for (const [field, fieldName] of Object.entries(fieldsToCheck)) {
+      if (!removeHTMLTag(newData?.[field])) {
+        setIsEmpty((prev) => [...prev, fieldName]);
+        emptyList.push(fieldName);
+      }
+    }
+
+    if (emptyList.length) {
+      // Báo lỗi nếu có bất kỳ trường nào bị thiếu
+      return;
+    }
     setOnSaveNewData({
       ...newData,
-      requiredSkills: convertObjectListToStringForSkill(requiredSkills)
+      requiredSkills: convertObjectListToStringForSkill(requiredSkills),
+      sex: newData.sex === 'Tất cả' ? null : newData.sex
     });
     handleAnalysis(newData);
   };
@@ -397,14 +426,25 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography variant="h6" marginBottom={1}>
-                        Kĩ năng bắt buộc
-                      </Typography>
+                      <Box display="flex" marginBottom={1}>
+                        <Typography variant="h6">Kĩ năng bắt buộc</Typography>
+                        {isEmpty.find((item) => item === 'requiredSkills') && (
+                          <Typography
+                            color="error"
+                            fontWeight={700}
+                            fontStyle="italic"
+                            textAlign="center"
+                            flex={1}
+                          >
+                            * Vui lòng nhập yêu cầu kĩ năng
+                          </Typography>
+                        )}
+                      </Box>
                       <TagInput
                         suggestions={skills}
                         forwardedRef={ref}
-                        initialValue={requiredSkills}
-                        onTagsChange={setRequiredSkills}
+                        value={requiredSkills}
+                        onChange={setRequiredSkills}
                       />
                       <Typography
                         fontSize={12}
@@ -418,36 +458,72 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                       </Typography>
                     </Grid>
                   </Grid>
-
-                  <Typography variant="h6" marginBottom={1} marginTop={4}>
-                    Mô tả công việc
-                  </Typography>
+                  <Box display="flex" marginBottom={1} marginTop={4}>
+                    <Typography variant="h6">Mô tả công việc</Typography>
+                    {isEmpty.find((item) => item === 'jobDescription') && (
+                      <Typography
+                        color="error"
+                        fontWeight={700}
+                        fontStyle="italic"
+                        textAlign="center"
+                        flex={1}
+                      >
+                        * Vui lòng nhập mô tả công việc
+                      </Typography>
+                    )}
+                  </Box>
                   <FormControl
                     element={<TextEditor />}
                     control={control}
                     errors={errors}
                     id="jobDescription"
                     name="jobDescription"
+                    required
                   />
-                  <Typography variant="h6" marginBottom={1} marginTop={4}>
-                    Yêu cầu công việc
-                  </Typography>
+
+                  <Box display="flex" marginBottom={1} marginTop={4}>
+                    <Typography variant="h6">Yêu cầu công việc</Typography>
+                    {isEmpty.find((item) => item === 'jobRequirements') && (
+                      <Typography
+                        color="error"
+                        fontWeight={700}
+                        fontStyle="italic"
+                        textAlign="center"
+                        flex={1}
+                      >
+                        * Vui lòng nhập yêu cầu công việc
+                      </Typography>
+                    )}
+                  </Box>
                   <FormControl
                     element={<TextEditor />}
                     control={control}
                     errors={errors}
                     id="jobRequirements"
                     name="jobRequirements"
+                    required
                   />
-                  <Typography variant="h6" marginBottom={1} marginTop={4}>
-                    Quyền lợi
-                  </Typography>
+                  <Box display="flex" marginBottom={1} marginTop={4}>
+                    <Typography variant="h6">Quyền lợi</Typography>
+                    {isEmpty.find((item) => item === 'benefits') && (
+                      <Typography
+                        color="error"
+                        fontWeight={700}
+                        fontStyle="italic"
+                        textAlign="center"
+                        flex={1}
+                      >
+                        * Vui lòng nhập quyền lợi công việc
+                      </Typography>
+                    )}
+                  </Box>
                   <FormControl
                     element={<TextEditor />}
                     control={control}
                     errors={errors}
                     id="benefits"
                     name="benefits"
+                    required
                   />
                   <Typography variant="h6" marginBottom={1} marginTop={4}>
                     Thông tin người liên hệ
@@ -506,7 +582,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                 <CardActions>
                   <Grid
                     container
-                    justifyContent={'end'}
+                    justifyContent="end"
                     marginBottom={1}
                     marginRight={1}
                   >

@@ -27,28 +27,38 @@ const tabs = [
 
 const CandidateProfiles = () => {
   const pageSize = 7;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentTab, setCurrentTab] = useState('');
-  const { data } = useQueryCandidateApplications({
-    page: currentPage,
+  const [currentQuery, setCurrentQuery] = useState({
+    currentPage: 1,
+    currentTab: ''
+  });
+  const { data, isLoading: isLoadingData } = useQueryCandidateApplications({
+    page: currentQuery.currentPage,
     num: pageSize,
-    status: currentTab
+    status: currentQuery.currentTab
   });
   const { totalResults, isLoading: isLoadingTotalResults } =
-    useQueryTotalResultOfApplicationByEmployer({ status: currentTab });
+    useQueryTotalResultOfApplicationByEmployer({
+      status: currentQuery.currentTab
+    });
 
   const handleTabsChange = (e, value) => {
-    setCurrentTab(value);
-    setCurrentPage(1);
+    setCurrentQuery(() => ({
+      currentPage: 1,
+      currentTab: value
+    }));
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentQuery((prev) => ({
+      ...prev,
+      currentPage: page
+    }));
   };
 
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
+  console.log('rerender 1');
 
-  // useEffect(() => {
-  //   setDataToShow(data);
-  // }, [data]);
-
-  if (isLoadingTotalResults) return <SuspenseLoader />;
+  if (isLoadingData || isLoadingTotalResults) return;
   return (
     <Container maxWidth="xl">
       <Grid
@@ -66,7 +76,7 @@ const CandidateProfiles = () => {
             <CardContent>
               <TabsWrapper
                 onChange={handleTabsChange}
-                value={currentTab}
+                value={currentQuery.currentTab}
                 variant="scrollable"
                 scrollButtons="auto"
                 textColor="primary"
@@ -87,9 +97,9 @@ const CandidateProfiles = () => {
               <Table
                 data={data}
                 pageSize={pageSize}
-                currentPage={currentPage}
+                currentPage={currentQuery.currentPage}
                 totalPages={totalPages}
-                handlePageChange={setCurrentPage}
+                handlePageChange={handlePageChange}
               />
             </CardContent>
           </Card>

@@ -22,7 +22,13 @@ function UrgentJobTab() {
   }, [totalResults]);
 
   return (
-    <Card sx={{ border: 1, borderColor: '#98E4FF', borderRadius: 1, mt: 2 }}>
+    <Card
+      sx={{
+        borderColor: '#98E4FF',
+        borderRadius: '5px',
+        mt: 2
+      }}
+    >
       <Box
         display="flex"
         justifyContent="space-between"

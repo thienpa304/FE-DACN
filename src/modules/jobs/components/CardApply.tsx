@@ -22,6 +22,7 @@ import { useApp } from 'src/modules/app/hooks';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import FollowJobButton from './FollowJobButton';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import CustomContainer from 'src/components/CustomContainer';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -59,106 +60,100 @@ const CardApply: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardContent>
-        <Container>
-          <Grid container>
-            <Grid item xs={12} md={2} display="flex" alignItems="center">
-              <AvatarWrapper
-                src={data?.employer?.logo || defaultImage.companyAvatar}
-              />
-            </Grid>
-            <Grid item xs={12} md={10}>
-              <Box>
-                <Link
-                  to={`/company/${data?.employer?.userId}`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <SubTitle>{data?.employer?.companyName}</SubTitle>
-                </Link>
-                <Title>{data.jobTitle}</Title>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} md={6}>
-                    <Grid container alignItems={'center'}>
-                      <PaidIcon color="primary" sx={{ margin: '0 5px' }} />
-                      <LabelText> Mức lương : </LabelText>
-                      <ValueText>
-                        {data.minSalary} - {data.maxSalary} triệu
-                      </ValueText>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Grid container alignItems={'center'}>
-                      <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
-                      <LabelText> Hạn nộp hồ sơ : </LabelText>
-                      <ValueText>{data.applicationDeadline}</ValueText>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Grid container alignItems={'center'}>
-                      <AccessibilityIcon
-                        color="primary"
-                        sx={{ margin: '0 5px' }}
-                      />
-                      <LabelText> Độ tuổi : </LabelText>
-                      <ValueText>
-                        {data.minAge} - {data.maxAge}
-                      </ValueText>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Grid container alignItems={'center'}>
-                      <LocationOnIcon
-                        color="primary"
-                        sx={{ margin: '0 5px' }}
-                      />
-                      <LabelText> Khu vực ứng tuyển : </LabelText>
-                      <ValueText>{data.contactAddress}</ValueText>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                {!isEmployer && !isAdmin && (
-                  <Box
-                    sx={{
-                      marginTop: 1,
-                      display: 'flex',
-                      gap: 2,
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Button
-                      onClick={
-                        isEmployee
-                          ? handleOpenFormApply
-                          : () => {
-                              navigate('/login', {
-                                state: { from: window.location.pathname }
-                              });
-                            }
-                      }
-                      variant="contained"
-                      startIcon={<SendIcon />}
-                      color="info"
-                    >
-                      Nộp hồ sơ
-                    </Button>
-                    <FollowJobButton job={data} />
-                  </Box>
-                )}
-              </Box>
-            </Grid>
-          </Grid>
-          <ModalApply
-            open={openFormApply}
-            postId={data.postId}
-            onClose={onCloseFormApply}
-            position={data.jobTitle}
-            company={data?.employer?.companyName}
-            job={data}
+    // <Card sx={{ borderRadius: 0 }}>
+    //   <CardContent>
+    //   </CardContent>
+    // </Card>
+    <CustomContainer sx={{ px: 5, pb: 5, mb: 2 }}>
+      <Grid container>
+        <Grid item xs={12} md={2} display="flex" alignItems="center">
+          <AvatarWrapper
+            src={data?.employer?.logo || defaultImage.companyAvatar}
           />
-        </Container>
-      </CardContent>
-    </Card>
+        </Grid>
+        <Grid item xs={12} md={10}>
+          <Box>
+            <Link
+              to={`/company/${data?.employer?.userId}`}
+              style={{ textDecoration: 'none' }}
+            >
+              <SubTitle>{data?.employer?.companyName}</SubTitle>
+            </Link>
+            <Title>{data.jobTitle}</Title>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={6}>
+                <Grid container alignItems={'center'}>
+                  <PaidIcon color="primary" sx={{ margin: '0 5px' }} />
+                  <LabelText> Mức lương : </LabelText>
+                  <ValueText>
+                    {data.minSalary} - {data.maxSalary} triệu
+                  </ValueText>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container alignItems={'center'}>
+                  <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
+                  <LabelText> Hạn nộp hồ sơ : </LabelText>
+                  <ValueText>{data.applicationDeadline}</ValueText>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container alignItems={'center'}>
+                  <AccessibilityIcon color="primary" sx={{ margin: '0 5px' }} />
+                  <LabelText> Độ tuổi : </LabelText>
+                  <ValueText>
+                    {data.minAge} - {data.maxAge}
+                  </ValueText>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container alignItems={'center'}>
+                  <LocationOnIcon color="primary" sx={{ margin: '0 5px' }} />
+                  <LabelText> Khu vực ứng tuyển : </LabelText>
+                  <ValueText>{data.contactAddress}</ValueText>
+                </Grid>
+              </Grid>
+            </Grid>
+            {!isEmployer && !isAdmin && (
+              <Box
+                sx={{
+                  marginTop: 2,
+                  display: 'flex',
+                  gap: 2,
+                  alignItems: 'center'
+                }}
+              >
+                <Button
+                  onClick={
+                    isEmployee
+                      ? handleOpenFormApply
+                      : () => {
+                          navigate('/login', {
+                            state: { from: window.location.pathname }
+                          });
+                        }
+                  }
+                  variant="contained"
+                  startIcon={<SendIcon />}
+                  color="info"
+                >
+                  Nộp hồ sơ
+                </Button>
+                <FollowJobButton job={data} />
+              </Box>
+            )}
+          </Box>
+        </Grid>
+      </Grid>
+      <ModalApply
+        open={openFormApply}
+        postId={data.postId}
+        onClose={onCloseFormApply}
+        position={data.jobTitle}
+        company={data?.employer?.companyName}
+        job={data}
+      />
+    </CustomContainer>
   );
 };
 

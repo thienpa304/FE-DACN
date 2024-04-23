@@ -1,6 +1,7 @@
 import { Card, CardContent, Grid, Tab, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ChangeEvent, useState } from 'react';
+import CustomContainer from 'src/components/CustomContainer';
 import { useApp } from 'src/modules/app/hooks';
 import JobContent from 'src/modules/jobs/components/JobContent';
 import useJob from 'src/modules/jobs/hooks/useJob';
@@ -27,11 +28,9 @@ function TabContent() {
   };
 
   return (
-    <Card>
-      <CardContent>
-        <JobContent data={itemDetail} />
-      </CardContent>
-    </Card>
+    <CustomContainer sx={{ py: 3, mb: 2 }}>
+      <JobContent data={itemDetail} />
+    </CustomContainer>
   );
 }
 

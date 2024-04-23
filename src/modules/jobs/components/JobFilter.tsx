@@ -36,7 +36,7 @@ const options = {
   positionLevel: addAllOption(POSITION_LEVEL),
   degree: addAllOption(DEGREE),
   employmentType: addAllOption(WORKING_FORM),
-  sex: addAllOption(GENDER_OPTION)
+  sex: GENDER_OPTION
 };
 
 const defaultValues = {

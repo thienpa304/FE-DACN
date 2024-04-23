@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { SidebarContext } from 'src/contexts/SidebarContext';
+import Footer from './Footer';
 
 interface SidebarLayoutProps {
   children?: ReactNode;
@@ -61,6 +62,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showSideBar = true }) => {
             <Outlet />
           </Box>
         </Box>
+        {/* <Footer /> */}
       </Box>
     </>
   );

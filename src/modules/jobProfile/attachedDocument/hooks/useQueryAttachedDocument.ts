@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { AttachedDocument } from 'src/modules/jobProfile/model/index';
-import { AttachedDocumentService } from 'src/modules/jobProfile/employeeService';
+import { AttachedDocumentService } from 'src/modules/jobProfile/employeeProfileService';
 import { useEffect, useState } from 'react';
 import { getAccessToken } from 'src/utils/localStorage';
 import { useApp } from 'src/modules/app/hooks';

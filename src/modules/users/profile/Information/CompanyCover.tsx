@@ -79,17 +79,11 @@ function CompanyCover() {
   const getImage = async () => {
     setCompanyAvatar({
       ...companyAvatar,
-      img:
-        company?.logo?.trim() !== ''
-          ? company?.logo
-          : defaultImage.companyAvatar
+      img: company?.logo?.trim() ? company?.logo : defaultImage.companyAvatar
     });
     setCompanyCover({
       ...companyCover,
-      img:
-        company?.banner?.trim() !== ''
-          ? company?.banner
-          : defaultImage.companyCover
+      img: company?.banner?.trim() ? company?.banner : defaultImage.companyCover
     });
   };
 

@@ -21,11 +21,17 @@ import { Job } from 'src/modules/jobs/model';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { checkContent } from 'src/modules/ai/roles';
 import { signal } from '@preact/signals-react';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
 
 const renderJobTitle = (data) => {
+  const jobTitle = convertVietNamString(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
-    navigate(`/job/${data.id}`);
+    navigate(`/job/${jobTitle}`, {
+      state: {
+        postId: data?.id
+      }
+    });
   };
   return (
     <>
@@ -50,7 +56,9 @@ const renderJobTitle = (data) => {
             WebkitBoxOrient: 'vertical'
           }}
         >
-          <LinkText to={`/job/${data.id}`}>{data.value}</LinkText>
+          <LinkText to={`/job/${jobTitle}`} state={{ postId: data.id }}>
+            {data.value}
+          </LinkText>
         </Grid>
       </Grid>
     </>
@@ -128,7 +136,6 @@ const renderCheckInvalid = [
 ];
 
 const renderCheck = (data) => {
-  debugger;
   const initCheckValue = renderCheckInvalid.find(
     (item) => item.value === data.value
   );
@@ -237,6 +244,7 @@ export default function Table({ statusFilter, selectedProfession }) {
     status: ApprovalStatus[statusFilter],
     profession: selectedProfession
   });
+  const { mutate } = useMutateJobStatus();
   const [start, setStart] = useState(false);
   const [showList, setShowList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -272,6 +280,7 @@ export default function Table({ statusFilter, selectedProfession }) {
     const resultList = jobs.map((job) => {
       const found = jsonResult.find((item) => item.id === job.postId);
       if (found) {
+        mutate([found.id, { check: found.result }]);
         return {
           ...job,
           check: found.result
@@ -296,7 +305,7 @@ export default function Table({ statusFilter, selectedProfession }) {
           check: null
         };
       });
-      setShowList(() => newList);
+      setShowList(() => jobs);
     }
   }, [JSON.stringify(jobs)]);
 
@@ -325,7 +334,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         </Button>
       </Box>
       <TableData
-        sx={{ height: '72vh', width: '100%' }}
+        sx={{ minHeight: '72vh', width: '100%' }}
         rows={showList}
         columns={columns}
         hideFooter

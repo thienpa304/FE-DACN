@@ -33,7 +33,7 @@ export function useQueryCandidateApplicationByIdList(idList: number[]) {
   const [dataList, setDataList] = useState<ResponseData<EmployeeApplication>[]>(
     []
   );
-  const { data, isLoading } = useQuery<
+  const { data, isLoading, refetch } = useQuery<
     ResponseData<EmployeeApplication>[],
     AxiosError<ResponseData<EmployeeApplication>[]>
   >(
@@ -66,6 +66,7 @@ export function useQueryCandidateApplicationByIdList(idList: number[]) {
 
   return {
     data: dataList?.map((item) => item?.data),
-    isLoading
+    isLoading,
+    refetch
   };
 }

@@ -40,7 +40,7 @@ const AvatarWrapperWarning = styled(Avatar)(
 function AccountSecurity() {
   const [checked, setChecked] = useState(['phone_verification']);
 
-  const handleToggle = (value: string) => () => {
+  const handleToggle = (value: string) => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -83,7 +83,7 @@ function AccountSecurity() {
           <Switch
             edge="end"
             color="primary"
-            onChange={handleToggle('2fa')}
+            onChange={() => handleToggle('2fa')}
             checked={checked.indexOf('2fa') !== -1}
           />
         </ListItem>
@@ -113,7 +113,7 @@ function AccountSecurity() {
           <Switch
             edge="end"
             color="primary"
-            onChange={handleToggle('phone_verification')}
+            onChange={() => handleToggle('phone_verification')}
             checked={checked.indexOf('phone_verification') !== -1}
           />
         </ListItem>
@@ -143,7 +143,7 @@ function AccountSecurity() {
           <Switch
             edge="end"
             color="primary"
-            onChange={handleToggle('recovery_email')}
+            onChange={() => handleToggle('recovery_email')}
             checked={checked.indexOf('recovery_email') !== -1}
           />
         </ListItem>

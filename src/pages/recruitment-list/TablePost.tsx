@@ -12,6 +12,8 @@ import { TypographyEllipsis } from 'src/components/Typography';
 import dayjs from 'dayjs';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import useDeleteJobById from 'src/modules/jobs/hooks/useDeleteJobById';
+import alertDialog from 'src/utils/alertDialog';
 
 export const renderJobTitle = (data) => {
   const navigate = useNavigate();
@@ -51,15 +53,26 @@ const rederDate = (data) => {
 };
 
 const renderAtion = (data) => {
-  return (
-    <IconButton onClick={() => handleDelete(data)}>
-      <DeleteOutlineIcon />
-    </IconButton>
-  );
-};
+  const { onDeleteById } = useDeleteJobById();
 
-const handleDelete = (data) => {
-  console.log(data);
+  const handleConfirmDelete = (id) => {
+    onDeleteById([id]);
+  };
+
+  const handleDelete = (data) => {
+    alertDialog({
+      selectedId: data.id,
+      handleConfirmDelete: handleConfirmDelete
+    });
+  };
+
+  return (
+    <>
+      <IconButton onClick={() => handleDelete(data)}>
+        <DeleteOutlineIcon />
+      </IconButton>
+    </>
+  );
 };
 
 const columns: GridColDef[] = [
@@ -137,7 +150,7 @@ export default function TablePost({ data, pageSize }) {
         }
       }}
       hideFooter
-      sx={{ height: '68vh', width: '100%' }}
+      sx={{ minHeight: '68vh', width: '100%' }}
     />
   );
 }

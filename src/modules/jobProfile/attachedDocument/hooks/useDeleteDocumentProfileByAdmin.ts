@@ -2,26 +2,23 @@ import { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
-import { AttachedDocumentService } from 'src/modules/jobProfile/employeeProfileService';
 import { AttachedDocument } from 'src/modules/jobProfile/model/index';
-import { useNavigate } from 'react-router';
+import { RemoveDocumentProfileService } from 'src/modules/jobProfile/employeeProfileService';
 
-const useMutateUpdateAttachedDocument = () => {
+const useDeleteDocumentProfileByAdmin = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-
   const { toast } = useApp();
+  const useMutateFunction = (id) => RemoveDocumentProfileService.remove(id);
 
-  const { mutate: onUpdateData, isLoading } = useMutation<
+  const { mutate: onDeleteDocumentProfile } = useMutation<
     ResponseData<AttachedDocument>,
     AxiosError<ResponseData<AttachedDocument>>,
     AttachedDocument
-  >((data) => AttachedDocumentService.updateWithoutId(data), {
+  >(useMutateFunction, {
     onSuccess: (res) => {
       if (res.status === 200) {
-        queryClient.invalidateQueries('get-AttachedDocument');
+        queryClient.invalidateQueries(['get-AllEmployees']);
         toast.success({ massage: res.message });
-        navigate('/employee/recruitment-profile');
       } else {
         toast.error({ massage: res.message });
       }
@@ -32,9 +29,8 @@ const useMutateUpdateAttachedDocument = () => {
   });
 
   return {
-    onUpdateData,
-    isLoading
+    onDeleteDocumentProfile
   };
 };
 
-export default useMutateUpdateAttachedDocument;
+export default useDeleteDocumentProfileByAdmin;

@@ -10,41 +10,40 @@ const KeyCodes = {
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
-export default function TagInput({
-  suggestions,
-  forwardedRef,
-  initialValue,
-  onTagsChange,
-  placeholder
-}: {
+type TagInputProps = {
   suggestions: {
     id: string;
     text: string;
   }[];
-  onTagsChange: (tags: any[]) => void;
+  onChange: (tags: any[]) => void;
   forwardedRef?: React.RefObject<any>;
-  initialValue?: any[];
+  value?: any[];
   placeholder?: string;
-}) {
-  const [tags, setTags] = React.useState(initialValue || []);
+};
+
+export default function TagInput(props: TagInputProps) {
+  const { suggestions, onChange, forwardedRef, value, placeholder } = props;
+  const [tags, setTags] = React.useState(value || []);
 
   const handleDelete = (i) => {
     const newTagsList = tags?.filter((tag, index) => index !== i);
-    onTagsChange(newTagsList);
+    onChange(newTagsList);
     setTags(newTagsList);
   };
 
   const handleAddition = (tag) => {
     const newTagsList = [...tags, tag];
-    onTagsChange(newTagsList);
+    console.log(newTagsList);
+
+    onChange(newTagsList);
     setTags(newTagsList);
   };
 
   const handleTagClick = (index) => {};
 
   useEffect(() => {
-    initialValue?.length && setTags(initialValue);
-  }, [initialValue]);
+    value?.length && setTags(value);
+  }, [value]);
 
   return (
     <Box

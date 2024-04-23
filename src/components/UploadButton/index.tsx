@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import LinearPercent from '../LinearPercent';
 import dayjs from 'dayjs';
 import { ApplicationType } from 'src/constants/enum';
+import { removeFileByUrl } from 'src/common/firebaseService';
 
 const VisuallyHiddenInput = styled('input')({
   display: 'none'
@@ -34,7 +35,6 @@ function UploadButton(props: Props) {
   const { label, sx, onChange, setIsChecked, setUrl } = props;
   // State to store uploaded file
   const [file, setFile] = useState<File>();
-
   const [fileUrl, setFileUrl] = useState<string | undefined>();
 
   // progress
@@ -47,10 +47,14 @@ function UploadButton(props: Props) {
     setFile(file);
     handleUpload(file);
   }
+
   const handleDeleteFile = () => {
-    setFile(null);
-    setIsChecked('');
+    removeFileByUrl(fileUrl).then(() => {
+      setFile(null);
+      setIsChecked('');
+    });
   };
+
   const handleUpload = (value) => {
     if (!value) {
       alert('Please upload an image first!');

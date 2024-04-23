@@ -7,7 +7,8 @@ function ProfileCard({ profile }: { profile: ProfileShowType }) {
   const [formattedProfile, setFormattedProfile] = useState<any>(null);
   const employeeProfile = {
     ...profile,
-    avatar: profile?.employee?.user?.avatar
+    avatar: profile?.employee?.user?.avatar,
+    ...profile?.employee?.user
   };
 
   useEffect(() => {
