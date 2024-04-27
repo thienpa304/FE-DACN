@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
-import SelectInput from 'src/components/SelectInput';
+import SelectInput, { Option } from 'src/components/SelectInput';
 import { useEffect, useState } from 'react';
 import useMutateJobStatus from 'src/modules/jobs/hooks/useMutateJobStatus';
 import { ApprovalStatus } from 'src/constants/enum';
@@ -22,6 +22,7 @@ import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { checkContent } from 'src/modules/ai/roles';
 import { signal } from '@preact/signals-react';
 import { convertVietNamString } from 'src/utils/convertVietNamString';
+import alertDialog from 'src/utils/alertDialog';
 
 const renderJobTitle = (data) => {
   const jobTitle = convertVietNamString(data?.row?.jobTitle);
@@ -34,34 +35,21 @@ const renderJobTitle = (data) => {
     });
   };
   return (
-    <>
-      <Grid container alignItems={'center'}>
-        <Grid item xs={2}>
-          <Tooltip title="Xem trực tiếp">
-            <IconButton size="small" onClick={handleLinkToDetail}>
-              <RemoveRedEyeIcon sx={{ width: 18, height: 18, color: 'gray' }} />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-        <Grid
-          item
-          xs={10}
-          sx={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'wrap',
-            lineHeight: '1.5',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical'
-          }}
-        >
-          <LinkText to={`/job/${jobTitle}`} state={{ postId: data.id }}>
-            {data.value}
-          </LinkText>
-        </Grid>
-      </Grid>
-    </>
+    <Box
+      sx={{
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'wrap',
+        lineHeight: '1.5',
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical'
+      }}
+    >
+      <LinkText to={`/job/${jobTitle}`} state={{ postId: data.id }}>
+        {data.value}
+      </LinkText>
+    </Box>
   );
 };
 
@@ -81,7 +69,10 @@ const renderCompany = (data) => {
           WebkitBoxOrient: 'vertical'
         }}
       >
-        <LinkText to={`/company/${data?.value?.userId}`}>
+        <LinkText
+          to={`/company/${convertVietNamString(data.value?.companyName)}`}
+          state={{ id: data?.value?.userId }}
+        >
           {data.value?.companyName}
         </LinkText>
       </Grid>
@@ -95,12 +86,36 @@ const renderStatus = (data) => {
   ).value;
   const { mutate } = useMutateJobStatus();
   const [value, setValue] = useState(initValue);
-  const handleChangeValue = (e) => {
-    const value = e.target.value as ApprovalStatus;
-    mutate([data.id, { status: value }]).then(() => {
-      setValue(e.target.value);
+
+  const handleConfirm = (id, status) => {
+    mutate([id, { status: status, check: false }]).then(() => {
+      setValue(status);
     });
   };
+
+  const handleChangeValue = (e) => {
+    const value = e.target.value as ApprovalStatus;
+    if (data?.row.check == true && value === Object.keys(ApprovalStatus)[0]) {
+      alertDialog({
+        selectedId: data.id,
+        handleConfirm: () => handleConfirm(data.id, e.target.value),
+        message:
+          'Tin tuyển dụng đang ở trạng thái vi phạm, bạn có chắc muốn duyệt tin tuyển dụng này không?'
+      });
+    } else {
+      mutate([data.id, { status: value }]).then(() => {
+        setValue(e.target.value);
+      });
+    }
+  };
+
+  const displayColor = () => {
+    const initColor = APPROVAL_STATUS.find(
+      (item) => item.label === data.value
+    )?.optionColor;
+    return initColor;
+  };
+
   return (
     <SelectInput
       value={value}
@@ -108,10 +123,7 @@ const renderStatus = (data) => {
       onChange={handleChangeValue}
       size="small"
       sx={{
-        '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
-          {
-            fontSize: 13
-          }
+        color: displayColor()
       }}
     />
   );
@@ -121,12 +133,12 @@ const renderCheckInvalid = [
   {
     label: 'Chưa xác định',
     value: null,
-    color: '#efefef'
+    color: '#fff'
   },
   {
     label: 'Hợp quy định',
     value: false,
-    color: '#A5DD9B'
+    color: '#BFD8AF'
   },
   {
     label: 'Vi phạm',
@@ -136,22 +148,70 @@ const renderCheckInvalid = [
 ];
 
 const renderCheck = (data) => {
+  // console.log(data);
+
+  const { mutate } = useMutateJobStatus();
   const initCheckValue = renderCheckInvalid.find(
-    (item) => item.value === data.value
+    (item) => item.value == data.value
   );
+  const [checkValue, setCheckValue] = useState(initCheckValue);
+
+  const options = renderCheckInvalid.map((item) => {
+    return {
+      label: item.label,
+      value: item.value ? 'true' : item.value == false ? 'false' : 'null'
+    };
+  });
+
+  const handleChange = (e) => {
+    const value = e.target.value.toString();
+    const checkValue = renderCheckInvalid.find((item) => {
+      if (item.value !== null) return item.value.toString() === value;
+      else if (item.value === null && value !== 'null') return false;
+      else return true;
+    });
+    // console.log(checkValue, value);
+
+    setCheckValue(checkValue);
+    mutate([data.id, { check: checkValue?.value }]);
+  };
+
+  useEffect(() => {
+    setCheckValue(initCheckValue);
+  }, [data.value]);
 
   return (
     <Typography
       bgcolor={initCheckValue?.color}
       sx={{
-        width: '90%',
-        borderRadius: 3,
+        width: '95%',
+        borderRadius: 1,
         p: 1,
         textAlign: 'center'
       }}
     >
       {initCheckValue?.label}
     </Typography>
+    // <SelectInput
+    //   value={
+    //     checkValue?.value === true
+    //       ? 'true'
+    //       : checkValue?.value === false
+    //       ? 'false'
+    //       : 'null'
+    //   }
+    //   options={options}
+    //   size="small"
+    //   onChange={handleChange}
+    //   sx={{
+    //     bgcolor: checkValue?.color,
+    //     '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
+    //       {
+    //         fontSize: 13,
+    //         mx: -1
+    //       }
+    //   }}
+    // />
   );
 };
 
@@ -191,7 +251,7 @@ const columns: GridColDef[] = [
   {
     field: 'createAt',
     headerName: 'Ngày đăng',
-    minWidth: 120,
+    minWidth: 110,
     sortable: true,
     renderCell: (data) => (
       <Box
@@ -223,7 +283,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 130,
+    minWidth: 140,
     headerAlign: 'center',
     renderCell: renderStatus,
     sortable: true
@@ -248,6 +308,7 @@ export default function Table({ statusFilter, selectedProfession }) {
   const [start, setStart] = useState(false);
   const [showList, setShowList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedRows, setSelectedRows] = useState([]);
   const jobsPerPage = 9;
   const totalPages = Math.ceil(totalResults / jobsPerPage) || 1;
 
@@ -275,7 +336,7 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   const handleCheck = async (dataToSend: Partial<Job>[]) => {
     const result = await sendChatGPTRequest(checkContent, dataToSend);
-    debugger;
+
     const jsonResult = result.map((item) => JSON.parse(item));
     const resultList = jobs.map((job) => {
       const found = jsonResult.find((item) => item.id === job.postId);
@@ -286,6 +347,7 @@ export default function Table({ statusFilter, selectedProfession }) {
           check: found.result
         };
       }
+      return job;
     });
     setShowList(resultList);
     setStart(false);
@@ -293,7 +355,11 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   useEffect(() => {
     if (!start) return;
-    const dataToSend = jobs.map((job) => preProcessData(job));
+    const dataToSend = jobs
+      .filter((job) => selectedRows.includes(job.postId))
+      .map((job) => preProcessData(job));
+
+    // const dataToSend = jobs.map((job) => preProcessData(job));
     handleCheck(dataToSend);
   }, [start]);
 
@@ -320,13 +386,11 @@ export default function Table({ statusFilter, selectedProfession }) {
         {start && <CircularProgress />}
         <Button
           onClick={() => {
-            console.log(start);
             setStart(true);
-            console.log(start);
           }}
           variant="contained"
           size="small"
-          color="secondary"
+          color="error"
           disabled={start}
           sx={{ mr: 1 }}
         >
@@ -338,6 +402,12 @@ export default function Table({ statusFilter, selectedProfession }) {
         rows={showList}
         columns={columns}
         hideFooter
+        checkboxSelection
+        disableRowSelectionOnClick
+        rowSelection={true}
+        onRowSelectionModelChange={(ids) => {
+          setSelectedRows(ids);
+        }}
       />
       <Pagination
         totalPages={totalPages}

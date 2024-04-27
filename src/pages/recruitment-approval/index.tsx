@@ -20,7 +20,8 @@ const ApprovalStatusOption = [
   {
     value: '',
     label: 'Tất cả',
-    color: 'info'
+    color: 'info',
+    optionColor: '#000'
   },
   ...APPROVAL_STATUS
 ];
@@ -77,6 +78,11 @@ const RecruitmentApproval = () => {
                       value={status}
                       options={ApprovalStatusOption}
                       onChange={(e) => handleChangeStatusFilter(e)}
+                      sx={{
+                        color: ApprovalStatusOption.find(
+                          (item) => item.value === status
+                        ).optionColor
+                      }}
                     />
                   </Box>
                 )}

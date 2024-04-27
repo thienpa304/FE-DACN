@@ -4,7 +4,9 @@ import {
   RoundTwoCheck
 } from 'src/modules/ai/roles';
 import { preProcessText } from './inputOutputFormat';
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import sendChatGPTRequest, {
+  getEmbedding
+} from 'src/modules/ai/sendChatGPTRequest';
 import { getFileByUrl } from 'src/common/firebaseService';
 import pdfToText from 'react-pdftotext';
 import { User } from 'src/modules/users/model';
@@ -13,6 +15,7 @@ import { Application } from 'src/modules/application/model';
 import { Job } from 'src/modules/jobs/model';
 import { compareDegrees, compareExperience } from './compareEnum';
 import dayjs from 'dayjs';
+import { dot } from 'mathjs';
 
 export const FAIL_SCORE = 0; // < 30
 export const LOW_SCORE = 30; // 30 - 80
@@ -77,6 +80,49 @@ const findMatchedProfile = (
       (attachItem) => attachItem.employee_Profile.application.id === profileId
     )
   );
+};
+
+export const preprocessJobData = (job) => ({
+  id: job?.postId,
+  jobTitle: job?.jobTitle,
+  profession: job?.profession,
+  jobDescription: preProcessText(job?.jobDescription),
+  jobRequirements: preProcessText(job?.jobRequirements),
+  benefits: preProcessText(job?.benefits),
+  workAddress: job?.workAddress,
+  minAge: job?.minAge,
+  maxAge: job?.maxAge,
+  sex: job?.sex,
+  requiredSkills: job?.requiredSkills,
+  employmentType: job?.employmentType,
+  degree: job?.degree,
+  experience: job?.experience,
+  positionLevel: job?.positionLevel,
+  keywords: job?.keywords
+});
+
+export const preprocessProfileData = (profile) => ({
+  ...profile,
+  personal_information: {
+    dob: profile?.personal_information?.dob,
+    sex: profile?.personal_information?.sex
+  }
+});
+
+export const matchProfileById = (
+  analyzedProfile,
+  cvEnclosedProfileList,
+  attachProfileList
+) => {
+  return analyzedProfile.map((item) => {
+    const foundItem = findMatchedProfile(
+      item.id,
+      cvEnclosedProfileList,
+      attachProfileList
+    );
+    if (foundItem) return { ...item, ...foundItem };
+    return item;
+  });
 };
 
 export const firstRoundForGeneralInfo = (job, profile) => {
@@ -159,11 +205,11 @@ const handleRoundOne = async (
 };
 
 const handleRoundTwo = async (
-  passRoundOneProfiles,
+  passRoundProfiles,
   handleAnalyzeResult: (result: any[]) => Promise<void>
 ) => {
   console.log('Start round 2');
-  const dataSendToGPT = passRoundOneProfiles.map((item) => {
+  const dataSendToGPT = passRoundProfiles.map((item) => {
     let profile;
     if (item?.employee_Profile?.online_profile) {
       profile = {
@@ -205,8 +251,6 @@ const handleRoundTwo = async (
       }
     };
   });
-  console.log('dataToSend', dataSendToGPT);
-
   const result = await sendChatGPTRequest(RoundTwoCheck, dataSendToGPT).catch(
     () => []
   );
@@ -215,51 +259,79 @@ const handleRoundTwo = async (
 };
 
 const handleRoundThree = async (
-  passRoundOneProfiles,
+  passRoundProfiles,
   handleAnalyzeResult: (result: any[]) => Promise<void>
 ) => {
   console.log('Start round 3');
-  const result = await sendChatGPTRequest(
-    RoundThreeCheck,
-    passRoundOneProfiles.map((item) => ({
+  // const result = await sendChatGPTRequest(
+  //   RoundThreeCheck,
+  //   passRoundProfiles.map((item) => ({
+  //     id: item.id,
+  //     employer_Requirement: item.employer_Requirement.keywords,
+  //     employee_Profile: item.employee_Profile.application.keywords
+  //   }))
+  // ).catch(() => []);
+  // const employer_Requirement = await getEmbedding(
+  //   passRoundProfiles.map((item) => ({
+  //     id: item.id,
+  //     word: item.employer_Requirement.keywords
+  //   }))
+  // );
+  const response = await getEmbedding(
+    passRoundProfiles.map((item) => ({
       id: item.id,
-      employer_Requirement: {
-        keywords: item.employer_Requirement.keywords
-      },
-      employee_Profile: {
-        keywords: item.employee_Profile.application.keywords
-      }
+      employer_Requirement: item.employer_Requirement.keywords.split(','),
+      employee_Profile: item.employee_Profile.application.keywords.split(',')
     }))
-  ).catch(() => []);
-  handleAnalyzeResult(result);
+  );
+  // debugger;
+  const resultList = response.map((item) => {
+    let score = item.employee_Profile.reduce((acc, profile) => {
+      const hasMatch = item.employer_Requirement.some((requirement) => {
+        const cosineSimilarity = dot(profile.result, requirement.result);
+        return cosineSimilarity > 0.7;
+      });
+      return hasMatch ? acc + 5 : acc;
+    }, 0);
+
+    const lackOfSkillsList = [];
+    for (const item of response) {
+      let foundLackOfSkill = false; // Biến cờ để kiểm tra xem có kỹ năng nào thiếu không
+
+      for (const require of item.employer_Requirement) {
+        let hasSkill = false; // Biến cờ để kiểm tra xem có kỹ năng nào phù hợp không
+
+        for (const skills of item.employee_Profile) {
+          const cosineSimilarity = dot(skills.result, require.result);
+          if (cosineSimilarity > 0.7) {
+            hasSkill = true; // Có kỹ năng phù hợp, không cần thiếu
+            break;
+          }
+        }
+
+        if (!hasSkill) {
+          foundLackOfSkill = true; // Không có kỹ năng phù hợp, cần thiếu
+          lackOfSkillsList.push(require.word);
+        }
+      }
+    }
+    const hints =
+      lackOfSkillsList.length > 0
+        ? 'Để tăng tỉ lệ đậu bạn có thể trang bị thêm kĩ năng:' +
+          lackOfSkillsList.slice(0, 4).join(',')
+        : 'Hồ sơ của bạn đã đáp ứng yêu cầu với tin tuyển dụng này';
+
+    return {
+      id: item.id,
+      result: score,
+      hints: hints
+    };
+  });
+
+  const list = resultList.map((result) => JSON.stringify(result));
+
+  handleAnalyzeResult(list);
 };
-
-export const preprocessJobData = (job) => ({
-  id: job?.postId,
-  jobTitle: job?.jobTitle,
-  profession: job?.profession,
-  jobDescription: preProcessText(job?.jobDescription),
-  jobRequirements: preProcessText(job?.jobRequirements),
-  benefits: preProcessText(job?.benefits),
-  workAddress: job?.workAddress,
-  minAge: job?.minAge,
-  maxAge: job?.maxAge,
-  sex: job?.sex,
-  requiredSkills: job?.requiredSkills,
-  employmentType: job?.employmentType,
-  degree: job?.degree,
-  experience: job?.experience,
-  positionLevel: job?.positionLevel,
-  keywords: job?.keywords
-});
-
-export const preprocessProfileData = (profile) => ({
-  ...profile,
-  personal_information: {
-    dob: profile?.personal_information?.dob,
-    sex: profile?.personal_information?.sex
-  }
-});
 
 export const fetchDataFromUrl = async (url, type) => {
   try {
@@ -320,37 +392,12 @@ export const readEnclosedCVData = async (employee_Profile) => {
   return null;
 };
 
-export const matchProfileById = (
-  analyzedProfile,
-  cvEnclosedProfileList,
-  attachProfileList
-) => {
-  console.log(
-    '****',
-    analyzedProfile.map(
-      (item) =>
-        findMatchedProfile(item.id, cvEnclosedProfileList, attachProfileList) ||
-        item
-    )
-  );
-
-  return analyzedProfile.map((item) => {
-    const foundItem = findMatchedProfile(
-      item.id,
-      cvEnclosedProfileList,
-      attachProfileList
-    );
-    if (foundItem) return { ...item, ...foundItem };
-    return item;
-  });
-};
-
 export const review = async ({
   round,
   handleAnalyzeResult,
   setIsAnalyzing,
   setAnalyzedProfile,
-  passRoundOneProfiles,
+  passRoundProfiles,
   resetMatchingScoreList,
   handleGoToAnalyzeResult
 }: {
@@ -358,7 +405,7 @@ export const review = async ({
   handleAnalyzeResult: (result: any[]) => Promise<void>;
   setIsAnalyzing: (data: boolean) => void;
   setAnalyzedProfile?: (data: ProfileApplicationType[]) => Promise<void>;
-  passRoundOneProfiles?: ProfileApplicationType[];
+  passRoundProfiles?: ProfileApplicationType[];
   resetMatchingScoreList?: ProfileApplicationType[];
   handleGoToAnalyzeResult?: any;
 }) => {
@@ -374,10 +421,10 @@ export const review = async ({
       );
       break;
     case 2:
-      await handleRoundTwo(passRoundOneProfiles, handleAnalyzeResult);
+      await handleRoundTwo(passRoundProfiles, handleAnalyzeResult);
       break;
     case 3:
-      await handleRoundThree(passRoundOneProfiles, handleAnalyzeResult);
+      await handleRoundThree(passRoundProfiles, handleAnalyzeResult);
       break;
     default:
       break;

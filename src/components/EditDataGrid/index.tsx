@@ -103,7 +103,7 @@ const EditDataGrid = (props) => {
   const handleDeleteClick = (id: GridRowId) => {
     alertDialog({
       selectedId: id,
-      handleConfirmDelete
+      handleConfirm: handleConfirmDelete
     });
   };
 

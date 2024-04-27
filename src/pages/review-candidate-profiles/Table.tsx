@@ -9,7 +9,9 @@ import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
 import { v4 } from 'uuid';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
-import { useQueryCandidateApplicationByIdList } from 'src/modules/application/hooks/useQueryCandidateApplicationById';
+import useQueryCandidateApplicationById, {
+  useQueryCandidateApplicationByIdList
+} from 'src/modules/application/hooks/useQueryCandidateApplicationById';
 import {
   ProfileApplicationType,
   preprocessJobData,
@@ -24,6 +26,7 @@ import {
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
 import Pagination from 'src/components/Pagination';
+import openProfile from 'src/utils/openProfile';
 
 interface CustomLinkProps {
   to?: string;
@@ -47,7 +50,7 @@ const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
 
     const url = link.slice(1);
     return (
-      <Link {...props} to={isInternal ? url : v4()} style={sx}>
+      <Link {...props} to={isInternal ? url : v4()} style={sx} target="_blank">
         {children}
       </Link>
     );
@@ -76,24 +79,30 @@ const renderJobTitle = (data) => {
 
 const renderProfileName = (data) => {
   const url = data?.row?.CV ? data?.row?.CV : '#';
+  const link = useMemo(() => {
+    if (!url) return '#';
+    return url;
+  }, [url]);
+
+  const { data: profile } = useQueryCandidateApplicationById(data?.row?.id);
+
   return (
     <Grid container alignItems={'center'}>
-      <CustomLink
-        to={url}
+      <Typography
         sx={{
           color: '#319fce',
           ':hover': {
-            textDecoration: 'none'
+            textDecoration: 'none',
+            cursor: 'pointer'
           },
           textDecoration: 'none'
         }}
-        state={{
-          applicationId: data?.row?.id,
-          CV: data?.row?.CV
+        onClick={() => {
+          openProfile({ profile: profile });
         }}
       >
-        {data.value || ''}
-      </CustomLink>
+        {data.value}
+      </Typography>
     </Grid>
   );
 };
@@ -125,6 +134,9 @@ const renderStatus = (data) => {
       value={value}
       options={APPROVAL_STATUS}
       onChange={handleChangeValue}
+      sx={{
+        color: APPROVAL_STATUS.find((item) => item.value === value)?.optionColor
+      }}
     />
   );
 };
@@ -151,7 +163,7 @@ export const renderMatchingScore = (data) => {
           data.value >= HIGH_SCORE
             ? '#ffc107'
             : data.value >= NORMAL_SCORE
-            ? '#4caf50'
+            ? '#A1C398'
             : data.value >= LOW_SCORE
             ? '#b5b5b5'
             : '#efefef',
@@ -175,7 +187,7 @@ const columns: GridColDef[] = [
   {
     field: 'jobTitle',
     headerName: 'Vị trí ứng tuyển',
-    minWidth: 450,
+    minWidth: 430,
     renderCell: renderJobTitle,
     sortable: true
   },
@@ -188,7 +200,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Trạng thái tuyển dụng',
-    minWidth: 180,
+    minWidth: 150,
     renderCell: renderStatus,
     sortable: true
   },
@@ -214,7 +226,7 @@ export default function Table(props) {
   const [roundOneFinished, setRoundOneFinished] = useState(false);
   const [roundTwoFinished, setRoundTwoFinished] = useState(false);
   const [roundThreeFinished, setRoundThreeFinished] = useState(false);
-  const [passRoundOneProfiles, setPassRoundOneProfiles] = useState<
+  const [passRoundProfiles, setPassRoundProfiles] = useState<
     ProfileApplicationType[]
   >([]);
   const [start, setStart] = useState(false);
@@ -222,9 +234,10 @@ export default function Table(props) {
     signal: false,
     resultData: null
   });
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const applicationIdList = data?.map((item) => item?.application_id);
-  console.log(applicationIdList);
+  console.log(selectedRows);
 
   const jobsIdList: Set<number> = new Set(
     data?.map((item) => {
@@ -252,9 +265,9 @@ export default function Table(props) {
     setRoundTwoFinished(false);
     setRoundThreeFinished(false);
     setIsAnalyzing(false);
-    setPassRoundOneProfiles([]);
+    setPassRoundProfiles([]);
     setGoToAnalyzeResult({ signal: false, resultData: null });
-    setAnalyzedProfile([]);
+    setAnalyzedProfile(matchJobAndProfile());
   };
 
   const handleSetAnalyzedProfile = async (data: ProfileApplicationType[]) => {
@@ -318,7 +331,7 @@ export default function Table(props) {
       const passRoundData = updatedAnalyzedProfile.filter(
         (data) => data?.employee_Profile.application?.matchingScore >= LOW_SCORE
       );
-      setPassRoundOneProfiles(passRoundData);
+      setPassRoundProfiles(passRoundData);
     }
 
     setAnalyzedProfile(updatedAnalyzedProfile);
@@ -326,7 +339,12 @@ export default function Table(props) {
       ...profile?.employee_Profile?.application,
       id: profile.id
     }));
-    setShowList(resultList);
+    setShowList((prev) => {
+      return prev.map((item) => {
+        const foundItem = resultList.find((res) => res?.id === item?.id);
+        return foundItem || item;
+      });
+    });
 
     if (start) {
       if (!roundOneFinished) setRoundOneFinished(true);
@@ -344,8 +362,6 @@ export default function Table(props) {
         const profile = applicationDetailList?.find(
           (app) => app?.application?.application_id === item?.application_id
         );
-
-        console.log('applicationDetailList', applicationDetailList);
 
         if (!job || !profile) return null;
 
@@ -374,16 +390,26 @@ export default function Table(props) {
   const handleReview = () => {
     if (!roundOneFinished) {
       // Round 1: Reset matching scores and start round 1
-      const resetScoreList = analyzedProfile.map((profile) => ({
-        ...profile,
-        employee_Profile: {
-          ...profile.employee_Profile,
-          application: {
-            ...profile.employee_Profile.application,
-            matchingScore: null
+      // console.log('analyzedProfile', analyzedProfile);
+
+      const resetScoreList = analyzedProfile
+        .filter((item) => {
+          console.log(item.id, selectedRows);
+
+          return selectedRows.includes(item.id);
+        })
+        .map((profile) => ({
+          ...profile,
+          employee_Profile: {
+            ...profile.employee_Profile,
+            application: {
+              ...profile.employee_Profile.application,
+              matchingScore: null
+            }
           }
-        }
-      }));
+        }));
+      console.log('resetScoreList', resetScoreList);
+
       setAnalyzedProfile(resetScoreList);
       review({
         round: 1,
@@ -393,13 +419,13 @@ export default function Table(props) {
         setAnalyzedProfile: handleSetAnalyzedProfile,
         handleGoToAnalyzeResult
       });
-    } else if (!roundTwoFinished && passRoundOneProfiles.length > 0) {
+    } else if (!roundTwoFinished && passRoundProfiles.length > 0) {
       // Round 2: Proceed to round 2 if round 1 is finished
       review({
         round: 2,
         handleAnalyzeResult,
         setIsAnalyzing: handleIsAnalyzing,
-        passRoundOneProfiles
+        passRoundProfiles
       });
     } else if (!roundThreeFinished) {
       // Round 3: Proceed to round 3 if round 2 is finished
@@ -407,17 +433,21 @@ export default function Table(props) {
         round: 3,
         handleAnalyzeResult,
         setIsAnalyzing: handleIsAnalyzing,
-        passRoundOneProfiles
+        passRoundProfiles
       });
     } else {
       // All rounds finished, save matching scores and finish all
       Promise.all(
-        showList.map((item) =>
-          onSaveApplicationStatus([
-            item.id,
-            { matchingScore: item.matchingScore }
-          ])
-        )
+        showList
+          .filter((item) => {
+            return selectedRows.includes(item.id);
+          })
+          .map((item) =>
+            onSaveApplicationStatus([
+              item.id,
+              { matchingScore: item.matchingScore }
+            ])
+          )
       ).then(() => {
         refetch();
       });
@@ -436,10 +466,10 @@ export default function Table(props) {
   useEffect(() => {
     if (!jobs.length || !applicationDetailList.length || start) return;
 
-    const dataToAnalyze = matchJobAndProfile();
-    // console.log('dataToAnalyze', dataToAnalyze);
+    const initialJobProfileData = matchJobAndProfile();
+    // console.log('initialJobProfileData', initialJobProfileData);
 
-    const resultList = dataToAnalyze?.map((item) => {
+    const resultList = initialJobProfileData?.map((item) => {
       item.employee_Profile.application.id = item.id;
       return item.employee_Profile.application;
     });
@@ -451,8 +481,10 @@ export default function Table(props) {
     }
 
     // Check if the profile values are really different
-    if (JSON.stringify(dataToAnalyze) !== JSON.stringify(analyzedProfile)) {
-      setAnalyzedProfile(dataToAnalyze);
+    if (
+      JSON.stringify(initialJobProfileData) !== JSON.stringify(analyzedProfile)
+    ) {
+      setAnalyzedProfile(initialJobProfileData);
     }
   }, [
     JSON.stringify(data),
@@ -492,6 +524,12 @@ export default function Table(props) {
         }}
         hideFooter
         sx={{ minHeight: '65.7vh', width: '100%' }}
+        checkboxSelection
+        disableRowSelectionOnClick
+        rowSelection={true}
+        onRowSelectionModelChange={(ids) => {
+          setSelectedRows(ids);
+        }}
       />
       <Pagination
         currentPage={currentPage}

@@ -11,3 +11,7 @@ export const AdminCandidateStatisticsService = new BaseService(
   'admin/candidate-statistics'
 );
 export const DeleteUserService = new BaseService('users');
+
+export const SendEmailService = new BaseService('admin/send-email');
+
+export const GetEmailService = new BaseService('admin/search-email-or-name');

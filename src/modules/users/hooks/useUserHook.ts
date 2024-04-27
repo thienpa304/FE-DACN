@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { User } from 'src/modules/users/model';
 import { getAccessToken } from 'src/utils/localStorage';
 import { GetProfile } from '../userService';
 import { useQuery } from 'react-query';

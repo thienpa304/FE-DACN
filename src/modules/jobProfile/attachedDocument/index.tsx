@@ -75,7 +75,6 @@ export default function AttachedDocument() {
   // };
 
   const handleSaveProfile = async () => {
-    debugger;
     if (!profile?.CV) return;
     setIsAnalyzing(true);
     try {

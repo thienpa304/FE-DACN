@@ -9,7 +9,6 @@ import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 
 const JobDetail = () => {
   const { setItemDetail, itemDetail } = useJob();
-  const { id } = useParams();
   const { state } = useLocation();
   const locationState = state as any;
   const { data } = useQueryJobById(locationState.postId);

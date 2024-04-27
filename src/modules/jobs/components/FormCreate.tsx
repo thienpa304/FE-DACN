@@ -73,7 +73,7 @@ type Props = {
 const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
   const { onSaveDataById } = useMutateJobById();
-  const { data, isLoading } = useQueryJobById(selectedId);
+  const { data, isLoading, isFetching } = useQueryJobById(selectedId);
   const [analysisResults, setAnalysisResults] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [documentText, setDocumentText] = useState('');
@@ -81,7 +81,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const [requiredSkills, setRequiredSkills] = useState(null);
   const [isEmpty, setIsEmpty] = useState([]);
   const { profile } = useProfileHook();
-  console.log(requiredSkills);
 
   const ref = React.useRef(null);
 
@@ -94,7 +93,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   } = methods;
 
   const handleSave = (newData) => {
-    debugger;
     console.log(newData);
     const fieldsToCheck = {
       jobDescription: 'jobDescription',
@@ -161,12 +159,12 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     } else if (!selectedId) {
       reset({
         name: profile?.name,
-        email: profile.email,
+        email: profile?.email,
         phone: profile?.phone,
         contactAddress: profile?.address
       });
     }
-  }, [data, profile]);
+  }, [JSON.stringify(data), JSON.stringify(profile)]);
 
   useEffect(() => {
     if (analysisResults.length > 0 && analysisResults[0]) {
@@ -184,7 +182,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     setIsAnalyzing(false);
   }, [analysisResults]);
 
-  if (isLoading) return <SuspenseLoader />;
+  if (isFetching) return <SuspenseLoader />;
 
   return (
     <Box id={'form-create'}>

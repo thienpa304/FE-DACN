@@ -5,64 +5,63 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Typography, styled } from '@mui/material';
+import ThemeProvider from '../theme/ThemeProvider';
 
-const Text = styled(Typography)(({ theme }) => ({
-  fontFamily:
-    '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-  textAlign: 'center',
-  fontWeight: 700
-}));
-
-function alertDialog({ selectedId, handleConfirmDelete }) {
+function alertDialog({
+  selectedId,
+  handleConfirm,
+  message = 'Bạn có chắc chắn muốn xóa?'
+}: {
+  selectedId: number | string;
+  handleConfirm: (id: number | string, ...args: any[]) => void;
+  message?: any;
+}) {
   const domNode = document.createElement('div'); // Tạo một thẻ div mới cho Portal
   const root = createRoot(domNode);
   document.body.appendChild(domNode);
 
   const handleClose = () => {
     root.unmount();
-    // onClose();
   };
 
   root.render(
-    <Dialog open={true} onClose={handleClose}>
-      <DialogTitle
-        height={80}
-        width={450}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Text fontSize={18}>Bạn có chắc chắn muốn xóa?</Text>
-      </DialogTitle>
-      <DialogActions style={{ padding: 16, gap: 16 }}>
-        <Button
-          onClick={handleClose}
-          variant="outlined"
-          fullWidth
-          sx={{ color: '#767ca3', height: 40 }}
+    <ThemeProvider>
+      <Dialog open={true} onClose={handleClose}>
+        <DialogTitle
+          minHeight={80}
+          minWidth={400}
+          maxWidth={550}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
         >
-          <Text fontSize={13}>Hủy</Text>
-        </Button>
-        <Button
-          onClick={() => {
-            handleConfirmDelete(selectedId);
-            handleClose();
-          }}
-          variant="contained"
-          fullWidth
-          sx={{
-            backgroundColor: '#fea410',
-            color: '#000',
-            height: 40,
-            ':hover': {
-              backgroundColor: '#cb830c'
-            }
-          }}
-        >
-          <Text fontSize={13}>Xác nhận</Text>
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <Typography fontSize={18} fontWeight={700}>
+            {message}
+          </Typography>
+        </DialogTitle>
+        <DialogActions style={{ padding: 16, gap: 16 }}>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            fullWidth
+            color="secondary"
+          >
+            Hủy
+          </Button>
+          <Button
+            onClick={() => {
+              handleConfirm(selectedId);
+              handleClose();
+            }}
+            variant="contained"
+            fullWidth
+            color="primary"
+          >
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </ThemeProvider>
   );
 }
 

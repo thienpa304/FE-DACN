@@ -19,6 +19,7 @@ import FollowButton from '../../jobs/components/FollowJobButton';
 import { makeStyles } from '@mui/styles';
 import { Company } from 'src/modules/users/model';
 import FollowCompanyButton from './FollowJobButton';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
 const useStyles = makeStyles((theme) => ({
   coverImage: {
     width: '100%',
@@ -93,7 +94,8 @@ function CompanyCard({
               >
                 <Typography
                   component={LinkText}
-                  to={`/company/${employerId}`}
+                  to={`/company/${convertVietNamString(company?.companyName)}`}
+                  state={{ id: employerId }}
                   sx={{
                     ':hover': {
                       color: '#ce8b0e'
