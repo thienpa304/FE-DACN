@@ -4,11 +4,11 @@ import { ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { JobViewService } from '../jobService';
 import { useApp } from 'src/modules/app/hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function useQueryJobById(id) {
   if (!id) return {};
-  const { data, isLoading } = useQuery<
+  const { data, isLoading, isFetching } = useQuery<
     ResponseData<Job>,
     AxiosError<ResponseData<Job>>
   >(['job-getById', id], async () => JobViewService.getById(id), {
@@ -16,9 +16,22 @@ export default function useQueryJobById(id) {
     refetchOnWindowFocus: false
   });
 
+  const [job, setJob] = useState<Job>();
+
+  useEffect(() => {
+    if (data?.data) {
+      const saveJob = {
+        ...data?.data,
+        sex: data?.data?.sex === null ? 'Tất cả' : data?.data?.sex
+      };
+      setJob(saveJob);
+    }
+  }, [JSON.stringify(data)]);
+
   return {
-    data: data?.data,
-    isLoading
+    data: job,
+    isLoading,
+    isFetching
   };
 }
 
@@ -55,8 +68,11 @@ export function useQueryJobByIdList(idList: number[]) {
   );
   return {
     jobs:
-      dataList?.map((item) => ({ ...item?.data, id: item?.data?.postId })) ||
-      [],
+      dataList?.map((item) => ({
+        ...item?.data,
+        id: item?.data?.postId,
+        sex: item?.data?.sex === null ? 'Tất cả' : item?.data?.sex
+      })) || [],
     isLoading
   };
 }

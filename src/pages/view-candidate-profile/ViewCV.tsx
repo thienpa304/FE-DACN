@@ -41,7 +41,7 @@ const CVPage = (props) => {
                 <>
                   <CustomContainer sx={{ mt: 2 }}>
                     <Box sx={{ p: 3 }}>
-                      <Typography variant="h3" gutterBottom>
+                      <Typography fontSize={20} fontWeight={700} gutterBottom>
                         Thông tin cá nhân
                       </Typography>
                       <Divider sx={{ mb: 2 }} />
@@ -57,7 +57,7 @@ const CVPage = (props) => {
                             variant="rounded"
                             src={user?.personal_information?.avatar}
                             style={{
-                              width: 180,
+                              width: 'auto',
                               height: '100%',
                               objectFit: 'cover',
                               borderRadius: '5px'
@@ -74,7 +74,7 @@ const CVPage = (props) => {
                   <Box mt={4}>
                     <CustomContainer>
                       <Box p={3}>
-                        <Typography variant="h3" gutterBottom>
+                        <Typography fontSize={20} fontWeight={700} gutterBottom>
                           Thông tin chung
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
@@ -93,7 +93,7 @@ const CVPage = (props) => {
                   <Box mt={4}>
                     <CustomContainer>
                       <Box sx={{ p: 3, pb: 0 }}>
-                        <Typography variant="h3" gutterBottom>
+                        <Typography fontSize={20} fontWeight={700} gutterBottom>
                           Học vấn
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
@@ -149,7 +149,7 @@ const CVPage = (props) => {
                   <Box mt={4}>
                     <CustomContainer>
                       <Box sx={{ p: 3, pb: 0 }}>
-                        <Typography variant="h3" gutterBottom>
+                        <Typography fontSize={20} fontWeight={700} gutterBottom>
                           Kinh nghiệm làm việc
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
@@ -205,7 +205,7 @@ const CVPage = (props) => {
               {!user?.online_profile && (
                 <CustomContainer>
                   <Box p={3}>
-                    <Typography variant="h3" gutterBottom>
+                    <Typography fontSize={20} fontWeight={700} gutterBottom>
                       Hồ sơ đính kèm
                     </Typography>
                     <Divider sx={{ mb: 2 }} />

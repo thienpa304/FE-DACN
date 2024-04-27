@@ -279,8 +279,8 @@ export default function ModalApply(props: Props) {
         {hintsMessage && (
           <Box mb={1} p={2} gap={1} display="flex" flexDirection="column">
             <Divider sx={{ mb: 1, color: '#f29c00' }} />
-            <Typography fontWeight={700} fontSize={16}>
-              Gợi ý :
+            <Typography fontWeight={700} fontSize={18}>
+              Gợi ý:
             </Typography>
             <Typography fontStyle="italic" mx={2}>
               {hintsMessage}

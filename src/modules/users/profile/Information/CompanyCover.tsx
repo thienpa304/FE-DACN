@@ -206,7 +206,7 @@ function CompanyCover() {
           sx={{
             width: 120,
             height: 120,
-            bgcolor: '#a0b9cfc2',
+            bgcolor: '#fff',
             border: 2,
             borderColor: 'grey.300'
           }}

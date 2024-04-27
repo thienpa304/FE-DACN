@@ -39,6 +39,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
+    "mathjs": "^12.4.2",
     "nprogress": "0.2.0",
     "numeral": "2.0.6",
     "pdfjs-dist": "2.6.347",

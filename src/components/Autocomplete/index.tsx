@@ -9,7 +9,16 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function Autocomplete(props) {
-  const { options, label, onChange, defaultValue, name, disabled } = props;
+  const {
+    options,
+    label,
+    onChange,
+    defaultValue,
+    name,
+    disabled,
+    freeSolo = false,
+    onChangeInput
+  } = props;
   const [selectedOptions, setSelectedOptions] = useState([]);
   const handleSelectChange = (_, newValue) => {
     setSelectedOptions(newValue);
@@ -30,6 +39,7 @@ export default function Autocomplete(props) {
       disabled={disabled}
       value={selectedOptions}
       onChange={handleSelectChange}
+      freeSolo={freeSolo}
       getOptionLabel={(option) => option?.label}
       renderOption={(props, option, { selected }) => (
         <li {...props}>
@@ -43,7 +53,13 @@ export default function Autocomplete(props) {
         </li>
       )}
       renderInput={(params) => (
-        <TextField {...params} variant="outlined" label={label} name={name} />
+        <TextField
+          {...params}
+          variant="outlined"
+          label={label}
+          name={name}
+          onChange={onChangeInput}
+        />
       )}
     />
   );

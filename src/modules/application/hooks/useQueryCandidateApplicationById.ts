@@ -60,7 +60,6 @@ export function useQueryCandidateApplicationByIdList(idList: number[]) {
       retry: 1,
       refetchOnWindowFocus: false,
       keepPreviousData: true
-      // refetchOnMount :false
     }
   );
 

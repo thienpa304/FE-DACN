@@ -137,7 +137,7 @@ export function convertVietNamString(chuoi) {
   };
 
   var chuoiKhongDau = '';
-  for (var i = 0; i < chuoi.length; i++) {
+  for (var i = 0; i < chuoi?.length; i++) {
     if (bangChuCai[chuoi[i]]) {
       chuoiKhongDau += bangChuCai[chuoi[i]];
     } else if (chuoi[i] !== ' ') {

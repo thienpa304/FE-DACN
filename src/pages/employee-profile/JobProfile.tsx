@@ -122,7 +122,8 @@ export default function EmployeeProfile() {
       id: 'online',
       title: 'Hồ sơ trực tuyến',
       profile: onlineProfile,
-      isHidden: onlineProfile?.isHidden || false,
+      isHidden:
+        onlineProfile?.isHidden !== undefined ? onlineProfile?.isHidden : true,
       linkTo: '/employee/online-profile',
       onUpdateData: onUpdateOnline
     },
@@ -130,7 +131,10 @@ export default function EmployeeProfile() {
       id: 'attach',
       title: 'Hồ sơ đính kèm',
       profile: attachedDocument,
-      isHidden: attachedDocument?.isHidden || false,
+      isHidden:
+        attachedDocument?.isHidden !== undefined
+          ? attachedDocument?.isHidden
+          : true,
       linkTo: '/employee/attachment-profile',
       onUpdateData: onUpdateAttach
     }
@@ -143,16 +147,12 @@ export default function EmployeeProfile() {
       </Typography>
       <CustomBox height={120}>
         <TipsAndUpdatesIcon fontSize="large" color="secondary" />
-        <Typography fontSize={12} lineHeight={2} color="secondary">
+        <Typography fontSize={13} lineHeight={2} color="secondary">
           <ul>
             <li>Bạn có thể tạo tối đa 02 hồ sơ.</li>
             <li>
               Bật "Cho phép tìm kiếm" sẽ tăng tối đa cơ hội được Nhà tuyển dụng
               liên hệ với bạn.
-            </li>
-            <li>
-              Các hồ sơ ở trạng thái "Đã duyệt" đều có thể sử dụng để nộp Hồ sơ
-              một cách nhanh chóng.
             </li>
           </ul>
         </Typography>

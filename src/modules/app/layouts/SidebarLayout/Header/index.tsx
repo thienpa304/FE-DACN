@@ -322,7 +322,6 @@ function Header({ showSideBar }) {
             )}
           </Box>
         )}
-        {/* <HeaderMenu /> */}
       </Stack>
 
       <Box display="flex" alignItems="center">

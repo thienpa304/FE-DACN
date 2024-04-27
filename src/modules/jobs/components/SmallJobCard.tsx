@@ -48,15 +48,14 @@ function SmallJobCard({ job }) {
             <Box
               component={LinkText}
               to={`/job/${convertVietNamString(job?.jobTitle)}`}
+              state={{
+                postId: job?.postId
+              }}
               flex={1}
               sx={{
                 ':hover': {
                   color: '#ce8b0e'
                 }
-              }}
-              state={{
-                jobTitle: job?.jobTitle,
-                postId: job?.postId
               }}
             >
               {job?.jobTitle}

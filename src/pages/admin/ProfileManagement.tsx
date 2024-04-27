@@ -120,7 +120,7 @@ const ProfileManagement = () => {
     const handleDeleteUser = (selectedId) => {
       alertDialog({
         selectedId,
-        handleConfirmDelete
+        handleConfirm: handleConfirmDelete
       });
     };
 

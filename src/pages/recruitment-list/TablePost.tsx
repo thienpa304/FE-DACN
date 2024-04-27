@@ -14,11 +14,13 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import useDeleteJobById from 'src/modules/jobs/hooks/useDeleteJobById';
 import alertDialog from 'src/utils/alertDialog';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
 
 export const renderJobTitle = (data) => {
+  const jobTitle = convertVietNamString(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
-    navigate(`/job/${data?.row?.postId}`);
+    navigate(`/job/${jobTitle}`, { state: { postId: data?.row?.postId } });
   };
   return (
     <>
@@ -31,7 +33,12 @@ export const renderJobTitle = (data) => {
           </Tooltip>
         </Grid>
         <Grid item xs={11}>
-          <LinkText to={`/employer/recruitment/list/${data?.row?.postId}`}>
+          <LinkText
+            to={`/employer/recruitment/list/${convertVietNamString(
+              data?.row?.jobTitle
+            )}`}
+            state={{ postId: data?.row?.postId }}
+          >
             <TypographyEllipsis> {data.value}</TypographyEllipsis>
           </LinkText>
         </Grid>
@@ -62,7 +69,7 @@ const renderAtion = (data) => {
   const handleDelete = (data) => {
     alertDialog({
       selectedId: data.id,
-      handleConfirmDelete: handleConfirmDelete
+      handleConfirm: handleConfirmDelete
     });
   };
 

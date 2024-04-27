@@ -17,7 +17,8 @@ const useQueryOnlineProfile = () => {
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>
   >(['get-OnlineProfile'], OnlineProfileService.get, {
-    retry: 1,
+    retry: (failureCount, error) =>
+      error.response.status === 400 ? false : failureCount < 2,
     refetchOnWindowFocus: false,
     enabled: isLoggedIn && isEmployee
   });
@@ -34,7 +35,7 @@ const useQueryOnlineProfile = () => {
   useEffect(() => {
     // Handle the data or error here
     if (data) {
-      setProfile(data.data);
+      setProfile(data?.data);
     }
   }, [isSuccess]);
 

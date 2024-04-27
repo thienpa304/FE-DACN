@@ -38,7 +38,7 @@ const renderActionsCell = (params) => {
     console.log(userId);
     alertDialog({
       selectedId: userId,
-      handleConfirmDelete: handleConfirmDelete
+      handleConfirm: handleConfirmDelete
     });
   };
 

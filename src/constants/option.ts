@@ -13,6 +13,7 @@ type ApprovalStatusOption = {
   label: ApprovalStatus;
   value: keyof typeof ApprovalStatus;
   color: Color;
+  optionColor: string;
 };
 
 export const GENDER = [
@@ -41,22 +42,26 @@ export const APPROVAL_STATUS: ApprovalStatusOption[] = [
   {
     value: 'approved',
     label: ApprovalStatus.approved,
-    color: 'success'
+    color: 'success',
+    optionColor: '#57CA22'
   },
   {
     value: 'pending',
     label: ApprovalStatus.pending,
-    color: 'warning'
+    color: 'warning',
+    optionColor: '#FFA319'
   },
   {
     value: 'rejected',
     label: ApprovalStatus.rejected,
-    color: 'error'
+    color: 'error',
+    optionColor: '#FF1943'
   },
   {
     value: 'expired',
     label: ApprovalStatus.expired,
-    color: 'secondary'
+    color: 'secondary',
+    optionColor: '#6E759F'
   }
 ];
 

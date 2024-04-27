@@ -18,7 +18,6 @@ const useLogin = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const locationState = state as any;
-  console.log(useLocation());
 
   if (userId) navigate(locationState?.from || '/');
 
@@ -34,7 +33,10 @@ const useLogin = () => {
         setUserApp(userData);
         setAccessTokenApp(access_token);
         localStorage.setAccessToken(access_token);
-        location.replace(locationState?.from || '/');
+        navigate(locationState?.from || '/', {
+          state: state,
+          replace: true
+        });
       } else toast.error({ massage: res.message });
     },
     onError: (error) => {

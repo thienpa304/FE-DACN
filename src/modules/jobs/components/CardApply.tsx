@@ -23,6 +23,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import FollowJobButton from './FollowJobButton';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import CustomContainer from 'src/components/CustomContainer';
+import { convertVietNamString } from 'src/utils/convertVietNamString';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -60,10 +61,6 @@ const CardApply: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    // <Card sx={{ borderRadius: 0 }}>
-    //   <CardContent>
-    //   </CardContent>
-    // </Card>
     <CustomContainer sx={{ px: 5, pb: 5, mb: 2 }}>
       <Grid container>
         <Grid item xs={12} md={2} display="flex" alignItems="center">
@@ -74,7 +71,10 @@ const CardApply: React.FC<Props> = ({ data }) => {
         <Grid item xs={12} md={10}>
           <Box>
             <Link
-              to={`/company/${data?.employer?.userId}`}
+              to={`/company/${convertVietNamString(
+                data?.employer?.companyName
+              )}`}
+              state={{ id: data?.employer?.userId }}
               style={{ textDecoration: 'none' }}
             >
               <SubTitle>{data?.employer?.companyName}</SubTitle>
@@ -129,7 +129,10 @@ const CardApply: React.FC<Props> = ({ data }) => {
                       ? handleOpenFormApply
                       : () => {
                           navigate('/login', {
-                            state: { from: window.location.pathname }
+                            state: {
+                              from: window.location.pathname,
+                              postId: data.postId
+                            }
                           });
                         }
                   }

@@ -85,7 +85,6 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => (
           sx={{
             width: 100,
             height: 100,
-            border: 1,
             borderColor: '#98E4FF',
             borderRadius: '5px',
             objectFit: 'cover'

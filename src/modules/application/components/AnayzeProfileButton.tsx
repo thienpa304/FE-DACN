@@ -35,7 +35,7 @@ export default function AnayzeProfileButton(props) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzedProfile, setAnalyzedProfile] =
     useState<ProfileApplicationType>(null);
-  const [passRoundOneProfiles, setPassRoundOneProfiles] = useState<
+  const [passRoundProfiles, setPassOneProfiles] = useState<
     ProfileApplicationType[]
   >([]);
   const [roundOneFinished, setRoundOneFinished] = useState(false);
@@ -56,7 +56,7 @@ export default function AnayzeProfileButton(props) {
     setRoundThreeFinished(false);
     setShowResult(true);
     setIsAnalyzing(false);
-    setPassRoundOneProfiles([]);
+    setPassOneProfiles([]);
     setGoToAnalyzeResult({ signal: false, resultData: null });
   };
 
@@ -88,7 +88,7 @@ export default function AnayzeProfileButton(props) {
         console.log('matchingScore', matchingScore);
         setAnalyzeResult(() => matchingScore);
         if (matchingScore >= LOW_SCORE)
-          setPassRoundOneProfiles(() => [analyzedProfile]);
+          setPassOneProfiles(() => [analyzedProfile]);
         else {
           setHints(
             'Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm'
@@ -196,15 +196,15 @@ export default function AnayzeProfileButton(props) {
   useEffect(() => {
     if (!start) return;
     if (roundOneFinished && !roundTwoFinished) {
-      console.log('passRoundOneProfiles', passRoundOneProfiles);
+      console.log('passRoundProfiles', passRoundProfiles);
 
       // go to round 2
-      if (passRoundOneProfiles.length > 0)
+      if (passRoundProfiles.length > 0)
         review({
           round: 2,
           handleAnalyzeResult: handleAnalyzeResult,
           setIsAnalyzing: handleIsAnalyzing,
-          passRoundOneProfiles: passRoundOneProfiles
+          passRoundProfiles: passRoundProfiles
         });
       else {
         finishedAll();
@@ -218,7 +218,7 @@ export default function AnayzeProfileButton(props) {
         round: 3,
         handleAnalyzeResult: handleAnalyzeResult,
         setIsAnalyzing: handleIsAnalyzing,
-        passRoundOneProfiles: passRoundOneProfiles
+        passRoundProfiles: passRoundProfiles
       });
     } else if (roundThreeFinished) {
       console.log('Round 3 finished');
