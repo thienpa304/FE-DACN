@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  Container
-} from '@mui/material';
+import { Avatar, Box, Grid, Button } from '@mui/material';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PaidIcon from '@mui/icons-material/Paid';
 import SendIcon from '@mui/icons-material/Send';
@@ -23,12 +15,13 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import FollowJobButton from './FollowJobButton';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import CustomContainer from 'src/components/CustomContainer';
-import { convertVietNamString } from 'src/utils/convertVietNamString';
+import { rewriteUrl } from 'src/utils/rewriteUrl';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
   height: 150,
-  objectFit: 'contain'
+  objectFit: 'contain',
+  borderRadius: '5px'
 }));
 const SubTitle = styled('h3')(({ theme }) => ({
   fontWeight: 400,
@@ -71,10 +64,9 @@ const CardApply: React.FC<Props> = ({ data }) => {
         <Grid item xs={12} md={10}>
           <Box>
             <Link
-              to={`/company/${convertVietNamString(
+              to={`/company/${rewriteUrl(
                 data?.employer?.companyName
-              )}`}
-              state={{ id: data?.employer?.userId }}
+              )}?id=${btoa(data?.employer?.userId.toString())}`}
               style={{ textDecoration: 'none' }}
             >
               <SubTitle>{data?.employer?.companyName}</SubTitle>

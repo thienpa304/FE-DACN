@@ -8,14 +8,13 @@ import {
   Typography,
   Grid
 } from '@mui/material';
-
 import BusinessIcon from '@mui/icons-material/Business';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import FollowJobButton from './FollowJobButton';
-import { convertVietNamString } from 'src/utils/convertVietNamString';
+import { rewriteUrl } from 'src/utils/rewriteUrl';
 
 function SmallJobCard({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
@@ -47,7 +46,7 @@ function SmallJobCard({ job }) {
           <Box display={'flex'}>
             <Box
               component={LinkText}
-              to={`/job/${convertVietNamString(job?.jobTitle)}`}
+              to={`/job/${rewriteUrl(job?.jobTitle)}?id=${btoa(job?.postId)}`}
               state={{
                 postId: job?.postId
               }}

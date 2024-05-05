@@ -21,11 +21,12 @@ import { Job } from 'src/modules/jobs/model';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { checkContent } from 'src/modules/ai/roles';
 import { signal } from '@preact/signals-react';
-import { convertVietNamString } from 'src/utils/convertVietNamString';
+import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
+import CheckIcon from '@mui/icons-material/Check';
 
 const renderJobTitle = (data) => {
-  const jobTitle = convertVietNamString(data?.row?.jobTitle);
+  const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
     navigate(`/job/${jobTitle}`, {
@@ -70,7 +71,7 @@ const renderCompany = (data) => {
         }}
       >
         <LinkText
-          to={`/company/${convertVietNamString(data.value?.companyName)}`}
+          to={`/company/${rewriteUrl(data.value?.companyName)}`}
           state={{ id: data?.value?.userId }}
         >
           {data.value?.companyName}
@@ -85,12 +86,9 @@ const renderStatus = (data) => {
     (item) => item.label === data.value
   ).value;
   const { mutate } = useMutateJobStatus();
-  const [value, setValue] = useState(initValue);
 
   const handleConfirm = (id, status) => {
-    mutate([id, { status: status, check: false }]).then(() => {
-      setValue(status);
-    });
+    mutate([id, { status: status, check: false }]);
   };
 
   const handleChangeValue = (e) => {
@@ -103,9 +101,7 @@ const renderStatus = (data) => {
           'Tin tuyển dụng đang ở trạng thái vi phạm, bạn có chắc muốn duyệt tin tuyển dụng này không?'
       });
     } else {
-      mutate([data.id, { status: value }]).then(() => {
-        setValue(e.target.value);
-      });
+      mutate([data.id, { status: value }]);
     }
   };
 
@@ -118,12 +114,17 @@ const renderStatus = (data) => {
 
   return (
     <SelectInput
-      value={value}
+      value={initValue}
       options={APPROVAL_STATUS}
       onChange={handleChangeValue}
       size="small"
       sx={{
-        color: displayColor()
+        color: displayColor(),
+        '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
+          {
+            fontSize: 13
+            // mx: -1
+          }
       }}
     />
   );
@@ -184,10 +185,11 @@ const renderCheck = (data) => {
     <Typography
       bgcolor={initCheckValue?.color}
       sx={{
-        width: '95%',
+        width: '90%',
         borderRadius: 1,
-        p: 1,
-        textAlign: 'center'
+        py: 1,
+        textAlign: 'center',
+        fontSize: 13
       }}
     >
       {initCheckValue?.label}
@@ -219,13 +221,14 @@ const columns: GridColDef[] = [
   {
     field: 'jobTitle',
     headerName: 'Tên tin tuyển dụng',
-    minWidth: 250,
+    minWidth: 200,
     renderCell: renderJobTitle
   },
   {
     field: 'name',
     headerName: 'Người đăng',
     minWidth: 120,
+    resizable: true,
     renderCell: (data) => (
       <Box
         sx={{
@@ -267,7 +270,7 @@ const columns: GridColDef[] = [
   {
     field: 'submissionCount',
     headerName: 'Lượt nộp',
-    minWidth: 70,
+    minWidth: 90,
     align: 'center',
     headerAlign: 'center',
     sortable: true
@@ -275,15 +278,16 @@ const columns: GridColDef[] = [
   {
     field: 'view',
     headerName: 'Lượt xem',
-    minWidth: 70,
+    minWidth: 90,
     align: 'center',
     headerAlign: 'center',
-    sortable: true
+    sortable: true,
+    resizable: true
   },
   {
     field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 140,
+    minWidth: 130,
     headerAlign: 'center',
     renderCell: renderStatus,
     sortable: true
@@ -291,7 +295,7 @@ const columns: GridColDef[] = [
   {
     field: 'check',
     headerName: 'Kiểm duyệt',
-    minWidth: 140,
+    minWidth: 130,
     headerAlign: 'center',
     align: 'center',
     renderCell: renderCheck,
@@ -312,7 +316,7 @@ export default function Table({ statusFilter, selectedProfession }) {
   const jobsPerPage = 9;
   const totalPages = Math.ceil(totalResults / jobsPerPage) || 1;
 
-  const { jobs, isLoading } = useQueryJobByAdmin({
+  const { jobs, isLoading, refetch } = useQueryJobByAdmin({
     page: currentPage,
     num: jobsPerPage,
     status: ApprovalStatus[statusFilter],
@@ -365,12 +369,6 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   useEffect(() => {
     if (jobs) {
-      const newList = jobs.map((job) => {
-        return {
-          ...job,
-          check: null
-        };
-      });
       setShowList(() => jobs);
     }
   }, [JSON.stringify(jobs)]);
@@ -379,10 +377,100 @@ export default function Table({ statusFilter, selectedProfession }) {
     setCurrentPage(1);
   }, [statusFilter]);
 
-  if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
+  const [quickApproveValue, setQuickApproveValue] = useState(null);
+
+  const handleChangeValue = (e) => {
+    setQuickApproveValue(e.target.value);
+  };
+
+  const handleQuickApprove = () => {
+    alertDialog({
+      selectedId: '_',
+      handleConfirm,
+      message: `Chuyển tin tuyển dụng đã chọn sang trạng thái ${ApprovalStatus[quickApproveValue]}?`
+    });
+  };
+
+  const handleConfirm = () => {
+    Promise.all(
+      selectedRows.map((id) => mutate([id, { status: quickApproveValue }]))
+    );
+  };
+
+  // if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
   return (
     <Box>
-      <Box sx={{ justifyContent: 'right', display: 'flex' }}>
+      <Grid
+        container
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'right',
+          gap: 2
+        }}
+      >
+        <Grid item xs={1}>
+          <Typography fontWeight={700}>
+            Đã chọn: {selectedRows.length}
+          </Typography>
+        </Grid>
+        <Grid item xs={1.5}>
+          <SelectInput
+            options={APPROVAL_STATUS}
+            onChange={handleChangeValue}
+            value={selectedRows.length > 0 ? quickApproveValue : ''}
+            sx={{
+              color: APPROVAL_STATUS.find(
+                (item) => item.value === quickApproveValue
+              )?.optionColor
+            }}
+            disabled={!selectedRows.length}
+            label="Duyệt nhanh"
+          />
+        </Grid>
+        <Grid item xs={0.7}>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ py: 1, px: 0 }}
+            color="info"
+            onClick={handleQuickApprove}
+            disabled={!selectedRows.length || !quickApproveValue}
+          >
+            <CheckIcon sx={{ fontSize: 15 }} />
+          </Button>
+        </Grid>
+        <Grid
+          item
+          container
+          xs={1.7}
+          sx={{
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <Grid item xs>
+            <Button
+              onClick={() => setStart(selectedRows.length > 0)}
+              variant="contained"
+              size="small"
+              disabled={start || !selectedRows.length}
+              fullWidth
+              sx={{ py: 1, px: 0, bgcolor: '#FC4100' }}
+            >
+              {!selectedRows.length
+                ? 'Chưa chọn tin đăng'
+                : !start
+                ? 'Kiểm duyệt'
+                : 'Đang kiểm duyệt...'}
+            </Button>
+          </Grid>
+          <Grid item xs={2}>
+            {start && <CircularProgress size={18} color="secondary" />}
+          </Grid>
+        </Grid>
+      </Grid>
+      {/* <Box sx={{ justifyContent: 'right', display: 'flex' }}>
         {start && <CircularProgress />}
         <Button
           onClick={() => {
@@ -391,23 +479,27 @@ export default function Table({ statusFilter, selectedProfession }) {
           variant="contained"
           size="small"
           color="error"
-          disabled={start}
+          disabled={start || !selectedRows.length}
           sx={{ mr: 1 }}
         >
-          {!start ? 'Kiểm duyệt' : 'Đang kiểm duyệt...'}
+          {!selectedRows.length
+            ? 'Chưa chọn tin đăng'
+            : !start
+            ? 'Kiểm duyệt'
+            : 'Đang kiểm duyệt...'}
         </Button>
-      </Box>
+      </Box> */}
       <TableData
         sx={{ minHeight: '72vh', width: '100%' }}
         rows={showList}
         columns={columns}
         hideFooter
         checkboxSelection
-        disableRowSelectionOnClick
-        rowSelection={true}
+        rowSelection
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
         }}
+        loading={isLoading}
       />
       <Pagination
         totalPages={totalPages}

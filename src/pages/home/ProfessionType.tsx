@@ -16,7 +16,7 @@ import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
 import professions from 'src/constants/professions';
 import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 import Link from 'src/components/Link';
-import { convertVietNamString } from 'src/utils/convertVietNamString';
+import { rewriteUrl } from 'src/utils/rewriteUrl';
 
 function ProfessionType() {
   const [open, setOpen] = React.useState(false);
@@ -92,7 +92,7 @@ function ProfessionType() {
         {professionToShow?.map((profession, index) => (
           <Link
             key={index}
-            to={`/profession/${convertVietNamString(profession?.name)}`}
+            to={`/profession/${rewriteUrl(profession?.name)}`}
             state={{ profession: profession.name, pageTitle: profession.name }}
             sx={{
               width: 170,

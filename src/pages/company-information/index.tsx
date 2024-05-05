@@ -7,6 +7,7 @@ import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyInfoById';
 import { useLocation, useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   coverImage: {
@@ -51,9 +52,11 @@ const renderLogo = (avatar: string) => (
 );
 
 export default function index() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const id = atob(searchParams.get('id'));
   const { state } = useLocation();
   const locationState = state as any;
-  const id = locationState?.id;
+  // const id = locationState?.id;
   const { company, isLoading } = useQueryCompanyInfoByUser({ employerId: id });
   return (
     <Container maxWidth="md" sx={{ py: 2 }}>

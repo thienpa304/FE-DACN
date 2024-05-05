@@ -21,6 +21,9 @@ type TagInputProps = {
   placeholder?: string;
 };
 
+const MAX_LENGTH = 25;
+const MAX_TAGS = 5;
+
 export default function TagInput(props: TagInputProps) {
   const { suggestions, onChange, forwardedRef, value, placeholder } = props;
   const [tags, setTags] = React.useState(value || []);
@@ -33,8 +36,6 @@ export default function TagInput(props: TagInputProps) {
 
   const handleAddition = (tag) => {
     const newTagsList = [...tags, tag];
-    console.log(newTagsList);
-
     onChange(newTagsList);
     setTags(newTagsList);
   };
@@ -62,10 +63,10 @@ export default function TagInput(props: TagInputProps) {
         handleDelete={handleDelete}
         handleAddition={handleAddition}
         handleTagClick={handleTagClick}
-        maxTags={10}
-        maxLength={25}
+        maxTags={MAX_TAGS}
+        maxLength={MAX_LENGTH}
         allowDragDrop={false}
-        placeholder={placeholder || 'Liệt kê tối đa 10 từ khóa'}
+        placeholder={placeholder || `Liệt kê tối đa ${MAX_TAGS} từ khóa`}
       />
     </Box>
   );

@@ -27,7 +27,7 @@ export default function EmployeeFollow() {
       {employeeFollow?.length ? (
         <Grid container mb={3} spacing={2}>
           {employeeFollow?.map((item, index) => (
-            <Grid key={index} item xs={12} sm={3}>
+            <Grid key={index} item xs={12} sm={6} md={3}>
               <FollowProfileCard profile={item} />
             </Grid>
           ))}

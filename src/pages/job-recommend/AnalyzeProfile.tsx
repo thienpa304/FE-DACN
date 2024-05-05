@@ -25,7 +25,7 @@ import { getFileByUrl } from 'src/common/firebaseService';
 import FileUploader from 'src/components/FileUploader';
 import FileFormatInfo from 'src/components/FileFormatInfo';
 import ProfileInfo from './ProfileInfo';
-import { loadKeywords, preProcessData, tfidfReview } from 'src/utils/keywords';
+import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';

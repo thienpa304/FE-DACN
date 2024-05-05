@@ -28,6 +28,7 @@ import useDocumentHook from 'src/modules/jobProfile/attachedDocument/hooks/useDo
 import { review } from 'src/utils/reviewProfile';
 import AnayzeProfileButton from './AnayzeProfileButton';
 import { Job } from 'src/modules/jobs/model';
+import { removeFileByUrl } from 'src/common/firebaseService';
 
 const Title = styled('div')(() => ({
   fontWeight: 600,
@@ -79,6 +80,10 @@ export default function ModalApply(props: Props) {
   });
 
   const handleClose = () => {
+    if (url) removeFileByUrl(url);
+    setIsChecked(null);
+    setHintsMessage(null);
+    setShowResult(null);
     onClose();
   };
   const handleApply = (data) => {
@@ -90,7 +95,10 @@ export default function ModalApply(props: Props) {
     let submitProfile = '';
 
     if (isChecked === ApplicationType.cv_enclosed) submitProfile = data.CV;
-    else submitProfile = '#' + v4();
+    else {
+      if (url) removeFileByUrl(url);
+      submitProfile = '#' + v4();
+    }
 
     onSaveData({
       ...data,
@@ -98,6 +106,7 @@ export default function ModalApply(props: Props) {
       applicationType: isChecked,
       CV: submitProfile
     });
+    setShowResult(null);
     onClose();
   };
 

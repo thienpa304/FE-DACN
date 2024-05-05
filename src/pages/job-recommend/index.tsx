@@ -22,10 +22,10 @@ import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/ho
 import AnalyzeProfile from './AnalyzeProfile';
 
 const JobRecommend = () => {
-  const { onlineProfile } = useQueryOnlineProfile();
-  const { setProfile: setOnline } = useOnlineProfile();
-  const { attachedDocument } = useQueryAttachedDocument();
-  const { setProfile: setDocumentProfile } = useDocumentHook();
+  // const { onlineProfile } = useQueryOnlineProfile();
+  // const { attachedDocument } = useQueryAttachedDocument();
+  // const { setProfile: setOnline } = useOnlineProfile();
+  // const { setProfile: setDocumentProfile } = useDocumentHook();
 
   // useEffect(() => {
   //   setOnline(onlineProfile);

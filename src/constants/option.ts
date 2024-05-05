@@ -8,6 +8,8 @@ import {
 import professions from './professions';
 import provinces from './provinces';
 import { Color } from 'src/types/mui-type';
+import skills from './skills';
+import careerFields from './careerFields';
 
 type ApprovalStatusOption = {
   label: ApprovalStatus;
@@ -106,3 +108,10 @@ export const WORK_AT = provinces.map((item) => ({
   value: item.code,
   label: item.name
 }));
+
+export const SKILLS = skills.map((item) => ({
+  value: item.id,
+  label: item.text
+}));
+
+export const CAREER_FIELDS = careerFields.map((item) => item.value);

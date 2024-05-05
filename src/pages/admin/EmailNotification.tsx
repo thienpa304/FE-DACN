@@ -55,7 +55,7 @@ const EmailNotification = () => {
     if (!removeHTMLTag(data?.html)) setIsEmpty(true);
     const formatData = {
       ...data,
-      emails: data.emails.map((item) => item?.value)
+      emails: data.emails.map((item) => item?.value || item)
     };
     console.log(formatData);
     onSendEmail(formatData);
@@ -110,6 +110,7 @@ const EmailNotification = () => {
                       setRecipient(e.target.value);
                     }}
                     freeSolo={true}
+                    autoSelect
                   />
                 }
                 control={control}

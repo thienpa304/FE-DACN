@@ -14,10 +14,10 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import useDeleteJobById from 'src/modules/jobs/hooks/useDeleteJobById';
 import alertDialog from 'src/utils/alertDialog';
-import { convertVietNamString } from 'src/utils/convertVietNamString';
+import { rewriteUrl } from 'src/utils/rewriteUrl';
 
 export const renderJobTitle = (data) => {
-  const jobTitle = convertVietNamString(data?.row?.jobTitle);
+  const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
     navigate(`/job/${jobTitle}`, { state: { postId: data?.row?.postId } });
@@ -34,9 +34,7 @@ export const renderJobTitle = (data) => {
         </Grid>
         <Grid item xs={11}>
           <LinkText
-            to={`/employer/recruitment/list/${convertVietNamString(
-              data?.row?.jobTitle
-            )}`}
+            to={`/employer/recruitment/list/${rewriteUrl(data?.row?.jobTitle)}`}
             state={{ postId: data?.row?.postId }}
           >
             <TypographyEllipsis> {data.value}</TypographyEllipsis>
@@ -157,7 +155,7 @@ export default function TablePost({ data, pageSize }) {
         }
       }}
       hideFooter
-      sx={{ minHeight: '68vh', width: '100%' }}
+      sx={{ height: '74vh', width: '100%' }}
     />
   );
 }

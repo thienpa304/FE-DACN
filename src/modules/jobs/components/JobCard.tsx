@@ -20,7 +20,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FollowJobButton from './FollowJobButton';
 import LinkText from 'src/components/LinkText';
 import { Job } from '../model';
-import { convertVietNamString } from 'src/utils/convertVietNamString';
+import { rewriteUrl } from 'src/utils/rewriteUrl';
 
 function JobCard({ job }: { job: Job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
@@ -51,10 +51,9 @@ function JobCard({ job }: { job: Job }) {
           <Box display={'flex'}>
             <Box
               component={LinkText}
-              to={`/job/${convertVietNamString(job?.jobTitle)}`}
-              state={{
-                postId: job?.postId
-              }}
+              to={`/job/${rewriteUrl(job?.jobTitle)}?id=${btoa(
+                job?.postId.toString()
+              )}`}
               flex={1}
               sx={{
                 ':hover': {

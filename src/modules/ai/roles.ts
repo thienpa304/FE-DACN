@@ -15,23 +15,29 @@ Công thức cụ thể cho điểm TextRank của mỗi từ có thể được
 Công thức tổng quát cho điểm TextRank của một từ i là:
 S(i) = (1 - d) + d * sum(j in In(i)) (1/|Out(j)|) * S(j)`;
 
-export const cvAnalysist = `Bây giờ, bạn là một chuyên gia phân tích từ khóa hồ sơ xin việc. Đầu tiên hãy học và ghi nhớ giải thuật TextRank như sau:
-${TextRank}
-Hãy đọc hồ sơ xin việc và tìm ra những từ khóa quan trọng trong nội dung. Thông qua phân tích những từ khóa có nghĩa, tần suất xuất hiện cao trong hồ sơ xin việc để xác định những yếu tố mà người xin việc này có thể quan tâm.
-Hãy tìm ra từ 20 từ khóa liên quan tới công việc trong hồ sơ xin việc dưới đây. Sắp xếp kết quả các từ khóa theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được từ khóa nào thì trả về danh sách rỗng []).
-Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm", "lương tháng 13", "nghỉ lễ"]
-***Lưu ý quan trọng: Mỗi từ khóa tìm được không được quá 20 kí tự. Câu trả lời của bạn (ChatGPT) chứa 20 từ khóa, từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
-Nội dung tin hồ sơ xin việc cung cấp như sau:\n
+export const cvAnalysist = `Bây giờ, bạn là một chuyên gia lâu năm trong lĩnh vực Nhân sự. Bạn có khả năng phân tích từ khóa quan trọng trong hồ sơ xin việc. Tôi cần xác định những yếu tố quan trọng trong hồ sơ xin việc sau. Hãy liệt kê 10 từ khóa quan trọng liên quan đến công việc của trong nội dung hồ sơ tôi cung cấp. Các từ khóa này bao gồm cả kỹ năng cứng và mềm, cũng như kinh nghiệm và trình độ chuyên môn. Sắp xếp chúng theo mức độ quan trọng dựa trên tần số xuất hiện trong phần mô tả công việc và yêu cầu công việc. Hãy chú ý những kỹ năng chuyên môn thường theo sau các cụm từ như 'có hiểu biết', 'thành thạo', 'có kinh nghiệm', 'có kiến thức về' để xác định từ khóa kĩ năng cứng (kĩ năng chuyên môn). Đồng thời, cũng phải chú ý tới tên các chứng chỉ, chuyên ngành để xác định từ khóa về trình độ chuyên môn. Ngoài ra, tìm các mô tả về tính cách, cách hành xử, thái độ và sức khỏe của con người để xác định từ khóa về kỹ năng mềm. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được từ khóa nào thì trả về danh sách rỗng []).
+***Lưu ý quan trọng: Mỗi từ khóa tìm được không được quá 20 kí tự. Câu trả lời của bạn (ChatGPT) chứa 10 từ khóa và câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ về câu trả lời minh họa là: ["PHP", "Backend", "Tiếng hoa", "Đàm phán", "Làm việc nhóm", "Giao tiếp", "Thuyết trình"]
+Nội dung hồ sơ xin việc cung cấp như sau:
 `;
+// export const cvAnalysist = `Bây giờ, bạn là một chuyên gia phân tích từ khóa hồ sơ xin việc. Đầu tiên hãy học và ghi nhớ giải thuật TextRank như sau:
+// ${TextRank}
+// Hãy đọc hồ sơ xin việc và tìm ra những từ khóa quan trọng trong nội dung. Thông qua phân tích những từ khóa có nghĩa, tần suất xuất hiện cao trong hồ sơ xin việc để xác định những yếu tố mà người xin việc này có thể quan tâm.
+// Hãy tìm ra từ 10 từ khóa liên quan tới công việc trong hồ sơ xin việc dưới đây. Từ khóa phải ngắn gọn và sắp xếp kết quả các từ khóa theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được từ khóa nào thì trả về danh sách rỗng []).
+// Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm"]
+// ***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) chứa 10 từ khóa, từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "giao tiếp", "thuyết trình"]
+// Nội dung tin hồ sơ xin việc cung cấp như sau:\n
+// `;
 
-export const jobAnalysist = `Bây giờ, bạn là một chuyên gia phân tích từ khóa tin tuyển dụng. Đầu tiên hãy học và ghi nhớ giải thuật TextRank như sau:
-${TextRank}
-Hãy đọc tin tuyển dụng và sử dụng giải thuật TextRank tìm ra những từ khóa quan trọng trong nội dung. Thông qua phân tích những từ khóa quan trọng, có nghĩa, có tần suất xuất hiện cao nhất trong tin tuyển dụng để xác định những yếu tố mà nhà tuyển dụng quan tâm.
-Hãy tìm ra từ 20 từ khóa liên quan tới công việc trong tin tuyển dụng dưới đây. Sắp xếp kết quả các từ khóa theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Kết quả trả về dưới dạng mảng các chuỗi từ khóa (nếu không tìm được từ khóa nào thì trả về danh sách rỗng []).
-Ví dụ: ["Python", "react", "tiếng Anh", "Giao tiếp", "làm việc nhóm", "lương tháng 13", "nghỉ lễ"]
-***Lưu ý quan trọng: Mỗi từ khóa tìm được không được quá 20 kí tự. Câu trả lời của bạn (ChatGPT) chứa 20 từ khóa, từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), và câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "backend", "tiếng hoa", "đàm phán", "làm việc nhóm", "thưởng tết", "nghỉ lễ"]
-Nội dung tin tuyển dụng cung cấp như sau:\n
+export const jobAnalysist = `Bây giờ, bạn là một chuyên gia lâu năm trong lĩnh vực Nhân sự. Bạn có khả năng phân tích từ khóa quan trọng trong tin tuyển dụng. Tôi cần xác định những yếu tố mà nhà tuyển dụng quan tâm trong tin tuyển dụng sau. Hãy liệt kê 10 từ khóa quan trọng liên quan đến công việc của trong nội dung tin tuyển dụng tôi cung cấp. Các từ khóa này bao gồm cả kỹ năng cứng và mềm, cũng như kinh nghiệm chuyên môn. Sắp xếp chúng theo mức độ quan trọng dựa trên tần số xuất hiện trong phần mô tả công việc và yêu cầu công việc. Hãy chú ý những kỹ năng chuyên môn thường theo sau các cụm từ như 'có hiểu biết', 'thành thạo', 'có kinh nghiệm', 'có kiến thức về' để tìm ra từ khóa kĩ năng cứng (kĩ năng chuyên môn). Ngoài ra, tìm các mô tả về tính cách, cách hành xử, thái độ và sức khỏe của con người để tìm ra từ khóa về kỹ năng mềm. Kết quả trả về dưới dạng mảng các chuỗi từ khóa, viết hoa chữ cái đầu tiên của mỗi cụm từ khóa (nếu không tìm được từ khóa nào thì trả về danh sách rỗng []).
+***Lưu ý quan trọng: Mỗi từ khóa tìm được không được quá 20 kí tự. Câu trả lời của bạn (ChatGPT) chứa 10 từ khóa và câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ về câu trả lời minh họa là: ["PHP", "Backend", "Tiếng hoa", "Đàm phán", "Làm việc nhóm", "Giao tiếp", "Thuyết trình"]
+Nội dung tin tuyển dụng cung cấp như sau:
 `;
+// export const jobAnalysist = `Bây giờ, bạn là một chuyên gia lâu năm trong lĩnh vực Nhân sự. Bạn có khả năng phân tích từ khóa quan trọng trong tin tuyển dụng. Đầu tiên hãy học và ghi nhớ giải thuật TextRank như sau:
+// ${TextRank}
+// Hãy đọc tin tuyển dụng và sử dụng giải thuật TextRank tìm ra 10 từ khóa quan trọng liên quan đến công việc của trong nội dung tôi cung cấp. Các từ khóa này bao gồm cả kỹ năng cứng và mềm, cũng như kinh nghiệm chuyên môn. Sắp xếp chúng theo theo điểm số TextRank để đánh giá độ quan trọng của từ khóa. Hãy chú ý các cụm từ như 'có hiểu biết', 'thành thạo', 'có kinh nghiệm' kết hợp với từ ngữ về kỹ năng chuyên môn để định dạng kĩ năng cứng. Ngoài ra, tìm các mô tả về tính cách, cách hành xử, thái độ và sức khỏe của con người để định danh kỹ năng mềm. Kết quả trả về dưới dạng mảng các chuỗi từ khóa, viết hoa chữ cái đầu của từ khóa (nếu không tìm được từ khóa nào thì trả về danh sách rỗng []).
+// ***Lưu ý quan trọng: Mỗi từ khóa tìm được không được quá 20 kí tự. Câu trả lời của bạn (ChatGPT) chứa 10 từ khóa, từ khóa không thể chỉ là con số (ví dụ 7.0; 6,5; 1.230.000; ...v.v), và câu trả lời là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "Backend", "Tiếng hoa", "Đàm phán", "Làm việc nhóm", "Giao tiếp", "Thuyết trình"]
+// Nội dung tin tuyển dụng cung cấp như sau:\n
+// `;
 
 export const RoundOneCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc.
 Hãy đọc hồ sơ xin việc (emplyee_Profile) và thông tin tuyển dụng (employer_Requirement) sau đó so sánh và đánh giá xem thông tin emplyee_Profile có phù hợp với thông tin tuyển dụng hay không. Hãy đánh giá xem emplyee_Profile theo các tiêu chí sau.
@@ -48,8 +54,7 @@ Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (d
 ***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng JSON bao gồm 3 thuộc tính là id (tương ứng với application_id trong emplyee_Profile.application) và result (là con số result sau khi phân tích, là 1 trong 2 con số 30 hoặc -10) và thuộc tính hints để đưa ra lý do tại sao hồ không đạt yêu cầu, trong trường hợp đạt yêu cầu (result bằng 30) thì hints là "Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm" (nội dung trong hints như các từ sex, dob, profession, experience, degree phải dịch sang tiếng Việt). Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, emplyee_Profile đạt hết tất cả tiêu chí thì trả về:
 {
     "id": 1,
-    "result": 30,
-    "hints": "Để tăng tỉ lệ đậu bạn có thể bổ sung cho mình thêm cải thiện A, B, C..."
+    "result": 30
 }`;
 
 export const RoundTwoCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc. Hãy tính xem có bao nhiêu từ khóa trong phần kĩ năng cần thiết (requiredSkills) của tin tuyển dụng (employer_Requirement) được xuất hiện hoặc có từ đồng nghĩa trong hồ sơ xin việc (emplyee_Profile). Sau đó tính điểm result theo công thức sau:
@@ -80,3 +85,6 @@ export const checkContent = `Bây giờ bạn là 1 chuyên gia kiểm duyệt v
     "result": true
 }
 `;
+
+export const extractSkill = `Trích ra danh sách các kĩ năng (bao gồm kĩ năng cứng và kĩ năng mềm, kinh nghiệm chuyên môn) trong hồ sơ xin việc sau. 
+***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "Backend", "Tiếng hoa", "Đàm phán", "Làm việc nhóm", "Giao tiếp", "Thuyết trình"].`;

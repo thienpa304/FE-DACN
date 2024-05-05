@@ -9,11 +9,11 @@ import { useApp } from 'src/modules/app/hooks';
 import useDocumentHook from './useDocumentHook';
 
 const useQueryAttachedDocument = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isEmployee } = useApp();
   const { setProfile } = useDocumentHook();
+  const isLoggedIn = Boolean(getAccessToken());
 
-  const { data, isLoading, isSuccess } = useQuery<
+  const { data, isLoading, isSuccess, refetch } = useQuery<
     ResponseData<AttachedDocument>,
     AxiosError<ResponseData<AttachedDocument>>
   >(['get-AttachedDocument'], AttachedDocumentService.get, {
@@ -24,15 +24,6 @@ const useQueryAttachedDocument = () => {
   });
 
   useEffect(() => {
-    const token = getAccessToken();
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
-  useEffect(() => {
     // Handle the data or error here
     if (data) {
       setProfile(data.data);
@@ -41,7 +32,8 @@ const useQueryAttachedDocument = () => {
 
   return {
     attachedDocument: data?.data,
-    isLoading
+    isLoading,
+    refetch
   };
 };
 

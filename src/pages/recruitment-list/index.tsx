@@ -24,7 +24,7 @@ const tabs = [
 ];
 
 const RecruitmentList = () => {
-  const pageSize = 8;
+  const pageSize = 9;
   const [currentTab, setCurrentTab] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const { jobs, totalResults } = useQueryJobByOwner({
@@ -54,7 +54,9 @@ const RecruitmentList = () => {
               title="Danh Sách Tin Tuyển Dụng"
               action={
                 <Link to={'/employer/recruitment/create'}>
-                  <Button variant="contained">Tạo tin tuyển dụng</Button>
+                  <Button variant="contained" size="small" sx={{ my: 0 }}>
+                    Tạo tin tuyển dụng
+                  </Button>
                 </Link>
               }
             />

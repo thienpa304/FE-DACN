@@ -1,5 +1,5 @@
-export function convertVietNamString(chuoi) {
-  var bangChuCai = {
+export function rewriteUrl(url) {
+  const Alphabet = {
     à: 'a',
     á: 'a',
     ả: 'a',
@@ -135,14 +135,47 @@ export function convertVietNamString(chuoi) {
     Ỹ: 'Y',
     Ỵ: 'Y'
   };
+  const specialCharacter = [
+    '!',
+    '@',
+    '#',
+    '$',
+    '%',
+    '^',
+    '&',
+    '*',
+    '_',
+    '-',
+    '+',
+    '=',
+    '{',
+    '}',
+    '[',
+    ']',
+    '|',
+    '\\',
+    ':',
+    ';',
+    '"',
+    "'",
+    '<',
+    '>',
+    ',',
+    '.',
+    '/',
+    '?',
+    ' '
+  ];
 
-  var chuoiKhongDau = '';
-  for (var i = 0; i < chuoi?.length; i++) {
-    if (bangChuCai[chuoi[i]]) {
-      chuoiKhongDau += bangChuCai[chuoi[i]];
-    } else if (chuoi[i] !== ' ') {
+  let chuoiKhongDau = '';
+  for (var i = 0; i < url?.length; i++) {
+    if (Alphabet[url[i]]) {
+      chuoiKhongDau += Alphabet[url[i]];
+    } else if (!specialCharacter.includes(url[i])) {
       // Không thay đổi các khoảng trắng
-      chuoiKhongDau += chuoi[i];
+      chuoiKhongDau += url[i];
+    } else if (!chuoiKhongDau.endsWith('-')) {
+      chuoiKhongDau += '-';
     }
   }
   return chuoiKhongDau;

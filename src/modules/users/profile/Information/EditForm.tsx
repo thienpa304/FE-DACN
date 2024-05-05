@@ -4,7 +4,13 @@ import DatePicker from 'src/components/DatePicker';
 import FormControl from 'src/components/FormControl';
 import SelectInput from 'src/components/SelectInput';
 import { Company, User } from '../../model';
-import { GENDER, ISMARRIED, ISMARRIED_OPTION } from 'src/constants/option';
+import {
+  CAREER_FIELDS,
+  GENDER,
+  ISMARRIED,
+  ISMARRIED_OPTION,
+  PROFESSION
+} from 'src/constants/option';
 import dayjs from 'dayjs';
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import useMutateCompany from '../../hooks/useMutateCompany';
@@ -16,6 +22,7 @@ import {
 import ButtonGroup from 'src/components/ButtonGroup';
 import { useApp } from 'src/modules/app/hooks';
 import { setUser } from 'src/modules/app/appSlice';
+import Autocomplete from 'src/components/Autocomplete';
 
 export function UserForm(props) {
   const { isEmployee } = useApp();
@@ -155,13 +162,15 @@ export function CompanyForm(props) {
   });
 
   const handleSaveCompany = (data) => {
+    debugger;
+    console.log(data.careerField);
     onSaveCompany(data);
     close();
   };
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           <FormControl
             element={<TextField />}
             control={control}
@@ -170,28 +179,8 @@ export function CompanyForm(props) {
             id="companyName"
             label="Tên công ty"
             name="companyName"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl
-            element={<TextField />}
-            control={control}
-            errors={errors}
-            fullWidth
-            id="companyLocation"
-            label="Địa chỉ"
-            name="companyLocation"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControl
-            element={<TextField />}
-            control={control}
-            errors={errors}
-            fullWidth
-            id="careerField"
-            label="Lĩnh vực"
-            name="careerField"
+            multiline
+            required
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -203,8 +192,43 @@ export function CompanyForm(props) {
             id="taxCode"
             label="Mã số thuế"
             name="taxCode"
+            required
           />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl
+            element={<TextField />}
+            control={control}
+            errors={errors}
+            fullWidth
+            id="companyLocation"
+            label="Địa chỉ"
+            name="companyLocation"
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl
+            element={
+              <Autocomplete
+                size="small"
+                freeSolo={true}
+                options={CAREER_FIELDS}
+                autoComplete
+                autoSelect
+                autoHighlight
+                multiple={false}
+                defaultValue={user?.careerField}
+              />
+            }
+            control={control}
+            errors={errors}
+            fullWidth
+            name="careerField"
+            label="Lĩnh vực"
+          />
+        </Grid>
+
         <Grid item xs={12}>
           <FormControl
             element={<TextField />}
@@ -212,10 +236,12 @@ export function CompanyForm(props) {
             errors={errors}
             fullWidth
             multiline
-            rows={4}
+            maxRows={6}
+            minRows={3}
             id="description"
             label="Mô tả công ty"
             name="description"
+            required
           />
         </Grid>
       </Grid>

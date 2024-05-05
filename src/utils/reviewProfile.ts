@@ -1,7 +1,8 @@
 import {
   RoundOneCheck,
   RoundThreeCheck,
-  RoundTwoCheck
+  RoundTwoCheck,
+  extractSkill
 } from 'src/modules/ai/roles';
 import { preProcessText } from './inputOutputFormat';
 import sendChatGPTRequest, {
@@ -16,6 +17,7 @@ import { Job } from 'src/modules/jobs/model';
 import { compareDegrees, compareExperience } from './compareEnum';
 import dayjs from 'dayjs';
 import { dot } from 'mathjs';
+import { loadKeywords } from './keywords';
 
 export const FAIL_SCORE = 0; // < 30
 export const LOW_SCORE = 30; // 30 - 80
@@ -151,7 +153,10 @@ export const firstRoundForGeneralInfo = (job, profile) => {
 const isProfileQualified = (profile, job) => {
   const { profession, degree, experience } = profile;
 
-  if (!profession.includes(job?.profession)) return false;
+  const employeeProfessionList = profession.split(', ');
+  const jobProfessionList = job.profession.split(', ');
+  if (!employeeProfessionList.some((item) => jobProfessionList.includes(item)))
+    return false;
 
   if (compareDegrees(degree, job?.degree) < 0) return false;
 
@@ -251,11 +256,69 @@ const handleRoundTwo = async (
       }
     };
   });
-  const result = await sendChatGPTRequest(RoundTwoCheck, dataSendToGPT).catch(
-    () => []
-  );
 
-  handleAnalyzeResult(result);
+  console.log(dataSendToGPT);
+  const responses = await getEmbedding(
+    await Promise.all(
+      dataSendToGPT.map(async (item) => {
+        const sentence = await sendChatGPTRequest(
+          extractSkill,
+          [item.employee_Profile.profile],
+          null,
+          {
+            '58': 5,
+            '60': 5
+          }
+        );
+        let skills;
+        if (sentence.length > 0) {
+          skills = loadKeywords(sentence).split(',');
+        }
+        console.log(skills);
+
+        return {
+          id: item.employee_Profile.application_id,
+          employer_Requirement:
+            item.employer_Requirement.requiredSkills.split(','),
+          employee_Profile: skills
+        };
+      })
+    )
+  );
+  console.log(responses);
+
+  // const result = await sendChatGPTRequest(RoundTwoCheck, dataSendToGPT).catch(
+  //   () => []
+  // );
+
+  const result = responses.map((item) => {
+    const acc = item.employer_Requirement.filter((require) =>
+      item.employee_Profile.some(
+        (skills) => dot(skills.result, require.result) > 0.6
+      )
+    );
+    console.log(acc);
+    return {
+      id: item.id,
+      result: (100 / item.employer_Requirement.length) * acc.length
+    };
+  });
+
+  //   const count = item.employer_Requirement.filter((require) => {
+  //     console.log(dot(item.employee_Profile[0].result, require.result));
+  //     return dot(item.employee_Profile[0].result, require.result) > 0.6;
+  //   }).length;
+  //   return {
+  //     id: item.id,
+  //     result: item.employer_Requirement.filter(
+  //       (require) => dot(item.employee_Profile[0].result, require.result) > 0.6
+  //     ).length
+  //   };
+  // });
+
+  console.log(result);
+
+  handleAnalyzeResult(result.map((res) => JSON.stringify(res)));
 };
 
 const handleRoundThree = async (
@@ -263,20 +326,7 @@ const handleRoundThree = async (
   handleAnalyzeResult: (result: any[]) => Promise<void>
 ) => {
   console.log('Start round 3');
-  // const result = await sendChatGPTRequest(
-  //   RoundThreeCheck,
-  //   passRoundProfiles.map((item) => ({
-  //     id: item.id,
-  //     employer_Requirement: item.employer_Requirement.keywords,
-  //     employee_Profile: item.employee_Profile.application.keywords
-  //   }))
-  // ).catch(() => []);
-  // const employer_Requirement = await getEmbedding(
-  //   passRoundProfiles.map((item) => ({
-  //     id: item.id,
-  //     word: item.employer_Requirement.keywords
-  //   }))
-  // );
+
   const response = await getEmbedding(
     passRoundProfiles.map((item) => ({
       id: item.id,
@@ -284,49 +334,57 @@ const handleRoundThree = async (
       employee_Profile: item.employee_Profile.application.keywords.split(',')
     }))
   );
-  // debugger;
-  const resultList = response.map((item) => {
-    let score = item.employee_Profile.reduce((acc, profile) => {
-      const hasMatch = item.employer_Requirement.some((requirement) => {
-        const cosineSimilarity = dot(profile.result, requirement.result);
-        return cosineSimilarity > 0.7;
-      });
-      return hasMatch ? acc + 5 : acc;
-    }, 0);
+  const resultList = await Promise.all(
+    response.map(async (item) => {
+      let score = item.employee_Profile.reduce((acc, profile) => {
+        const hasMatch = item.employer_Requirement.some((requirement) => {
+          const cosineSimilarity = dot(profile.result, requirement.result);
+          return cosineSimilarity > 0.7;
+        });
+        return hasMatch ? acc + 5 : acc;
+      }, 0);
 
-    const lackOfSkillsList = [];
-    for (const item of response) {
-      let foundLackOfSkill = false; // Biến cờ để kiểm tra xem có kỹ năng nào thiếu không
+      const lackOfSkillsList = await Promise.all(
+        item.employer_Requirement
+          .filter(
+            (require) =>
+              !item.employee_Profile.some(
+                (skills) => dot(skills.result, require.result) > 0.6
+              )
+          )
+          .map(async (require) => require.word)
+      );
 
-      for (const require of item.employer_Requirement) {
-        let hasSkill = false; // Biến cờ để kiểm tra xem có kỹ năng nào phù hợp không
-
-        for (const skills of item.employee_Profile) {
-          const cosineSimilarity = dot(skills.result, require.result);
-          if (cosineSimilarity > 0.7) {
-            hasSkill = true; // Có kỹ năng phù hợp, không cần thiếu
-            break;
-          }
+      const sentence = await sendChatGPTRequest(
+        extractSkill +
+          'Hãy viết lại từng kĩ năng ở dạng từ khóa, viết hoa chữ cái đầu và hãy dịch các kĩ năng sang tiếng Việt.\n',
+        [lackOfSkillsList],
+        null,
+        {
+          '58': 5,
+          '60': 5
         }
-
-        if (!hasSkill) {
-          foundLackOfSkill = true; // Không có kỹ năng phù hợp, cần thiếu
-          lackOfSkillsList.push(require.word);
-        }
+      );
+      let skills;
+      if (sentence.length > 0) {
+        skills = loadKeywords(sentence).split(',');
       }
-    }
-    const hints =
-      lackOfSkillsList.length > 0
-        ? 'Để tăng tỉ lệ đậu bạn có thể trang bị thêm kĩ năng:' +
-          lackOfSkillsList.slice(0, 4).join(',')
-        : 'Hồ sơ của bạn đã đáp ứng yêu cầu với tin tuyển dụng này';
+      const hints =
+        lackOfSkillsList.length > 0
+          ? `Để tăng tỉ lệ đậu bạn có thể trang bị thêm kĩ năng: ${[
+              ...new Set(skills)
+            ]
+              .slice(0, 4)
+              .join(', ')}`
+          : 'Hồ sơ của bạn đã đáp ứng yêu cầu của tin tuyển dụng này';
 
-    return {
-      id: item.id,
-      result: score,
-      hints: hints
-    };
-  });
+      return {
+        id: item.id,
+        result: score,
+        hints: hints
+      };
+    })
+  );
 
   const list = resultList.map((result) => JSON.stringify(result));
 
