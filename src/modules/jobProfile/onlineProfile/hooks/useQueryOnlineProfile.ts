@@ -9,11 +9,11 @@ import { useApp } from 'src/modules/app/hooks';
 import useOnlineProfile from './useOnlineProfile';
 
 const useQueryOnlineProfile = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isEmployee } = useApp();
   const { setProfile } = useOnlineProfile();
+  const isLoggedIn = Boolean(getAccessToken());
 
-  const { data, isLoading, isSuccess } = useQuery<
+  const { data, isLoading, isSuccess, refetch } = useQuery<
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>
   >(['get-OnlineProfile'], OnlineProfileService.get, {
@@ -23,25 +23,18 @@ const useQueryOnlineProfile = () => {
     enabled: isLoggedIn && isEmployee
   });
 
-  useEffect(() => {
-    const token = getAccessToken();
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
+  // console.log(data?.data);
   useEffect(() => {
     // Handle the data or error here
-    if (data) {
+    if (data && isSuccess) {
       setProfile(data?.data);
     }
   }, [isSuccess]);
 
   return {
     onlineProfile: data?.data,
-    isLoading
+    isLoading,
+    refetch
   };
 };
 

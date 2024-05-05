@@ -25,6 +25,8 @@ export function convertStringToObjectList(
 }
 
 export function convertObjectListToString(objectList: Option[]): string {
+  console.log('objectList', objectList);
+
   if (!objectList) return '';
   const labels = objectList
     .map((option) => option.label)
@@ -88,8 +90,9 @@ export function preProcessText(documentText: string) {
 }
 
 export function convertToObjectsForSkill(str) {
+  if (!str) return;
   // Tách chuỗi thành các từ riêng biệt bằng dấu phẩy
-  const words = str.split(',').map((word) => word.trim());
+  const words = str?.split(',').map((word) => word.trim());
 
   // Chuyển đổi từng từ thành object với id và text
   const objects = words.map((word) => ({

@@ -21,7 +21,9 @@ export default function JobRecommendTab(props) {
   const pageSize = 4;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
   const { jobs } = useQueryAllJob({
-    keywords: keywords
+    keywords: keywords,
+    page: currentPage,
+    num: pageSize
   });
 
   const handlePageChange = (pageNumber: number) => {
@@ -30,21 +32,18 @@ export default function JobRecommendTab(props) {
 
   useEffect(() => {
     // filter jobs by profession, degree, experience
-    console.log(1);
-
     if (profession && degree && experience) {
       const result = jobs.filter(
-        (job) =>
-          profession.includes(job.profession) &&
-          compareDegrees(degree, job.degree) > 0 &&
-          compareExperience(experience, job.experience) > 0
+        (job) => profession.includes(job.profession)
+        // && compareDegrees(degree, job.degree) > 0 &&
+        // compareExperience(experience, job.experience) > 0
       );
       // if (JSON.stringify(result) === JSON.stringify(filteredJob)) return;
-      setFilteredJob(result);
+      setFilteredJob(jobs);
     } else setFilteredJob(jobs);
 
     const section = document.getElementById(id);
-    if (section) section.scrollIntoView({ behavior: 'smooth' });
+    // if (section) section.scrollIntoView({ behavior: 'smooth' });
   }, [JSON.stringify(jobs)]);
 
   return (

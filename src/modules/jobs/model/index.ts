@@ -1,3 +1,5 @@
+import { Option } from 'src/components/SelectInput';
+import { PROFESSION } from 'src/constants';
 import {
   ApprovalStatus,
   Degree,
@@ -7,6 +9,11 @@ import {
   Sex
 } from 'src/constants/enum';
 import { Company } from 'src/modules/users/model';
+
+type ProfessionsType = {
+  value: string;
+  label: string;
+};
 
 export type Job = {
   postId: number;

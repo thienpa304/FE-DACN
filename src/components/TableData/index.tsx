@@ -40,9 +40,9 @@ const TableData: React.FC<DataGridProps> = ({ rows, columns, ...props }) => {
           }
         }
       }}
-      disableColumnSelector
+      // disableColumnSelector
       rowSelection={false}
-      pageSizeOptions={[10]}
+      // pageSizeOptions={[10]}
       {...props}
     />
   );

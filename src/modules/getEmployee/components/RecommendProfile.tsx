@@ -169,7 +169,7 @@ export default function RecommendProfile() {
                   }
                 }}
                 sx={{
-                  minHeight: '72.7vh',
+                  minHeight: '74vh',
                   justifySelf: 'center',
                   mx: 'auto'
                 }}

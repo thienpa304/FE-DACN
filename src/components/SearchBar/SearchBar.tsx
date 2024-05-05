@@ -4,6 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Link from 'src/components/Link';
 import SelectInput from 'src/components/SelectInput';
 import { PROFESSION } from 'src/constants';
+import { rewriteUrl } from 'src/utils/rewriteUrl';
 
 const ProfessionOptions = [
   {
@@ -74,7 +75,13 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
       </Grid>
       <Grid item xs={2}>
         <Link
-          to={searchValue ? `${to}/${searchValue}` : ''}
+          to={
+            searchValue
+              ? `${to}/${
+                  rewriteUrl(selectedProfession) || 'Tat-ca'
+                }?search=${searchValue}`
+              : ''
+          }
           sx={{ color: '#000' }}
           state={{
             jobTitle: searchValue?.trim(),

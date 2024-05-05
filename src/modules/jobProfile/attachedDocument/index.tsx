@@ -6,8 +6,7 @@ import {
   Typography,
   Button,
   styled,
-  Backdrop,
-  CircularProgress
+  Backdrop
 } from '@mui/material';
 import AttachCV from './components/AttachedCV';
 import Personal from '../Personal';
@@ -62,18 +61,6 @@ export default function AttachedDocument() {
   const [finished, setFinished] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // const preProcessData = (
-  //   profile: Partial<AttachedDocumentType>,
-  //   cvContent: string
-  // ) => {
-  //   return {
-  //     jobTitle: profile?.jobTitle,
-  //     profession: profile?.profession,
-  //     careerGoal: profile?.careerGoal,
-  //     CV: cvContent
-  //   };
-  // };
-
   const handleSaveProfile = async () => {
     if (!profile?.CV) return;
     setIsAnalyzing(true);
@@ -100,12 +87,12 @@ export default function AttachedDocument() {
         if (profile?.userId) {
           onUpdateData({
             ...profile,
-            keywords: (profile?.skills + ', ' + keywords)?.toLocaleLowerCase()
+            keywords: profile?.skills + ', ' + keywords
           } as AttachedDocumentType);
         } else {
           onSaveData({
             ...profile,
-            keywords: (profile?.skills + ', ' + keywords)?.toLocaleLowerCase()
+            keywords: profile?.skills + ', ' + keywords
           } as AttachedDocumentType);
         }
         setFinished(true);
@@ -126,14 +113,6 @@ export default function AttachedDocument() {
       navigate('/employee/recruitment-profile');
     }
   }, [finished]);
-
-  // useEffect(() => {
-  //   setProfile(attachedDocument);
-  // }, [attachedDocument]);
-
-  if (isLoading || isAnalyzing) {
-    return <SuspenseLoader />;
-  }
 
   return (
     <>
@@ -175,6 +154,12 @@ export default function AttachedDocument() {
           Lưu hồ sơ
         </Button>
       </SubmitBox>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading || isAnalyzing}
+      >
+        <SuspenseLoader />
+      </Backdrop>
     </>
   );
 }

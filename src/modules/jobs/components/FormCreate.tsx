@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -22,11 +22,12 @@ import {
   DEGREE,
   EXPERIENCE,
   POSITION_LEVEL,
-  GENDER_OPTION
+  GENDER_OPTION,
+  SKILLS
 } from 'src/constants/option';
 import { jobAnalysist } from 'src/modules/ai/roles';
 import FormControl from 'src/components/FormControl';
-import SelectInput from 'src/components/SelectInput';
+import SelectInput, { Option } from 'src/components/SelectInput';
 import TextEditor from 'src/components/TextEditor';
 import TextField from 'src/components/TextField';
 import NumericFormatCustom from 'src/components/NumberFormatCustom';
@@ -36,17 +37,11 @@ import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
 import DatePicker from 'src/components/DatePicker';
 import _ from 'lodash';
-import {
-  convertObjectListToStringForSkill,
-  convertToObjectsForSkill,
-  preProcessText,
-  removeHTMLTag
-} from 'src/utils/inputOutputFormat';
-import { loadKeywords, tfidfReview } from 'src/utils/keywords';
+import { preProcessText, removeHTMLTag } from 'src/utils/inputOutputFormat';
+import { loadKeywords } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import skills from 'src/constants/skills';
-import TagInput from 'src/components/TagInput';
+import Autocomplete from 'src/components/Autocomplete';
 
 const defaultValues = {
   sex: '',
@@ -101,12 +96,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     };
 
     const emptyList = [];
-
-    if (!requiredSkills) {
-      setIsEmpty((prev) => [...prev, 'requiredSkills']);
-      emptyList.push('requiredSkills');
-    }
-
     for (const [field, fieldName] of Object.entries(fieldsToCheck)) {
       if (!removeHTMLTag(newData?.[field])) {
         setIsEmpty((prev) => [...prev, fieldName]);
@@ -118,10 +107,16 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       // Báo lỗi nếu có bất kỳ trường nào bị thiếu
       return;
     }
+
     setOnSaveNewData({
       ...newData,
-      requiredSkills: convertObjectListToStringForSkill(requiredSkills),
-      sex: newData.sex === 'Tất cả' ? null : newData.sex
+      requiredSkills: Array.isArray(newData.requiredSkills)
+        ? newData.requiredSkills.map((item) => item.value || item).join(', ')
+        : newData.requiredSkills,
+      sex: newData.sex === 'Tất cả' ? null : newData.sex,
+      profession: Array.isArray(newData.profession)
+        ? newData.profession.map((item) => item.value || item).join(', ')
+        : newData.profession
     });
     handleAnalysis(newData);
   };
@@ -154,8 +149,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   useEffect(() => {
     if (data) {
       reset(data);
-      data.requiredSkills &&
-        setRequiredSkills(convertToObjectsForSkill(data?.requiredSkills));
     } else if (!selectedId) {
       reset({
         name: profile?.name,
@@ -222,8 +215,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12}>
                       <FormControl
-                        element={<SelectInput />}
-                        options={PROFESSION}
+                        element={
+                          <Autocomplete
+                            limitTags={7}
+                            options={PROFESSION.map((item) => item.value)}
+                          />
+                        }
+                        defaultValue={data?.profession?.split(', ')}
                         control={control}
                         errors={errors}
                         id="profession"
@@ -292,6 +290,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         name="minAge"
                         type="number"
                         pattern="integer"
+                        required
                       />
                     </Grid>
                     <Grid item xs={12} md={2}>
@@ -306,6 +305,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         type="number"
                         name="maxAge"
                         pattern="integer"
+                        required
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -425,7 +425,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Grid>
                     <Grid item xs={12}>
                       <Box display="flex" marginBottom={1}>
-                        <Typography variant="h6">Kĩ năng bắt buộc</Typography>
                         {isEmpty.find((item) => item === 'requiredSkills') && (
                           <Typography
                             color="error"
@@ -438,11 +437,21 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                           </Typography>
                         )}
                       </Box>
-                      <TagInput
-                        suggestions={skills}
-                        forwardedRef={ref}
-                        value={requiredSkills}
-                        onChange={setRequiredSkills}
+                      <FormControl
+                        element={
+                          <Autocomplete
+                            freeSolo={true}
+                            limitTags={7}
+                            options={SKILLS.map((item) => item.value)}
+                          />
+                        }
+                        defaultValue={data?.requiredSkills?.split(', ')}
+                        control={control}
+                        errors={errors}
+                        id="requiredSkills"
+                        label="Kĩ năng bắt buộc"
+                        name="requiredSkills"
+                        required
                       />
                       <Typography
                         fontSize={12}

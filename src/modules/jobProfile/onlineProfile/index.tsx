@@ -7,7 +7,8 @@ import {
   Button,
   Snackbar,
   Alert,
-  AlertTitle
+  AlertTitle,
+  Backdrop
 } from '@mui/material';
 import Personal from '../Personal';
 import General from './components/General';
@@ -26,12 +27,8 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import SubmitBox from '../SubmitBox';
 import { useNavigate } from 'react-router';
 import useMutateUpdateOnlineProfile from './hooks/useMutateUpdateOnlineProfile';
-import useWorkExperience from './hooks/useWorkExperience';
-import useProfileHook from 'src/modules/users/hooks/useUserHook';
-import useMutateOnlineProfile from './hooks/useMutateOnlineProfile';
 import { OnlineProfile as OnlineProfileType } from '../model';
-import useMutateEducation from './components/Education/hooks/useMutateEducation';
-import { loadKeywords, preProcessData, tfidfReview } from 'src/utils/keywords';
+import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { cvAnalysist } from 'src/modules/ai/roles';
 
@@ -92,7 +89,7 @@ export default function OnlineProfile() {
         );
         onUpdateData({
           ...profile,
-          keywords: (profile?.skills + ', ' + keywords)?.toLocaleLowerCase()
+          keywords: profile?.skills + ', ' + keywords
         } as OnlineProfileType);
         setFinished(true);
         setIsAnalyzing(false);
@@ -116,10 +113,6 @@ export default function OnlineProfile() {
   useEffect(() => {
     setProfile(onlineProfile);
   }, [onlineProfile]);
-
-  if (isLoading || isAnalyzing) {
-    return <SuspenseLoader />;
-  }
 
   return (
     <>
@@ -177,7 +170,12 @@ export default function OnlineProfile() {
           </AlertTitle>
         </Alert>
       </Snackbar>
-      {/* <CVPage /> */}
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading || isAnalyzing}
+      >
+        <SuspenseLoader />
+      </Backdrop>
     </>
   );
 }

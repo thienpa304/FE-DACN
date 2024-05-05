@@ -91,10 +91,10 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Nhớ mật khẩu"
-            />
+            /> */}
             <LoadingButton
               onClick={handleSubmit(handleLogin)}
               loading={isLoading}

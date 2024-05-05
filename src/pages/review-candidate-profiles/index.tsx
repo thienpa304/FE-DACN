@@ -26,7 +26,7 @@ const tabs = [
 ];
 
 const CandidateProfiles = () => {
-  const pageSize = 7;
+  const pageSize = 9;
   const [currentQuery, setCurrentQuery] = useState({
     currentPage: 1,
     currentTab: ''
@@ -82,7 +82,6 @@ const CandidateProfiles = () => {
                 textColor="primary"
                 indicatorColor="primary"
                 sx={{
-                  mb: -4,
                   display: 'inline-flex',
                   borderBottom: 1,
                   borderColor: 'divider'

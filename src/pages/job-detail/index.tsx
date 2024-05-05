@@ -3,15 +3,16 @@ import CardApply from 'src/modules/jobs/components/CardApply';
 import TabContent from './TabContent';
 import { useLocation, useParams } from 'react-router';
 import useQueryJobById from 'src/modules/jobs/hooks/useQueryJobById';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useJob from 'src/modules/jobs/hooks/useJob';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
+import { useSearchParams } from 'react-router-dom';
 
 const JobDetail = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const postId = atob(searchParams.get('id'));
   const { setItemDetail, itemDetail } = useJob();
-  const { state } = useLocation();
-  const locationState = state as any;
-  const { data } = useQueryJobById(locationState.postId);
+  const { data } = useQueryJobById(postId);
 
   useEffect(() => {
     setItemDetail(data);

@@ -27,35 +27,9 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
 import Pagination from 'src/components/Pagination';
 import openProfile from 'src/utils/openProfile';
-
-interface CustomLinkProps {
-  to?: string;
-  children: React.ReactNode;
-  sx?: any;
-  state?: any;
-}
-
-const CustomLink = forwardRef<HTMLButtonElement, CustomLinkProps>(
-  (props, ref) => {
-    const { to, children, sx } = props;
-
-    const link = useMemo(() => {
-      if (!to) return '#';
-      return to;
-    }, [to]);
-
-    const isInternal = useMemo(() => {
-      return link.startsWith('/') || link.startsWith('#');
-    }, [link]);
-
-    const url = link.slice(1);
-    return (
-      <Link {...props} to={isInternal ? url : v4()} style={sx} target="_blank">
-        {children}
-      </Link>
-    );
-  }
-);
+import CheckIcon from '@mui/icons-material/Check';
+import alertDialog from 'src/utils/alertDialog';
+import { ApprovalStatus } from 'src/constants/enum';
 
 const renderJobTitle = (data) => {
   if (data.value) {
@@ -187,7 +161,7 @@ const columns: GridColDef[] = [
   {
     field: 'jobTitle',
     headerName: 'Vị trí ứng tuyển',
-    minWidth: 430,
+    minWidth: 400,
     renderCell: renderJobTitle,
     sortable: true
   },
@@ -200,7 +174,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Trạng thái tuyển dụng',
-    minWidth: 150,
+    minWidth: 180,
     renderCell: renderStatus,
     sortable: true
   },
@@ -498,19 +472,112 @@ export default function Table(props) {
     handleReview();
   }, [start, roundOneFinished, roundTwoFinished, roundThreeFinished]);
 
+  const [quickApproveValue, setQuickApproveValue] = useState(null);
+  const handleChangeValue = (e) => {
+    setQuickApproveValue(e.target.value);
+  };
+
+  const handleQuickApprove = () => {
+    alertDialog({
+      selectedId: '_',
+      handleConfirm,
+      message: `Chuyển các hồ sơ đã chọn sang trạng thái ${ApprovalStatus[quickApproveValue]}?`
+    });
+  };
+
+  const handleConfirm = () => {
+    Promise.all(
+      selectedRows.map((id) =>
+        onSaveApplicationStatus([id, { status: quickApproveValue }])
+      )
+    ).then(() => {
+      refetch();
+    });
+  };
+
   return (
     <>
-      <Box sx={{ justifyContent: 'right', display: 'flex' }}>
-        {isAnalyzing && <CircularProgress />}
-        <Button
-          onClick={() => setStart(true)}
-          variant="contained"
-          size="small"
-          sx={{ mr: 4 }}
-          disabled={start}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'right',
+          gap: 2
+        }}
+      >
+        <Grid
+          container
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'right',
+            gap: 2
+          }}
         >
-          {!start ? 'Phân tích' : 'Đang phân tích...'}
-        </Button>
+          <Grid item xs={1}>
+            <Typography fontWeight={700}>
+              Đã chọn: {selectedRows.length}
+            </Typography>
+          </Grid>
+          <Grid item xs={1.5}>
+            <SelectInput
+              options={APPROVAL_STATUS}
+              onChange={handleChangeValue}
+              value={selectedRows.length > 0 ? quickApproveValue : ''}
+              sx={{
+                color: APPROVAL_STATUS.find(
+                  (item) => item.value === quickApproveValue
+                )?.optionColor
+              }}
+              disabled={!selectedRows.length}
+              label="Duyệt nhanh"
+            />
+          </Grid>
+          <Grid item xs={0.7}>
+            <Button
+              variant="contained"
+              size="small"
+              color="info"
+              sx={{
+                py: 1,
+                px: 0
+              }}
+              onClick={handleQuickApprove}
+              disabled={!selectedRows.length || !quickApproveValue}
+            >
+              <CheckIcon sx={{ fontSize: 15 }} />
+            </Button>
+          </Grid>
+          <Grid
+            item
+            container
+            xs={1.7}
+            sx={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <Grid item xs>
+              <Button
+                onClick={() => setStart(selectedRows.length > 0)}
+                variant="contained"
+                size="small"
+                disabled={start || !selectedRows.length}
+                fullWidth
+                sx={{ py: 1, px: 0 }}
+              >
+                {!selectedRows.length
+                  ? 'Chưa chọn hồ sơ'
+                  : !start
+                  ? 'Phân tích nhanh'
+                  : 'Đang phân tích'}
+              </Button>
+            </Grid>
+            <Grid item xs={2}>
+              {isAnalyzing && <CircularProgress size={18} color="secondary" />}
+            </Grid>
+          </Grid>
+        </Grid>
       </Box>
       <TableData
         rows={showList}
@@ -523,13 +590,14 @@ export default function Table(props) {
           }
         }}
         hideFooter
-        sx={{ minHeight: '65.7vh', width: '100%' }}
+        sx={{ height: '74vh', width: '100%' }}
         checkboxSelection
-        disableRowSelectionOnClick
+        // disableRowSelectionOnClick
         rowSelection={true}
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
         }}
+        loading={isLoadingApplication || isLoadingJobs}
       />
       <Pagination
         currentPage={currentPage}

@@ -41,24 +41,27 @@ function UploadButton(props: Props) {
   const [percent, setPercent] = useState(null);
 
   // Handle file upload event and update state
-  function handleChange(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    setFile(file);
-    handleUpload(file);
-  }
-
-  const handleDeleteFile = () => {
+  const handleChange = async (event) => {
     removeFileByUrl(fileUrl).then(() => {
-      setFile(null);
-      setIsChecked('');
+      const file = event.target.files[0];
+      if (!file) return;
+      setFile(() => file);
+      handleUpload(file);
     });
   };
 
+  const handleDeleteFile = async () => {
+    if (!fileUrl) return;
+    removeFileByUrl(fileUrl).then(() => {
+      setFile(() => null);
+      setIsChecked('');
+    });
+  };
+  console.log(file, fileUrl);
+
   const handleUpload = (value) => {
-    if (!value) {
-      alert('Please upload an image first!');
-    }
+    if (!value) return;
+
     let date = dayjs(new Date()).format('DDMMYYYY');
     const storageRef = ref(storage, `/userDocument/${value.name}-${date}`);
 
@@ -81,7 +84,7 @@ function UploadButton(props: Props) {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
           setPercent(null);
-          setFileUrl(url);
+          setFileUrl(() => url);
           setUrl(url);
           onChange(url);
         });

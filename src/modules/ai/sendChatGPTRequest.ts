@@ -25,7 +25,7 @@ const sendChatGPTRequest = async (
             // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
           },
           body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-3.5-turbo-ca',
             messages: [
               {
                 role: 'system',
@@ -34,7 +34,6 @@ const sendChatGPTRequest = async (
               { role: 'user', content: inputText }
             ],
             temperature: 0,
-            top_p: 0,
             presence_penalty: 0.7,
             frequency_penalty: 0.7,
             max_tokens: max_tokens,
@@ -70,7 +69,7 @@ export const getEmbedding = async (content: any[]) => {
   }
 
   const sendMessage = async (inputText) => {
-    if (!inputText.trim()) return;
+    if (!inputText) return;
 
     try {
       const response = await fetch(
@@ -84,7 +83,7 @@ export const getEmbedding = async (content: any[]) => {
             // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
           },
           body: JSON.stringify({
-            model: 'text-embedding-3-small',
+            model: 'text-embedding-3-large',
             input: inputText
             // dimensions: 100
           })
@@ -92,7 +91,7 @@ export const getEmbedding = async (content: any[]) => {
       );
 
       const data = await response.json();
-      return data?.data[0]?.embedding;
+      return data?.data?.map((item) => item.embedding);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -100,26 +99,35 @@ export const getEmbedding = async (content: any[]) => {
 
   await Promise.all(
     content.map(async (inputText) => {
-      const employer_Requirement = await Promise.all(
-        inputText?.employer_Requirement.map(async (require) => {
-          const res = await sendMessage(JSON.stringify(require));
-          // console.log(res);
-          return { word: require, result: res };
-        })
-      );
-      const employee_Profile = await Promise.all(
-        inputText?.employee_Profile.map(async (profile) => {
-          const res = await sendMessage(JSON.stringify(profile));
-          // console.log(res);
-          return { word: profile, result: res };
-        })
-      );
+      //   const employer_Requirement = await Promise.all(
+      //     inputText?.employer_Requirement.map(async (require) => {
+      //       const res = await sendMessage(JSON.stringify(require));
+      //       // console.log(res);
+      //       return { word: require, result: res };
+      //     })
+      //   );
+      let i = 0;
+      const employer_Requirement = (
+        await sendMessage(inputText?.employer_Requirement)
+      ).map((res) => ({
+        word: inputText?.employer_Requirement[i++],
+        result: res
+      }));
+
+      i = 0;
+
+      const employee_Profile = (
+        await sendMessage(inputText?.employee_Profile)
+      ).map((res) => ({
+        word: inputText?.employee_Profile[i++],
+        result: res
+      }));
+
       responses.push({
         id: inputText?.id,
         employer_Requirement: employer_Requirement,
         employee_Profile: employee_Profile
       });
-      // debugger;
       console.log(responses);
     })
   );
