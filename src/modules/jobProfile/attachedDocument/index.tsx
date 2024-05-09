@@ -114,6 +114,7 @@ export default function AttachedDocument() {
     }
   }, [finished]);
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <>
       <Container>
@@ -156,7 +157,7 @@ export default function AttachedDocument() {
       </SubmitBox>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading || isAnalyzing}
+        open={isAnalyzing}
       >
         <SuspenseLoader />
       </Backdrop>

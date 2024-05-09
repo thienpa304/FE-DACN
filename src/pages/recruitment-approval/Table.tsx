@@ -47,7 +47,10 @@ const renderJobTitle = (data) => {
         WebkitBoxOrient: 'vertical'
       }}
     >
-      <LinkText to={`/job/${jobTitle}`} state={{ postId: data.id }}>
+      <LinkText
+        to={`/job/${jobTitle}?id=${btoa(data.id)}`}
+        state={{ postId: data.id }}
+      >
         {data.value}
       </LinkText>
     </Box>
@@ -71,7 +74,9 @@ const renderCompany = (data) => {
         }}
       >
         <LinkText
-          to={`/company/${rewriteUrl(data.value?.companyName)}`}
+          to={`/company/${rewriteUrl(data.value?.companyName)}?id=${btoa(
+            data?.value?.userId
+          )}`}
           state={{ id: data?.value?.userId }}
         >
           {data.value?.companyName}
@@ -313,12 +318,12 @@ export default function Table({ statusFilter, selectedProfession }) {
   const [showList, setShowList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
-  const jobsPerPage = 9;
-  const totalPages = Math.ceil(totalResults / jobsPerPage) || 1;
+  const pageSize = 9;
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   const { jobs, isLoading, refetch } = useQueryJobByAdmin({
     page: currentPage,
-    num: jobsPerPage,
+    num: pageSize,
     status: ApprovalStatus[statusFilter],
     profession: selectedProfession
   });

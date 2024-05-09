@@ -20,7 +20,9 @@ export const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
-    navigate(`/job/${jobTitle}`, { state: { postId: data?.row?.postId } });
+    navigate(`/job/${jobTitle}?id=${btoa(data?.row?.postId)}`, {
+      state: { postId: data?.row?.postId }
+    });
   };
   return (
     <>
