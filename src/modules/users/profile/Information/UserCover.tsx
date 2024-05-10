@@ -5,8 +5,7 @@ import {
   Avatar,
   Button,
   Container,
-  Grid,
-  styled
+  Grid
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
@@ -22,6 +21,7 @@ import FormControl from 'src/components/FormControl';
 import { avatarFormat } from 'src/constants/uploadFileRule';
 import useMutateAvatar from '../../hooks/useMutateAvatar';
 import { avatarErrorText } from 'src/components/UploadError';
+import { styled } from '@mui/material/styles';
 
 const Input = styled('input')({
   display: 'none'

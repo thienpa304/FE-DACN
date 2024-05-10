@@ -2,7 +2,7 @@ import { Tabs, styled } from '@mui/material';
 
 const TabsWrapper = styled(Tabs)(
   () => `
-.MuiTabs-scrollableX {
+    .MuiTabs-scrollableX {
     overflow-x: auto !important;
       }
   `

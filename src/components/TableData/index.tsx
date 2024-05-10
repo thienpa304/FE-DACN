@@ -1,6 +1,6 @@
+import { styled } from '@mui/material';
 import { DataGrid, DataGridProps } from '@mui/x-data-grid';
 import React from 'react';
-import { styled } from '@mui/material/styles';
 
 const TableDataWrapper = styled(DataGrid)(({ theme }) => ({
   padding: 8,

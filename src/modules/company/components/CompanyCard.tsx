@@ -6,34 +6,21 @@ import {
   CardContent,
   CardHeader,
   Typography,
-  Grid,
-  Container
+  styled
 } from '@mui/material';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
-import BusinessIcon from '@mui/icons-material/Business';
-import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
-import FollowButton from '../../jobs/components/FollowJobButton';
-import { makeStyles } from '@mui/styles';
 import { Company } from 'src/modules/users/model';
 import FollowCompanyButton from './FollowJobButton';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
-const useStyles = makeStyles((theme) => ({
-  coverImage: {
-    width: '100%',
-    height: '120px',
-    objectFit: 'cover'
-  },
-  paper: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-}));
+
+const CoverImage = styled('img')({
+  width: '100%',
+  height: '120px',
+  objectFit: 'cover'
+});
 
 function CompanyCard({
   company,
@@ -42,7 +29,6 @@ function CompanyCard({
   company: Company;
   employerId: number;
 }) {
-  const classes = useStyles();
   const [companyAvatar, setCompanyAvatar] = useState(
     company?.logo || defaultImage.companyAvatar
   );
@@ -68,10 +54,9 @@ function CompanyCard({
         }}
         title={
           <Box>
-            <img
+            <CoverImage
               src={company?.banner || defaultImage.companyCover}
               alt="cover"
-              className={classes.coverImage}
             />
             <Box display={'flex'} gap={2}>
               <Avatar

@@ -30,6 +30,7 @@ import openProfile from 'src/utils/openProfile';
 import CheckIcon from '@mui/icons-material/Check';
 import alertDialog from 'src/utils/alertDialog';
 import { ApprovalStatus } from 'src/constants/enum';
+import { fontStyle } from 'html2canvas/dist/types/css/property-descriptors/font-style';
 
 const renderJobTitle = (data) => {
   if (data.value) {
@@ -61,23 +62,21 @@ const renderProfileName = (data) => {
   const { data: profile } = useQueryCandidateApplicationById(data?.row?.id);
 
   return (
-    <Grid container alignItems={'center'}>
-      <Typography
-        sx={{
-          color: '#319fce',
-          ':hover': {
-            textDecoration: 'none',
-            cursor: 'pointer'
-          },
-          textDecoration: 'none'
-        }}
-        onClick={() => {
-          openProfile({ profile: profile });
-        }}
-      >
-        {data.value}
-      </Typography>
-    </Grid>
+    <Typography
+      sx={{
+        color: '#319fce',
+        ':hover': {
+          textDecoration: 'none',
+          cursor: 'pointer'
+        },
+        textDecoration: 'none'
+      }}
+      onClick={() => {
+        openProfile({ profile: profile });
+      }}
+    >
+      {data.value}
+    </Typography>
   );
 };
 
@@ -126,12 +125,14 @@ export const renderMatchingScore = (data) => {
   else if (data.value < 0) result = 'Không phù hợp';
 
   return data.value === undefined || data.value === null ? (
-    <Typography>Chưa xác định</Typography>
+    <Typography sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+      Chưa xác định
+    </Typography>
   ) : (
     <Box
       sx={{
         width: '90%',
-        borderRadius: 3,
+        borderRadius: 2,
         p: 1,
         bgcolor:
           data.value >= HIGH_SCORE
@@ -142,7 +143,8 @@ export const renderMatchingScore = (data) => {
             ? '#b5b5b5'
             : '#efefef',
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
       }}
     >
       {result}

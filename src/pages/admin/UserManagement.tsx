@@ -47,17 +47,14 @@ const renderActionsCell = (params) => {
   };
 
   return (
-    <>
-      <Button
-        onClick={() => handleDeleteUser(params.id)}
-        variant="contained"
-        color="error"
-        size="small"
-        sx={{ marginLeft: 1 }}
-      >
-        Xóa
-      </Button>
-    </>
+    <Button
+      onClick={() => handleDeleteUser(params.id)}
+      variant="contained"
+      color="error"
+      size="small"
+    >
+      Xóa
+    </Button>
   );
 };
 
