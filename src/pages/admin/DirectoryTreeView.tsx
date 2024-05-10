@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { TreeView } from '@mui/x-tree-view/TreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import professions from 'src/constants/professions';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
-import { styled } from '@mui/styles';
-import { Button, Typography } from '@mui/material';
-
-// const TreeItem = styled(DefaultTreeItem)(({ theme }) => ({
-//   borderBottom: '2px solid #e5eaf2',
-//   '.MuiTreeItem-label': {
-//     minHeight: 50,
-//     display: 'flex',
-//     alignItems: 'center'
-//   }
-// }));
+import { Box, Button, Typography } from '@mui/material';
 
 const treeItemStyle = {
   '.MuiTreeItem-label': {
@@ -59,8 +48,8 @@ export default function DirectoryTreeView(props) {
       }}
     >
       <TreeView
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
+        // collapseIcon={<ExpandMoreIcon />}
+        // defaultExpandIcon={<ChevronRightIcon />}
         sx={{ minHeight: 570 }}
       >
         <TreeItem

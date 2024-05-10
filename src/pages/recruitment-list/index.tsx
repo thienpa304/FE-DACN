@@ -66,7 +66,7 @@ const RecruitmentList = () => {
                 onChange={handleTabsChange}
                 value={currentTab}
                 variant="scrollable"
-                scrollButtons="auto"
+                scrollButtons={false}
                 textColor="primary"
                 indicatorColor="primary"
                 sx={{

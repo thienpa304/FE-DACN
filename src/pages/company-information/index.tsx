@@ -1,5 +1,12 @@
-import { Avatar, Box, Container, Grid, Paper, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import {
+  Avatar,
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  styled
+} from '@mui/material';
 import CustomContainer from 'src/components/CustomContainer';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import JobList from 'src/modules/jobs/components/JobList';
@@ -9,31 +16,25 @@ import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyI
 import { useLocation, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
-  coverImage: {
-    width: '100%',
-    height: '280px',
-    objectFit: 'cover'
-  },
-  paper: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-}));
+const CoverImage = styled('img')({
+  width: '100%',
+  height: '280px',
+  objectFit: 'cover'
+});
+
+const ImagePaper = styled(Paper)({
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center'
+});
 
 const renderBanner = (banner: string) => {
-  const classes = useStyles();
   return (
-    <Paper className={classes.paper} elevation={12}>
-      <img
-        src={banner || defaultImage.companyCover}
-        alt="cover"
-        className={classes.coverImage}
-      />
-    </Paper>
+    <ImagePaper elevation={12}>
+      <CoverImage src={banner || defaultImage.companyCover} alt="cover" />
+    </ImagePaper>
   );
 };
 

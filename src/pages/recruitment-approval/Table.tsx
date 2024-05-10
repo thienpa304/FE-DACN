@@ -16,11 +16,9 @@ import useQueryTotalResultOfJobsByAdmin from 'src/modules/jobs/hooks/useQueryTot
 import Pagination from 'src/components/Pagination';
 import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import dayjs from 'dayjs';
-import SuspenseLoader from 'src/components/SuspenseLoader';
 import { Job } from 'src/modules/jobs/model';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { checkContent } from 'src/modules/ai/roles';
-import { signal } from '@preact/signals-react';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
 import CheckIcon from '@mui/icons-material/Check';

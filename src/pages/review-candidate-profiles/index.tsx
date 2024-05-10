@@ -78,7 +78,7 @@ const CandidateProfiles = () => {
                 onChange={handleTabsChange}
                 value={currentQuery.currentTab}
                 variant="scrollable"
-                scrollButtons="auto"
+                scrollButtons={false}
                 textColor="primary"
                 indicatorColor="primary"
                 sx={{

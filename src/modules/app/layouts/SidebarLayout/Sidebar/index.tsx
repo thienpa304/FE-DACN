@@ -57,7 +57,7 @@ function Sidebar() {
       >
         <Scrollbar>
           <Box mt={2}>
-            <Grid container justifyContent={'center'}>
+            <Grid container sx={{ justifyContent: 'center' }}>
               <Logo />
             </Grid>
           </Box>

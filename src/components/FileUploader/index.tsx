@@ -1,10 +1,9 @@
 import React from 'react';
-import { Box, Button, CircularProgress } from '@mui/material';
+import { Box, Button, styled } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import FormControl from 'src/components/FormControl';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { User } from 'src/modules/users/model';
-import styled from '@emotion/styled';
 
 const Input = styled('input')({
   display: 'none'

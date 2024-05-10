@@ -38,7 +38,7 @@ export default function ManagementUserSettings() {
               onChange={handleTabsChange}
               value={currentTab}
               variant="scrollable"
-              scrollButtons="auto"
+              scrollButtons={false}
               textColor="primary"
               indicatorColor="primary"
               sx={{ borderBottom: 2, borderColor: 'grey.300', mb: -2 }}

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
 import {
   Container,
   Paper,
@@ -29,31 +28,28 @@ import {
   defaultImage
 } from 'src/constants/uploadFileRule';
 import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
-import useMutateCompany from '../../hooks/useMutateCompany';
 import useMutateCompanyLogo from '../../hooks/useMutateCompanyLogo';
 import useMutateCompanyBanner from '../../hooks/useMutateCompanyBanner';
 
-const useStyles = makeStyles((theme) => ({
-  coverImage: {
-    width: '100%',
-    height: '280px',
-    objectFit: 'cover'
-  },
-  paper: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-}));
+const CoverImage = styled('img')({
+  width: '100%',
+  height: '280px',
+  objectFit: 'cover'
+});
+
+const ImagePaper = styled(Paper)({
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center'
+});
 
 const Input = styled('input')({
   display: 'none'
 });
 
 function CompanyCover() {
-  const classes = useStyles();
   const { user } = useApp();
   const { company } = useQueryCompany();
   const { companyAvatarType, companyCoverType } = DocumentType;
@@ -149,8 +145,8 @@ function CompanyCover() {
   }, [user, company]);
 
   const renderCoverImage = () => (
-    <Paper className={classes.paper} elevation={12}>
-      <img src={companyCover.img} alt="cover" className={classes.coverImage} />
+    <ImagePaper elevation={12}>
+      <CoverImage src={companyCover.img} alt="cover" />
       <Button
         color="primary"
         variant="contained"
@@ -195,7 +191,7 @@ function CompanyCover() {
           </MenuItem>
         )}
       </Menu>
-    </Paper>
+    </ImagePaper>
   );
 
   const renderAvatar = () => (

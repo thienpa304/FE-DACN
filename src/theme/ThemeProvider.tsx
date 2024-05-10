@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { themeCreator } from './base';
-import { StylesProvider } from '@mui/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
+
 import { Props } from 'src/types/prop-base';
 
 export const ThemeContext = React.createContext(
@@ -17,11 +18,11 @@ const ThemeProviderWrapper: React.FC<Props> = (props) => {
     _setThemeName(themeName);
   };
   return (
-    <StylesProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       <ThemeContext.Provider value={setThemeName}>
         <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
       </ThemeContext.Provider>
-    </StylesProvider>
+    </StyledEngineProvider>
   );
 };
 

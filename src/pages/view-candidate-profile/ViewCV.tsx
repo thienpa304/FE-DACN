@@ -9,14 +9,11 @@ import {
 } from '@mui/material';
 import CustomContainer from 'src/components/CustomContainer';
 import dayjs from 'dayjs';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 import PersonalViewUI from 'src/modules/jobProfile/PersonalViewUI';
 import GeneralViewUI from 'src/modules/jobProfile/GeneralViewUI';
 import { ApplicationType } from 'src/constants/enum';
 import { useEffect, useState } from 'react';
 import { toOutputDateString } from 'src/utils/inputOutputFormat';
-// import PDFview from './PDFview';
 
 const bodyText = {
   fontSize: 15,

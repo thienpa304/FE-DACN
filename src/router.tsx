@@ -62,7 +62,6 @@ const CompanyInformation = Loader(
 const ShowCompanyPage = Loader(lazy(() => import('src/pages/company-list')));
 
 // Applications
-const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
 const EmployeeProfile = Loader(
@@ -121,10 +120,6 @@ const routes: RouteObject[] = [
           {
             path: '/job/:id',
             element: <JobDetail />
-          },
-          {
-            path: 'messenger',
-            element: <Messenger />
           },
           {
             path: '/profession/:id',
