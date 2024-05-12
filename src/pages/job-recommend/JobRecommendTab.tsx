@@ -10,18 +10,31 @@ import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
 
 export default function JobRecommendTab(props) {
   const { id, profile } = props;
-  const { keywords, profession, degree, experience } = profile;
+  const { keywords, profession, degree, experience, sex } = profile;
+  const [onlineTotalPage, setOnlineTotalPage] = useState(1);
+  const [documentTotalPage, setDocumentTotalPage] = useState(1);
 
-  const { totalResults } = useQueryTotalResultOfJobs({
-    keywords: keywords
-  });
+  const { totalResults } = useQueryTotalResultOfJobs(
+    {
+      keywords: keywords,
+      profession: profession,
+      sex: sex
+    },
+    id
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredJob, setFilteredJob] = useState<Job[]>([]);
+  console.log(profile);
 
   const pageSize = 4;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
+  // if (id === 'online') {
+  //   setOnlineTotalPage(totalPages);
+  // } else if (id === 'document') setDocumentTotalPage(totalPages);
+
   const { jobs } = useQueryAllJob({
     keywords: keywords,
+    profession: profession,
     page: currentPage,
     num: pageSize
   });

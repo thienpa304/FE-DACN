@@ -34,8 +34,13 @@ const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
 const ACCEPTED_FILE_SIZE = CVFormat.acceptSize;
 const ACCEPTED_FILE_SIZE_MB = CVFormat.acceptSize / 1024 / 1024;
 
+const onlineRecommend = JobRecommendTab;
+const documentRecommend = JobRecommendTab;
+
 const AnalyzeProfile = (props) => {
   const { id } = props;
+  console.log(id);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [failedOCR, setFailedOCR] = useState(false);
@@ -99,7 +104,7 @@ const AnalyzeProfile = (props) => {
     if (id !== 'upload-cv' && !profile?.userId) return;
 
     if (profile?.keywords) {
-      setKeywords(profile?.keywords);
+      setKeywords(profile?.keywords?.split(', ')?.slice(0, 15).join(', '));
       return;
     }
 

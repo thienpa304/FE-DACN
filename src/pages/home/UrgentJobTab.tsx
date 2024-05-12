@@ -38,7 +38,7 @@ function UrgentJobTab() {
         <Box display="flex" justifyContent="space-between">
           <ScheduleIcon color="secondary" sx={{ fontSize: 35 }} />
           <Typography fontWeight={700} fontSize={20} alignSelf="end">
-            Việc làm tuyển gấp
+            Việc làm đang tuyển
           </Typography>
         </Box>
         <Link
@@ -52,7 +52,7 @@ function UrgentJobTab() {
         </Link>
       </Box>
       <Box p={3}>
-        <Grid container mb={3} spacing={1}>
+        <Grid container mb={3} spacing={1} minHeight={550}>
           {jobs.map((job, index) => (
             <Grid key={job.id} item xs={12} sm={6} md={4}>
               <SmallJobCard key={index} job={job} />

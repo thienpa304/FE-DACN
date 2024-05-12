@@ -11,9 +11,6 @@ function ResultJobList() {
   const { state, pathname } = useLocation();
   const { id } = useParams();
 
-  const locationState = state as any;
-  // console.log(useLocation());
-  // console.log(useParams());
   const professionName = PROFESSIONS.find((profession) => {
     const url = rewriteUrl(profession.name);
 

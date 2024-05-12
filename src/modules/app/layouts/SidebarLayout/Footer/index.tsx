@@ -1,183 +1,118 @@
-import { Link } from 'react-router-dom';
+import { Box, Container, Grid, Link, Typography } from '@mui/material';
+
+const webIcon = [
+  {
+    name: 'Facebook',
+    icon: 'facebook',
+    link: 'https://www.facebook.com/'
+  },
+  {
+    name: 'Instagram',
+    icon: 'instagram',
+    link: 'https://www.instagram.com/'
+  },
+  {
+    name: 'Twitter',
+    icon: 'twitter',
+    link: 'https://twitter.com/'
+  },
+  {
+    name: 'Zalo',
+    icon: 'zalo',
+    link: 'https://zalo.me/'
+  },
+  {
+    name: 'LinkedIn',
+    icon: 'linkedin',
+    link: 'https://linkedin.com/'
+  }
+];
+
+const downloadIcon = [
+  {
+    name: 'App Store',
+    icon: 'appstore',
+    link: 'https://www.apple.com/app-store/'
+  },
+  {
+    name: 'Google Play',
+    icon: 'googleplay',
+    link: 'https://play.google.com/store/apps'
+  }
+];
 
 const Footer = () => {
   return (
-    <footer>
-      <div className="container-fluid bg-primary">
-        <div className="row ">
-          <div className="col-md-9 py-3 text-white">
-            Get connected with us on social networks!
-          </div>
-          <div className="col-md-3 py-3 text-center text-white">
-            <Link to="/" title="Apple">
-              <i className="bi bi-apple text-light me-3"></i>
-            </Link>
-            <Link to="/" title="Windows">
-              <i className="bi bi-windows text-light me-3"></i>
-            </Link>
-            <Link to="/" title="Android">
-              <i className="bi bi-android2 text-light me-3"></i>
-            </Link>
-            |
-            <Link to="/" title="Twitter">
-              <i className="bi bi-twitter-x text-light ms-3 me-3"></i>
-            </Link>
-            <Link to="/" title="Facebook">
-              <i className="bi bi-facebook text-light me-3"></i>
-            </Link>
-            <Link to="/" title="Instagram">
-              <i className="bi bi-instagram text-light me-3"></i>
-            </Link>
-            <Link to="/" title="Youtube">
-              <i className="bi bi-youtube text-light me-3"></i>
-            </Link>
-          </div>
-        </div>
-      </div>
-      <div className="container-fluid bg-dark text-white">
-        <div className="row ">
-          <div className="col-md-3 py-3">
-            <div className="h6">Company Name</div>
-            <hr />
-            <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book.
-            </p>
-          </div>
-          <div className="col-md-3 py-3">
-            <div className="h6">Products</div>
-            <hr />
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Electronics
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Mobiles
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Car & bike
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Super Market
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Travel Cards
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div className="col-md-3 py-3">
-            <div className="h6">Policy</div>
-            <hr />
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Return Policy
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Terms Of Use
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Security
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  Privacy
-                </Link>
-              </li>
-              <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
-                  className="text-decoration-none text-white stretched-link"
-                >
-                  EPR Compliance
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div className="col-md-3 py-3">
-            <div className="h6">Address</div>
-            <hr />
-            <address>
-              <strong>Twitter, Inc.</strong>
-              <br />
-              1355 Market St, Suite 900
-              <br />
-              San Francisco, CA 94103
-              <br />
-              <abbr title="Phone">P:</abbr> (123) 456-7890
-            </address>
-            <div className="h6">Customer Care</div>
-            <hr />
-            <i className="bi bi-telephone"></i> +1800 100 1000
+    <Box
+      sx={{
+        bgcolor: '#f5f4ff',
+        px: 7,
+        py: 2,
+        borderTop: '1px solid #e0e0e0',
+        mt: 5
+      }}
+    >
+      <Grid container spacing={5}>
+        <Grid item md={6}>
+          <Typography fontWeight={700} fontSize={18} lineHeight={3}>
+            Về chúng tôi
+          </Typography>
+          <Typography fontWeight={700} lineHeight={3}>
+            Công Ty Cổ Phần Việc Làm TopViecLam
+          </Typography>
+          <Typography lineHeight={1.8} fontSize={12}>
+            Phòng 102, Tòa nhà 20-20B Trần Cao Vân, Phường Đa Kao, Quận 1, Thành
+            phố Hồ Chí Minh
             <br />
-            <i className="bi bi-envelope"></i> info@email.com
-          </div>
-        </div>
-      </div>
-      <div className="container-fluid bg-secondary text-white text-center">
-        <div className="row">
-          <div className="col-md-2 py-2">
-            <Link to="/" className="text-white text-decoration-none">
-              <i className="bi bi-briefcase text-warning"></i> Partner with us
-            </Link>
-          </div>
-          <div className="col-md-2 py-2">
-            <Link to="/" className="text-white text-decoration-none">
-              <i className="bi bi-badge-ad text-info"></i> Advertise
-            </Link>
-          </div>
-          <div className="col-md-2 py-2">
-            <Link to="/" className="text-white text-decoration-none">
-              <i className="bi bi-gift"></i> Gift
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
+            Chi nhánh: Tầng 4, tòa nhà Times Tower, 35 Lê Văn Lương, Thanh Xuân,
+            Hà Nội.
+            <br />
+            Giấy phép hoạt động dịch vụ việc làm số: 4938/SLĐTBXH-GP do Sở Lao
+            Động Thương Binh & Xã Hội TP.HCM cấp
+            <br />
+            Điện thoại: (028) 7108 2424 | (024) 7308 2424
+            <br />
+            Email hỗ trợ người tìm việc: ntv@gmail.com
+            <br />
+            Email hỗ trợ nhà tuyển dụng: ntd@gmail.com
+          </Typography>
+        </Grid>
+        <Grid item md={6}>
+          <Typography fontWeight={700} fontSize={18} lineHeight={3}>
+            Kết nối với TopViệcLàm
+          </Typography>
+          <Box display="flex" gap={2}>
+            {webIcon.map((item) => (
+              <Link href={item.link}>
+                <Box
+                  component={'img'}
+                  src={`/static/images/icons/${item.icon}.svg`}
+                  alt={item.name}
+                  width={50}
+                />
+              </Link>
+            ))}
+          </Box>
+
+          <Typography fontWeight={700} fontSize={18} mt={3}>
+            Ứng dụng di động
+          </Typography>
+          <Box display="flex" gap={2}>
+            {downloadIcon.map((item) => (
+              <Link href={item.link}>
+                <Box
+                  component={'img'}
+                  src={`/static/images/icons/${item.icon}.svg`}
+                  alt={item.name}
+                  height="120px"
+                  my={-2}
+                />
+              </Link>
+            ))}
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 export default Footer;

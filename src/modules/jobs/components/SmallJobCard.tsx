@@ -72,8 +72,10 @@ function SmallJobCard({ job }) {
               src={companyAvatar}
               variant="rounded"
               sx={{
-                width: 100,
-                height: 90,
+                maxWidth: 100,
+                width: 'auto',
+                maxHeight: 90,
+                height: 'auto',
                 objectFit: 'cover'
               }}
             />
