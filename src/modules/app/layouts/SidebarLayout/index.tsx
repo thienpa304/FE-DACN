@@ -5,13 +5,14 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { SidebarContext } from 'src/contexts/SidebarContext';
+import Footer from './Footer';
 
 interface SidebarLayoutProps {
   children?: ReactNode;
-  showSidebar?: boolean;
+  showSideBar?: boolean;
 }
 
-const SidebarLayout: FC<SidebarLayoutProps> = ({ showSidebar = true }) => {
+const SidebarLayout: FC<SidebarLayoutProps> = ({ showSideBar = true }) => {
   const theme = useTheme();
 
   return (
@@ -43,8 +44,8 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showSidebar = true }) => {
           }
         }}
       >
-        <Header showSidebar={showSidebar} />
-        {showSidebar && <Sidebar />}
+        <Header showSideBar={showSideBar} />
+        {showSideBar && <Sidebar />}
         <Box
           sx={{
             position: 'relative',
@@ -53,7 +54,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showSidebar = true }) => {
             flex: 1,
             pt: `${theme.header.height}`,
             [theme.breakpoints.up('lg')]: {
-              ml: showSidebar && `${theme.sidebar.width}`
+              ml: showSideBar ? `${theme.sidebar.width}` : undefined
             }
           }}
         >
@@ -61,6 +62,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showSidebar = true }) => {
             <Outlet />
           </Box>
         </Box>
+        {/* <Footer /> */}
       </Box>
     </>
   );

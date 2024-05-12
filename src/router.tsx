@@ -1,12 +1,17 @@
 import { Suspense, lazy } from 'react';
-import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
+import { Navigate } from 'react-router-dom';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import BaseLayout from './modules/app/layouts/BaseLayout';
 import SidebarLayout from './modules/app/layouts/SidebarLayout';
 import AuthRouteProvider from './modules/auth/components/AuthRouteProvider';
 import { Role } from './modules/users/model';
+import UserManagementTable from './pages/admin/UserManagement';
+import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManagement';
+import EmailNotification from './pages/admin/EmailNotification';
+import CandidateProfileAnalysis from './pages/admin/CandidateProfileAnalysis ';
+import ProfileManagement from './pages/admin/ProfileManagement';
 
 const Loader = (Component) => (props) =>
   (
@@ -16,59 +21,76 @@ const Loader = (Component) => (props) =>
   );
 
 // Recruitment
-
 const RecruitmentCreate = Loader(
-  lazy(() => import('src/modules/recruitment/create'))
+  lazy(() => import('src/pages/recruitment-create'))
 );
-
+const StatisticsAndReports = Loader(
+  lazy(() => import('src/pages/admin/StatisticsAndReports'))
+);
 const RecruitmentList = Loader(
-  lazy(() => import('src/modules/recruitment/list'))
+  lazy(() => import('src/pages/recruitment-list'))
 );
+const RecruitmentListApproval = Loader(
+  lazy(() => import('src/pages/recruitment-approval'))
+);
+const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
 
 // Candidate
-
-const CandidateProfile = Loader(
-  lazy(() => import('src/modules/candidate/profile'))
+const CandidateProfiles = Loader(
+  lazy(() => import('src/pages/review-candidate-profiles'))
+);
+const ViewCandidateProfile = Loader(
+  lazy(() => import('src/pages/view-candidate-profile'))
 );
 
 // User
-
 const Login = Loader(lazy(() => import('src/modules/auth/components/Login')));
 const Register = Loader(
   lazy(() => import('src/modules/auth/components/Register'))
 );
 
 // Pages
-
-const Overview = Loader(lazy(() => import('src/modules/overview')));
-
-// Dashboards
-
-const Crypto = Loader(lazy(() => import('src/modules/crypto')));
+const Home = Loader(lazy(() => import('src/pages/home')));
+const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
+const UrgentHiringJob = Loader(
+  lazy(() => import('src/pages/urgent-hiring-job'))
+);
+const ResultJobList = Loader(lazy(() => import('src/pages/result-job-list')));
+const CompanyInformation = Loader(
+  lazy(() => import('src/pages/company-information'))
+);
+const ShowCompanyPage = Loader(lazy(() => import('src/pages/company-list')));
 
 // Applications
-
-const Messenger = Loader(lazy(() => import('src/modules/messenger')));
-const Transactions = Loader(lazy(() => import('src/modules/transactions')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
-
-// Components
-
-const Buttons = Loader(lazy(() => import('src/modules/components/Buttons')));
-const Modals = Loader(lazy(() => import('src/modules/components/Modals')));
-const Accordions = Loader(
-  lazy(() => import('src/modules/components/Accordions'))
+const EmployeeProfile = Loader(
+  lazy(() => import('src/pages/employee-profile/JobProfile'))
 );
-const Tabs = Loader(lazy(() => import('src/modules/components/Tabs')));
-const Badges = Loader(lazy(() => import('src/modules/components/Badges')));
-const Tooltips = Loader(lazy(() => import('src/modules/components/Tooltips')));
-const Avatars = Loader(lazy(() => import('src/modules/components/Avatars')));
-const Cards = Loader(lazy(() => import('src/modules/components/Cards')));
-const Forms = Loader(lazy(() => import('src/modules/components/Forms')));
+const OnlineProfile = Loader(
+  lazy(() => import('src/modules/jobProfile/onlineProfile'))
+);
+const AttachedDocument = Loader(
+  lazy(() => import('src/modules/jobProfile/attachedDocument'))
+);
+const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
+
+const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
+
+const CompanyFollow = Loader(lazy(() => import('src/pages/company-follow')));
+
+const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
+
+// Employer
+const EmployeeFollow = Loader(lazy(() => import('src/pages/employee-follow')));
+
+const FindProfiles = Loader(lazy(() => import('src/pages/find-profiles')));
+
+const RecommendProfile = Loader(
+  lazy(() => import('src/pages/recommend-profiles'))
+);
 
 // Status
-
 const Status404 = Loader(lazy(() => import('src/modules/status/Status404')));
 const Status500 = Loader(lazy(() => import('src/modules/status/Status500')));
 const StatusComingSoon = Loader(
@@ -85,15 +107,31 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <SidebarLayout showSidebar={false} />,
+        element: <SidebarLayout showSideBar={false} />,
         children: [
           {
             path: '',
-            element: <Overview />
+            element: <Home />
           },
           {
-            path: 'messenger',
-            element: <Messenger />
+            path: '/urgent-hiring-job',
+            element: <UrgentHiringJob />
+          },
+          {
+            path: '/job/:id',
+            element: <JobDetail />
+          },
+          {
+            path: '/profession/:id',
+            element: <ResultJobList />
+          },
+          {
+            path: '/company/:id',
+            element: <CompanyInformation />
+          },
+          {
+            path: '/company',
+            element: <ShowCompanyPage />
           }
         ]
       },
@@ -102,7 +140,7 @@ const routes: RouteObject[] = [
         path: '/employee',
         element: (
           <AuthRouteProvider role={[Role.EMPLOYEE]}>
-            <SidebarLayout showSidebar={false} />
+            <SidebarLayout />
           </AuthRouteProvider>
         ),
         children: [
@@ -111,8 +149,32 @@ const routes: RouteObject[] = [
             element: <UserProfile />
           },
           {
-            path: 'form',
-            element: <Forms />
+            path: 'recruitment-profile',
+            element: <EmployeeProfile />
+          },
+          {
+            path: 'online-profile',
+            element: <OnlineProfile />
+          },
+          {
+            path: 'attachment-profile',
+            element: <AttachedDocument />
+          },
+          {
+            path: 'job-applied',
+            element: <JobApplied />
+          },
+          {
+            path: 'job-recommend',
+            element: <JobRecommend />
+          },
+          {
+            path: 'job-follow',
+            element: <JobFollow />
+          },
+          {
+            path: 'company-follow',
+            element: <CompanyFollow />
           }
         ]
       },
@@ -191,6 +253,10 @@ const routes: RouteObject[] = [
           {
             path: 'list',
             element: <RecruitmentList />
+          },
+          {
+            path: 'list/:id',
+            element: <RecruitmentEdit />
           }
         ]
       },
@@ -203,9 +269,29 @@ const routes: RouteObject[] = [
           },
           {
             path: 'profile',
-            element: <CandidateProfile />
+            element: <CandidateProfiles />
+          },
+          {
+            path: 'profile/:id',
+            element: <ViewCandidateProfile />
           }
         ]
+      },
+      {
+        path: 'find-profiles',
+        element: <FindProfiles />
+      },
+      {
+        path: 'find-profiles/:id',
+        element: <FindProfiles />
+      },
+      {
+        path: 'recommend-profiles',
+        element: <RecommendProfile />
+      },
+      {
+        path: 'follow-profile',
+        element: <EmployeeFollow />
       }
     ]
   },
@@ -234,6 +320,34 @@ const routes: RouteObject[] = [
             element: <UserSettings />
           }
         ]
+      },
+      {
+        path: 'jobs-posting',
+        element: <RecruitmentListApproval />
+      },
+      {
+        path: 'user-manage',
+        element: <UserManagementTable />
+      },
+      {
+        path: 'statistic-report',
+        element: <StatisticsAndReports />
+      },
+      {
+        path: 'manage-access',
+        element: <SecurityAndAccessManagement />
+      },
+      {
+        path: 'mailer',
+        element: <EmailNotification />
+      },
+      {
+        path: 'analyze-profile',
+        element: <CandidateProfileAnalysis />
+      },
+      {
+        path: 'manage-profile',
+        element: <ProfileManagement />
       }
     ]
   },
@@ -248,42 +362,6 @@ const routes: RouteObject[] = [
       {
         path: '',
         element: <Navigate to="buttons" replace />
-      },
-      {
-        path: 'buttons',
-        element: <Buttons />
-      },
-      {
-        path: 'modals',
-        element: <Modals />
-      },
-      {
-        path: 'accordions',
-        element: <Accordions />
-      },
-      {
-        path: 'tabs',
-        element: <Tabs />
-      },
-      {
-        path: 'badges',
-        element: <Badges />
-      },
-      {
-        path: 'tooltips',
-        element: <Tooltips />
-      },
-      {
-        path: 'avatars',
-        element: <Avatars />
-      },
-      {
-        path: 'cards',
-        element: <Cards />
-      },
-      {
-        path: 'forms',
-        element: <Forms />
       }
     ]
   }

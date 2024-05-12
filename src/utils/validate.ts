@@ -1,4 +1,4 @@
-import { regexEmail, regexPhoneNumber } from 'src/constants';
+import { regexEmail, regexPhoneNumber, regexInteger } from 'src/constants';
 import { RegisterOptions } from 'react-hook-form';
 
 export const getRulesByPattern = (
@@ -15,5 +15,7 @@ export const getRulesByPattern = (
     };
   if (pattern === 'email')
     rule.pattern = { value: regexEmail, message: `Email không hợp lệ` };
+  if (pattern === 'integer')
+    rule.pattern = { value: regexInteger, message: `Số không hợp lệ` };
   return rule;
 };

@@ -1,22 +1,14 @@
 import { useState, ChangeEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
-import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { Container, Tabs, Tab, Grid, Typography } from '@mui/material';
 import Footer from 'src/components/Footer';
 import { styled } from '@mui/material/styles';
 import InfoAccountTab from './InfoAccountTab';
 import InfoCompanyTab from './InfoCompanyTab';
 import { useApp } from 'src/modules/app/hooks';
+import TabsWrapper from 'src/components/TabWrapper';
 
-const TabsWrapper = styled(Tabs)(
-  () => `
-    .MuiTabs-scrollableX {
-      overflow-x: auto !important;
-    }
-`
-);
-
-function ManagementUserSettings() {
+export default function ManagementUserSettings() {
   const { isEmployer } = useApp();
   const [currentTab, setCurrentTab] = useState<string>('info_account');
   const tabs = [
@@ -33,7 +25,7 @@ function ManagementUserSettings() {
       <Helmet>
         <title>User Settings - Applications</title>
       </Helmet>
-      <Container maxWidth="lg" sx={{ marginTop: 4 }}>
+      <Container maxWidth="md" sx={{ marginTop: 4 }}>
         <Grid
           container
           direction="row"
@@ -46,16 +38,18 @@ function ManagementUserSettings() {
               onChange={handleTabsChange}
               value={currentTab}
               variant="scrollable"
-              scrollButtons="auto"
+              scrollButtons={false}
               textColor="primary"
               indicatorColor="primary"
+              sx={{ borderBottom: 2, borderColor: 'grey.300', mb: -2 }}
             >
-              {tabs.map((tab) => {
-                if (!tab.show) return <></>;
-                return (
-                  <Tab key={tab.value} label={tab.label} value={tab.value} />
-                );
-              })}
+              {tabs
+                .filter((tab) => tab.show)
+                .map((tab) => {
+                  return (
+                    <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  );
+                })}
             </TabsWrapper>
           </Grid>
           <Grid item xs={12}>
@@ -68,5 +62,3 @@ function ManagementUserSettings() {
     </>
   );
 }
-
-export default ManagementUserSettings;
