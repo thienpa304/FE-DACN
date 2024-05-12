@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Outlet } from 'react-router-dom';
 
 import { Box } from '@mui/material';
+import Footer from '../SidebarLayout/Footer';
 
 interface BaseLayoutProps {
   children?: ReactNode;

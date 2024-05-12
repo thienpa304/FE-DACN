@@ -24,6 +24,7 @@ import {
 import GeneralViewUI from './GeneralViewUI';
 import TagInput from 'src/components/TagInput';
 import skills from 'src/constants/skills';
+import { SKILLS } from 'src/constants';
 interface Option {
   value: any;
   label: any;
@@ -90,6 +91,8 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
 
   const handleSaveProfile = (data: FormProps) => {
     const newData = processDataPayload(data);
+    console.log('newData', newData);
+
     onSubmit(newData);
     setIsReadOnly(true);
   };
@@ -102,11 +105,15 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
   const onEdit = () => setIsReadOnly(false);
 
   const processDataPayload = (data: FormProps) => {
+    console.log(data.skills);
+
     return {
       ...data,
       profession: convertObjectListToString(data?.profession as Option[]),
       workAddress: convertObjectListToString(data?.workAddress as Option[]),
-      skills: convertObjectListToStringForSkill(employeeSkills)
+      skills: Array.isArray(data.skills)
+        ? data.skills.map((item) => item.value || item).join(', ')
+        : data.skills
     };
   };
 
@@ -284,11 +291,21 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
               />
             </Grid>
             <Grid item xs={12}>
-              <TagInput
-                suggestions={skills}
-                forwardedRef={ref}
-                value={employeeSkills}
-                onChange={setSetEmployeeSkills}
+              <FormControl
+                element={
+                  <Autocomplete
+                    freeSolo={true}
+                    limitTags={7}
+                    options={SKILLS.map((item) => item.value)}
+                  />
+                }
+                defaultValue={data?.skills?.split(', ')}
+                control={control}
+                errors={errors}
+                id="skills"
+                label="Kĩ năng bắt buộc"
+                name="skills"
+                required
               />
               <Typography
                 fontSize={12}

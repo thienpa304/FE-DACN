@@ -25,6 +25,8 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
   const handleSelectProfession = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    console.log(event.target.value);
+
     setSelectedProfession(() => event.target.value);
   };
 
@@ -38,7 +40,7 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
         ...sx
       }}
     >
-      <Grid item xs={8}>
+      <Grid item md={8} xs={12}>
         <TextField
           value={searchValue}
           onChange={handleSearchChange}
@@ -57,7 +59,7 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
           }}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item md={2} xs={6}>
         <SelectInput
           options={ProfessionOptions}
           onChange={handleSelectProfession}
@@ -73,15 +75,11 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
           size="medium"
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item md={2} xs={6}>
         <Link
-          to={
-            searchValue
-              ? `${to}/${
-                  rewriteUrl(selectedProfession) || 'Tat-ca'
-                }?search=${searchValue}`
-              : ''
-          }
+          to={`${to}/${
+            rewriteUrl(selectedProfession) || 'Tat-ca'
+          }?search=${searchValue}`}
           sx={{ color: '#000' }}
           state={{
             jobTitle: searchValue?.trim(),

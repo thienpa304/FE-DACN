@@ -81,41 +81,44 @@ function ProfessionType() {
         professionList={matchProfessionWithCount}
       />
 
-      <Container
-        sx={{
-          overflow: 'hidden',
-          p: 2,
-          display: 'flex',
-          justifyContent: 'center'
-        }}
-      >
+      <Grid container p={2} rowGap={2}>
         {professionToShow?.map((profession, index) => (
-          <Link
+          <Grid
+            item
+            xs={4}
+            sm={3}
+            lg={12 / 7}
+            component={Link}
             key={index}
             to={`/profession/${rewriteUrl(profession?.name)}`}
             state={{ profession: profession.name, pageTitle: profession.name }}
             sx={{
-              width: 170,
-              height: 170,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              marginX: 2,
-              gap: '5px',
+              padding: () => ({
+                xs: 1,
+                sm: 0
+              }),
               textDecoration: 'none',
               '&:hover': {
                 color: '#FF7D55'
               }
             }}
           >
-            <img
+            <Box
+              component={'img'}
               src={profession.icon}
               alt="shopping-bag"
-              style={{
+              sx={{
+                maxWidth: (theme) => ({
+                  xs: '70px',
+                  sm: '90px'
+                }),
                 objectFit: 'cover',
-                width: '90px',
-                height: '90px',
-                borderRadius: 2
+                width: 'auto',
+                height: 'auto',
+                borderRadius: 1
               }}
             />
             <Box display={'flex'} columnGap="2px" alignItems="center">
@@ -142,14 +145,18 @@ function ProfessionType() {
               sx={{
                 '&:hover': {
                   color: '#FF7D55'
-                }
+                },
+                fontSize: (theme) => ({
+                  xs: 12,
+                  sm: 14
+                })
               }}
             >
               {profession.name}
             </Typography>
-          </Link>
+          </Grid>
         ))}
-      </Container>
+      </Grid>
     </Card>
   );
 }

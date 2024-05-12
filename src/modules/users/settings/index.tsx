@@ -50,8 +50,11 @@ function ManagementUserSettings() {
               value={currentTab}
               variant="scrollable"
               scrollButtons={false}
-              textColor="primary"
-              indicatorColor="primary"
+              sx={{
+                display: { md: 'inline-block' },
+                borderBottom: 1,
+                borderColor: 'divider'
+              }}
             >
               {tabs.map((tab) => (
                 <Tab key={tab.value} label={tab.label} value={tab.value} />

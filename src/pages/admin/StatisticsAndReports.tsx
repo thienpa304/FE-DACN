@@ -77,25 +77,36 @@ const StatisticsAndReports = () => {
                   </Typography>
                   <BarChart
                     width={500}
-                    height={300}
+                    height={350}
                     data={jobPostingData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 30, right: 30, left: 20, bottom: 5 }}
                   >
-                    <XAxis dataKey="name" />
-                    {/* <YAxis type="number" domain={[0, 20]}/> */}
-                    <YAxis type="number" domain={[0, 'dataMax + 5']} />
+                    <XAxis
+                      dataKey="name"
+                      label={{
+                        value: 'Tháng',
+                        position: 'insideBottomRight',
+                        offset: 0
+                      }}
+                    />
+                    <YAxis
+                      type="number"
+                      domain={[0, 'dataMax + 5']}
+                      label={{
+                        value: 'Công việc',
+                        position: 'insideLeft',
+                        angle: -90,
+                        offset: 15
+                      }}
+                    />
                     <CartesianGrid strokeDasharray="3 3" />
                     <Tooltip />
-                    <Legend />
                     <Bar dataKey="value" fill="#8884d8" />
                   </BarChart>
                 </Grid>
                 <Grid item xs={4}>
-                  {/* Pie Chart - Applicant Statistics */}
                   <Typography variant="h6">Thống Kê Ứng Viên</Typography>
                   <PieChart width={300} height={300}>
-                    {' '}
-                    {/* Corrected component name */}
                     <Tooltip />
                     <Legend />
                     <Pie
@@ -104,8 +115,9 @@ const StatisticsAndReports = () => {
                       nameKey="name"
                       outerRadius={80}
                       fill="#8884d8"
+                      startAngle={90}
+                      endAngle={-270}
                     >
-                      {/* </Pie> />{' '} */}
                       {applicantData.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}

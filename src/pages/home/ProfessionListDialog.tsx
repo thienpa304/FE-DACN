@@ -4,7 +4,8 @@ import {
   DialogTitle,
   DialogContent,
   styled,
-  IconButton
+  IconButton,
+  Grid
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import professions from 'src/constants/professions';
@@ -29,7 +30,14 @@ function ProfessionListDialog(props) {
   return (
     <BootstrapDialog onClose={handleClose} open={open} fullWidth maxWidth="lg">
       <DialogTitle
-        sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}
+        sx={{
+          textAlign: 'center',
+          fontWeight: 700,
+          fontSize: () => ({
+            xs: '1rem',
+            sm: '1.3rem'
+          })
+        }}
       >
         Danh sách tất cả nghề nghiệp
       </DialogTitle>
@@ -52,22 +60,24 @@ function ProfessionListDialog(props) {
         }}
       />
       <DialogContent sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        {professionToShow?.map((profession, index) => (
-          <Link
-            key={profession?.code}
-            to={`/profession/${rewriteUrl(profession?.name)}`}
-            state={{ profession: profession?.name, pageTitle: profession.name }}
-            sx={{
-              flexBasis: '33%',
-              padding: '10px',
-              fontSize: 14,
-              justifyContent: 'left',
-              color: 'black'
-            }}
-          >
-            {profession.name} ({profession.count})
-          </Link>
-        ))}
+        <Grid container spacing={2}>
+          {professionToShow?.map((profession, index) => (
+            <Grid key={profession?.code} item xs={12} sm={6} md={4}>
+              <Link
+                to={`/profession/${rewriteUrl(profession?.name)}`}
+                state={{
+                  profession: profession?.name,
+                  pageTitle: profession.name
+                }}
+                sx={{
+                  color: 'black'
+                }}
+              >
+                {profession.name} ({profession.count})
+              </Link>
+            </Grid>
+          ))}
+        </Grid>
       </DialogContent>
     </BootstrapDialog>
   );

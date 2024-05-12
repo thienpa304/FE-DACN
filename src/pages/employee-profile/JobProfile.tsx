@@ -14,6 +14,9 @@ import useQueryOnlineProfile from '../../modules/jobProfile/onlineProfile/hooks/
 import useUpdateOnlineProfile from '../../modules/jobProfile/onlineProfile/hooks/useMutateUpdateOnlineProfile';
 import useQueryAttachedDocument from '../../modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 import useMutateUpdateAttachedDocument from '../../modules/jobProfile/attachedDocument/hooks/useMutateUpdateAttachedDocument';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import { checkIsMobile } from 'src/utils/responsive';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -31,7 +34,7 @@ const Item = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   minWidth: 120,
-  height: 50,
+  minHeight: 50,
   paddingInline: 15,
   fontSize: 15,
   color: 'gray'
@@ -52,20 +55,24 @@ const ProfileSection = ({
     });
   };
 
+  const theme = useTheme();
+  const isMobile = checkIsMobile(theme);
+
   return (
     <>
       <Typography fontSize={18} fontWeight={700}>
         {title}
       </Typography>
-      <CustomBox bgcolor="#ffff">
-        <Grid container>
+      <CustomBox bgcolor="#ffff" py={3}>
+        <Grid container rowGap={2}>
           <Grid
             item
-            xs={6}
+            lg={6}
+            md={5}
+            xs={12}
             display="flex"
             alignItems="center"
             gap={3}
-            height={150}
           >
             <img
               title={id}
@@ -79,10 +86,16 @@ const ProfileSection = ({
             />
             <Typography variant="h4">{profile?.jobTitle}</Typography>
           </Grid>
-          <Grid item xs={6} display="flex" alignItems="center">
+          <Grid item lg={6} md={7} xs={12} display="flex" alignItems="center">
             <Stack
               direction="row"
-              divider={<Box component="hr" border={1} borderColor="grey.300" />}
+              divider={
+                isMobile ? null : (
+                  <Box component="hr" border={1} borderColor="grey.300" />
+                )
+              }
+              useFlexGap
+              flexWrap="wrap"
             >
               <Item>Lượt xem: {profile?.view}</Item>
               <Item>
@@ -100,7 +113,7 @@ const ProfileSection = ({
                   color="secondary"
                   startIcon={<ModeEditIcon />}
                 >
-                  Cập nhật hồ sơ
+                  Cập nhật
                 </Button>
               </Item>
             </Stack>
@@ -145,7 +158,7 @@ export default function EmployeeProfile() {
       <Typography mt={3} fontSize={22} fontWeight={700}>
         Hồ sơ của bạn
       </Typography>
-      <CustomBox height={120}>
+      <CustomBox minHeight={120}>
         <TipsAndUpdatesIcon fontSize="large" color="secondary" />
         <Typography fontSize={13} lineHeight={2} color="secondary">
           <ul>

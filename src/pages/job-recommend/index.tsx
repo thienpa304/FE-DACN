@@ -22,8 +22,8 @@ import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/ho
 import AnalyzeProfile from './AnalyzeProfile';
 
 const JobRecommend = () => {
-  // const { onlineProfile } = useQueryOnlineProfile();
-  // const { attachedDocument } = useQueryAttachedDocument();
+  const { onlineProfile } = useQueryOnlineProfile();
+  const { attachedDocument } = useQueryAttachedDocument();
   // const { setProfile: setOnline } = useOnlineProfile();
   // const { setProfile: setDocumentProfile } = useDocumentHook();
 
@@ -31,6 +31,7 @@ const JobRecommend = () => {
   //   setOnline(onlineProfile);
   //   setDocumentProfile(attachedDocument);
   // }, [onlineProfile, attachedDocument]);
+  console.log('rerender JobRecommend');
 
   return (
     <Container maxWidth="md" style={{ marginTop: 30 }}>

@@ -5,6 +5,10 @@ import UrgentJobTab from './UrgentJobTab';
 import ProfessionType from './ProfessionType';
 import Casousel from './Casousel';
 import SearchBar from 'src/components/SearchBar/SearchBar';
+import CompanyList from 'src/modules/company/components/CompanyList';
+import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
+import useQueryCompanyListByUser from 'src/modules/company/hook/useQueryCompanyListByUser';
+import Company from './Company';
 
 const OverviewWrapper = styled(Box)(
   () => `
@@ -16,12 +20,17 @@ const OverviewWrapper = styled(Box)(
 );
 const Home = () => {
   return (
-    <OverviewWrapper>
+    <OverviewWrapper pb={2}>
       <Casousel />
       <Container>
         <SearchBar to="profession" />
         <ProfessionType />
         <UrgentJobTab />
+        <Company
+          pageTitle="Công ty đang tuyển dụng"
+          queryJobs={useQueryAllJob}
+          queryCompanys={useQueryCompanyListByUser}
+        />
       </Container>
     </OverviewWrapper>
   );

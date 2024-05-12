@@ -288,7 +288,6 @@ function SidebarMenu() {
             </List>
           </>
         )}
-
         {isEmployee && (
           <>
             <List
