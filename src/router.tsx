@@ -7,6 +7,11 @@ import BaseLayout from './modules/app/layouts/BaseLayout';
 import SidebarLayout from './modules/app/layouts/SidebarLayout';
 import AuthRouteProvider from './modules/auth/components/AuthRouteProvider';
 import { Role } from './modules/users/model';
+import UserManagementTable from './pages/admin/UserManagement';
+import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManagement';
+import EmailNotification from './pages/admin/EmailNotification';
+import CandidateProfileAnalysis from './pages/admin/CandidateProfileAnalysis ';
+import ProfileManagement from './pages/admin/ProfileManagement';
 
 const Loader = (Component) => (props) =>
   (
@@ -16,44 +21,76 @@ const Loader = (Component) => (props) =>
   );
 
 // Recruitment
-
 const RecruitmentCreate = Loader(
   lazy(() => import('src/pages/recruitment-create'))
 );
-
+const StatisticsAndReports = Loader(
+  lazy(() => import('src/pages/admin/StatisticsAndReports'))
+);
 const RecruitmentList = Loader(
   lazy(() => import('src/pages/recruitment-list'))
 );
+const RecruitmentListApproval = Loader(
+  lazy(() => import('src/pages/recruitment-approval'))
+);
 const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
-// Candidate
 
-const CandidateProfile = Loader(
-  lazy(() => import('src/modules/candidate/profile'))
+// Candidate
+const CandidateProfiles = Loader(
+  lazy(() => import('src/pages/review-candidate-profiles'))
+);
+const ViewCandidateProfile = Loader(
+  lazy(() => import('src/pages/view-candidate-profile'))
 );
 
 // User
-
 const Login = Loader(lazy(() => import('src/modules/auth/components/Login')));
 const Register = Loader(
   lazy(() => import('src/modules/auth/components/Register'))
 );
 
 // Pages
-
 const Home = Loader(lazy(() => import('src/pages/home')));
 const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
 const UrgentHiringJob = Loader(
   lazy(() => import('src/pages/urgent-hiring-job'))
 );
+const ResultJobList = Loader(lazy(() => import('src/pages/result-job-list')));
+const CompanyInformation = Loader(
+  lazy(() => import('src/pages/company-information'))
+);
+const ShowCompanyPage = Loader(lazy(() => import('src/pages/company-list')));
 
 // Applications
-
-const Messenger = Loader(lazy(() => import('src/modules/messenger')));
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
+const EmployeeProfile = Loader(
+  lazy(() => import('src/pages/employee-profile/JobProfile'))
+);
+const OnlineProfile = Loader(
+  lazy(() => import('src/modules/jobProfile/onlineProfile'))
+);
+const AttachedDocument = Loader(
+  lazy(() => import('src/modules/jobProfile/attachedDocument'))
+);
+const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
+
+const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
+
+const CompanyFollow = Loader(lazy(() => import('src/pages/company-follow')));
+
+const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
+
+// Employer
+const EmployeeFollow = Loader(lazy(() => import('src/pages/employee-follow')));
+
+const FindProfiles = Loader(lazy(() => import('src/pages/find-profiles')));
+
+const RecommendProfile = Loader(
+  lazy(() => import('src/pages/recommend-profiles'))
+);
 
 // Status
-
 const Status404 = Loader(lazy(() => import('src/modules/status/Status404')));
 const Status500 = Loader(lazy(() => import('src/modules/status/Status500')));
 const StatusComingSoon = Loader(
@@ -70,7 +107,7 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <SidebarLayout showSidebar={false} />,
+        element: <SidebarLayout showSideBar={false} />,
         children: [
           {
             path: '',
@@ -85,8 +122,16 @@ const routes: RouteObject[] = [
             element: <JobDetail />
           },
           {
-            path: 'messenger',
-            element: <Messenger />
+            path: '/profession/:id',
+            element: <ResultJobList />
+          },
+          {
+            path: '/company/:id',
+            element: <CompanyInformation />
+          },
+          {
+            path: '/company',
+            element: <ShowCompanyPage />
           }
         ]
       },
@@ -95,18 +140,42 @@ const routes: RouteObject[] = [
         path: '/employee',
         element: (
           <AuthRouteProvider role={[Role.EMPLOYEE]}>
-            <SidebarLayout showSidebar={false} />
+            <SidebarLayout />
           </AuthRouteProvider>
         ),
         children: [
           {
             path: 'profile',
             element: <UserProfile />
+          },
+          {
+            path: 'recruitment-profile',
+            element: <EmployeeProfile />
+          },
+          {
+            path: 'online-profile',
+            element: <OnlineProfile />
+          },
+          {
+            path: 'attachment-profile',
+            element: <AttachedDocument />
+          },
+          {
+            path: 'job-applied',
+            element: <JobApplied />
+          },
+          {
+            path: 'job-recommend',
+            element: <JobRecommend />
+          },
+          {
+            path: 'job-follow',
+            element: <JobFollow />
+          },
+          {
+            path: 'company-follow',
+            element: <CompanyFollow />
           }
-          // {
-          //   path: 'form',
-          //   element: <Forms />
-          // }
         ]
       },
       {
@@ -200,9 +269,29 @@ const routes: RouteObject[] = [
           },
           {
             path: 'profile',
-            element: <CandidateProfile />
+            element: <CandidateProfiles />
+          },
+          {
+            path: 'profile/:id',
+            element: <ViewCandidateProfile />
           }
         ]
+      },
+      {
+        path: 'find-profiles',
+        element: <FindProfiles />
+      },
+      {
+        path: 'find-profiles/:id',
+        element: <FindProfiles />
+      },
+      {
+        path: 'recommend-profiles',
+        element: <RecommendProfile />
+      },
+      {
+        path: 'follow-profile',
+        element: <EmployeeFollow />
       }
     ]
   },
@@ -231,6 +320,34 @@ const routes: RouteObject[] = [
             element: <UserSettings />
           }
         ]
+      },
+      {
+        path: 'jobs-posting',
+        element: <RecruitmentListApproval />
+      },
+      {
+        path: 'user-manage',
+        element: <UserManagementTable />
+      },
+      {
+        path: 'statistic-report',
+        element: <StatisticsAndReports />
+      },
+      {
+        path: 'manage-access',
+        element: <SecurityAndAccessManagement />
+      },
+      {
+        path: 'mailer',
+        element: <EmailNotification />
+      },
+      {
+        path: 'analyze-profile',
+        element: <CandidateProfileAnalysis />
+      },
+      {
+        path: 'manage-profile',
+        element: <ProfileManagement />
       }
     ]
   },

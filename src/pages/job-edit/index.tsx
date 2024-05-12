@@ -1,11 +1,16 @@
-import { useParams } from 'react-router';
+import { useParams, useLocation } from 'react-router';
 import FormCreate from 'src/modules/jobs/components/FormCreate';
 
 const JobEdit = () => {
-  const { id } = useParams();
+  const { state } = useLocation();
+  const locationState = state as any;
+
   return (
     <>
-      <FormCreate title="Cập Nhât tin tuyển dụng" selectedId={id} />
+      <FormCreate
+        title="Cập Nhât tin tuyển dụng"
+        selectedId={locationState?.postId}
+      />
     </>
   );
 };

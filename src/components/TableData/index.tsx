@@ -1,6 +1,6 @@
+import { styled } from '@mui/material';
 import { DataGrid, DataGridProps } from '@mui/x-data-grid';
 import React from 'react';
-import { styled } from '@mui/material/styles';
 
 const TableDataWrapper = styled(DataGrid)(({ theme }) => ({
   padding: 8,
@@ -9,6 +9,9 @@ const TableDataWrapper = styled(DataGrid)(({ theme }) => ({
     '&:focus-within': {
       outline: 'none'
     }
+  },
+  '& .MuiDataGrid-row:hover': {
+    backgroundColor: 'inherit'
   }
 }));
 const HeaderTitleWrapper = styled(`div`)(({ theme }) => ({
@@ -37,8 +40,9 @@ const TableData: React.FC<DataGridProps> = ({ rows, columns, ...props }) => {
           }
         }
       }}
-      pageSizeOptions={[10]}
-      disableRowSelectionOnClick
+      // disableColumnSelector
+      rowSelection={false}
+      // pageSizeOptions={[10]}
       {...props}
     />
   );

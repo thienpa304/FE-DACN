@@ -1,4 +1,11 @@
-import { Degree } from 'src/interfaces/enum';
+import {
+  Degree,
+  EmploymentType,
+  Experience,
+  PositionLevel
+} from 'src/constants/enum';
+import { Application } from 'src/modules/application/model';
+import { OnlineProfile, AttachedDocument } from 'src/modules/jobProfile/model';
 
 export enum Role {
   ADMIN = 'ADMIN',
@@ -7,7 +14,7 @@ export enum Role {
 }
 
 export type User = {
-  userId: string;
+  userId: number;
   email: string;
   role: Role;
   dob: string | Date;
@@ -21,8 +28,21 @@ export type User = {
 };
 
 export type Company = {
+  userId: number;
   companyName: string;
   taxCode: string;
   companyLocation: string;
   careerField: string;
+  logo: string;
+  banner: string;
+  description: string;
+};
+
+export type Employee = {
+  userId: number;
+  isMarried: boolean | string;
+  user: User;
+  online_profile: OnlineProfile;
+  attached_document: AttachedDocument;
+  applications: Application[];
 };

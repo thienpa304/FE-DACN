@@ -1,7 +1,7 @@
 import { FC, ReactNode } from 'react';
 import PropTypes from 'prop-types';
-import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
+import { styled } from '@mui/material';
 
 interface TextProps {
   className?: string;

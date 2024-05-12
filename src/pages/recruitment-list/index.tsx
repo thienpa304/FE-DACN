@@ -1,18 +1,44 @@
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
   Container,
   Divider,
   Grid,
-  Button
+  Tab,
+  Tabs
 } from '@mui/material';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import TablePost from 'src/modules/jobs/components/TablePost';
-import useQueryJob from 'src/modules/jobs/hooks/useQueryJob';
+import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
+import TablePost from 'src/pages/recruitment-list/TablePost';
+import TabsWrapper from 'src/components/TabWrapper';
+import Pagination from 'src/components/Pagination';
+
+const tabs = [
+  { label: 'Tất cả', value: '' },
+  { label: 'Đã duyệt', value: 'Đã duyệt' },
+  { label: 'Chờ duyệt', value: 'Chờ duyệt' },
+  { label: 'Từ chối', value: 'Từ chối' },
+  { label: 'Hết hạn', value: 'Hết hạn' }
+];
 
 const RecruitmentList = () => {
-  const { jobs } = useQueryJob();
+  const pageSize = 9;
+  const [currentTab, setCurrentTab] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const { jobs, totalResults } = useQueryJobByOwner({
+    status: currentTab,
+    page: currentPage,
+    num: pageSize
+  });
+  const totalPages = Math.ceil(totalResults / pageSize) || 1;
+
+  const handleTabsChange = (e, value) => {
+    setCurrentTab(value);
+    setCurrentPage(1);
+  };
   return (
     <Container maxWidth="xl">
       <Grid
@@ -29,13 +55,37 @@ const RecruitmentList = () => {
               title="Danh Sách Tin Tuyển Dụng"
               action={
                 <Link to={'/employer/recruitment/create'}>
-                  <Button variant="contained">Tạo tin tuyển dụng</Button>
+                  <Button variant="contained" size="small" sx={{ my: 0 }}>
+                    Tạo tin tuyển dụng
+                  </Button>
                 </Link>
               }
             />
             <Divider />
             <CardContent>
-              <TablePost data={jobs || []} />
+              <TabsWrapper
+                onChange={handleTabsChange}
+                value={currentTab}
+                variant="scrollable"
+                scrollButtons={false}
+                sx={{
+                  display: { md: 'inline-block' },
+                  borderBottom: 1,
+                  borderColor: 'divider'
+                }}
+              >
+                {tabs.map((tab) => {
+                  return (
+                    <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  );
+                })}
+              </TabsWrapper>
+              <TablePost data={jobs || []} pageSize={pageSize} />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={setCurrentPage}
+              />
             </CardContent>
           </Card>
         </Grid>

@@ -1,13 +1,20 @@
-import { useContext } from 'react';
+import { Fragment, useContext, useState } from 'react';
 
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import {
   Box,
+  Button,
   IconButton,
   Link,
+  List,
+  ListItem,
+  ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   Tooltip,
+  Typography,
   alpha,
   lighten,
   styled,
@@ -21,9 +28,13 @@ import HeaderMenu from './Menu';
 import HeaderUserbox from './Userbox';
 import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
+import { useNavigate } from 'react-router';
+import { NavLink } from 'react-router-dom';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
-  ({ theme, showSidebar }) => `
+const HeaderWrapper = styled(Box)<{ showSideBar: boolean }>(
+  ({ theme, showSideBar }) => `
         height: ${theme.header.height};
         color: ${theme.header.textColor};
         padding: ${theme.spacing(0, 2)};
@@ -35,25 +46,139 @@ const HeaderWrapper = styled(Box)<{ showSidebar: boolean }>(
         justify-content: space-between;
         width: 100%;
         @media (min-width: ${theme.breakpoints.values.lg}px) {
-            left: ${showSidebar ? theme.sidebar.width : 0};
+            left: ${showSideBar ? theme.sidebar.width : 0};
             width: auto;
         }
 `
 );
 
-function Header({ showSidebar }) {
+const NavButton = styled(Button)({
+  color: '#b27300',
+  minWidth: '100px'
+});
+const ButtonText = styled(Typography)({
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  display: '-webkit-box',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 2,
+  fontWeight: 700
+});
+
+const employeeMenu = {
+  basic: [
+    {
+      label: 'Hồ sơ',
+      linkTo: '/employee/recruitment-profile'
+    },
+    {
+      label: 'Đã ứng tuyển',
+      linkTo: '/employee/job-applied'
+    },
+    {
+      label: 'Gợi ý việc làm',
+      linkTo: '/employee/job-recommend'
+    }
+  ],
+  others: [
+    {
+      label: 'Việc làm',
+      linkTo: '/employee/job-follow'
+    },
+    {
+      label: 'Công ty',
+      linkTo: '/employee/company-follow'
+    }
+  ]
+};
+
+const employerMenu = {
+  basic: [
+    {
+      label: 'Tuyển dụng',
+      linkTo: '/employer/recruitment/create'
+    },
+    {
+      label: 'Danh sách tin đăng',
+      linkTo: '/employer/recruitment/list'
+    }
+  ],
+  others: [
+    {
+      label: 'Hồ sơ ứng tuyển',
+      linkTo: '/employer/candidate/profile'
+    },
+    {
+      label: 'Hồ sơ tiềm năng',
+      linkTo: '/employer/recommend-profiles'
+    },
+    {
+      label: 'Tìm kiếm hồ sơ',
+      linkTo: '/employer/find-profiles'
+    },
+    {
+      label: 'Hồ sơ đã lưu',
+      linkTo: '/employer/follow-profile'
+    }
+  ]
+};
+
+const adminMenu = {
+  basic: [
+    {
+      label: 'Quản lý người dùng',
+      linkTo: '/admin/user-manage'
+    },
+    {
+      label: 'Quản lý hồ sơ và CV',
+      linkTo: '/admin/manage-profile'
+    },
+    {
+      label: 'Quản lý tuyển dụng',
+      linkTo: '/admin/jobs-posting'
+    },
+    {
+      label: 'Thống kê',
+      linkTo: '/admin/statistic-report'
+    }
+  ]
+};
+
+function Header({ showSideBar }) {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const {
-    user: { userId }
+    user: { userId },
+    isEmployee,
+    isAdmin,
+    isEmployer
   } = useApp();
   const theme = useTheme();
+  const Navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const openMobile = Boolean(mobileAnchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleMobileClick = (event) => {
+    setMobileAnchorEl(event.currentTarget);
+  };
+  const handleMobileClose = () => {
+    setMobileAnchorEl(null);
+  };
 
   return (
     <HeaderWrapper
-      showSidebar={showSidebar}
+      showSideBar={showSideBar}
       display="flex"
       alignItems="center"
       sx={{
+        mx: 'auto',
+        px: '27px',
         boxShadow:
           theme.palette.mode === 'dark'
             ? `0 1px 0 ${alpha(
@@ -74,10 +199,157 @@ function Header({ showSidebar }) {
         // divider={<Divider orientation="vertical" flexItem />}
         alignItems="center"
         spacing={2}
+        height="100%"
       >
-        {!showSidebar && <Logo />}
-        {/* <HeaderMenu /> */}
+        {!showSideBar && (
+          <Box display="flex" height="100%">
+            <Logo />
+            <NavButton
+              onClick={() => {
+                Navigate('company');
+              }}
+              sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+            >
+              Công ty nổi bật
+            </NavButton>
+            <Box display={{ md: 'flex', xs: 'none' }}>
+              {isEmployee && (
+                <>
+                  {employeeMenu.basic.map((item) => (
+                    <NavButton
+                      onClick={() => {
+                        Navigate(item.linkTo);
+                      }}
+                      sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                    >
+                      <ButtonText>{item.label}</ButtonText>
+                    </NavButton>
+                  ))}
+                  <NavButton
+                    onClick={handleClick}
+                    sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                  >
+                    <ButtonText>Theo dõi</ButtonText>
+                    {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </NavButton>
+                  <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+                    {employeeMenu.others.map((item) => (
+                      <MenuItem
+                        sx={{ fontWeight: 700 }}
+                        onClick={() => {
+                          Navigate(item.linkTo);
+                        }}
+                      >
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              )}
+              {isEmployer && (
+                <>
+                  {employerMenu.basic.map((item) => (
+                    <NavButton
+                      onClick={() => {
+                        Navigate(item.linkTo);
+                      }}
+                      sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                    >
+                      <ButtonText>{item.label}</ButtonText>
+                    </NavButton>
+                  ))}
+                  <NavButton
+                    onClick={handleClick}
+                    sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                  >
+                    <ButtonText>Ứng viên</ButtonText>
+                    {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </NavButton>
+                  <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+                    {employerMenu.others.map((item) => (
+                      <MenuItem
+                        sx={{ fontWeight: 700 }}
+                        onClick={() => {
+                          Navigate(item.linkTo);
+                        }}
+                      >
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              )}
+              {isAdmin && (
+                <>
+                  {adminMenu.basic.map((item) => (
+                    <NavButton
+                      onClick={() => {
+                        Navigate(item.linkTo);
+                      }}
+                      sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                    >
+                      <ButtonText>{item.label}</ButtonText>
+                    </NavButton>
+                  ))}
+                </>
+              )}
+            </Box>
+
+            <Box display={{ md: 'none', xs: 'flex' }}>
+              <>
+                <NavButton onClick={handleMobileClick}>
+                  <ButtonText>Công cụ</ButtonText>
+                  {openMobile ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </NavButton>
+                <Menu
+                  open={openMobile}
+                  onClose={handleMobileClose}
+                  anchorEl={mobileAnchorEl}
+                >
+                  {isEmployee &&
+                    employeeMenu.basic
+                      .concat(employeeMenu.others)
+                      .map((option) => (
+                        <MenuItem
+                          sx={{ fontWeight: 700 }}
+                          onClick={() => {
+                            Navigate(option.linkTo);
+                          }}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                  {isEmployer &&
+                    employerMenu.basic
+                      .concat(employerMenu.others)
+                      .map((option) => (
+                        <MenuItem
+                          sx={{ fontWeight: 700 }}
+                          onClick={() => {
+                            Navigate(option.linkTo);
+                          }}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                  {isAdmin &&
+                    adminMenu.basic.map((option) => (
+                      <MenuItem
+                        sx={{ fontWeight: 700 }}
+                        onClick={() => {
+                          Navigate(option.linkTo);
+                        }}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                </Menu>
+              </>
+            </Box>
+          </Box>
+        )}
       </Stack>
+
       <Box display="flex" alignItems="center">
         <HeaderButtons />
         {userId ? (
@@ -99,7 +371,7 @@ function Header({ showSidebar }) {
             </Link>
           </>
         )}
-        {showSidebar && (
+        {showSideBar && (
           <Box
             component="span"
             sx={{

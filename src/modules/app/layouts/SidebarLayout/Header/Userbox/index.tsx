@@ -64,13 +64,13 @@ const UserBoxDescription = styled(Typography)(
 
 function HeaderUserbox() {
   const {
-    user: { email, role }
+    user: { email, role, avatar }
   } = useApp();
   const signOut = useSignOutHook();
   const rolePath = role.toLowerCase();
   const user = {
     name: email.replace(/@.*/, ''),
-    avatar: '/static/images/avatars/avatar-empty.jpeg',
+    avatar: avatar?.trim() || '/static/images/avatars/avatar-empty.jpeg',
     jobtitle: `${rolePath}`
   };
 
@@ -133,18 +133,6 @@ function HeaderUserbox() {
             <AccountBoxTwoToneIcon fontSize="small" />
             <ListItemText primary="Hồ sơ cá nhân" />
           </ListItem>
-          {/* <ListItem button to="/dashboards/messenger" component={NavLink}>
-            <InboxTwoToneIcon fontSize="small" />
-            <ListItemText primary="Messenger" />
-          </ListItem>
-          <ListItem
-            button
-            to="/management/profile/settings"
-            component={NavLink}
-          >
-            <AccountTreeTwoToneIcon fontSize="small" />
-            <ListItemText primary="Account Settings" />
-          </ListItem> */}
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>

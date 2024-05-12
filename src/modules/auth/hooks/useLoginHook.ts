@@ -1,11 +1,14 @@
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { localStorage } from 'src/utils';
 import { LoginService } from '../authService';
 import { LoginRequest, LoginResponse } from '../model';
+import useProfileHook from 'src/modules/users/hooks/useUserHook';
+import useQueryOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useQueryOnlineProfile';
+import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 
 const useLogin = () => {
   const { toast } = useApp();
@@ -14,9 +17,17 @@ const useLogin = () => {
     setAccessTokenApp,
     user: { userId }
   } = useApp();
+  const { profile, refetch } = useProfileHook();
+  const { refetch: refetchOnlineProfile } = useQueryOnlineProfile();
+  const { refetch: refetchDocumentProfile } = useQueryAttachedDocument();
 
   const navigate = useNavigate();
-  if (userId) navigate('/');
+  const { state } = useLocation();
+  const locationState = state as any;
+  console.log(locationState);
+
+  if (userId)
+    navigate(locationState?.from || '/', { state: state, replace: true });
 
   const { mutate: onLogin, isLoading } = useMutation<
     ResponseData<LoginResponse>,
@@ -30,7 +41,10 @@ const useLogin = () => {
         setUserApp(userData);
         setAccessTokenApp(access_token);
         localStorage.setAccessToken(access_token);
-        location.replace('/');
+        navigate(locationState?.from || '/', {
+          state: state,
+          replace: true
+        });
       } else toast.error({ massage: res.message });
     },
     onError: (error) => {

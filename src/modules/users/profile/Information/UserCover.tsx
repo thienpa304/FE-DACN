@@ -5,8 +5,7 @@ import {
   Avatar,
   Button,
   Container,
-  Grid,
-  styled
+  Grid
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
@@ -15,69 +14,69 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import IconButton from '@mui/material/IconButton';
 import { useApp } from 'src/modules/app/hooks';
-import { UploadAvatar, GetAvatar, RemoveAvatar } from 'src/common/upload-image';
-import useMutateUserData from '../../hooks/useMutateUserHook';
+import { uploadFile, removeFileByUrl } from 'src/common/firebaseService';
 import { useForm } from 'react-hook-form';
 import { User } from '../../model';
 import FormControl from 'src/components/FormControl';
+import { avatarFormat } from 'src/constants/uploadFileRule';
+import useMutateAvatar from '../../hooks/useMutateAvatar';
+import { avatarErrorText } from 'src/components/UploadError';
+import { styled } from '@mui/material/styles';
 
 const Input = styled('input')({
   display: 'none'
 });
 
-export default function Cover() {
+export default function UserCover() {
   const { user } = useApp();
-  const [currentUser, setCurrentUser] = useState(user);
+  const { onSaveData, isLoading } = useMutateAvatar();
+  const { acceptTypes, acceptSize } = avatarFormat;
   const [save, setSave] = useState(true);
-  const [avatar, setAvatar] = useState(null);
-  const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [userAvatar, setUserAvatar] = useState({
+    avatar: '',
+    error: false,
+    imageFile: null
+  });
 
   useEffect(() => {
-    setCurrentUser(user);
+    handleGetAvatar();
   }, [user]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await getAvatar();
-    };
-    fetchData();
-  }, [currentUser]);
-
-  async function getAvatar() {
-    let url = await GetAvatar(currentUser);
-    setAvatar(url);
+  const handleGetAvatar = () => {
+    setUserAvatar({ ...userAvatar, avatar: user?.avatar?.replace(' ', '') });
     setSave(true);
-  }
-
-  const handleImageUpload = (e) => {
-    const image = e.target.files[0];
-    if (image) {
-      const imageUrl = URL.createObjectURL(image);
-      setAvatar(imageUrl);
-      setFile(image);
-      setSave(false);
-    }
   };
-  async function handleSaveAvatar(data) {
-    setLoading(true);
-    await UploadAvatar(file, currentUser);
-    const url = await GetAvatar(currentUser);
-    setAvatar(url);
-    setSave(true);
-    setLoading(false);
-    // const newData = { ...data, avatar: url }
-    // onSaveData(newData)
-  }
 
-  async function handleImageDelete() {
-    setAvatar(null);
-    await RemoveAvatar(currentUser);
-  }
+  const handleUploadAvatar = (e) => {
+    const image = e.target.files[0];
+    if (!image) return;
+    if (!acceptTypes.includes(image.type) || image.size > acceptSize) {
+      setUserAvatar({ ...userAvatar, error: true });
+      return;
+    }
+    const imageUrl = URL.createObjectURL(image);
+    setUserAvatar({ avatar: imageUrl, error: false, imageFile: image });
+    setSave(false);
+  };
+
+  const handleSaveAvatar = async (data) => {
+    const url = await uploadFile(userAvatar.imageFile).catch(() => '');
+    setUserAvatar({ ...userAvatar, avatar: url, error: false });
+    const newData = { ...data, avatar: url };
+    onSaveData(newData);
+    setSave(true);
+  };
+
+  const handleDeleteAvatar = async (data) => {
+    await removeFileByUrl(userAvatar.avatar);
+    setUserAvatar({ ...userAvatar, avatar: null, error: false });
+    const newData = { ...data, avatar: ' ' };
+    onSaveData(newData);
+  };
 
   const { control, handleSubmit } = useForm<User>({
     defaultValues: {
-      ...currentUser
+      ...user
     }
   });
 
@@ -94,36 +93,37 @@ export default function Cover() {
       </Box>
       <Box mt={2}>
         <Grid container columnSpacing={{ sm: 1 }}>
-          <Grid item xs={6} md={3} display="flex" flexWrap="wrap">
+          <Grid item xs={6} md={4} display="flex" flexWrap="wrap">
             <Box
               display="flex"
               flexDirection="column"
               alignItems="center"
+              justifyContent="center"
+              alignContent="center"
+              justifyItems="center"
               rowGap={0.5}
             >
-              <label htmlFor="avatar">
-                <IconButton component="label" sx={{ borderRadius: 10 }}>
-                  <Avatar
-                    alt={currentUser.name}
-                    src={avatar}
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      bgcolor: '#a0b9cfc2'
-                    }}
-                  />
-                  <FormControl
-                    element={<Input type="file" accept="image/*" />}
-                    control={control}
-                    name="avatar"
-                    id="avatar"
-                    onChange={handleImageUpload}
-                  />
-                </IconButton>
-              </label>
+              <IconButton component="label" sx={{ borderRadius: 10 }}>
+                <Avatar
+                  alt={user.name}
+                  src={userAvatar.avatar}
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    bgcolor: '#a0b9cfc2'
+                  }}
+                />
+                <FormControl
+                  element={<Input type="file" accept="image/*" />}
+                  control={control}
+                  name="userAvatar"
+                  id="userAvatar"
+                  onChange={handleUploadAvatar}
+                />
+              </IconButton>
 
-              {!avatar && (
-                <label htmlFor="avatar">
+              {!userAvatar.avatar && (
+                <label htmlFor="userAvatar">
                   <Button
                     component="label"
                     size="small"
@@ -134,18 +134,18 @@ export default function Cover() {
                     <FormControl
                       element={<Input type="file" accept="image/*" />}
                       control={control}
-                      name="avatar"
-                      id="avatar"
-                      onChange={handleImageUpload}
+                      name="userAvatar"
+                      id="userAvatar"
+                      onChange={handleUploadAvatar}
                     />
-                    Upload
+                    Tải lên
                   </Button>
                 </label>
               )}
 
-              {avatar && (
+              {userAvatar.avatar && (
                 <>
-                  {!save && !loading && (
+                  {!save && !isLoading && (
                     <Button
                       component="label"
                       onClick={handleSubmit(handleSaveAvatar)}
@@ -154,31 +154,33 @@ export default function Cover() {
                       variant="outlined"
                       color="secondary"
                     >
-                      Save
+                      Lưu
                     </Button>
                   )}
 
-                  {loading ? (
+                  {isLoading ? (
                     <CircularProgress size={20} />
                   ) : (
                     save && (
                       <Button
                         component="label"
-                        onClick={handleImageDelete}
+                        onClick={handleSubmit(handleDeleteAvatar)}
                         size="small"
                         startIcon={<DoNotDisturbOnOutlinedIcon />}
                         variant="outlined"
                         color="secondary"
                       >
-                        Delete
+                        Xóa
                       </Button>
                     )
                   )}
                 </>
               )}
             </Box>
+
+            {userAvatar.error && avatarErrorText}
           </Grid>
-          <Grid item xs={6} md={9}>
+          <Grid item xs={6} md={8}>
             <Box
               display="flex"
               flexDirection="column"
@@ -186,10 +188,10 @@ export default function Cover() {
               sx={{ lineHeight: 200 }}
             >
               <Typography fontSize={18} fontWeight={700} lineHeight={3}>
-                {currentUser.name}
+                {user.name}
               </Typography>
-              <Typography>Phone: {currentUser.phone}</Typography>
-              <Typography>Email: {currentUser.email}</Typography>
+              <Typography>Phone: {user.phone}</Typography>
+              <Typography>Email: {user.email}</Typography>
             </Box>
           </Grid>
         </Grid>

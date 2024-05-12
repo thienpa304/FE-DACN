@@ -25,16 +25,66 @@ type Props = {
 };
 const TextEditor: React.FC<Props> = ({ value, onChange }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [first, setFirst] = useState(true);
   useEffect(() => {
-    const editorDataStates = EditorState.createWithContent(
-      convertFromHTML(value)
-    );
-    setEditorState(editorDataStates);
+    if (first && value) {
+      const editorDataStates = EditorState.createWithContent(
+        convertFromHTML(value)
+      );
+      setEditorState(editorDataStates);
+      setFirst(false);
+    }
   }, [value]);
 
   const handleSetEditorState = (value) => {
+    const method = {
+      styleToHTML: (style) => {
+        if (style.startsWith('fontsize-')) {
+          const fontSize = style.split('-')[1];
+          return <span style={{ fontSize: `${fontSize}px` }} />;
+        } else if (style === 'STRIKETHROUGH') {
+          return <span style={{ textDecoration: 'line-through' }} />;
+        } else if (style === 'SUBSCRIPT') {
+          return <span style={{ verticalAlign: 'sub' }} />;
+        } else if (style === 'SUPERSCRIPT') {
+          return <span style={{ verticalAlign: 'super' }} />;
+        } else if (style.startsWith('fontfamily-')) {
+          const fontFamily = style.split('-')[1];
+          return <span style={{ fontFamily }} />;
+        } else if (style.startsWith('color-rgb')) {
+          const color = style.split('-')[1];
+          return <span style={{ color }} />;
+        }
+      },
+      entityToHTML: (entity, originalText) => {
+        if (entity.type === 'LINK') {
+          return (
+            <a href={entity.data.url} target={entity.data.targetOption}>
+              {originalText}
+            </a>
+          );
+        } else if (entity.type === 'EMBEDDED_LINK') {
+          return (
+            <iframe
+              src={entity.data.src}
+              height={entity.data.height}
+              width={entity.data.width}
+            />
+          );
+        } else if (entity.type === 'IMAGE') {
+          return (
+            <img
+              src={entity.data.src}
+              height={entity.data.height}
+              width={entity.data.width}
+            />
+          );
+        }
+        return originalText;
+      }
+    };
     setEditorState(value);
-    let html = convertToHTML(value.getCurrentContent());
+    let html = convertToHTML(method)(value.getCurrentContent());
     onChange(html);
   };
 

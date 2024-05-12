@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Role, User } from 'src/modules/users/model';
 import { getAccessToken } from 'src/utils/localStorage';
-import { GetCompany, GetProfile } from '../userService';
+import { GetProfile } from '../userService';
+import { useQuery } from 'react-query';
 
 const useProfileHook = () => {
-  const [data, setData] = useState<Partial<User>>();
+  const isLoggedIn = Boolean(getAccessToken());
+  const { data, isLoading, refetch } = useQuery('get-Profile', GetProfile.get, {
+    retry: 1,
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn
+  });
 
-  useEffect(() => {
-    if (getAccessToken()) getProfile();
-  }, []);
-
-  const getProfile = () => {
-    GetProfile.get().then((res) => setData(res.data));
-    GetCompany.get().then((res) => setData(res.data));
-  };
   return {
-    profile: data
+    profile: data?.data,
+    userProfile: data?.data,
+    isLoading,
+    refetch
   };
 };
 

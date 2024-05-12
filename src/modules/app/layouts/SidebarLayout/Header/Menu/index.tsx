@@ -87,7 +87,6 @@ function HeaderMenu() {
         <List disablePadding component={Box} display="flex">
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
-            button
             component={NavLink}
             to="/components/buttons"
           >
@@ -98,7 +97,6 @@ function HeaderMenu() {
           </ListItem>
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
-            button
             component={NavLink}
             to="/components/forms"
           >
@@ -109,7 +107,6 @@ function HeaderMenu() {
           </ListItem>
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
-            button
             ref={ref}
             onClick={handleOpen}
           >
@@ -127,20 +124,6 @@ function HeaderMenu() {
           </ListItem>
         </List>
       </ListWrapper>
-      <Menu anchorEl={ref.current} onClose={handleClose} open={isOpen}>
-        <MenuItem sx={{ px: 3 }} component={NavLink} to="/overview">
-          Overview
-        </MenuItem>
-        <MenuItem sx={{ px: 3 }} component={NavLink} to="/components/tabs">
-          Tabs
-        </MenuItem>
-        <MenuItem sx={{ px: 3 }} component={NavLink} to="/components/cards">
-          Cards
-        </MenuItem>
-        <MenuItem sx={{ px: 3 }} component={NavLink} to="/components/modals">
-          Modals
-        </MenuItem>
-      </Menu>
     </>
   );
 }

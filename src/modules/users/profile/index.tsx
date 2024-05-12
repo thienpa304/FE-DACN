@@ -6,14 +6,7 @@ import { styled } from '@mui/material/styles';
 import InfoAccountTab from './InfoAccountTab';
 import InfoCompanyTab from './InfoCompanyTab';
 import { useApp } from 'src/modules/app/hooks';
-
-const TabsWrapper = styled(Tabs)(
-  () => `
-    .MuiTabs-scrollableX {
-      overflow-x: auto !important;
-    }
-`
-);
+import TabsWrapper from 'src/components/TabWrapper';
 
 export default function ManagementUserSettings() {
   const { isEmployer } = useApp();
@@ -45,17 +38,18 @@ export default function ManagementUserSettings() {
               onChange={handleTabsChange}
               value={currentTab}
               variant="scrollable"
-              scrollButtons="auto"
+              scrollButtons={false}
               textColor="primary"
               indicatorColor="primary"
               sx={{ borderBottom: 2, borderColor: 'grey.300', mb: -2 }}
             >
-              {tabs.map((tab) => {
-                if (!tab.show) return <></>;
-                return (
-                  <Tab key={tab.value} label={tab.label} value={tab.value} />
-                );
-              })}
+              {tabs
+                .filter((tab) => tab.show)
+                .map((tab) => {
+                  return (
+                    <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  );
+                })}
             </TabsWrapper>
           </Grid>
           <Grid item xs={12}>

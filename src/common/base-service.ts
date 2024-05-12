@@ -28,6 +28,10 @@ class BaseService {
       .then((res) => res.data);
   };
 
+  updateWithoutId = (data = {}) => {
+    return httpRequest.put(`${this.endPoint}`, data).then((res) => res.data);
+  };
+
   remove = (id) => {
     return httpRequest.delete(`${this.endPoint}/${id}`).then((res) => res.data);
   };

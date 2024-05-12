@@ -6,9 +6,12 @@ import GppGoodIcon from '@mui/icons-material/GppGood';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import PeopleIcon from '@mui/icons-material/People';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import WcIcon from '@mui/icons-material/Wc';
 import {
   Avatar,
   Box,
+  Container,
+  Divider,
   Grid,
   ListItem,
   ListItemAvatar,
@@ -18,8 +21,11 @@ import {
 import { styled } from '@mui/material/styles';
 import { TextParser } from 'src/components/TextEditor';
 import { Job } from '../model';
+import CakeIcon from '@mui/icons-material/Cake';
+import dayjs from 'dayjs';
+
 const CommonInfo = styled(Box)(({ theme }) => ({
-  padding: 5,
+  padding: 10,
   backgroundColor: '#F0FFF0',
   color: theme.colors.alpha.black[100],
   borderRadius: 6
@@ -34,12 +40,12 @@ type Props = {
 };
 const JobContent: React.FC<Props> = ({ data }) => {
   return (
-    <>
-      <Typography variant="h3" noWrap marginBottom={2}>
+    <Container>
+      <Typography variant="h3" fontSize={22} noWrap marginBottom={2.5}>
         Thông tin chung
       </Typography>
       <CommonInfo>
-        <Grid container>
+        <Grid container sx={{ my: 0.5 }}>
           <Grid item xs={12} md={4}>
             <ListItem>
               <ListItemAvatar>
@@ -47,7 +53,10 @@ const JobContent: React.FC<Props> = ({ data }) => {
                   <DateRangeIcon />
                 </AvatarWrapper>
               </ListItemAvatar>
-              <ListItemText primary="Jan 9, 2014" secondary="Ngày đăng" />
+              <ListItemText
+                primary={dayjs(data.createAt).format('YYYY-MM-DD')}
+                secondary="Ngày đăng"
+              />
             </ListItem>
           </Grid>
           <Grid item xs={12} md={4}>
@@ -74,7 +83,9 @@ const JobContent: React.FC<Props> = ({ data }) => {
             </ListItem>
           </Grid>
         </Grid>
-        <Grid container>
+        <Divider sx={{ width: '90%', margin: 'auto', my: 1 }} />
+
+        <Grid container sx={{ my: 0.5 }}>
           <Grid item xs={12} md={4}>
             <ListItem>
               <ListItemAvatar>
@@ -83,7 +94,7 @@ const JobContent: React.FC<Props> = ({ data }) => {
                 </AvatarWrapper>
               </ListItemAvatar>
               <ListItemText
-                primary={data.numberofVacancies}
+                primary={data.numberOfVacancies}
                 secondary="Số lượng tuyển"
               />
             </ListItem>
@@ -101,8 +112,20 @@ const JobContent: React.FC<Props> = ({ data }) => {
               />
             </ListItem>
           </Grid>
+          <Grid item xs={12} md={4}>
+            <ListItem>
+              <ListItemAvatar>
+                <AvatarWrapper>
+                  <WcIcon />
+                </AvatarWrapper>
+              </ListItemAvatar>
+              <ListItemText primary={data.sex} secondary="Giới tính" />
+            </ListItem>
+          </Grid>
         </Grid>
-        <Grid container>
+        <Divider sx={{ width: '90%', margin: 'auto', my: 1 }} />
+
+        <Grid container sx={{ my: 0.5 }}>
           <Grid item xs={12} md={4}>
             <ListItem>
               <ListItemAvatar>
@@ -129,34 +152,51 @@ const JobContent: React.FC<Props> = ({ data }) => {
               />
             </ListItem>
           </Grid>
+          <Grid item xs={12} md={4}>
+            <ListItem>
+              <ListItemAvatar>
+                <AvatarWrapper>
+                  <CakeIcon />
+                </AvatarWrapper>
+              </ListItemAvatar>
+              <ListItemText
+                primary={`${data.minAge} - ${data.maxAge}`}
+                secondary="Độ tuổi"
+              />
+            </ListItem>
+          </Grid>
         </Grid>
       </CommonInfo>
-      <Typography variant="h3" noWrap marginBottom={2} marginTop={2}>
+      <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
+        Kĩ năng bắt buộc
+      </Typography>
+      <Typography marginTop={2.5}>{data.requiredSkills}</Typography>
+      <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
         Mô tả công việc
       </Typography>
       <Box>
-        <TextParser content={data.jobRequirements} />
+        <TextParser content={data.jobDescription} />
       </Box>
-      <Typography variant="h3" noWrap marginBottom={2} marginTop={2}>
+      <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
         Yêu cầu công việc
       </Typography>
       <Box>
         <TextParser content={data.jobRequirements} />
       </Box>
-      <Typography variant="h3" noWrap marginBottom={2} marginTop={2}>
+      <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
         Quyền lợi
       </Typography>
       <Box>
         <TextParser content={data.benefits} />
       </Box>
-      <Typography variant="h3" noWrap marginBottom={2} marginTop={2}>
+      <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
         Địa điểm làm việc
       </Typography>
-      <Grid container alignItems={'center'}>
-        <LocationOnIcon color="primary" sx={{ margin: '0 5px' }} />
+      <Grid container alignItems={'center'} marginTop={2}>
+        <LocationOnIcon color="primary" sx={{ marginRight: 1 }} />
         <div>{data.workAddress}</div>
       </Grid>
-    </>
+    </Container>
   );
 };
 

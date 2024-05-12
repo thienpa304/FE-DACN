@@ -1,16 +1,14 @@
 import { AxiosError } from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
 import { useApp } from 'src/modules/app/hooks';
 import { User } from '../model';
-import { SetProfile, SetCompany } from '../userService';
+import { SetProfile } from '../userService';
 
-const useMutateUserData = (obj) => {
+const useMutateUserData = () => {
+  const queryClient = useQueryClient();
   const { toast } = useApp();
-
-  const mutationFunction =
-    obj === 'Company' ? SetCompany.create : SetProfile.create;
-
+  const mutationFunction = SetProfile.create;
   const { mutate: onSaveData, isLoading } = useMutation<
     ResponseData<User>,
     AxiosError<ResponseData<User>>,
@@ -18,6 +16,7 @@ const useMutateUserData = (obj) => {
   >(mutationFunction, {
     onSuccess: (res) => {
       if (res.status === 200) {
+        queryClient.invalidateQueries('get-Profile');
         toast.success({ massage: res.message });
       } else {
         toast.error({ massage: res.message });
