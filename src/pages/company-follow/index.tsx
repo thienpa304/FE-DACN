@@ -32,7 +32,7 @@ export default function JobFollow() {
       </Typography>
       <Grid container mb={3} spacing={2}>
         {companyFollow?.map((company, index) => (
-          <Grid key={company.postId} item xs={12} sm={4}>
+          <Grid key={company.postId} item xs={12} sm={6} md={4}>
             <CompanyCard
               key={index}
               company={company}

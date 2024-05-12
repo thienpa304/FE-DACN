@@ -36,12 +36,12 @@ function CompanyList(props) {
           Danh sách công ty
           <Box sx={{ color: '#ce8b0e', display: 'inline', ml: 1 }}>
             ({totalResults ? totalResults : 0})
-          </Box>{' '}
+          </Box>
         </Typography>
         <Grid container spacing={2} minHeight={300}>
           {companyList?.length ? (
             companyList.map((company, index) => (
-              <Grid key={company?.userId} item xs={4}>
+              <Grid key={company?.userId} item xs={12} sm={6} md={4}>
                 <CompanyCard company={company} employerId={company?.userId} />
               </Grid>
             ))

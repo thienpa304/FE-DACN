@@ -23,17 +23,13 @@ export default function Autocomplete(props) {
   } = props;
   const [selectedOptions, setSelectedOptions] = useState([]);
   const handleSelectChange = (_, newValue) => {
-    console.log(newValue);
-
     setSelectedOptions(newValue);
     onChange({ target: { name, value: newValue } });
   };
 
   useEffect(() => {
-    console.log(defaultValue);
     setSelectedOptions(defaultValue?.length > 0 ? defaultValue : []);
   }, [defaultValue]);
-  console.log('selectedOptions', selectedOptions);
 
   return (
     <FormControl fullWidth>
@@ -49,9 +45,9 @@ export default function Autocomplete(props) {
           if (option.value) return option.value === value.value;
           return option === value;
         }}
-        autoComplete
+        // autoComplete
         // autoSelect
-        autoHighlight
+        // autoHighlight
         onChange={handleSelectChange}
         freeSolo={freeSolo}
         getOptionLabel={(option) => option?.label || option}

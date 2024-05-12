@@ -11,6 +11,8 @@ import {
   WORKING_FORM
 } from 'src/constants';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { useTheme } from '@emotion/react';
+import { checkIsMobile } from 'src/utils/responsive';
 
 interface Option {
   value: any;
@@ -55,6 +57,10 @@ export default function JobFilter({ handleFilter }) {
     formState: { errors }
   } = useForm<FormProps>({ defaultValues: defaultValues });
   const [currentValue, setCurrentValue] = React.useState<any>({});
+
+  const theme = useTheme();
+  const isMobile = checkIsMobile(theme);
+  console.log(isMobile);
 
   const filter = (data) => {
     handleFilter(data);

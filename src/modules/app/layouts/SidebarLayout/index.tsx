@@ -1,11 +1,12 @@
 import { FC, ReactNode, useContext, useEffect } from 'react';
 import { Box, alpha, lighten, useTheme } from '@mui/material';
 import { Outlet } from 'react-router-dom';
-
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { SidebarContext } from 'src/contexts/SidebarContext';
 import Footer from './Footer';
+import { checkIsMobile } from 'src/utils/responsive';
 
 interface SidebarLayoutProps {
   children?: ReactNode;
@@ -14,14 +15,15 @@ interface SidebarLayoutProps {
 
 const SidebarLayout: FC<SidebarLayoutProps> = ({ showSideBar = true }) => {
   const theme = useTheme();
+  const isShowSideBar = checkIsMobile(theme) || showSideBar;
 
   return (
     <>
       <Box
         sx={{
           flex: 1,
+          position: 'relative',
           height: '100%',
-
           '.MuiPageTitle-wrapper': {
             background:
               theme.palette.mode === 'dark'
@@ -44,25 +46,26 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ showSideBar = true }) => {
           }
         }}
       >
-        <Header showSideBar={showSideBar} />
-        {showSideBar && <Sidebar />}
+        <Header showSideBar={isShowSideBar} />
+        {isShowSideBar && <Sidebar />}
         <Box
           sx={{
-            position: 'relative',
             zIndex: 5,
             display: 'block',
+            position: 'relative',
+            height: '100%',
             flex: 1,
             pt: `${theme.header.height}`,
             [theme.breakpoints.up('lg')]: {
-              ml: showSideBar ? `${theme.sidebar.width}` : undefined
+              ml: isShowSideBar ? `${theme.sidebar.width}` : undefined
             }
           }}
         >
-          <Box display="block">
+          <Box display="block" minHeight={'100%'}>
             <Outlet />
           </Box>
+          <Footer />
         </Box>
-        {/* <Footer /> */}
       </Box>
     </>
   );

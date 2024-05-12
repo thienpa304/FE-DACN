@@ -60,7 +60,7 @@ export default function JobFollow() {
       </Typography>
       <Grid container spacing={2}>
         {jobList?.map((job, index) => (
-          <Grid key={job.postId} item xs={12} sm={4}>
+          <Grid key={job.postId} item xs={12} sm={6} md={4}>
             <SmallJobCard key={index} job={job} />
           </Grid>
         ))}

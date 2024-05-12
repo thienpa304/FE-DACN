@@ -79,10 +79,8 @@ const CandidateProfiles = () => {
                 value={currentQuery.currentTab}
                 variant="scrollable"
                 scrollButtons={false}
-                textColor="primary"
-                indicatorColor="primary"
                 sx={{
-                  display: 'inline-flex',
+                  display: { md: 'inline-block' },
                   borderBottom: 1,
                   borderColor: 'divider'
                 }}

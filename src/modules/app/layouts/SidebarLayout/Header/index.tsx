@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
@@ -14,6 +14,7 @@ import {
   MenuItem,
   Stack,
   Tooltip,
+  Typography,
   alpha,
   lighten,
   styled,
@@ -51,6 +52,98 @@ const HeaderWrapper = styled(Box)<{ showSideBar: boolean }>(
 `
 );
 
+const NavButton = styled(Button)({
+  color: '#b27300',
+  minWidth: '100px'
+});
+const ButtonText = styled(Typography)({
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  display: '-webkit-box',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 2,
+  fontWeight: 700
+});
+
+const employeeMenu = {
+  basic: [
+    {
+      label: 'Hồ sơ',
+      linkTo: '/employee/recruitment-profile'
+    },
+    {
+      label: 'Đã ứng tuyển',
+      linkTo: '/employee/job-applied'
+    },
+    {
+      label: 'Gợi ý việc làm',
+      linkTo: '/employee/job-recommend'
+    }
+  ],
+  others: [
+    {
+      label: 'Việc làm',
+      linkTo: '/employee/job-follow'
+    },
+    {
+      label: 'Công ty',
+      linkTo: '/employee/company-follow'
+    }
+  ]
+};
+
+const employerMenu = {
+  basic: [
+    {
+      label: 'Tuyển dụng',
+      linkTo: '/employer/recruitment/create'
+    },
+    {
+      label: 'Danh sách tin đăng',
+      linkTo: '/employer/recruitment/list'
+    }
+  ],
+  others: [
+    {
+      label: 'Hồ sơ ứng tuyển',
+      linkTo: '/employer/candidate/profile'
+    },
+    {
+      label: 'Hồ sơ tiềm năng',
+      linkTo: '/employer/recommend-profiles'
+    },
+    {
+      label: 'Tìm kiếm hồ sơ',
+      linkTo: '/employer/find-profiles'
+    },
+    {
+      label: 'Hồ sơ đã lưu',
+      linkTo: '/employer/follow-profile'
+    }
+  ]
+};
+
+const adminMenu = {
+  basic: [
+    {
+      label: 'Quản lý người dùng',
+      linkTo: '/admin/user-manage'
+    },
+    {
+      label: 'Quản lý hồ sơ và CV',
+      linkTo: '/admin/manage-profile'
+    },
+    {
+      label: 'Quản lý tuyển dụng',
+      linkTo: '/admin/jobs-posting'
+    },
+    {
+      label: 'Thống kê',
+      linkTo: '/admin/statistic-report'
+    }
+  ]
+};
+
 function Header({ showSideBar }) {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const {
@@ -62,12 +155,20 @@ function Header({ showSideBar }) {
   const theme = useTheme();
   const Navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const openMobile = Boolean(mobileAnchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleMobileClick = (event) => {
+    setMobileAnchorEl(event.currentTarget);
+  };
+  const handleMobileClose = () => {
+    setMobileAnchorEl(null);
   };
 
   return (
@@ -98,228 +199,153 @@ function Header({ showSideBar }) {
         // divider={<Divider orientation="vertical" flexItem />}
         alignItems="center"
         spacing={2}
+        height="100%"
       >
         {!showSideBar && (
-          <Box display="flex">
+          <Box display="flex" height="100%">
             <Logo />
-            <Button
-              sx={{
-                color: '#b27300',
-                minWidth: '100px',
-                borderLeft: 1,
-                borderColor: '#dce2de'
-              }}
+            <NavButton
               onClick={() => {
                 Navigate('company');
               }}
+              sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
             >
               Công ty nổi bật
-            </Button>
-            {isEmployee && (
+            </NavButton>
+            <Box display={{ md: 'flex', xs: 'none' }}>
+              {isEmployee && (
+                <>
+                  {employeeMenu.basic.map((item) => (
+                    <NavButton
+                      onClick={() => {
+                        Navigate(item.linkTo);
+                      }}
+                      sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                    >
+                      <ButtonText>{item.label}</ButtonText>
+                    </NavButton>
+                  ))}
+                  <NavButton
+                    onClick={handleClick}
+                    sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                  >
+                    <ButtonText>Theo dõi</ButtonText>
+                    {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </NavButton>
+                  <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+                    {employeeMenu.others.map((item) => (
+                      <MenuItem
+                        sx={{ fontWeight: 700 }}
+                        onClick={() => {
+                          Navigate(item.linkTo);
+                        }}
+                      >
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              )}
+              {isEmployer && (
+                <>
+                  {employerMenu.basic.map((item) => (
+                    <NavButton
+                      onClick={() => {
+                        Navigate(item.linkTo);
+                      }}
+                      sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                    >
+                      <ButtonText>{item.label}</ButtonText>
+                    </NavButton>
+                  ))}
+                  <NavButton
+                    onClick={handleClick}
+                    sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                  >
+                    <ButtonText>Ứng viên</ButtonText>
+                    {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </NavButton>
+                  <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
+                    {employerMenu.others.map((item) => (
+                      <MenuItem
+                        sx={{ fontWeight: 700 }}
+                        onClick={() => {
+                          Navigate(item.linkTo);
+                        }}
+                      >
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              )}
+              {isAdmin && (
+                <>
+                  {adminMenu.basic.map((item) => (
+                    <NavButton
+                      onClick={() => {
+                        Navigate(item.linkTo);
+                      }}
+                      sx={{ borderLeft: 1, borderColor: '#E0E0E0' }}
+                    >
+                      <ButtonText>{item.label}</ButtonText>
+                    </NavButton>
+                  ))}
+                </>
+              )}
+            </Box>
+
+            <Box display={{ md: 'none', xs: 'flex' }}>
               <>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('employee/recruitment-profile');
-                  }}
+                <NavButton onClick={handleMobileClick}>
+                  <ButtonText>Công cụ</ButtonText>
+                  {openMobile ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </NavButton>
+                <Menu
+                  open={openMobile}
+                  onClose={handleMobileClose}
+                  anchorEl={mobileAnchorEl}
                 >
-                  Hồ sơ
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('employee/job-applied');
-                  }}
-                >
-                  Đã ứng tuyển
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('employee/job-recommend');
-                  }}
-                >
-                  Gợi ý việc làm
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={handleClick}
-                >
-                  Theo dõi
-                  {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                </Button>
-                <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
-                  <MenuItem
-                    sx={{ fontWeight: 700 }}
-                    onClick={() => {
-                      Navigate('employee/job-follow');
-                    }}
-                  >
-                    Việc làm
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ fontWeight: 700 }}
-                    onClick={() => {
-                      Navigate('employee/company-follow');
-                    }}
-                  >
-                    Công ty
-                  </MenuItem>
+                  {isEmployee &&
+                    employeeMenu.basic
+                      .concat(employeeMenu.others)
+                      .map((option) => (
+                        <MenuItem
+                          sx={{ fontWeight: 700 }}
+                          onClick={() => {
+                            Navigate(option.linkTo);
+                          }}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                  {isEmployer &&
+                    employerMenu.basic
+                      .concat(employerMenu.others)
+                      .map((option) => (
+                        <MenuItem
+                          sx={{ fontWeight: 700 }}
+                          onClick={() => {
+                            Navigate(option.linkTo);
+                          }}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                  {isAdmin &&
+                    adminMenu.basic.map((option) => (
+                      <MenuItem
+                        sx={{ fontWeight: 700 }}
+                        onClick={() => {
+                          Navigate(option.linkTo);
+                        }}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
                 </Menu>
               </>
-            )}
-            {isEmployer && (
-              <>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('employer/recruitment/create');
-                  }}
-                >
-                  Tuyển dụng
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('employer/recruitment/list');
-                  }}
-                >
-                  Danh sách tin đăng
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={handleClick}
-                >
-                  Hồ sơ ứng viên
-                  {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                </Button>
-                <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
-                  <MenuItem
-                    sx={{ fontWeight: 700 }}
-                    onClick={() => {
-                      Navigate('employer/candidate/profile');
-                    }}
-                  >
-                    Hồ sơ ứng tuyển
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ fontWeight: 700 }}
-                    onClick={() => {
-                      Navigate('employer/recommend-profiles');
-                    }}
-                  >
-                    Hồ sơ tiềm năng
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ fontWeight: 700 }}
-                    onClick={() => {
-                      Navigate('employer/find-profiles');
-                    }}
-                  >
-                    Tìm kiếm hồ sơ
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ fontWeight: 700 }}
-                    onClick={() => {
-                      Navigate('employer/follow-profile');
-                    }}
-                  >
-                    Hồ sơ đã lưu
-                  </MenuItem>
-                </Menu>
-              </>
-            )}
-            {isAdmin && (
-              <>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('admin/user-manage');
-                  }}
-                >
-                  Quản lý người dùng
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('admin/manage-profile');
-                  }}
-                >
-                  Quản lý hồ sơ CV
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('admin/jobs-posting');
-                  }}
-                >
-                  Quản lý tuyển dụng
-                </Button>
-                <Button
-                  sx={{
-                    color: '#b27300',
-                    minWidth: '100px',
-                    borderLeft: 1,
-                    borderColor: '#dce2de'
-                  }}
-                  onClick={() => {
-                    Navigate('admin/statistic-report');
-                  }}
-                >
-                  Thống kê
-                </Button>
-              </>
-            )}
+            </Box>
           </Box>
         )}
       </Stack>

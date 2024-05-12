@@ -417,7 +417,7 @@ export default function Table({ statusFilter, selectedProfession }) {
             Đã chọn: {selectedRows.length}
           </Typography>
         </Grid>
-        <Grid item xs={1.5}>
+        <Grid item xs={2.2} display="flex">
           <SelectInput
             options={APPROVAL_STATUS}
             onChange={handleChangeValue}
@@ -430,8 +430,6 @@ export default function Table({ statusFilter, selectedProfession }) {
             disabled={!selectedRows.length}
             label="Duyệt nhanh"
           />
-        </Grid>
-        <Grid item xs={0.7}>
           <Button
             variant="contained"
             size="small"
