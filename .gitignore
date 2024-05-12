@@ -15,7 +15,7 @@
 .DS_Store
 .idea
 features.html
-
+.env
 
 npm-debug.log*
 yarn-debug.log*
