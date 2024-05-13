@@ -15,6 +15,7 @@ import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import TablePost from 'src/pages/recruitment-list/TablePost';
 import TabsWrapper from 'src/components/TabWrapper';
 import Pagination from 'src/components/Pagination';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const tabs = [
   { label: 'Tất cả', value: '' },
@@ -28,7 +29,7 @@ const RecruitmentList = () => {
   const pageSize = 9;
   const [currentTab, setCurrentTab] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { jobs, totalResults } = useQueryJobByOwner({
+  const { jobs, totalResults, isLoading } = useQueryJobByOwner({
     status: currentTab,
     page: currentPage,
     num: pageSize
@@ -39,6 +40,8 @@ const RecruitmentList = () => {
     setCurrentTab(value);
     setCurrentPage(1);
   };
+
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
       <Grid

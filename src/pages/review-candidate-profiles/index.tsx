@@ -58,7 +58,7 @@ const CandidateProfiles = () => {
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
   console.log('rerender 1');
 
-  if (isLoadingData || isLoadingTotalResults) return;
+  if (isLoadingData || isLoadingTotalResults) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
       <Grid

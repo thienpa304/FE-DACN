@@ -15,6 +15,7 @@ import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyInfoById';
 import { useLocation, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -59,6 +60,8 @@ export default function index() {
   const locationState = state as any;
   // const id = locationState?.id;
   const { company, isLoading } = useQueryCompanyInfoByUser({ employerId: id });
+
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Container maxWidth="md" sx={{ py: 2 }}>
       {renderBanner(company?.banner)}

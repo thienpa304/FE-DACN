@@ -6,13 +6,18 @@ import useQueryTotalResultOfJobs from 'src/modules/jobs/hooks/useQueryTotalResul
 import { useEffect, useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import Link from 'src/components/Link';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 function UrgentJobTab() {
-  const { totalResults } = useQueryTotalResultOfJobs();
+  const { totalResults, isLoading: isLoadingTotalResult } =
+    useQueryTotalResultOfJobs();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
-  const { jobs } = useQueryAllJob({ page: currentPage, num: pageSize });
+  const { jobs, isLoading } = useQueryAllJob({
+    page: currentPage,
+    num: pageSize
+  });
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -20,6 +25,8 @@ function UrgentJobTab() {
   useEffect(() => {
     console.log(totalResults, jobs);
   }, [totalResults]);
+
+  if (isLoading || isLoadingTotalResult) return <SuspenseLoader />;
 
   return (
     <Card
