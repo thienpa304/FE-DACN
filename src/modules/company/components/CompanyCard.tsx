@@ -62,8 +62,9 @@ function CompanyCard({
               <Avatar
                 src={companyAvatar}
                 sx={{
-                  width: 100,
-                  height: 100,
+                  width: { md: 100, xs: 70 },
+                  height: { md: 100, xs: 70 },
+                  my: { md: '0', xs: 'auto' },
                   borderRadius: '5px',
                   objectFit: 'cover'
                 }}
@@ -80,7 +81,6 @@ function CompanyCard({
                   to={`/company/${rewriteUrl(company?.companyName)}?id=${btoa(
                     employerId.toString()
                   )}`}
-                  // state={{ id: employerId }}
                   sx={{
                     ':hover': {
                       color: '#ce8b0e'

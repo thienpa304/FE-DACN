@@ -31,7 +31,6 @@ const JobRecommend = () => {
   //   setOnline(onlineProfile);
   //   setDocumentProfile(attachedDocument);
   // }, [onlineProfile, attachedDocument]);
-  console.log('rerender JobRecommend');
 
   return (
     <Container maxWidth="md" style={{ marginTop: 30 }}>

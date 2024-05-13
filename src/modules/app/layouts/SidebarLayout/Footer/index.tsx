@@ -46,13 +46,11 @@ const Footer = () => {
     <Box
       sx={{
         bgcolor: '#f5f4ff',
-        px: 7,
-        py: 2,
         borderTop: '1px solid #e0e0e0',
         mt: 5
       }}
     >
-      <Grid container spacing={5}>
+      <Grid container spacing={5} p={5}>
         <Grid item md={6}>
           <Typography fontWeight={700} fontSize={18} lineHeight={3}>
             Về chúng tôi

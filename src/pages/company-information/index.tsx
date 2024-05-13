@@ -70,7 +70,7 @@ export default function index() {
           {company?.companyName}
         </Typography>
       </CustomContainer>
-      <CompanyInfoTab company={company} />
+      <CompanyInfoTab company={company} companyPage={true} />
       <JobList
         pageTitle={`Việc làm đang tuyển`}
         profession={''}

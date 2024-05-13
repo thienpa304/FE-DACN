@@ -174,7 +174,6 @@ const renderCheck = (data) => {
       else if (item.value === null && value !== 'null') return false;
       else return true;
     });
-    // console.log(checkValue, value);
 
     setCheckValue(checkValue);
     mutate([data.id, { check: checkValue?.value }]);

@@ -91,8 +91,6 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
 
   const handleSaveProfile = (data: FormProps) => {
     const newData = processDataPayload(data);
-    console.log('newData', newData);
-
     onSubmit(newData);
     setIsReadOnly(true);
   };
@@ -105,8 +103,6 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
   const onEdit = () => setIsReadOnly(false);
 
   const processDataPayload = (data: FormProps) => {
-    console.log(data.skills);
-
     return {
       ...data,
       profession: convertObjectListToString(data?.profession as Option[]),

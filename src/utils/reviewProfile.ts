@@ -287,34 +287,17 @@ const handleRoundTwo = async (
   );
   console.log(responses);
 
-  // const result = await sendChatGPTRequest(RoundTwoCheck, dataSendToGPT).catch(
-  //   () => []
-  // );
-
   const result = responses.map((item) => {
     const acc = item.employer_Requirement.filter((require) =>
       item.employee_Profile.some(
-        (skills) => dot(skills.result, require.result) > 0.6
+        (skills) => dot(skills.result, require.result) > 0.65
       )
     );
-    console.log(acc);
     return {
       id: item.id,
       result: (100 / item.employer_Requirement.length) * acc.length
     };
   });
-
-  //   const count = item.employer_Requirement.filter((require) => {
-  //     console.log(dot(item.employee_Profile[0].result, require.result));
-  //     return dot(item.employee_Profile[0].result, require.result) > 0.6;
-  //   }).length;
-  //   return {
-  //     id: item.id,
-  //     result: item.employer_Requirement.filter(
-  //       (require) => dot(item.employee_Profile[0].result, require.result) > 0.6
-  //     ).length
-  //   };
-  // });
 
   console.log(result);
 
@@ -339,7 +322,7 @@ const handleRoundThree = async (
       let score = item.employee_Profile.reduce((acc, profile) => {
         const hasMatch = item.employer_Requirement.some((requirement) => {
           const cosineSimilarity = dot(profile.result, requirement.result);
-          return cosineSimilarity > 0.7;
+          return cosineSimilarity > 0.65;
         });
         return hasMatch ? acc + 5 : acc;
       }, 0);

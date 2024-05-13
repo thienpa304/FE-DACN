@@ -39,6 +39,10 @@ const renderJobTitle = (data) => {
   );
 };
 
+const renderCompanyName = (data) => {
+  return <TypographyEllipsis>{data.value}</TypographyEllipsis>;
+};
+
 const renderStatus = (data) => {
   const color = APPROVAL_STATUS.find((item) => item.label === data.value).color;
   return (
@@ -60,6 +64,13 @@ const columns: GridColDef[] = [
     renderCell: renderJobTitle
   },
   {
+    field: 'companyName',
+    headerName: 'Tên công ty',
+    minWidth: 300,
+    headerAlign: 'center',
+    renderCell: renderCompanyName
+  },
+  {
     field: 'createAt',
     headerName: 'Ngày nộp',
     minWidth: 150,
@@ -74,22 +85,6 @@ const columns: GridColDef[] = [
     headerAlign: 'center',
     align: 'center',
     renderCell: rederDate
-  },
-  {
-    field: 'fullName',
-    headerName: 'Lượt nộp',
-    minWidth: 100,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: () => <>0</>
-  },
-  {
-    field: 'ag2e',
-    headerName: 'Lượt xem',
-    minWidth: 110,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: () => <>0</>
   },
   {
     field: 'status',

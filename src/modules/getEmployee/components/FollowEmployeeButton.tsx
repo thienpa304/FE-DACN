@@ -37,8 +37,6 @@ export default function FollowEmployeeButton(props) {
     const foundItem = employeeFollow?.find((item) => {
       return isFollowedProfile(item, employeeProfile);
     });
-    console.log(foundItem);
-
     foundItem && setIsFollow(true);
   }, [JSON.stringify(employeeFollow), JSON.stringify(employeeProfile)]);
 

@@ -42,7 +42,7 @@ function UrgentJobTab() {
           </Typography>
         </Box>
         <Link
-          to="/urgent-hiring-job"
+          to="/hiring-job"
           sx={{
             fontSize: 16,
             fontWeight: 700

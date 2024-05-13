@@ -23,7 +23,8 @@ import {
   EXPERIENCE,
   POSITION_LEVEL,
   GENDER_OPTION,
-  SKILLS
+  SKILLS,
+  WORK_AT
 } from 'src/constants/option';
 import { jobAnalysist } from 'src/modules/ai/roles';
 import FormControl from 'src/components/FormControl';
@@ -88,7 +89,6 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   } = methods;
 
   const handleSave = (newData) => {
-    console.log(newData);
     const fieldsToCheck = {
       jobDescription: 'jobDescription',
       jobRequirements: 'jobRequirements',
@@ -332,7 +332,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         type="number"
                         pattern="integer"
                         InputProps={{ inputProps: { min: 1 } }}
-                      />{' '}
+                      />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
@@ -353,7 +353,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                             </InputAdornment>
                           )
                         }}
-                      />{' '}
+                      />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <FormControl
@@ -410,6 +410,33 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         }}
                       />
                     </Grid>
+                    {/* <Grid item container xs={12}>
+                      <Grid item xs={3}>
+                        <FormControl
+                          options={WORK_AT}
+                          element={<SelectInput />}
+                          control={control}
+                          errors={errors}
+                          id="province"
+                          label="Tỉnh thành"
+                          name="province"
+                          required
+                        />
+                      </Grid>
+                      <Grid item xs={9}>
+                        <FormControl
+                          element={<TextField />}
+                          control={control}
+                          errors={errors}
+                          id="workAddress"
+                          label="Địa chỉ làm việc"
+                          name="workAddress"
+                          required
+                          multiline
+                          minRows={1}
+                        />
+                      </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                       <FormControl
                         element={<TextField />}

@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
@@ -7,9 +7,6 @@ import {
   Button,
   IconButton,
   Link,
-  List,
-  ListItem,
-  ListItemText,
   Menu,
   MenuItem,
   Stack,
@@ -24,12 +21,10 @@ import { SidebarContext } from 'src/contexts/SidebarContext';
 
 import Logo from 'src/components/LogoSign';
 import HeaderButtons from './Buttons';
-import HeaderMenu from './Menu';
 import HeaderUserbox from './Userbox';
 import { useApp } from 'src/modules/app/hooks';
 import { Role } from 'src/modules/users/model';
 import { useNavigate } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
@@ -351,7 +346,6 @@ function Header({ showSideBar }) {
       </Stack>
 
       <Box display="flex" alignItems="center">
-        <HeaderButtons />
         {userId ? (
           <HeaderUserbox />
         ) : (

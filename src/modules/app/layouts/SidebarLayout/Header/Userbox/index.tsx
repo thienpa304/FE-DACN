@@ -15,15 +15,10 @@ import {
   Popover,
   Typography
 } from '@mui/material';
-
-import InboxTwoToneIcon from '@mui/icons-material/InboxTwoTone';
 import { styled } from '@mui/material/styles';
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
-import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
-import { selectUser } from 'src/modules/app/appSlice';
-import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import useSignOutHook from 'src/modules/auth/hooks/useSignOutHook';
 import { useApp } from 'src/modules/app/hooks';
 

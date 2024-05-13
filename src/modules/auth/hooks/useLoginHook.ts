@@ -17,14 +17,10 @@ const useLogin = () => {
     setAccessTokenApp,
     user: { userId }
   } = useApp();
-  const { profile, refetch } = useProfileHook();
-  const { refetch: refetchOnlineProfile } = useQueryOnlineProfile();
-  const { refetch: refetchDocumentProfile } = useQueryAttachedDocument();
 
   const navigate = useNavigate();
   const { state } = useLocation();
   const locationState = state as any;
-  console.log(locationState);
 
   if (userId)
     navigate(locationState?.from || '/', { state: state, replace: true });

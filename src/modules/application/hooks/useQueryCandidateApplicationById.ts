@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { ResponseData } from 'src/common/http-request';
-import { Application, EmployeeApplication } from '../model';
+import { EmployeeApplication } from '../model';
 import { CandidateProfilesService } from '../applicationService';
 import { useEffect, useState } from 'react';
 import { useApp } from 'src/modules/app/hooks';
