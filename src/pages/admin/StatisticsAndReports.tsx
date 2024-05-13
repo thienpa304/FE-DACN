@@ -44,9 +44,10 @@ const StatisticsAndReports = () => {
   ];
 
   const recruitmentStatusData = [
-    { name: 'Open', value: 10 },
-    { name: 'Closed', value: 5 },
-    { name: 'In Progress', value: 8 }
+    { name: 'Chờ duyệt', value: 10 },
+    { name: 'Đã duyệt', value: 5 },
+    { name: 'Từ chối', value: 8 },
+    { name: 'Hết hạn', value: '5' }
   ];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#814289'];
@@ -141,7 +142,6 @@ const StatisticsAndReports = () => {
                 <YAxis />
                 <CartesianGrid strokeDasharray="3 3" />
                 <Tooltip />
-                <Legend />
                 <Line type="monotone" dataKey="value" stroke="#8884d8" />
               </LineChart>
             </CardContent>

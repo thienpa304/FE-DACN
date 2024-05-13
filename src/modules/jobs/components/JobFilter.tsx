@@ -49,7 +49,8 @@ const defaultValues = {
   sex: ''
 };
 
-export default function JobFilter({ handleFilter }) {
+export default function JobFilter(props) {
+  const { handleFilter, sx } = props;
   const {
     control,
     reset,
@@ -57,10 +58,6 @@ export default function JobFilter({ handleFilter }) {
     formState: { errors }
   } = useForm<FormProps>({ defaultValues: defaultValues });
   const [currentValue, setCurrentValue] = React.useState<any>({});
-
-  const theme = useTheme();
-  const isMobile = checkIsMobile(theme);
-  console.log(isMobile);
 
   const filter = (data) => {
     handleFilter(data);
@@ -96,17 +93,20 @@ export default function JobFilter({ handleFilter }) {
 
   return (
     <Box
-      sx={{
-        borderTopLeftRadius: '10px',
-        borderTopRightRadius: '10px',
-        backgroundColor: 'white',
-        boxShadow: '2px 2px 6px #d2d7db',
-        height: 80,
-        bgcolor: '#ffdd9f',
-        display: 'flex',
-        alignItems: 'center',
-        pl: 2
-      }}
+      sx={[
+        {
+          borderTopLeftRadius: '10px',
+          borderTopRightRadius: '10px',
+          boxShadow: '2px 2px 6px #d2d7db',
+          height: 80,
+          // bgcolor: '#ffdd9f',
+          bgcolor: '#fee9f7',
+          display: 'flex',
+          alignItems: 'center',
+          pl: 2,
+          ...sx
+        }
+      ]}
     >
       <Grid container spacing={0.3} display="flex" alignItems="center">
         <Grid item xs={0.5}>

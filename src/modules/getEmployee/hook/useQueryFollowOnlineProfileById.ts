@@ -20,9 +20,6 @@ const useQueryFollowOnlineProfileById = (params?) => {
         isEmployer && params?.userId !== undefined && params?.isOnlineProfile
     }
   );
-  console.log(
-    isEmployer && params?.userId !== undefined && params?.isOnlineProfile
-  );
 
   return {
     onlineProfile: data?.data,

@@ -1,7 +1,13 @@
 import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
 import TableData from 'src/components/TableData';
-import { Button, CircularProgress, Grid, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  Typography
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
@@ -213,7 +219,6 @@ export default function Table(props) {
   const [selectedRows, setSelectedRows] = useState([]);
 
   const applicationIdList = data?.map((item) => item?.application_id);
-  console.log(selectedRows);
 
   const jobsIdList: Set<number> = new Set(
     data?.map((item) => {
@@ -366,12 +371,8 @@ export default function Table(props) {
   const handleReview = () => {
     if (!roundOneFinished) {
       // Round 1: Reset matching scores and start round 1
-      // console.log('analyzedProfile', analyzedProfile);
-
       const resetScoreList = analyzedProfile
         .filter((item) => {
-          console.log(item.id, selectedRows);
-
           return selectedRows.includes(item.id);
         })
         .map((profile) => ({
@@ -384,7 +385,6 @@ export default function Table(props) {
             }
           }
         }));
-      console.log('resetScoreList', resetScoreList);
 
       setAnalyzedProfile(resetScoreList);
       review({
@@ -443,7 +443,6 @@ export default function Table(props) {
     if (!jobs.length || !applicationDetailList.length || start) return;
 
     const initialJobProfileData = matchJobAndProfile();
-    // console.log('initialJobProfileData', initialJobProfileData);
 
     const resultList = initialJobProfileData?.map((item) => {
       item.employee_Profile.application.id = item.id;
@@ -501,27 +500,29 @@ export default function Table(props) {
     <>
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'right',
-          gap: 2
+          display: 'block',
+          float: { md: 'right' },
+          minWidth: { md: 500 },
+          maxWidth: 500
         }}
       >
         <Grid
           container
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'right',
-            gap: 2
+            alignItems: 'center'
           }}
+          spacing={1}
         >
-          <Grid item xs={1}>
-            <Typography fontWeight={700}>
+          <Grid item md={3} xs={12}>
+            <Typography
+              fontWeight={700}
+              textAlign={'center'}
+              sx={{ mt: { xs: 2, md: 0 } }}
+            >
               Đã chọn: {selectedRows.length}
             </Typography>
           </Grid>
-          <Grid item xs={2.2} display={'flex'}>
+          <Grid item md={5} xs={12} display={'flex'}>
             <SelectInput
               options={APPROVAL_STATUS}
               onChange={handleChangeValue}
@@ -551,31 +552,34 @@ export default function Table(props) {
           <Grid
             item
             container
-            xs={1.7}
+            md={4}
+            xs={12}
             sx={{
               display: 'flex',
               alignItems: 'center'
             }}
           >
-            <Grid item xs>
-              <Button
-                onClick={() => setStart(selectedRows.length > 0)}
-                variant="contained"
-                size="small"
-                disabled={start || !selectedRows.length}
-                fullWidth
-                sx={{ py: 1, px: 0 }}
-              >
+            <Button
+              onClick={() => setStart(selectedRows.length > 0)}
+              variant="contained"
+              size="small"
+              disabled={start || !selectedRows.length}
+              fullWidth
+              sx={{ py: 1, px: 0 }}
+            >
+              <Grid item xs={!isAnalyzing ? 12 : 9}>
                 {!selectedRows.length
                   ? 'Chưa chọn hồ sơ'
                   : !start
                   ? 'Phân tích nhanh'
                   : 'Đang phân tích'}
-              </Button>
-            </Grid>
-            <Grid item xs={2}>
-              {isAnalyzing && <CircularProgress size={18} color="secondary" />}
-            </Grid>
+              </Grid>
+              <Grid item xs={isAnalyzing ? 3 : 0}>
+                {isAnalyzing && (
+                  <CircularProgress size={18} color="secondary" />
+                )}
+              </Grid>
+            </Button>
           </Grid>
         </Grid>
       </Box>

@@ -110,7 +110,6 @@ const EmailNotification = () => {
                       setRecipient(e.target.value);
                     }}
                     freeSolo={true}
-                    autoSelect
                   />
                 }
                 control={control}

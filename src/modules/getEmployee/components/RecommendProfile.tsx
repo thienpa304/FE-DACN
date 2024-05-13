@@ -60,11 +60,6 @@ export default function RecommendProfile() {
   const addInfo = (job) => {
     setJobInfo({
       profession: job?.profession
-      // degree: job?.degree,
-      // experience: job?.experience,
-      // sex: job?.sex,
-      // minAge: job?.minAge,
-      // maxAge: job?.maxAge
     });
   };
 
@@ -129,10 +124,6 @@ export default function RecommendProfile() {
         }
       };
     });
-
-    // const passRoundProfile = testProfiles.filter(
-    //   (item) => firstRoundForGeneralInfo(jobInfo, item) >= 30
-    // );
     setShowProfile(profile);
     const section = document.getElementById('recommend-profile');
     section?.scrollIntoView({ behavior: 'smooth' });
@@ -184,58 +175,59 @@ export default function RecommendProfile() {
           </Card>
         </Grid>
       </Grid>
+      <Box id="recommend-profile" display={!jobInfo && 'none'}>
+        <Typography fontWeight={700} fontSize={22} my={3}>
+          Hồ sơ gợi ý
+        </Typography>
+        <JobFilter handleFilter={handleFilter} />
+        <Grid container xs={12} sx={{ width: '100%' }}>
+          <Grid item xs={12}>
+            <Container
+              sx={{
+                mb: 3,
+                p: 3,
+                bgcolor: '#fbfeff',
+                minHeight: '72vh'
+              }}
+            >
+              {isLoadingProfile && <CircularProgress />}
+              <Grid container spacing={1} mb={2}>
+                {showProfile?.map((item, index) => (
+                  <Grid key={index} item xs={12} sm={6} md={3}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <ProfileCard profile={item} />
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
 
-      <Typography id="recommend-profile" fontWeight={700} fontSize={22} my={3}>
-        Hồ sơ gợi ý
-      </Typography>
-      <JobFilter handleFilter={handleFilter} />
-      <Grid container xs={12} sx={{ width: '100%' }}>
-        <Grid item xs={12}>
-          <Container
-            sx={{
-              mb: 3,
-              p: 3,
-              bgcolor: '#fbfeff',
-              minHeight: '72vh'
-            }}
-          >
-            {isLoadingProfile && <CircularProgress />}
-            <Grid container spacing={1} mb={2}>
-              {showProfile?.map((item, index) => (
-                <Grid key={index} item xs={12} sm={6} md={3}>
-                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <ProfileCard profile={item} />
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-
-            {!Boolean(showProfile?.length) ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}
-              >
-                <Typography
-                  mt={10}
-                  textAlign="center"
-                  fontStyle="italic"
-                  color="#9999"
+              {!Boolean(showProfile?.length) ? (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
                 >
-                  Không tìm được hồ sơ phù hợp
-                </Typography>
-              </Box>
-            ) : (
-              <Pagination
-                currentPage={profileCurrentPage}
-                totalPages={totalProfilePages}
-                handlePageChange={setProfleCurrentPage}
-              />
-            )}
-          </Container>
+                  <Typography
+                    mt={10}
+                    textAlign="center"
+                    fontStyle="italic"
+                    color="#9999"
+                  >
+                    Không tìm được hồ sơ phù hợp
+                  </Typography>
+                </Box>
+              ) : (
+                <Pagination
+                  currentPage={profileCurrentPage}
+                  totalPages={totalProfilePages}
+                  handlePageChange={setProfleCurrentPage}
+                />
+              )}
+            </Container>
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </Container>
   );
 }

@@ -25,8 +25,6 @@ export function convertStringToObjectList(
 }
 
 export function convertObjectListToString(objectList: Option[]): string {
-  console.log('objectList', objectList);
-
   if (!objectList) return '';
   const labels = objectList
     .map((option) => option.label)

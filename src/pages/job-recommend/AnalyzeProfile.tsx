@@ -39,7 +39,6 @@ const documentRecommend = JobRecommendTab;
 
 const AnalyzeProfile = (props) => {
   const { id } = props;
-  console.log(id);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -168,8 +167,6 @@ const AnalyzeProfile = (props) => {
     setKeywords(keywords);
     setIsAnalyzing(false);
     const section = document.getElementById(`recommend-${id}`);
-
-    console.log(section);
 
     if (section) section.scrollIntoView({ behavior: 'smooth' });
   }, [analysisResults]);

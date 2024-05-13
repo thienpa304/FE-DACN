@@ -110,7 +110,6 @@ const ProfileManagement = () => {
         onDeleteOnlineProfile(id);
       }
       if (params?.field === 'document') {
-        console.log(params);
         removeFileByUrl(params?.row?.attached_document?.CV).then(() => {
           onDeleteDocumentProfile(id);
         });

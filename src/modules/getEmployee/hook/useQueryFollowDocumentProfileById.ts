@@ -22,11 +22,6 @@ const useQueryFollowDocumentProfileById = (params?) => {
         params?.isOnlineProfile === false
     }
   );
-  console.log(
-    isEmployer &&
-      params?.userId !== undefined &&
-      params?.isOnlineProfile === false
-  );
 
   return {
     documentProfile: data?.data,
