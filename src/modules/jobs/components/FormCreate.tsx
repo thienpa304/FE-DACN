@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Backdrop,
   Box,
   Button,
   Card,
@@ -630,7 +631,15 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                     </Button>
                   </Grid>
                 </CardActions>
-                {isAnalyzing && <CircularProgress sx={{ mx: '50%' }} />}
+                <Backdrop
+                  sx={{
+                    color: '#fff',
+                    zIndex: (theme) => theme.zIndex.drawer + 1
+                  }}
+                  open={isAnalyzing}
+                >
+                  <CircularProgress />
+                </Backdrop>
               </Card>
             </Grid>
           </Grid>

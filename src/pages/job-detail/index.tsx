@@ -7,17 +7,19 @@ import { useEffect, useState } from 'react';
 import useJob from 'src/modules/jobs/hooks/useJob';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 import { useSearchParams } from 'react-router-dom';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const JobDetail = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const postId = atob(searchParams.get('id'));
   const { setItemDetail, itemDetail } = useJob();
-  const { data } = useQueryJobById(postId);
+  const { data, isLoading } = useQueryJobById(postId);
 
   useEffect(() => {
     setItemDetail(data);
   }, [data]);
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Container sx={{ paddingY: 2 }}>
       <CardApply data={itemDetail} />

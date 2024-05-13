@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useQueryFollowEmployee from '../hook/useQueryFollowEmployee';
-import { Box, IconButton } from '@mui/material';
+import { Box } from '@mui/material';
 import useMutateFollowEmployeeById from '../hook/useMutateFollowEmployeeById';
 import { useApp } from 'src/modules/app/hooks';
 import FollowButton from 'src/components/FollowButton';

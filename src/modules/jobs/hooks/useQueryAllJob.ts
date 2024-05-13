@@ -5,7 +5,7 @@ import { Job } from '../model';
 import { JobViewService } from '../jobService';
 
 const useQueryAllJob = (params?) => {
-  const { data, isLoading, refetch } = useQuery<
+  const { data, isLoading, refetch, isFetching } = useQuery<
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
   >(
@@ -28,7 +28,8 @@ const useQueryAllJob = (params?) => {
   return {
     jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],
     isLoading,
-    refetch
+    refetch,
+    isFetching
   };
 };
 

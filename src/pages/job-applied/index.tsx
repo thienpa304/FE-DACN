@@ -8,9 +8,11 @@ import {
 } from '@mui/material';
 import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQueryJobAppliedByEmployee';
 import TablePost from './TablePost';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const JobApplied = () => {
-  const { data } = useQueryJobAppliedByEmployee();
+  const { data, isLoading } = useQueryJobAppliedByEmployee();
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
       <Grid
