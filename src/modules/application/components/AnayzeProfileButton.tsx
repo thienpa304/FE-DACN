@@ -73,8 +73,6 @@ export default function AnayzeProfileButton(props) {
   };
 
   const handleAnalyzeResult = async (result: any[]) => {
-    console.log('result', result);
-
     if (!result || !result[0]) {
       if (
         analyzedProfile?.employee_Profile?.online_profile ||
@@ -122,8 +120,6 @@ export default function AnayzeProfileButton(props) {
   };
 
   useEffect(() => {
-    console.log('analyzedProfile', analyzedProfile);
-
     if (goToAnalyzeResult.signal)
       start && handleAnalyzeResult(goToAnalyzeResult.resultData);
   }, [goToAnalyzeResult.signal]);
@@ -155,7 +151,6 @@ export default function AnayzeProfileButton(props) {
       employer_Requirement: preprocessJobData(job)
     };
     setAnalyzedProfile(() => data);
-    console.log('data', data, profileType, profileData);
 
     if (
       data?.employee_Profile?.online_profile ||

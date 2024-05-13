@@ -47,7 +47,7 @@ export default function Company(props) {
         </Link>
       </Box>
       <Box p={3}>
-        <Grid container spacing={2} minHeight={400} mb={2}>
+        <Grid container spacing={1} minHeight={400} mb={2}>
           {companyList?.length ? (
             companyList.map((company, index) => (
               <Grid key={company?.userId} item xs={12} sm={6} md={4} lg={3}>

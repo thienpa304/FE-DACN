@@ -9,7 +9,7 @@ const useQueryAllJob = (params?) => {
     ResponseData<Job[]>,
     AxiosError<ResponseData<Job[]>>
   >(
-    ['get-AllJobs', params?.page, params?.professiion, params?.keywords],
+    ['get-AllJobs', params],
     () => {
       for (const key in params) {
         if (params[key] === 'Tất cả') {
