@@ -30,6 +30,7 @@ import {
 import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
 import useMutateCompanyLogo from '../../hooks/useMutateCompanyLogo';
 import useMutateCompanyBanner from '../../hooks/useMutateCompanyBanner';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -51,7 +52,7 @@ const Input = styled('input')({
 
 function CompanyCover() {
   const { user } = useApp();
-  const { company } = useQueryCompany();
+  const { company, isLoading } = useQueryCompany();
   const { companyAvatarType, companyCoverType } = DocumentType;
   const { onSaveData } = useMutateCompanyLogo();
   const { onSaveData: onSaveBanner } = useMutateCompanyBanner();
@@ -234,6 +235,7 @@ function CompanyCover() {
     </Box>
   );
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <>
       {renderCoverImage()}

@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import useQueryFollowCompany from '../hook/useQueryFollowCompany';
-import { Box, Button, IconButton } from '@mui/material';
-// import useMutateFollowJobById from '../hooks/useMutateFollowJobById';
+import { Box, Button } from '@mui/material';
 import { useApp } from 'src/modules/app/hooks';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { Company } from 'src/modules/users/model';
 import useMutateFollowCompanyById from '../hook/useMutateFollowCompanyById';
 
 export default function FollowCompanyButton(props) {

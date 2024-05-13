@@ -15,6 +15,7 @@ import { APPROVAL_STATUS } from 'src/constants';
 import { useState } from 'react';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
 import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const ApprovalStatusOption = [
   {
@@ -31,7 +32,7 @@ const RecruitmentApproval = () => {
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [isProfessionView, setIsProfessionView] = useState(false);
 
-  const { dataList } = useQueryTotalJobsEachProfession();
+  const { dataList, isLoading } = useQueryTotalJobsEachProfession();
 
   const handleChangeStatusFilter = (e) => {
     setStatus(e.target.value);
@@ -47,6 +48,7 @@ const RecruitmentApproval = () => {
     setSelectedProfession(null);
   };
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
       <Grid

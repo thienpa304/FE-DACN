@@ -19,19 +19,7 @@ const useQueryEmployeeByKeywords = (params?) => {
     ResponseData<PropsType>,
     AxiosError<ResponseData<PropsType>>
   >(
-    [
-      'get-ProfileByKeywords',
-      params?.keywords,
-      params?.page,
-      params?.profession,
-      params?.experience,
-      params?.degree,
-      params?.employmentType,
-      params?.sex,
-      params?.jobTitle,
-      params?.currentPosition,
-      params?.positionLevel
-    ],
+    ['get-ProfileByKeywords', params],
     () => {
       for (const key in params) {
         if (params[key] === 'Tất cả' || params[key] === undefined) {

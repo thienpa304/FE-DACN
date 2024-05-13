@@ -28,18 +28,18 @@ function alertDialog({
     <ThemeProvider>
       <Dialog open={true} onClose={handleClose}>
         <DialogTitle
-          minHeight={80}
-          minWidth={400}
-          maxWidth={550}
           display="flex"
           justifyContent="center"
           alignItems="center"
+          sx={{ width: { xs: '100%', sm: 500 } }}
         >
-          <Typography fontSize={18} fontWeight={700}>
+          <Typography sx={{ fontSize: { sm: 18, xs: 16 } }} fontWeight={700}>
             {message}
           </Typography>
         </DialogTitle>
-        <DialogActions style={{ padding: 16, gap: 16 }}>
+        <DialogActions
+          sx={{ padding: 2, display: { md: 'flex', xs: 'normal' } }}
+        >
           <Button
             onClick={handleClose}
             variant="outlined"

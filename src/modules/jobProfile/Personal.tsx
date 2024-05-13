@@ -7,7 +7,8 @@ import {
   Container,
   styled,
   Divider,
-  Avatar
+  Avatar,
+  useTheme
 } from '@mui/material';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
@@ -41,6 +42,7 @@ import ButtonGroup from 'src/components/ButtonGroup';
 import { avatarErrorText } from 'src/components/UploadError';
 import useMutateAvatar from 'src/modules/users/hooks/useMutateAvatar';
 import PersonalViewUI from './PersonalViewUI';
+import { checkIsMobile, checkIsTablet } from 'src/utils/responsive';
 
 const Input = styled('input')({
   display: 'none'
@@ -148,6 +150,11 @@ export default function Personal() {
     defaultValues: defaultUserValues
   });
 
+  const theme = useTheme();
+  const isMobile = checkIsMobile(theme);
+  const isTablet = checkIsTablet(theme);
+  console.log(isTablet);
+
   return (
     <Container id="personal">
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -160,7 +167,7 @@ export default function Personal() {
       </Box>
       <Divider />
       <Grid container sx={{ mt: 1 }} py={2}>
-        <Grid item xs={3} pr={2}>
+        <Grid item xs={isTablet ? 12 : 3} pr={2}>
           <Box
             display="flex"
             flexDirection="column"
@@ -173,8 +180,9 @@ export default function Personal() {
               sx={{
                 borderRadius: 2,
                 width: '75%',
+                maxWidth: '180px',
                 height: 180,
-                bgcolor: '#a0b9cfc2'
+                objectFit: 'cover'
               }}
             />
             {!avatarState.avatar && !isReadOnly && (
@@ -240,7 +248,7 @@ export default function Personal() {
             {avatarState.avatarError && avatarErrorText}
           </Box>
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={isTablet ? 12 : 9}>
           {!isReadOnly ? (
             <Grid container mb={4} spacing={3}>
               <Grid item xs={12} sm={6}>

@@ -47,9 +47,10 @@ const ProfileManagement = () => {
   });
   const [viewProfessionMode, setViewProfessionMode] = useState(true);
 
-  const { totalResults } = useQueryTotalResultOfEmployeeByAdmin({
-    profession: selectedProfession
-  });
+  const { totalResults, isLoading: isLoadingTotalResult } =
+    useQueryTotalResultOfEmployeeByAdmin({
+      profession: selectedProfession
+    });
   const pageSize = 10;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
   const { employeeList, isLoading, refetch } = useQueryEmployeesByAdmin(
@@ -209,8 +210,6 @@ const ProfileManagement = () => {
     refetch();
   };
 
-  if (isLoading) return <SuspenseLoader />;
-
   return (
     <Container maxWidth="lg" style={{ marginTop: 30 }}>
       <Card>
@@ -295,6 +294,7 @@ const ProfileManagement = () => {
                           rows={employeeList}
                           hideFooter
                           sx={{ minHeight: '65vh' }}
+                          loading={isLoading || isLoadingTotalResult}
                         />
                         <Pagination
                           currentPage={currentPage}

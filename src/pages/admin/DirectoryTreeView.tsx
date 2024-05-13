@@ -6,6 +6,7 @@ import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import professions from 'src/constants/professions';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import { Box, Button, Typography } from '@mui/material';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const treeItemStyle = {
   '.MuiTreeItem-label': {
@@ -41,6 +42,7 @@ export default function DirectoryTreeView(props) {
     setJobsPosted(jobs);
   }, [jobs.length]);
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Box
       sx={{

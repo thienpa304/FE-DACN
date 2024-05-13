@@ -8,7 +8,8 @@ import {
   Snackbar,
   Alert,
   AlertTitle,
-  Backdrop
+  Backdrop,
+  useTheme
 } from '@mui/material';
 import Personal from '../Personal';
 import General from './components/General';
@@ -31,6 +32,7 @@ import { OnlineProfile as OnlineProfileType } from '../model';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
 import { cvAnalysist } from 'src/modules/ai/roles';
+import { checkIsMobile } from 'src/utils/responsive';
 
 const MyBox = ({ children }) => (
   <Box bgcolor="#ffff" sx={{ mb: 4, boxShadow: '2px 2px 6px #aae2f7' }}>
@@ -75,6 +77,9 @@ export default function OnlineProfile() {
   const { onUpdateData } = useMutateUpdateOnlineProfile();
   const navigate = useNavigate();
 
+  const theme = useTheme();
+  const isMobile = checkIsMobile(theme);
+
   const handleSubmit = async () => {
     setIsAnalyzing(true);
     if (profile?.userId) {
@@ -114,6 +119,7 @@ export default function OnlineProfile() {
     setProfile(onlineProfile);
   }, [onlineProfile]);
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <>
       <Container key="online">
@@ -121,7 +127,7 @@ export default function OnlineProfile() {
           Tạo hồ sơ trực tuyến
         </Typography>
         <Grid container columnSpacing={2} mt={2}>
-          <Grid item xs={10}>
+          <Grid item xs={!isMobile ? 10 : 12}>
             {sections.map((section) => (
               <MyBox key={section.id}>
                 {section.id === 'personal' && <Personal />}
@@ -132,7 +138,11 @@ export default function OnlineProfile() {
               </MyBox>
             ))}
           </Grid>
-          <Grid item xs={2}>
+          <Grid
+            item
+            xs={!isMobile ? 2 : 0}
+            sx={{ display: { xs: 'none', sm: 'inline' } }}
+          >
             <Box
               bgcolor="#ffff"
               sx={{ boxShadow: '2px 2px 6px #aae2f7' }}
@@ -172,7 +182,7 @@ export default function OnlineProfile() {
       </Snackbar>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading || isAnalyzing}
+        open={isAnalyzing}
       >
         <SuspenseLoader />
       </Backdrop>

@@ -217,6 +217,7 @@ export default function Table(props) {
     resultData: null
   });
   const [selectedRows, setSelectedRows] = useState([]);
+  const [isMappingData, setIsMappingData] = useState(true);
 
   const applicationIdList = data?.map((item) => item?.application_id);
 
@@ -432,6 +433,24 @@ export default function Table(props) {
     }
   };
 
+  const handleQuickApprove = () => {
+    alertDialog({
+      selectedId: '_',
+      handleConfirm,
+      message: `Chuyển các hồ sơ đã chọn sang trạng thái ${ApprovalStatus[quickApproveValue]}?`
+    });
+  };
+
+  const handleConfirm = () => {
+    Promise.all(
+      selectedRows.map((id) =>
+        onSaveApplicationStatus([id, { status: quickApproveValue }])
+      )
+    ).then(() => {
+      refetch();
+    });
+  };
+
   useEffect(() => {
     if (goToAnalyzeResult.signal) {
       handleAnalyzeResult(goToAnalyzeResult.resultData);
@@ -440,6 +459,9 @@ export default function Table(props) {
 
   // First time render the page
   useEffect(() => {
+    setIsMappingData(true);
+    console.log(111);
+
     if (!jobs.length || !applicationDetailList.length || start) return;
 
     const initialJobProfileData = matchJobAndProfile();
@@ -461,6 +483,7 @@ export default function Table(props) {
     ) {
       setAnalyzedProfile(initialJobProfileData);
     }
+    setIsMappingData(false);
   }, [
     JSON.stringify(data),
     JSON.stringify(jobs),
@@ -476,24 +499,6 @@ export default function Table(props) {
   const [quickApproveValue, setQuickApproveValue] = useState(null);
   const handleChangeValue = (e) => {
     setQuickApproveValue(e.target.value);
-  };
-
-  const handleQuickApprove = () => {
-    alertDialog({
-      selectedId: '_',
-      handleConfirm,
-      message: `Chuyển các hồ sơ đã chọn sang trạng thái ${ApprovalStatus[quickApproveValue]}?`
-    });
-  };
-
-  const handleConfirm = () => {
-    Promise.all(
-      selectedRows.map((id) =>
-        onSaveApplicationStatus([id, { status: quickApproveValue }])
-      )
-    ).then(() => {
-      refetch();
-    });
   };
 
   return (
@@ -601,7 +606,7 @@ export default function Table(props) {
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
         }}
-        loading={isLoadingApplication || isLoadingJobs}
+        loading={isLoadingApplication || isLoadingJobs || isMappingData}
       />
       <Pagination
         currentPage={currentPage}

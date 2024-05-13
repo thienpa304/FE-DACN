@@ -20,18 +20,13 @@ import useDocumentHook from 'src/modules/jobProfile/attachedDocument/hooks/useDo
 import useQueryOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useQueryOnlineProfile';
 import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 import AnalyzeProfile from './AnalyzeProfile';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const JobRecommend = () => {
-  const { onlineProfile } = useQueryOnlineProfile();
-  const { attachedDocument } = useQueryAttachedDocument();
-  // const { setProfile: setOnline } = useOnlineProfile();
-  // const { setProfile: setDocumentProfile } = useDocumentHook();
+  const { isLoading: isLoadingOnline } = useQueryOnlineProfile();
+  const { isLoading: isLoadingDocument } = useQueryAttachedDocument();
 
-  // useEffect(() => {
-  //   setOnline(onlineProfile);
-  //   setDocumentProfile(attachedDocument);
-  // }, [onlineProfile, attachedDocument]);
-
+  if (isLoadingOnline || isLoadingDocument) return <SuspenseLoader />;
   return (
     <Container maxWidth="md" style={{ marginTop: 30 }}>
       <AnalyzeProfile id="online" />

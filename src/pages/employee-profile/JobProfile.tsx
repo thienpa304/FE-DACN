@@ -14,9 +14,10 @@ import useQueryOnlineProfile from '../../modules/jobProfile/onlineProfile/hooks/
 import useUpdateOnlineProfile from '../../modules/jobProfile/onlineProfile/hooks/useMutateUpdateOnlineProfile';
 import useQueryAttachedDocument from '../../modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 import useMutateUpdateAttachedDocument from '../../modules/jobProfile/attachedDocument/hooks/useMutateUpdateAttachedDocument';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { checkIsMobile } from 'src/utils/responsive';
+import alertDialog from 'src/utils/alertDialog';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -49,9 +50,12 @@ const ProfileSection = ({
   onUpdateData
 }) => {
   const handleHideProfile = () => {
-    onUpdateData({
-      ...profile,
-      isHidden: !isHidden
+    alertDialog({
+      selectedId: id,
+      handleConfirm: () => onUpdateData({ ...profile, isHidden: !isHidden }),
+      message: !isHidden
+        ? 'Bạn không cho phép nhà tuyển dụng tìm kiếm hồ sơ này của bạn?'
+        : 'Bạn đồng ý cho phép nhà tuyển dụng tìm kiếm hồ sơ này của bạn?'
     });
   };
 
@@ -125,8 +129,9 @@ const ProfileSection = ({
 };
 
 export default function EmployeeProfile() {
-  const { onlineProfile } = useQueryOnlineProfile();
-  const { attachedDocument } = useQueryAttachedDocument();
+  const { onlineProfile, isLoading: isLoadingOnline } = useQueryOnlineProfile();
+  const { attachedDocument, isLoading: isLoadingAttach } =
+    useQueryAttachedDocument();
   const { onUpdateData: onUpdateOnline } = useUpdateOnlineProfile();
   const { onUpdateData: onUpdateAttach } = useMutateUpdateAttachedDocument();
 
@@ -153,6 +158,7 @@ export default function EmployeeProfile() {
     }
   ];
 
+  if (isLoadingAttach || isLoadingOnline) return <SuspenseLoader />;
   return (
     <Container>
       <Typography mt={3} fontSize={22} fontWeight={700}>
