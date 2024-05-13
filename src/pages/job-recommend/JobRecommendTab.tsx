@@ -1,7 +1,8 @@
-import { Box, Card, Grid, Typography } from '@mui/material';
+import { Box, Card, Grid, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Link from 'src/components/Link';
 import Pagination from 'src/components/Pagination';
+import JobFilter from 'src/modules/jobs/components/JobFilter';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryTotalResultOfJobs from 'src/modules/jobs/hooks/useQueryTotalResultOfJobs';
@@ -11,20 +12,27 @@ import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
 export default function JobRecommendTab(props) {
   const { id, profile } = props;
   const { keywords, profession, degree, experience, sex } = profile;
-  const [onlineTotalPage, setOnlineTotalPage] = useState(1);
-  const [documentTotalPage, setDocumentTotalPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredJob, setFilteredJob] = useState<Job[]>([]);
+  const [filter, setFilter] = useState({
+    profession: profession,
+    employmentType: '',
+    degree: '',
+    experience: '',
+    positionLevel: '',
+    sex: sex
+  });
 
-  const { totalResults } = useQueryTotalResultOfJobs(
+  console.log(filter);
+  const { totalResults, refetch: refetchTotal } = useQueryTotalResultOfJobs(
     {
       keywords: keywords,
       profession: profession,
-      sex: sex
+      sex: sex,
+      ...filter
     },
     id
   );
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filteredJob, setFilteredJob] = useState<Job[]>([]);
-  console.log(profile);
 
   const pageSize = 4;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
@@ -32,15 +40,20 @@ export default function JobRecommendTab(props) {
   //   setOnlineTotalPage(totalPages);
   // } else if (id === 'document') setDocumentTotalPage(totalPages);
 
-  const { jobs } = useQueryAllJob({
+  const { jobs, refetch: refetchJobs } = useQueryAllJob({
     keywords: keywords,
     profession: profession,
     page: currentPage,
-    num: pageSize
+    num: pageSize,
+    ...filter
   });
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleFilter = (data: any) => {
+    setFilter((prev) => ({ ...prev, ...data }));
   };
 
   useEffect(() => {
@@ -65,14 +78,23 @@ export default function JobRecommendTab(props) {
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        sx={{ bgcolor: '#f0e9fe', borderTopRadius: 1, px: 3, py: 2 }}
+        sx={{
+          bgcolor: '#f0e9fe',
+          borderTopRadius: 1,
+          px: 3,
+          py: 2
+        }}
       >
         <Box display="flex" justifyContent="space-between">
           <Typography fontWeight={700} fontSize={20} alignSelf="end">
-            Việc làm phù hợp
+            Việc làm gợi ý
           </Typography>
         </Box>
       </Box>
+      <JobFilter
+        handleFilter={handleFilter}
+        sx={{ bgcolor: '#fee9f7', borderRadius: 0, border: 0 }}
+      />
       <Box p={3}>
         <Grid container mb={3} spacing={2}>
           {filteredJob.map((job, index) => (

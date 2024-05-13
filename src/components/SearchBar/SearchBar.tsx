@@ -24,9 +24,7 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
 
   const handleSelectProfession = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    console.log(event.target.value);
-
+  ) => { 
     setSelectedProfession(() => event.target.value);
   };
 
@@ -77,9 +75,13 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
       </Grid>
       <Grid item md={2} xs={6}>
         <Link
-          to={`${to}/${
-            rewriteUrl(selectedProfession) || 'Tat-ca'
-          }?search=${searchValue}`}
+          to={
+            selectedProfession || searchValue
+              ? `${to}/${
+                  rewriteUrl(selectedProfession) || 'Tat-ca'
+                }?search=${searchValue}`
+              : ''
+          }
           sx={{ color: '#000' }}
           state={{
             jobTitle: searchValue?.trim(),

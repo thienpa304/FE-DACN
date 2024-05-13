@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkFE_DACN=self.webpackChunkFE_DACN||[]).push([[388],{38388:(e,n,s)=>{s.r(n),s.d(n,{default:()=>l});var t=s(54567),o=s(86971),a=s(64188),c=s(59162),i=s(54367),u=s(51318),r=s(70579);const l=function(){var e;const{id:n}=(0,o.g)(),s=null===(e=c.AJ.find((e=>(0,i.O)(e.name)===n)))||void 0===e?void 0:e.name,[l,d]=(0,u.ok)(),f=l.get("search");return(0,r.jsx)(a.A,{pageTitle:"K\u1ebft qu\u1ea3 vi\u1ec7c l\xe0m: ".concat(f||s),profession:s,jobTitle:f,queryJobs:t.A})}}}]);
+//# sourceMappingURL=388.a2eb480e.chunk.js.map

@@ -34,8 +34,6 @@ const renderActionsCell = (params) => {
   const { onDeleteUser } = useDeleteUserById();
 
   const handleDeleteUser = (userId) => {
-    // Implement the logic to delete the user with the given userId
-    console.log(userId);
     alertDialog({
       selectedId: userId,
       handleConfirm: handleConfirmDelete

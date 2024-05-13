@@ -162,8 +162,6 @@ export function CompanyForm(props) {
   });
 
   const handleSaveCompany = (data) => {
-    debugger;
-    console.log(data.careerField);
     onSaveCompany(data);
     close();
   };

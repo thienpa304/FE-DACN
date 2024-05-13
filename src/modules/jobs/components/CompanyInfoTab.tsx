@@ -13,7 +13,7 @@ const CompanyData = (company) => [
 ];
 
 export default function CompanyInfoTab(props) {
-  const { sx, company } = props;
+  const { sx, company, companyPage = false } = props;
 
   return (
     <CustomContainer sx={{ px: 5, ...sx }}>
@@ -24,19 +24,20 @@ export default function CompanyInfoTab(props) {
             Thông tin công ty
           </Typography>
         </Box>
-        <Link
-          to={`/company/${rewriteUrl(company?.companyName)}?id=${btoa(
-            company?.userId
-          )}`}
-          // state={{ id: company?.userId }}
-          sx={{
-            textDecoration: 'none',
-            alignItems: 'center',
-            alignContent: 'center'
-          }}
-        >
-          Xem trang công ty
-        </Link>
+        {!companyPage && (
+          <Link
+            to={`/company/${rewriteUrl(company?.companyName)}?id=${btoa(
+              company?.userId
+            )}`}
+            sx={{
+              textDecoration: 'none',
+              alignItems: 'center',
+              alignContent: 'center'
+            }}
+          >
+            Xem trang công ty
+          </Link>
+        )}
       </Box>
       {CompanyData(company)?.map((item, index) => (
         <InfoGrid key={index} item={item} />

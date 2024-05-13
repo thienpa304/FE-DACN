@@ -21,11 +21,11 @@ const sendChatGPTRequest = async (
           headers: {
             'Content-Type': 'application/json',
             Authorization:
-              'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
-            // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
+              // 'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+              'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
           },
           body: JSON.stringify({
-            model: 'gpt-3.5-turbo-ca',
+            model: 'gpt-3.5-turbo',
             messages: [
               {
                 role: 'system',
@@ -99,13 +99,6 @@ export const getEmbedding = async (content: any[]) => {
 
   await Promise.all(
     content.map(async (inputText) => {
-      //   const employer_Requirement = await Promise.all(
-      //     inputText?.employer_Requirement.map(async (require) => {
-      //       const res = await sendMessage(JSON.stringify(require));
-      //       // console.log(res);
-      //       return { word: require, result: res };
-      //     })
-      //   );
       let i = 0;
       const employer_Requirement = (
         await sendMessage(inputText?.employer_Requirement)
