@@ -24,6 +24,7 @@ import {
 } from 'recharts';
 import useQueryJobPostingsReport from 'src/modules/admin/hooks/useQueryPostingsReport';
 import useQueryCandidateStatistics from 'src/modules/admin/hooks/useQueryCandidateStatistics';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const StatisticsAndReports = () => {
   // Example Data
@@ -52,9 +53,12 @@ const StatisticsAndReports = () => {
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#814289'];
 
-  const { jobPostingData } = useQueryJobPostingsReport();
-  const { candidateStatistics } = useQueryCandidateStatistics();
+  const { jobPostingData, isLoading: isLoadingJobData } =
+    useQueryJobPostingsReport();
+  const { candidateStatistics, isLoading: isLoadingCandidate } =
+    useQueryCandidateStatistics();
 
+  if (isLoadingJobData || isLoadingCandidate) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
       <Grid

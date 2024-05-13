@@ -17,10 +17,11 @@ import professions from 'src/constants/professions';
 import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 import Link from 'src/components/Link';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 function ProfessionType() {
   const [open, setOpen] = React.useState(false);
-  const { dataList } = useQueryTotalJobsEachProfession();
+  const { dataList, isLoading } = useQueryTotalJobsEachProfession();
 
   const matchProfessionWithCount = professions
     .map((profession) => {
@@ -48,6 +49,7 @@ function ProfessionType() {
     setOpen(false);
   };
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Card sx={{ borderColor: '#98E4FF', borderRadius: '5px', mt: 2 }}>
       <Box

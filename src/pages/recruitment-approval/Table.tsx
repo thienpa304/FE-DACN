@@ -22,6 +22,7 @@ import { checkContent } from 'src/modules/ai/roles';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
 import CheckIcon from '@mui/icons-material/Check';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
@@ -306,10 +307,11 @@ const columns: GridColDef[] = [
 ];
 
 export default function Table({ statusFilter, selectedProfession }) {
-  const { totalResults } = useQueryTotalResultOfJobsByAdmin({
-    status: ApprovalStatus[statusFilter],
-    profession: selectedProfession
-  });
+  const { totalResults, isLoading: isLoadingTotalResult } =
+    useQueryTotalResultOfJobsByAdmin({
+      status: ApprovalStatus[statusFilter],
+      profession: selectedProfession
+    });
   const { mutate } = useMutateJobStatus();
   const [start, setStart] = useState(false);
   const [showList, setShowList] = useState([]);
@@ -318,7 +320,7 @@ export default function Table({ statusFilter, selectedProfession }) {
   const pageSize = 9;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
-  const { jobs, isLoading, refetch } = useQueryJobByAdmin({
+  const { jobs, isLoading } = useQueryJobByAdmin({
     page: currentPage,
     num: pageSize,
     status: ApprovalStatus[statusFilter],
@@ -399,7 +401,6 @@ export default function Table({ statusFilter, selectedProfession }) {
     );
   };
 
-  // if (isLoading || (jobs.length > 0 && !jobs[0]?.id)) return <SuspenseLoader />;
   return (
     <Box>
       <Grid
@@ -499,7 +500,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
         }}
-        loading={isLoading}
+        loading={isLoading || isLoadingTotalResult}
       />
       <Pagination
         totalPages={totalPages}

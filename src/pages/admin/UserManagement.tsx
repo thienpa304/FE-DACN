@@ -118,24 +118,6 @@ const UserManagement = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
-  // useEffect(() => {
-  //   if (userList) {
-  //     const list = [...userList];
-  //     list.forEach((obj) => {
-  //       // Duyệt qua từng thuộc tính của đối tượng
-  //       for (let key in obj) {
-  //         // Kiểm tra nếu giá trị của thuộc tính là rỗng, null hoặc undefined
-  //         if (!obj[key] && obj[key] !== 0) {
-  //           // Đặt giá trị của thuộc tính là 'Chưa cập nhật'
-  //           obj[key] = 'Chưa cập nhật';
-  //         }
-  //       }
-  //     });
-  //     setUsers(list);
-  //   }
-  // }, [JSON.stringify(userList)]);
-
   if (isLoading || !userList[0]?.id) {
     return <SuspenseLoader />;
   }

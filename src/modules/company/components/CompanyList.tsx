@@ -3,10 +3,14 @@ import { Box, Grid, Container, Typography } from '@mui/material';
 import Pagination from 'src/components/Pagination';
 import CompanyCard from './CompanyCard';
 import BusinessIcon from '@mui/icons-material/Business';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 function CompanyList(props) {
   const { pageTitle, sx, numOfJobPerPage, queryCompanys } = props;
-  const { companyList, totalResults } = queryCompanys({ num: 9, page: 1 });
+  const { companyList, totalResults, isLoading } = queryCompanys({
+    num: 9,
+    page: 1
+  });
   // const totalResults = companyList?.length;
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = numOfJobPerPage ? numOfJobPerPage : 15;
@@ -16,6 +20,7 @@ function CompanyList(props) {
     setCurrentPage(pageNumber);
   };
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Container disableGutters maxWidth="lg" sx={{ py: 3, ...sx }}>
       <Box

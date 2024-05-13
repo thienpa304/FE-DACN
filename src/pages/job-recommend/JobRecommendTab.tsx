@@ -2,6 +2,7 @@ import { Box, Card, Grid, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Link from 'src/components/Link';
 import Pagination from 'src/components/Pagination';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 import JobFilter from 'src/modules/jobs/components/JobFilter';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
@@ -40,7 +41,7 @@ export default function JobRecommendTab(props) {
   //   setOnlineTotalPage(totalPages);
   // } else if (id === 'document') setDocumentTotalPage(totalPages);
 
-  const { jobs, refetch: refetchJobs } = useQueryAllJob({
+  const { jobs, isLoading, isFetching } = useQueryAllJob({
     keywords: keywords,
     profession: profession,
     page: currentPage,
@@ -72,6 +73,7 @@ export default function JobRecommendTab(props) {
     // if (section) section.scrollIntoView({ behavior: 'smooth' });
   }, [JSON.stringify(jobs)]);
 
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Card sx={{ borderRadius: 0, boxShadow: '2px 2px 6px #aae2f7' }}>
       <Box

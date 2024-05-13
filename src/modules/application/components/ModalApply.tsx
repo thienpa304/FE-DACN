@@ -29,6 +29,7 @@ import { review } from 'src/utils/reviewProfile';
 import AnayzeProfileButton from './AnayzeProfileButton';
 import { Job } from 'src/modules/jobs/model';
 import { removeFileByUrl } from 'src/common/firebaseService';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const Title = styled('div')(() => ({
   fontWeight: 600,
@@ -54,8 +55,9 @@ export default function ModalApply(props: Props) {
   const { onSaveData } = useMutateApplyJob();
   const { open, onClose, position, company, postId, job } = props;
   const { profile: user } = useProfileHook();
-  const { onlineProfile } = useQueryOnlineProfile();
-  const { attachedDocument } = useQueryAttachedDocument();
+  const { onlineProfile, isLoading: isLoadingOnline } = useQueryOnlineProfile();
+  const { attachedDocument, isLoading: isLoadingDocument } =
+    useQueryAttachedDocument();
   const { profile: online, setProfile: setOnline } = useOnlineProfile();
   const { profile: document, setProfile: setDocument } = useDocumentHook();
   const [isChecked, setIsChecked] = useState('');
@@ -128,6 +130,8 @@ export default function ModalApply(props: Props) {
       setSelectedProfile(job);
     }
   }, [isChecked]);
+
+  if (isLoadingOnline || isLoadingOnline) return <SuspenseLoader />;
 
   return (
     <div>

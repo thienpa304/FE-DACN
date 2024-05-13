@@ -24,7 +24,7 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
 
   const handleSelectProfession = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => { 
+  ) => {
     setSelectedProfession(() => event.target.value);
   };
 

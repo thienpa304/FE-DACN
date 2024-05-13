@@ -3,6 +3,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import useQueryCompanyfrom from './../hooks/useQueryCompany';
 import InfoField from './Information/InfoField';
 import CompanyCover from './Information/CompanyCover';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   background: '#ffff',
@@ -12,7 +13,7 @@ const CustomBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function CompanyTab() {
-  const { company } = useQueryCompanyfrom();
+  const { company, isLoading } = useQueryCompanyfrom();
   const CompanyData = (company) => [
     { label: 'Tên công ty', value: company?.companyName },
     { label: 'Địa chỉ công ty', value: company?.companyLocation },
@@ -20,6 +21,8 @@ export default function CompanyTab() {
     { label: 'Mã số thuế', value: company?.taxCode },
     { label: 'Giới thiệu doanh nghiệp', value: company?.description }
   ];
+
+  if (isLoading) return <SuspenseLoader />;
   return (
     <>
       <CustomBox sx={{ p: 0, pb: 2 }}>

@@ -7,6 +7,7 @@ import Pagination from 'src/components/Pagination';
 import JobFilter from './JobFilter';
 import useQueryTotalResultOfJobs from '../hooks/useQueryTotalResultOfJobs';
 import WorkIcon from '@mui/icons-material/Work';
+import SuspenseLoader from 'src/components/SuspenseLoader';
 
 function JobList(props) {
   const {
@@ -29,13 +30,16 @@ function JobList(props) {
     sex: '',
     jobTitle: jobTitle
   });
-  const { totalResults, refetch: refetchTotalResults } =
-    useQueryTotalResultOfJobs({
-      ...filter
-    });
+  const {
+    totalResults,
+    refetch: refetchTotalResults,
+    isLoading: isLoadingTotalResult
+  } = useQueryTotalResultOfJobs({
+    ...filter
+  });
   const pageSize = numOfJobPerPage ? numOfJobPerPage : 15;
   const totalPages = Math.ceil(totalResults / pageSize);
-  const { jobs, refetch } = queryJobs({
+  const { jobs, refetch, isLoading } = queryJobs({
     page: currentPage,
     num: pageSize,
     ...filter
@@ -77,6 +81,7 @@ function JobList(props) {
           việc làm đang tuyển dụng
         </Typography>
         <Grid container spacing={2} minHeight={300}>
+          {(isLoading || isLoadingTotalResult) && <SuspenseLoader />}
           {jobs.length ? (
             jobs.map((job, index) => (
               <Grid key={job?.id} item xs={12}>
