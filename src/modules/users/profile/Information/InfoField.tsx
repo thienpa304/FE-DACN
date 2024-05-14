@@ -35,10 +35,10 @@ export const InfoGrid = (props) => {
     <Grid container sx={{ borderTop: 1, borderColor: 'grey.300' }}>
       {item.label !== 'Giới thiệu doanh nghiệp' && (
         <>
-          <InputLabel item xs={6} md={4}>
+          <InputLabel item xs={12} sm={6} md={4}>
             {item.label}
           </InputLabel>
-          <InputData item xs={6} md={8}>
+          <InputData item xs={12} sm={6} md={8}>
             <Typography lineHeight={2}>{item.value}</Typography>
           </InputData>
         </>

@@ -11,8 +11,6 @@ import CustomContainer from 'src/components/CustomContainer';
 import dayjs from 'dayjs';
 import PersonalViewUI from 'src/modules/jobProfile/PersonalViewUI';
 import GeneralViewUI from 'src/modules/jobProfile/GeneralViewUI';
-import { ApplicationType } from 'src/constants/enum';
-import { useEffect, useState } from 'react';
 import { toOutputDateString } from 'src/utils/inputOutputFormat';
 
 const bodyText = {

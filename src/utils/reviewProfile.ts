@@ -1,13 +1,6 @@
-import {
-  RoundOneCheck,
-  RoundThreeCheck,
-  RoundTwoCheck,
-  extractSkill
-} from 'src/modules/ai/roles';
+import { RoundOneCheck, extractSkill, translate } from 'src/gpt/roles';
 import { preProcessText } from './inputOutputFormat';
-import sendChatGPTRequest, {
-  getEmbedding
-} from 'src/modules/ai/sendChatGPTRequest';
+import sendChatGPTRequest, { getEmbedding } from 'src/gpt/sendChatGPTRequest';
 import { getFileByUrl } from 'src/common/firebaseService';
 import pdfToText from 'react-pdftotext';
 import { User } from 'src/modules/users/model';
@@ -258,39 +251,40 @@ const handleRoundTwo = async (
   });
 
   console.log(dataSendToGPT);
-  const responses = await getEmbedding(
-    await Promise.all(
-      dataSendToGPT.map(async (item) => {
-        const sentence = await sendChatGPTRequest(
-          extractSkill,
-          [item.employee_Profile.profile],
-          null,
-          {
-            '58': 5,
-            '60': 5
-          }
-        );
-        let skills;
-        if (sentence.length > 0) {
-          skills = loadKeywords(sentence).split(',');
+  const skillList = await Promise.all(
+    dataSendToGPT.map(async (item) => {
+      const skillsList = await sendChatGPTRequest(
+        extractSkill,
+        [item.employee_Profile.profile],
+        null,
+        {
+          '58': 5,
+          '60': 5
         }
-        console.log(skills);
-
-        return {
-          id: item.employee_Profile.application_id,
-          employer_Requirement:
-            item.employer_Requirement.requiredSkills.split(','),
-          employee_Profile: skills
-        };
-      })
-    )
+      );
+      // const requiredList = await sendChatGPTRequest(
+      //   translate,
+      //   [item.employer_Requirement.requiredSkills],
+      //   null,
+      //   {
+      //     '58': 5,
+      //     '60': 5
+      //   }
+      // );
+      return {
+        id: item.employee_Profile.application_id,
+        employee_Profile: loadKeywords(skillsList)?.split(',') || '',
+        employer_Requirement:
+          item.employer_Requirement.requiredSkills.split(',') || ''
+      };
+    })
   );
-  console.log(responses);
+  const responses = await getEmbedding(skillList);
 
   const result = responses.map((item) => {
     const acc = item.employer_Requirement.filter((require) =>
       item.employee_Profile.some(
-        (skills) => dot(skills.result, require.result) > 0.65
+        (skills) => dot(skills.result, require.result) > 0.6
       )
     );
     return {
@@ -298,8 +292,6 @@ const handleRoundTwo = async (
       result: (100 / item.employer_Requirement.length) * acc.length
     };
   });
-
-  console.log(result);
 
   handleAnalyzeResult(result.map((res) => JSON.stringify(res)));
 };
@@ -310,19 +302,53 @@ const handleRoundThree = async (
 ) => {
   console.log('Start round 3');
 
+  // const traslatedKeywords = await Promise.all(
+  //   passRoundProfiles.map(async (item) => {
+  //     const skillsList = await sendChatGPTRequest(
+  //       translate,
+  //       [
+  //         item.employee_Profile.application.keywords,
+  //         item.employer_Requirement.keywords
+  //       ],
+  //       null,
+  //       {
+  //         '58': 5,
+  //         '60': 5
+  //       }
+  //     );
+  //     // const requiredList = await sendChatGPTRequest(
+  //     //   translate,
+  //     //   [item.employer_Requirement.keywords],
+  //     //   null,
+  //     //   {
+  //     //     '58': 5,
+  //     //     '60': 5
+  //     //   }
+  //     // );
+
+  //     return {
+  //       id: item.id,
+  //       employee_Profile: loadKeywords([skillsList[0]])?.split(',') || '',
+  //       employer_Requirement: loadKeywords([skillsList[1]])?.split(',') || ''
+  //     };
+  //   })
+  // );
+
   const response = await getEmbedding(
     passRoundProfiles.map((item) => ({
       id: item.id,
-      employer_Requirement: item.employer_Requirement.keywords.split(','),
-      employee_Profile: item.employee_Profile.application.keywords.split(',')
+      employee_Profile: item.employer_Requirement.keywords.split(','),
+      employer_Requirement:
+        item.employee_Profile.application.keywords.split(',')
     }))
   );
+
   const resultList = await Promise.all(
     response.map(async (item) => {
       let score = item.employee_Profile.reduce((acc, profile) => {
         const hasMatch = item.employer_Requirement.some((requirement) => {
           const cosineSimilarity = dot(profile.result, requirement.result);
-          return cosineSimilarity > 0.65;
+          return cosineSimilarity > 0.6;
         });
         return hasMatch ? acc + 5 : acc;
       }, 0);
@@ -338,28 +364,31 @@ const handleRoundThree = async (
           .map(async (require) => require.word)
       );
 
-      const sentence = await sendChatGPTRequest(
-        extractSkill +
-          'Hãy viết lại từng kĩ năng ở dạng từ khóa, viết hoa chữ cái đầu và hãy dịch các kĩ năng sang tiếng Việt.\n',
-        [lackOfSkillsList],
-        null,
-        {
-          '58': 5,
-          '60': 5
-        }
-      );
-      let skills;
-      if (sentence.length > 0) {
-        skills = loadKeywords(sentence).split(',');
-      }
+      // const sentence = await sendChatGPTRequest(
+      //   extractSkill,
+      //   [lackOfSkillsList],
+      //   null,
+      //   {
+      //     '58': 5,
+      //     '60': 5
+      //   }
+      // );
+      console.log(lackOfSkillsList);
+
+      // let skills;
+      // if (lackOfSkillsList.length > 0) {
+      //   skills = loadKeywords(lackOfSkillsList).split(',');
+      // }
       const hints =
         lackOfSkillsList.length > 0
           ? `Để tăng tỉ lệ đậu bạn có thể trang bị thêm kĩ năng: ${[
-              ...new Set(skills)
+              ...new Set(lackOfSkillsList)
             ]
               .slice(0, 4)
               .join(', ')}`
           : 'Hồ sơ của bạn đã đáp ứng yêu cầu của tin tuyển dụng này';
+
+      // console.log('score', score);
 
       return {
         id: item.id,
@@ -473,5 +502,11 @@ export const review = async ({
 };
 
 export const parseResponseJSONData = async (result: any[]) => {
-  return Promise.all(result.map(async (data) => data && JSON.parse(data)));
+  return Promise.all(
+    result.map(
+      async (data) =>
+        data &&
+        JSON.parse(data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1))
+    )
+  );
 };

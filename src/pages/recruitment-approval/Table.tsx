@@ -17,8 +17,8 @@ import Pagination from 'src/components/Pagination';
 import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import dayjs from 'dayjs';
 import { Job } from 'src/modules/jobs/model';
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import { checkContent } from 'src/modules/ai/roles';
+import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
+import { checkContent } from 'src/gpt/roles';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
 import CheckIcon from '@mui/icons-material/Check';
@@ -403,54 +403,60 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   return (
     <Box>
-      <Grid
-        container
+      <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'right',
-          gap: 2
+          display: 'block',
+          float: { md: 'right' },
+          minWidth: { md: 500 },
+          maxWidth: 500
         }}
       >
-        <Grid item xs={1}>
-          <Typography fontWeight={700}>
-            Đã chọn: {selectedRows.length}
-          </Typography>
-        </Grid>
-        <Grid item xs={2.2} display="flex">
-          <SelectInput
-            options={APPROVAL_STATUS}
-            onChange={handleChangeValue}
-            value={selectedRows.length > 0 ? quickApproveValue : ''}
-            sx={{
-              color: APPROVAL_STATUS.find(
-                (item) => item.value === quickApproveValue
-              )?.optionColor
-            }}
-            disabled={!selectedRows.length}
-            label="Duyệt nhanh"
-          />
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ py: 1, px: 0 }}
-            color="info"
-            onClick={handleQuickApprove}
-            disabled={!selectedRows.length || !quickApproveValue}
-          >
-            <CheckIcon sx={{ fontSize: 15 }} />
-          </Button>
-        </Grid>
         <Grid
-          item
           container
-          xs={1.7}
           sx={{
-            display: 'flex',
             alignItems: 'center'
           }}
+          spacing={1}
         >
-          <Grid item xs>
+          <Grid item md={3} xs={12}>
+            <Typography fontWeight={700}>
+              Đã chọn: {selectedRows.length}
+            </Typography>
+          </Grid>
+          <Grid item md={5} xs={12} display={'flex'}>
+            <SelectInput
+              options={APPROVAL_STATUS}
+              onChange={handleChangeValue}
+              value={selectedRows.length > 0 ? quickApproveValue : ''}
+              sx={{
+                color: APPROVAL_STATUS.find(
+                  (item) => item.value === quickApproveValue
+                )?.optionColor
+              }}
+              disabled={!selectedRows.length}
+              label="Duyệt nhanh"
+            />
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ py: 1, px: 0 }}
+              color="info"
+              onClick={handleQuickApprove}
+              disabled={!selectedRows.length || !quickApproveValue}
+            >
+              <CheckIcon sx={{ fontSize: 15 }} />
+            </Button>
+          </Grid>
+          <Grid
+            item
+            container
+            md={4}
+            xs={12}
+            sx={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
             <Button
               onClick={() => setStart(selectedRows.length > 0)}
               variant="contained"
@@ -459,37 +465,20 @@ export default function Table({ statusFilter, selectedProfession }) {
               fullWidth
               sx={{ py: 1, px: 0, bgcolor: '#FC4100' }}
             >
-              {!selectedRows.length
-                ? 'Chưa chọn tin đăng'
-                : !start
-                ? 'Kiểm duyệt'
-                : 'Đang kiểm duyệt...'}
+              <Grid item xs={!start ? 12 : 9}>
+                {!selectedRows.length
+                  ? 'Chưa chọn tin đăng'
+                  : !start
+                  ? 'Kiểm duyệt'
+                  : 'Đang kiểm duyệt...'}
+              </Grid>
+              <Grid item xs={start ? 3 : 0}>
+                {start && <CircularProgress size={18} color="secondary" />}
+              </Grid>
             </Button>
           </Grid>
-          <Grid item xs={2}>
-            {start && <CircularProgress size={18} color="secondary" />}
-          </Grid>
         </Grid>
-      </Grid>
-      {/* <Box sx={{ justifyContent: 'right', display: 'flex' }}>
-        {start && <CircularProgress />}
-        <Button
-          onClick={() => {
-            setStart(true);
-          }}
-          variant="contained"
-          size="small"
-          color="error"
-          disabled={start || !selectedRows.length}
-          sx={{ mr: 1 }}
-        >
-          {!selectedRows.length
-            ? 'Chưa chọn tin đăng'
-            : !start
-            ? 'Kiểm duyệt'
-            : 'Đang kiểm duyệt...'}
-        </Button>
-      </Box> */}
+      </Box>
       <TableData
         sx={{ minHeight: '72vh', width: '100%' }}
         rows={showList}

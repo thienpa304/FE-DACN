@@ -13,8 +13,6 @@ import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
 import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
-import { v4 } from 'uuid';
-import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import useQueryCandidateApplicationById, {
   useQueryCandidateApplicationByIdList
 } from 'src/modules/application/hooks/useQueryCandidateApplicationById';
@@ -36,7 +34,6 @@ import openProfile from 'src/utils/openProfile';
 import CheckIcon from '@mui/icons-material/Check';
 import alertDialog from 'src/utils/alertDialog';
 import { ApprovalStatus } from 'src/constants/enum';
-import { fontStyle } from 'html2canvas/dist/types/css/property-descriptors/font-style';
 
 const renderJobTitle = (data) => {
   if (data.value) {
@@ -177,14 +174,18 @@ const columns: GridColDef[] = [
     field: 'applicationType',
     headerName: 'Loại hồ sơ',
     minWidth: 150,
-    sortable: true
+    // sortable: true,
+    headerAlign: 'center',
+    align: 'center'
   },
   {
     field: 'status',
-    headerName: 'Trạng thái tuyển dụng',
+    headerName: 'Trạng thái',
     minWidth: 180,
     renderCell: renderStatus,
-    sortable: true
+    sortable: true,
+    headerAlign: 'center',
+    align: 'center'
   },
   {
     field: 'matchingScore',
@@ -274,6 +275,8 @@ export default function Table(props) {
   const updateAnalyzedProfile = (responses: any[]) => {
     return analyzedProfile.map((profile) => {
       const matchingScore = calculateMatchingScore(profile, responses);
+      console.log('matchingScore', matchingScore);
+
       return {
         ...profile,
         employee_Profile: {

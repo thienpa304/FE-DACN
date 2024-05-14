@@ -265,7 +265,12 @@ export default function ModalApply(props: Props) {
           </Grid>
         </DialogContent>
         <DialogActions
-          sx={{ display: 'flex', justifyContent: 'space-between', px: 2 }}
+          sx={{
+            display: 'flex',
+            justifyContent: { sm: 'space-between', xs: 'center' },
+            flexWrap: 'wrap',
+            px: 2
+          }}
         >
           <AnayzeProfileButton
             job={job}
@@ -276,7 +281,7 @@ export default function ModalApply(props: Props) {
             fileUrl={url}
             setHintsMessage={setHintsMessage}
           />
-          <Box sx={{ display: 'flex', columnGap: 2 }}>
+          <Box sx={{ display: 'flex', columnGap: 1 }}>
             <Button onClick={handleClose} variant="outlined" color="secondary">
               Hủy
             </Button>

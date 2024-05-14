@@ -23,8 +23,8 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useNavigate } from 'react-router';
 import SubmitBox from '../SubmitBox';
 import { getFileByUrl } from 'src/common/firebaseService';
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import { cvAnalysist } from 'src/modules/ai/roles';
+import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
+import { cvAnalysist, translate } from 'src/gpt/roles';
 import pdfToText from 'react-pdftotext';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 
@@ -75,29 +75,34 @@ export default function AttachedDocument() {
 
       const dataToAnalyze = preProcessData(profile, 'document', text);
 
-      sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
-        '58': 5,
-        '60': 5
-      }).then((analysisResults) => {
-        const keywords = loadKeywords(
-          analysisResults,
-          JSON.stringify(dataToAnalyze)
-        );
-
-        if (profile?.userId) {
-          onUpdateData({
-            ...profile,
-            keywords: profile?.skills + ', ' + keywords
-          } as AttachedDocumentType);
-        } else {
-          onSaveData({
-            ...profile,
-            keywords: profile?.skills + ', ' + keywords
-          } as AttachedDocumentType);
+      const analysisResults = await sendChatGPTRequest(
+        cvAnalysist,
+        [dataToAnalyze],
+        null,
+        {
+          '58': 5,
+          '60': 5
         }
-        setFinished(true);
-        setIsAnalyzing(false);
-      });
+      );
+      const translatedResults = await sendChatGPTRequest(
+        translate,
+        analysisResults
+      );
+      const keywords = loadKeywords(translatedResults);
+
+      if (profile?.userId) {
+        onUpdateData({
+          ...profile,
+          keywords: profile?.skills + ', ' + keywords
+        } as AttachedDocumentType);
+      } else {
+        onSaveData({
+          ...profile,
+          keywords: profile?.skills + ', ' + keywords
+        } as AttachedDocumentType);
+      }
+      setFinished(true);
+      setIsAnalyzing(false);
     } catch (error) {
       console.error('Error creating local URL:', error);
       setIsAnalyzing(false);

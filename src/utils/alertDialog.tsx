@@ -33,7 +33,10 @@ function alertDialog({
           alignItems="center"
           sx={{ width: { xs: '100%', sm: 500 } }}
         >
-          <Typography sx={{ fontSize: { sm: 18, xs: 16 } }} fontWeight={700}>
+          <Typography
+            sx={{ fontSize: { sm: 18, xs: 16 }, textAlign: 'center' }}
+            fontWeight={700}
+          >
             {message}
           </Typography>
         </DialogTitle>

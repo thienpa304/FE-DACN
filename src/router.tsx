@@ -87,6 +87,7 @@ const FindProfiles = Loader(lazy(() => import('src/pages/find-profiles')));
 const RecommendProfile = Loader(
   lazy(() => import('src/pages/recommend-profiles'))
 );
+const TestGPT = Loader(lazy(() => import('src/pages/testGPT')));
 
 // Status
 const Status404 = Loader(lazy(() => import('src/modules/status/Status404')));
@@ -130,6 +131,10 @@ const routes: RouteObject[] = [
           {
             path: '/company',
             element: <ShowCompanyPage />
+          },
+          {
+            path: '/testGPT',
+            element: <TestGPT />
           }
         ]
       },
