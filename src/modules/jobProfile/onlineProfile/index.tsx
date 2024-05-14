@@ -30,8 +30,8 @@ import { useNavigate } from 'react-router';
 import useMutateUpdateOnlineProfile from './hooks/useMutateUpdateOnlineProfile';
 import { OnlineProfile as OnlineProfileType } from '../model';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import { cvAnalysist, translate } from 'src/modules/ai/roles';
+import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
+import { cvAnalysist, translate } from 'src/gpt/roles';
 import { checkIsMobile } from 'src/utils/responsive';
 
 const MyBox = ({ children }) => (

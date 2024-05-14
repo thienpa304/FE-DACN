@@ -11,7 +11,7 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import CustomContainer from 'src/components/CustomContainer';
 import pdfToText from 'react-pdftotext';
 import JobRecommendTab from './JobRecommendTab';
-import { cvAnalysist } from 'src/modules/ai/roles';
+import { cvAnalysist } from 'src/gpt/roles';
 import {
   applicationErrorText,
   failedOCRErrorText,
@@ -28,7 +28,7 @@ import ProfileInfo from './ProfileInfo';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
 
 const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
 const ACCEPTED_FILE_SIZE = CVFormat.acceptSize;

@@ -1,8 +1,6 @@
-import { RoundOneCheck, extractSkill, translate } from 'src/modules/ai/roles';
+import { RoundOneCheck, extractSkill, translate } from 'src/gpt/roles';
 import { preProcessText } from './inputOutputFormat';
-import sendChatGPTRequest, {
-  getEmbedding
-} from 'src/modules/ai/sendChatGPTRequest';
+import sendChatGPTRequest, { getEmbedding } from 'src/gpt/sendChatGPTRequest';
 import { getFileByUrl } from 'src/common/firebaseService';
 import pdfToText from 'react-pdftotext';
 import { User } from 'src/modules/users/model';
