@@ -64,17 +64,21 @@ const RecruitmentApproval = () => {
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: { sm: 'space-between', xs: 'center' },
+                flexWrap: 'wrap'
               }}
             >
               <CardHeader title="Danh sách tin tuyển dụng" />
               <Box
                 sx={{
-                  display: 'flex'
+                  display: 'flex',
+                  justifyContent: { xs: 'center', sm: 'end' },
+                  px: 2,
+                  gap: 1
                 }}
               >
                 {!isProfessionView && (
-                  <Box sx={{ margin: 'auto 25px auto auto', width: '120px' }}>
+                  <Box sx={{ margin: 'auto', width: '120px' }}>
                     <SelectInput
                       label="Trạng thái"
                       value={status}
@@ -92,7 +96,7 @@ const RecruitmentApproval = () => {
                   variant="contained"
                   color={!isProfessionView ? 'primary' : 'info'}
                   onClick={handleToggleViewMode}
-                  sx={{ margin: 'auto 25px auto auto', height: 35, width: 150 }}
+                  sx={{ margin: 'auto', height: 35, width: 150 }}
                 >
                   {!isProfessionView ? 'Xem theo ngành' : 'Tất cả'}
                 </Button>

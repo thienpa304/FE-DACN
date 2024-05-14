@@ -32,22 +32,20 @@ export default function Login() {
     <>
       <Box
         sx={{
+          display: 'flex',
           width: '100%',
           height: '100%',
-          zIndex: -1,
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: 'cover',
-          left: 0,
-          top: 0,
           flex: 1,
-          alignItems: 'center',
-          display: 'flex'
+          alignItems: 'center'
         }}
       >
         <Container
           component="main"
           maxWidth="xs"
           sx={{
+            position: 'relative',
             zIndex: 10,
             ml: { xs: 'auto', sm: 15 }
           }}

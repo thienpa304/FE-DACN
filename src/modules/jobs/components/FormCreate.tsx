@@ -27,7 +27,7 @@ import {
   SKILLS,
   WORK_AT
 } from 'src/constants/option';
-import { jobAnalysist } from 'src/modules/ai/roles';
+import { jobAnalysist, translate } from 'src/modules/ai/roles';
 import FormControl from 'src/components/FormControl';
 import SelectInput, { Option } from 'src/components/SelectInput';
 import TextEditor from 'src/components/TextEditor';
@@ -144,7 +144,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
         '60': 5
       }
     );
-    setAnalysisResults(result);
+    const translatedKeywords = await sendChatGPTRequest(translate, result);
+    setAnalysisResults(translatedKeywords);
   };
 
   useEffect(() => {

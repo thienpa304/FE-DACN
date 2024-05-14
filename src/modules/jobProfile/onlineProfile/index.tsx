@@ -31,7 +31,7 @@ import useMutateUpdateOnlineProfile from './hooks/useMutateUpdateOnlineProfile';
 import { OnlineProfile as OnlineProfileType } from '../model';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import { cvAnalysist } from 'src/modules/ai/roles';
+import { cvAnalysist, translate } from 'src/modules/ai/roles';
 import { checkIsMobile } from 'src/utils/responsive';
 
 const MyBox = ({ children }) => (
@@ -84,21 +84,26 @@ export default function OnlineProfile() {
     setIsAnalyzing(true);
     if (profile?.userId) {
       const dataToAnalyze = preProcessData(profile, 'online');
-      sendChatGPTRequest(cvAnalysist, [dataToAnalyze], null, {
-        '58': 5,
-        '60': 5
-      }).then((analysisResults) => {
-        const keywords = loadKeywords(
-          analysisResults,
-          JSON.stringify(dataToAnalyze)
-        );
-        onUpdateData({
-          ...profile,
-          keywords: profile?.skills + ', ' + keywords
-        } as OnlineProfileType);
-        setFinished(true);
-        setIsAnalyzing(false);
-      });
+      const analysisResults = await sendChatGPTRequest(
+        cvAnalysist,
+        [dataToAnalyze],
+        null,
+        {
+          '58': 5,
+          '60': 5
+        }
+      );
+      const translatedResults = await sendChatGPTRequest(
+        translate,
+        analysisResults
+      );
+      const keywords = loadKeywords(translatedResults);
+      onUpdateData({
+        ...profile,
+        keywords: profile?.skills + ', ' + keywords
+      } as OnlineProfileType);
+      setFinished(true);
+      setIsAnalyzing(false);
     } else {
       setMissingInfo(true);
       setIsAnalyzing(false);

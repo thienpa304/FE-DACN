@@ -4,6 +4,7 @@ import { InfoGrid } from 'src/modules/users/profile/Information/InfoField';
 import BusinessIcon from '@mui/icons-material/Business';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import Link from 'src/components/Link';
+import { textAlign } from 'html2canvas/dist/types/css/property-descriptors/text-align';
 
 const CompanyData = (company) => [
   { label: 'Tên công ty', value: company?.companyName },
@@ -17,10 +18,17 @@ export default function CompanyInfoTab(props) {
 
   return (
     <CustomContainer sx={{ px: 5, ...sx }}>
-      <Box display="flex" justifyContent="space-between">
+      <Box
+        sx={{ display: { xs: 'normal', sm: 'flex' } }}
+        justifyContent="space-between"
+      >
         <Box display="flex">
-          <BusinessIcon color="primary" sx={{ fontSize: 56 }} />
-          <Typography fontWeight={700} fontSize={22} lineHeight={3}>
+          <BusinessIcon color="primary" sx={{ fontSize: { sm: 56, xs: 46 } }} />
+          <Typography
+            fontWeight={700}
+            sx={{ fontSize: { sm: 22, xs: 20 } }}
+            lineHeight={3}
+          >
             Thông tin công ty
           </Typography>
         </Box>
@@ -31,7 +39,6 @@ export default function CompanyInfoTab(props) {
             )}`}
             sx={{
               textDecoration: 'none',
-              alignItems: 'center',
               alignContent: 'center'
             }}
           >

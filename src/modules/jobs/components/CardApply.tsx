@@ -56,7 +56,14 @@ const CardApply: React.FC<Props> = ({ data }) => {
   return (
     <CustomContainer sx={{ px: 5, pb: 5, mb: 2 }}>
       <Grid container>
-        <Grid item xs={12} md={2} display="flex" alignItems="center">
+        <Grid
+          item
+          xs={12}
+          md={2}
+          display="flex"
+          alignItems="center"
+          sx={{ justifyContent: { xs: 'center', sm: 'normal' } }}
+        >
           <AvatarWrapper
             src={data?.employer?.logo || defaultImage.companyAvatar}
           />
