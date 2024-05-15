@@ -8,6 +8,7 @@ import JobFilter from './JobFilter';
 import useQueryTotalResultOfJobs from '../hooks/useQueryTotalResultOfJobs';
 import WorkIcon from '@mui/icons-material/Work';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import SearchBar from 'src/components/SearchBar/SearchBar';
 
 function JobList(props) {
   const {
@@ -17,7 +18,8 @@ function JobList(props) {
     sx,
     numOfJobPerPage,
     employerId,
-    jobTitle
+    jobTitle,
+    workAddress
   } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState({
@@ -28,7 +30,8 @@ function JobList(props) {
     experience: '',
     positionLevel: '',
     sex: '',
-    jobTitle: jobTitle
+    jobTitle: jobTitle,
+    workAddress: workAddress
   });
   const {
     totalResults,

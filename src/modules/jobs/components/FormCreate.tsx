@@ -27,7 +27,7 @@ import {
   SKILLS,
   WORK_AT
 } from 'src/constants/option';
-import { jobAnalysist } from 'src/modules/ai/roles';
+import { jobAnalysist, translate } from 'src/gpt/roles';
 import FormControl from 'src/components/FormControl';
 import SelectInput, { Option } from 'src/components/SelectInput';
 import TextEditor from 'src/components/TextEditor';
@@ -42,7 +42,7 @@ import _ from 'lodash';
 import { preProcessText, removeHTMLTag } from 'src/utils/inputOutputFormat';
 import { loadKeywords } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
 import Autocomplete from 'src/components/Autocomplete';
 
 const defaultValues = {
@@ -144,7 +144,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
         '60': 5
       }
     );
-    setAnalysisResults(result);
+    const translatedKeywords = await sendChatGPTRequest(translate, result);
+    setAnalysisResults(translatedKeywords);
   };
 
   useEffect(() => {
@@ -154,8 +155,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       reset({
         name: profile?.name,
         email: profile?.email,
-        phone: profile?.phone,
-        contactAddress: profile?.address
+        phone: profile?.phone
+        // contactAddress: profile?.address
       });
     }
   }, [JSON.stringify(data), JSON.stringify(profile)]);
@@ -411,6 +412,31 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         }}
                       />
                     </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControl
+                        options={WORK_AT}
+                        element={<SelectInput />}
+                        control={control}
+                        errors={errors}
+                        id="workAddress"
+                        label="Khu vực tuyển dụng"
+                        name="workAddress"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="contactAddress"
+                        label="Địa chỉ làm việc"
+                        name="contactAddress"
+                        required
+                        multiline
+                        minRows={2}
+                      />
+                    </Grid>
                     {/* <Grid item container xs={12}>
                       <Grid item xs={3}>
                         <FormControl
@@ -438,19 +464,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         />
                       </Grid>
                     </Grid> */}
-                    <Grid item xs={12}>
-                      <FormControl
-                        element={<TextField />}
-                        control={control}
-                        errors={errors}
-                        id="workAddress"
-                        label="Địa chỉ làm việc"
-                        name="workAddress"
-                        required
-                        multiline
-                        minRows={2}
-                      />
-                    </Grid>
+
                     <Grid item xs={12}>
                       <Box display="flex" marginBottom={1}>
                         {isEmpty.find((item) => item === 'requiredSkills') && (
@@ -599,7 +613,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         pattern="phone"
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    {/* <Grid item xs={12} md={8}>
                       <FormControl
                         element={<TextField />}
                         control={control}
@@ -611,7 +625,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         multiline
                         minRows={1}
                       />
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </CardContent>
                 <CardActions>

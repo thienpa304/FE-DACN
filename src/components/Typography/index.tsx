@@ -2,7 +2,11 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 export const TypographyEllipsis = styled(Typography)(({ theme }) => ({
-  whiteSpace: 'nowrap',
   overflow: 'hidden',
-  textOverflow: 'ellipsis'
+  textOverflow: 'ellipsis',
+  whiteSpace: 'wrap',
+  lineHeight: '1.5',
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical'
 }));

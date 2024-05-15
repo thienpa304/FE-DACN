@@ -12,8 +12,9 @@ import {
   styled
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import CVPage from 'src/pages/view-candidate-profile/ViewCV';
+import ViewCV from 'src/pages/view-candidate-profile/ViewCV';
 import ThemeProvider from '../theme/ThemeProvider';
+import { isMobile } from 'src/constants/reponsive';
 
 function openProfile({ profile }) {
   const domNode = document.createElement('div');
@@ -26,7 +27,7 @@ function openProfile({ profile }) {
 
   root.render(
     <ThemeProvider>
-      <Dialog open={true} fullWidth maxWidth="md">
+      <Dialog open={true} fullWidth maxWidth="md" fullScreen={isMobile}>
         <DialogTitle
           sx={{
             textAlign: 'center',
@@ -55,7 +56,7 @@ function openProfile({ profile }) {
           }}
         />
         <DialogContent>
-          <CVPage user={profile} bgcolor="none" showTitle={false} />
+          <ViewCV user={profile} bgcolor="none" showTitle={false} />
         </DialogContent>
       </Dialog>
     </ThemeProvider>

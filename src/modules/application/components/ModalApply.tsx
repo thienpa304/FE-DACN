@@ -30,6 +30,7 @@ import AnayzeProfileButton from './AnayzeProfileButton';
 import { Job } from 'src/modules/jobs/model';
 import { removeFileByUrl } from 'src/common/firebaseService';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { isMobile } from 'src/constants/reponsive';
 
 const Title = styled('div')(() => ({
   fontWeight: 600,
@@ -135,7 +136,7 @@ export default function ModalApply(props: Props) {
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth fullScreen={isMobile}>
         <DialogTitle>
           <SubTitle> Vị trí ứng tuyển</SubTitle>
           <Title>{position}</Title>
@@ -265,7 +266,12 @@ export default function ModalApply(props: Props) {
           </Grid>
         </DialogContent>
         <DialogActions
-          sx={{ display: 'flex', justifyContent: 'space-between', px: 2 }}
+          sx={{
+            display: 'flex',
+            justifyContent: { sm: 'space-between', xs: 'center' },
+            flexWrap: 'wrap',
+            px: 2
+          }}
         >
           <AnayzeProfileButton
             job={job}
@@ -276,7 +282,7 @@ export default function ModalApply(props: Props) {
             fileUrl={url}
             setHintsMessage={setHintsMessage}
           />
-          <Box sx={{ display: 'flex', columnGap: 2 }}>
+          <Box sx={{ display: 'flex', columnGap: 1 }}>
             <Button onClick={handleClose} variant="outlined" color="secondary">
               Hủy
             </Button>

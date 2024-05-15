@@ -13,13 +13,14 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import FollowEmployeeButton from './FollowEmployeeButton';
-import CVPage from 'src/pages/view-candidate-profile/ViewCV';
+import ViewCV from 'src/pages/view-candidate-profile/ViewCV';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import PersonIcon from '@mui/icons-material/Person';
 import SchoolIcon from '@mui/icons-material/School';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GradeIcon from '@mui/icons-material/Grade';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import { isMobile } from 'src/constants/reponsive';
 
 const EmployeeCard = ({ profile, setSelectedProfile }) => (
   <Card
@@ -205,7 +206,12 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => (
 );
 
 const ProfileCardDialog = ({ selectedProfile, setSelectedProfile }) => (
-  <Dialog open={selectedProfile !== null} fullWidth maxWidth="md">
+  <Dialog
+    open={selectedProfile !== null}
+    fullWidth
+    maxWidth="md"
+    fullScreen={isMobile}
+  >
     <DialogTitle
       sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}
     >
@@ -232,7 +238,7 @@ const ProfileCardDialog = ({ selectedProfile, setSelectedProfile }) => (
       }}
     />
     <DialogContent>
-      <CVPage user={selectedProfile} bgcolor="none" showTitle={false} />
+      <ViewCV user={selectedProfile} bgcolor="none" showTitle={false} />
     </DialogContent>
   </Dialog>
 );

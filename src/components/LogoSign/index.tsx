@@ -28,8 +28,8 @@ function Logo() {
         <ImgWrapper src="https://thuvienvector.com/upload/images/items/vector-logo-truong-dai-hoc-bach-khoa-hcm-file-cdr-coreldraw-ai-217.webp" />
         <Typography
           sx={{
-            display: 'flex',
-            fontSize: '20px',
+            display: { sm: 'flex', xs: 'none' },
+            fontSize: { sm: '20px', xs: '15px' },
             fontWeight: 'bold',
             color: '#b27300',
             textAlign: 'center',

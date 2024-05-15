@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Link from 'src/components/Link';
 import SelectInput from 'src/components/SelectInput';
-import { PROFESSION } from 'src/constants';
+import { PROFESSION, WORK_AT } from 'src/constants';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 
 const ProfessionOptions = [
@@ -13,10 +13,33 @@ const ProfessionOptions = [
   },
   ...PROFESSION
 ];
+const AddressOptions = [
+  {
+    label: 'Tất cả',
+    value: ''
+  },
+  ...WORK_AT
+];
+
+const buildSearchUrl = (
+  baseUrl,
+  to,
+  searchValue,
+  selectedProfession,
+  selectedAddress
+) => {
+  const searchParams = new URLSearchParams();
+  if (searchValue) searchParams.append('search', searchValue);
+  if (selectedProfession) searchParams.append('profession', selectedProfession);
+  if (selectedAddress) searchParams.append('address', selectedAddress);
+
+  return `${baseUrl}?${searchParams.toString()}`;
+};
 
 export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
   const [searchValue, setSearchValue] = useState('');
   const [selectedProfession, setSelectedProfession] = useState('');
+  const [selectedAddress, setSelectedAddress] = useState('');
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(() => event.target.value);
@@ -28,6 +51,18 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
     setSelectedProfession(() => event.target.value);
   };
 
+  const handleSelectAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAddress(() => event.target.value);
+  };
+
+  const searchUrl = buildSearchUrl(
+    to,
+    'tim-kiem-nhanh',
+    searchValue,
+    selectedProfession,
+    selectedAddress
+  );
+
   return (
     <Grid
       container
@@ -38,7 +73,7 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
         ...sx
       }}
     >
-      <Grid item md={8} xs={12}>
+      <Grid item md={6} xs={12}>
         <TextField
           value={searchValue}
           onChange={handleSearchChange}
@@ -74,12 +109,26 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
         />
       </Grid>
       <Grid item md={2} xs={6}>
+        <SelectInput
+          options={AddressOptions}
+          onChange={handleSelectAddress}
+          label="Khu vực"
+          placeholder="Khu vực"
+          fullWidth
+          sx={{
+            backgroundColor: 'white',
+            boxShadow: '2px 2px 6px #98E4FF',
+            borderRadius: '0px'
+          }}
+          labelmargintop="5px"
+          size="medium"
+        />
+      </Grid>
+      <Grid item md={2} xs={12}>
         <Link
           to={
-            selectedProfession || searchValue
-              ? `${to}/${
-                  rewriteUrl(selectedProfession) || 'Tat-ca'
-                }?search=${searchValue}`
+            selectedProfession || searchValue || selectedAddress
+              ? searchUrl
               : ''
           }
           sx={{ color: '#000' }}

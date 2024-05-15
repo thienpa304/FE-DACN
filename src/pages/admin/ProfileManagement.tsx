@@ -29,13 +29,15 @@ import { Link } from 'react-router-dom';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
 import useQueryEmployeesByAdmin from 'src/modules/admin/hooks/useQueryEmployeesByAdmin';
 import useQueryTotalResultOfEmployeeByAdmin from 'src/modules/admin/hooks/useQueryTotalResultOfEmployeeByAdmin';
-import CVPage from '../view-candidate-profile/ViewCV';
+import ViewCV from '../view-candidate-profile/ViewCV';
 import CloseIcon from '@mui/icons-material/Close';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import alertDialog from 'src/utils/alertDialog';
 import useDeleteDocumentProfileByAdmin from 'src/modules/jobProfile/attachedDocument/hooks/useDeleteDocumentProfileByAdmin';
 import useDeleteOnlineProfileByAdmin from 'src/modules/jobProfile/onlineProfile/hooks/useDeleteOnlineProfileByAdmin';
 import { removeFileByUrl } from 'src/common/firebaseService';
+import { isMobile } from 'src/constants/reponsive';
+import detailsModal from 'src/utils/detailsModal';
 
 const ProfileManagement = () => {
   const [searchUserName, setSearchUserName] = useState('');
@@ -174,11 +176,34 @@ const ProfileManagement = () => {
     });
   };
 
+  const renderAction = (params) => {
+    console.log(params);
+    const detailsData = {
+      'Tên người dùng': params?.row?.name,
+      Email: <Button variant="contained">ddd</Button>,
+      'Hồ sơ trực tuyến': params?.row?.online,
+      'Hồ sơ đính kèm': params?.row?.document
+    };
+    const handleViewDetails = (params) => {
+      detailsModal(detailsData);
+    };
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => handleViewDetails(params)}
+      >
+        Xem
+      </Button>
+    );
+  };
+
   const columns: GridColDef[] = [
     {
       field: 'name',
       headerName: 'Tên người dùng',
-      minWidth: 200,
+      minWidth: isMobile ? 180 : 200,
       renderCell: renderName
     },
     {
@@ -201,6 +226,14 @@ const ProfileManagement = () => {
       headerName: 'Hồ sơ đính kèm',
       minWidth: 250,
       renderCell: renderProfile,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'action',
+      headerName: 'Chi tiết',
+      minWidth: 50,
+      renderCell: renderAction,
       align: 'center',
       headerAlign: 'center'
     }
@@ -267,59 +300,71 @@ const ProfileManagement = () => {
             />
           )}
           <Grid container>
-            <Grid item xs={12}>
-              <Divider sx={{ mt: 2 }} />
-              {!viewProfessionMode && (
-                <Grid container spacing={2}>
-                  <Grid item xs={2.5}>
-                    <DirectoryTreeView
-                      setSelectedProfession={setSelectedProfession}
-                      setViewProfessionMode={setViewProfessionMode}
-                    />
-                  </Grid>
-                  <Grid item xs={9.5}>
-                    <Typography
-                      textAlign="center"
-                      fontWeight={700}
-                      fontSize={20}
-                      mb={1}
-                      lineHeight={3}
-                    >
-                      Danh sách hồ sơ người dùng
-                    </Typography>
-                    {employeeList.length > 0 ? (
-                      <Box>
-                        <TableData
-                          columns={columns}
-                          rows={employeeList}
-                          hideFooter
-                          sx={{ minHeight: '65vh' }}
-                          loading={isLoading || isLoadingTotalResult}
-                        />
-                        <Pagination
-                          currentPage={currentPage}
-                          totalPages={totalPages}
-                          handlePageChange={setCurrentPage}
-                        />
-                      </Box>
-                    ) : (
-                      <Typography
-                        mt={10}
-                        textAlign="center"
-                        fontStyle="italic"
-                        color="#9999"
-                      >
-                        Chưa có hồ sơ nào
-                      </Typography>
-                    )}
-                  </Grid>
+            <Divider sx={{ mt: 2 }} />
+            {!viewProfessionMode && (
+              <Grid container spacing={2}>
+                <Grid item xs={0} md={2.5}>
+                  <DirectoryTreeView
+                    setSelectedProfession={setSelectedProfession}
+                    setViewProfessionMode={setViewProfessionMode}
+                  />
                 </Grid>
-              )}
-            </Grid>
+                <Grid item xs={12} md={9.5}>
+                  <Typography
+                    textAlign="center"
+                    fontWeight={700}
+                    fontSize={20}
+                    mb={1}
+                    lineHeight={3}
+                  >
+                    Danh sách hồ sơ người dùng
+                  </Typography>
+                  {employeeList.length > 0 ? (
+                    <Box>
+                      <TableData
+                        columns={columns}
+                        rows={employeeList}
+                        hideFooter
+                        sx={{ minHeight: '65vh' }}
+                        loading={isLoading || isLoadingTotalResult}
+                        initialState={{
+                          columns: {
+                            columnVisibilityModel: {
+                              email: !isMobile,
+                              online: !isMobile,
+                              document: !isMobile
+                            }
+                          }
+                        }}
+                      />
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageChange={setCurrentPage}
+                      />
+                    </Box>
+                  ) : (
+                    <Typography
+                      mt={10}
+                      textAlign="center"
+                      fontStyle="italic"
+                      color="#9999"
+                    >
+                      Chưa có hồ sơ nào
+                    </Typography>
+                  )}
+                </Grid>
+              </Grid>
+            )}
           </Grid>
         </CardContent>
       </Card>
-      <Dialog open={viewProfile.isOpen} fullWidth maxWidth="md">
+      <Dialog
+        open={viewProfile.isOpen}
+        fullWidth
+        maxWidth="md"
+        fullScreen={isMobile}
+      >
         <DialogTitle
           sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}
         >
@@ -346,7 +391,7 @@ const ProfileManagement = () => {
           }}
         />
         <DialogContent>
-          <CVPage
+          <ViewCV
             user={viewProfile?.profile}
             bgcolor="none"
             showTitle={false}

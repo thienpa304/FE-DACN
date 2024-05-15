@@ -43,15 +43,17 @@ const downloadIcon = [
 
 const Footer = () => {
   return (
-    <Box
+    <Container
+      component={'footer'}
       sx={{
         bgcolor: '#f5f4ff',
         borderTop: '1px solid #e0e0e0',
-        mt: 5
+        mt: 5,
+        p: { xs: 2, md: 5 }
       }}
     >
-      <Grid container spacing={5} p={5}>
-        <Grid item md={6}>
+      <Grid container spacing={5}>
+        <Grid item md={6} xs={12}>
           <Typography fontWeight={700} fontSize={18} lineHeight={3}>
             Về chúng tôi
           </Typography>
@@ -75,11 +77,16 @@ const Footer = () => {
             Email hỗ trợ nhà tuyển dụng: ntd@gmail.com
           </Typography>
         </Grid>
-        <Grid item md={6}>
+        <Grid item md={6} xs={12}>
           <Typography fontWeight={700} fontSize={18} lineHeight={3}>
             Kết nối với TopViệcLàm
           </Typography>
-          <Box display="flex" gap={2}>
+          <Box
+            display="flex"
+            gap={2}
+            flexWrap="wrap"
+            sx={{ justifyContent: { xs: 'center', sm: 'normal' } }}
+          >
             {webIcon.map((item) => (
               <Link href={item.link}>
                 <Box
@@ -95,7 +102,12 @@ const Footer = () => {
           <Typography fontWeight={700} fontSize={18} mt={3}>
             Ứng dụng di động
           </Typography>
-          <Box display="flex" gap={2}>
+          <Box
+            display="flex"
+            gap={2}
+            flexWrap="wrap"
+            sx={{ justifyContent: { xs: 'center', sm: 'normal' } }}
+          >
             {downloadIcon.map((item) => (
               <Link href={item.link}>
                 <Box
@@ -110,7 +122,7 @@ const Footer = () => {
           </Box>
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   );
 };
 export default Footer;

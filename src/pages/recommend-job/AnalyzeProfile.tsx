@@ -11,7 +11,7 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import CustomContainer from 'src/components/CustomContainer';
 import pdfToText from 'react-pdftotext';
 import JobRecommendTab from './JobRecommendTab';
-import { cvAnalysist } from 'src/modules/ai/roles';
+import { cvAnalysist } from 'src/gpt/roles';
 import {
   applicationErrorText,
   failedOCRErrorText,
@@ -28,7 +28,8 @@ import ProfileInfo from './ProfileInfo';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
+import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
 const ACCEPTED_FILE_SIZE = CVFormat.acceptSize;
@@ -103,7 +104,7 @@ const AnalyzeProfile = (props) => {
     if (id !== 'upload-cv' && !profile?.userId) return;
 
     if (profile?.keywords) {
-      setKeywords(profile?.keywords?.split(', ')?.slice(0, 15).join(', '));
+      setKeywords(profile?.keywords);
       return;
     }
 
@@ -236,9 +237,9 @@ const AnalyzeProfile = (props) => {
           {keywords && (
             <Grid item xs={12}>
               <Divider />
-              <Typography mt={2}>
+              <TypographyEllipsis mt={2}>
                 <b>Từ khóa:</b> <em>{keywords}</em>
-              </Typography>
+              </TypographyEllipsis>
             </Grid>
           )}
         </Box>

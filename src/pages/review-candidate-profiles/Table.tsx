@@ -5,16 +5,21 @@ import {
   Button,
   CircularProgress,
   Container,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
   Grid,
-  Typography
+  IconButton,
+  Tooltip,
+  Typography,
+  useTheme
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
 import { useMemo, useState, forwardRef, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
-import { v4 } from 'uuid';
-import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import useQueryCandidateApplicationById, {
   useQueryCandidateApplicationByIdList
 } from 'src/modules/application/hooks/useQueryCandidateApplicationById';
@@ -30,59 +35,175 @@ import {
   parseResponseJSONData
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
+import useQueryJobById, {
+  useQueryJobByIdList
+} from 'src/modules/jobs/hooks/useQueryJobById';
 import Pagination from 'src/components/Pagination';
 import openProfile from 'src/utils/openProfile';
 import CheckIcon from '@mui/icons-material/Check';
 import alertDialog from 'src/utils/alertDialog';
 import { ApprovalStatus } from 'src/constants/enum';
-import { fontStyle } from 'html2canvas/dist/types/css/property-descriptors/font-style';
+import { TypographyEllipsis } from 'src/components/Typography';
+import CardApply from 'src/modules/jobs/components/CardApply';
+import TabContent from '../job-detail/TabContent';
+import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
+import useApplicationList from 'src/modules/application/hooks/useApplicationList';
+import useJob from 'src/modules/jobs/hooks/useJob';
+import CloseIcon from '@mui/icons-material/Close';
+import { isMobile } from 'src/constants/reponsive';
+import detailsModal from 'src/utils/detailsModal';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
 
-const renderJobTitle = (data) => {
-  if (data.value) {
-    return (
-      <Typography
+const ViewJobDetail = ({ applicationId, setSelectedId }) => {
+  if (!Boolean(applicationId)) return;
+  const { applicationList } = useApplicationList();
+  const { setItemDetail, itemDetail } = useJob();
+
+  const jobId = applicationList?.find(
+    (item) => item.application_id === applicationId
+  )?.jobPosting.postId;
+  const { data, isLoading } = useQueryJobById(jobId);
+  console.log(data, applicationId, jobId);
+
+  useEffect(() => {
+    setItemDetail(data);
+  }, [data]);
+
+  if (isLoading || !data) return <SuspenseLoader />;
+  return (
+    <Dialog
+      open={Boolean(applicationId)}
+      onClose={() => {
+        setSelectedId(null);
+      }}
+      fullWidth
+      maxWidth="lg"
+      fullScreen={isMobile}
+    >
+      <DialogTitle
         sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'wrap',
-          lineHeight: '1.5',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical'
+          textAlign: 'center',
+          fontWeight: 700,
+          fontSize: '1.3rem'
         }}
       >
-        {data.value}
-      </Typography>
+        Vị trí ứng tuyển
+        <IconButton
+          aria-label="close"
+          onClick={() => setSelectedId(null)}
+          sx={{
+            position: 'absolute',
+            right: 14,
+            top: 14,
+            color: (theme) => theme.palette.grey[500]
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <Divider
+        sx={{
+          bgcolor: '#B6FFFA',
+          height: 2
+        }}
+      />
+      <DialogContent>
+        <Container sx={{ paddingY: 2 }}>
+          <CardApply data={data} />
+          <TabContent />
+          <CompanyInfoTab sx={{ mt: 2 }} company={data?.employer} />
+        </Container>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const renderJobTitle = (data) => {
+  const [selectedId, setSelectedId] = useState(null);
+  // console.log(data);
+
+  if (data.value) {
+    return (
+      <>
+        <TypographyEllipsis
+          sx={{
+            color: '#319fce',
+            ':hover': {
+              textDecoration: 'none',
+              cursor: 'pointer'
+            },
+            textDecoration: 'none'
+          }}
+          onClick={() => {
+            setSelectedId(data?.row?.id);
+          }}
+        >
+          {data.value}
+        </TypographyEllipsis>
+        <ViewJobDetail
+          applicationId={selectedId}
+          setSelectedId={setSelectedId}
+        />
+      </>
     );
   }
 };
 
 const renderProfileName = (data) => {
-  const url = data?.row?.CV ? data?.row?.CV : '#';
-  const link = useMemo(() => {
-    if (!url) return '#';
-    return url;
-  }, [url]);
+  const handleOpenDetailModal = () => {
+    let result = '';
+    if (data?.row?.matchingScore >= HIGH_SCORE) result = 'Cao';
+    else if (
+      data?.row?.matchingScore >= NORMAL_SCORE &&
+      data?.row?.matchingScore < HIGH_SCORE
+    )
+      result = 'Trung bình';
+    else if (
+      data?.row?.matchingScore >= LOW_SCORE &&
+      data?.row?.matchingScore < NORMAL_SCORE
+    )
+      result = 'Thấp';
+    else if (data?.row?.matchingScore < 0) result = 'Không phù hợp';
+
+    const detailsData = {
+      'Tên hồ sơ': data?.row?.name,
+      'Vị trí ứng tuyển': data?.row?.jobTitle,
+      'Loại hồ sơ': data?.row?.applicationType,
+      'Trạng thái': data?.row?.status,
+      'Độ phù hợp': result
+    };
+    detailsModal(detailsData);
+  };
 
   const { data: profile } = useQueryCandidateApplicationById(data?.row?.id);
 
   return (
-    <Typography
-      sx={{
-        color: '#319fce',
-        ':hover': {
-          textDecoration: 'none',
-          cursor: 'pointer'
-        },
-        textDecoration: 'none'
-      }}
-      onClick={() => {
-        openProfile({ profile: profile });
-      }}
-    >
-      {data.value}
-    </Typography>
+    <Grid container alignItems={'center'}>
+      <Grid item xs={10.5} sm={12}>
+        <TypographyEllipsis
+          sx={{
+            color: '#319fce',
+            ':hover': {
+              textDecoration: 'none',
+              cursor: 'pointer'
+            },
+            textDecoration: 'none'
+          }}
+          onClick={() => {
+            openProfile({ profile: profile });
+          }}
+        >
+          {data.value}
+        </TypographyEllipsis>
+      </Grid>
+      <Grid item xs={1.5} sm={0} sx={{ display: { sm: 'none', xs: 'inline' } }}>
+        <Tooltip title="Chi tiết">
+          <IconButton size="small" onClick={handleOpenDetailModal}>
+            <ReadMoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Grid>
+    </Grid>
   );
 };
 
@@ -114,7 +235,9 @@ const renderStatus = (data) => {
       options={APPROVAL_STATUS}
       onChange={handleChangeValue}
       sx={{
-        color: APPROVAL_STATUS.find((item) => item.value === value)?.optionColor
+        color: APPROVAL_STATUS.find((item) => item.value === value)
+          ?.optionColor,
+        fontSize: isMobile && '10px'
       }}
     />
   );
@@ -162,7 +285,7 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Tên hồ sơ',
-    minWidth: 220,
+    minWidth: isMobile ? 110 : 220,
     renderCell: renderProfileName,
     sortable: true
   },
@@ -177,14 +300,18 @@ const columns: GridColDef[] = [
     field: 'applicationType',
     headerName: 'Loại hồ sơ',
     minWidth: 150,
-    sortable: true
+    // sortable: true,
+    headerAlign: 'center',
+    align: 'center'
   },
   {
     field: 'status',
-    headerName: 'Trạng thái tuyển dụng',
-    minWidth: 180,
+    headerName: 'Trạng thái',
+    minWidth: isMobile ? 120 : 180,
     renderCell: renderStatus,
-    sortable: true
+    sortable: true,
+    headerAlign: 'center',
+    align: 'center'
   },
   {
     field: 'matchingScore',
@@ -274,6 +401,8 @@ export default function Table(props) {
   const updateAnalyzedProfile = (responses: any[]) => {
     return analyzedProfile.map((profile) => {
       const matchingScore = calculateMatchingScore(profile, responses);
+      console.log('matchingScore', matchingScore);
+
       return {
         ...profile,
         employee_Profile: {
@@ -596,12 +725,19 @@ export default function Table(props) {
             paginationModel: {
               pageSize: pageSize
             }
+          },
+          columns: {
+            columnVisibilityModel: {
+              jobTitle: !isMobile,
+              applicationType: !isMobile,
+              matchingScore: !isMobile
+            }
           }
         }}
         hideFooter
         sx={{ height: '74vh', width: '100%' }}
         checkboxSelection
-        // disableRowSelectionOnClick
+        disableRowSelectionOnClick={isMobile}
         rowSelection={true}
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
