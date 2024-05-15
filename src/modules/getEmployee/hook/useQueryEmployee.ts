@@ -13,18 +13,7 @@ const useQueryEmployee = (params?) => {
     ResponseData<ProfileShowType[]>,
     AxiosError<ResponseData<ProfileShowType[]>>
   >(
-    [
-      'get-AllEmployees',
-      params?.page,
-      params?.profession,
-      params?.experience,
-      params?.degree,
-      params?.employmentType,
-      params?.sex,
-      params?.jobTitle,
-      params?.currentPosition,
-      params?.positionLevel
-    ],
+    ['get-AllEmployees', params],
     () => {
       for (const key in params) {
         if (params[key] === 'Tất cả' || params[key] === undefined) {

@@ -64,7 +64,7 @@ function ProfessionListDialog(props) {
           {professionToShow?.map((profession, index) => (
             <Grid key={profession?.code} item xs={12} sm={6} md={4}>
               <Link
-                to={`/profession/${rewriteUrl(profession?.name)}`}
+                to={`/profession?profession=${profession?.name}`}
                 state={{
                   profession: profession?.name,
                   pageTitle: profession.name

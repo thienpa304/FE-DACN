@@ -17,11 +17,9 @@ import alertDialog from 'src/utils/alertDialog';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { isMobile } from 'src/constants/reponsive';
-import { useState } from 'react';
 import detailsModal from 'src/utils/detailsModal';
 
 export const renderJobTitle = (data) => {
-  const [openModalDetail, setOpenModalDetail] = useState(false);
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const navigate = useNavigate();
   const handleLinkToDetail = () => {
@@ -30,7 +28,6 @@ export const renderJobTitle = (data) => {
     });
   };
   const handleOpenDetailModal = () => {
-    setOpenModalDetail(true);
     const detailsData = {
       'Tên tin đăng': data?.row?.jobTitle,
       'Ngày đăng tin': dayjs(data?.row?.createdAt).format('DD/MM/YYYY'),

@@ -28,7 +28,6 @@ export default function InfoAccountTab() {
     { label: 'Địa chỉ', value: user?.address }
   ];
   if (!isEmployee) {
-    // if isEmployee is true, remove { label: 'Tình trạng hôn nhân', value: isMarried } from UserData
     UserData.splice(
       UserData.findIndex((item) => item.label === 'Tình trạng hôn nhân'),
       1

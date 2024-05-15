@@ -105,7 +105,7 @@ export const PROFESSION = professions.map((item) => ({
 }));
 
 export const WORK_AT = provinces.map((item) => ({
-  value: item.code,
+  value: item.name,
   label: item.name
 }));
 

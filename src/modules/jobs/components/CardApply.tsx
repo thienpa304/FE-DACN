@@ -109,7 +109,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
                 <Grid container alignItems={'center'}>
                   <LocationOnIcon color="primary" sx={{ margin: '0 5px' }} />
                   <LabelText> Khu vực ứng tuyển : </LabelText>
-                  <ValueText>{data.contactAddress}</ValueText>
+                  <ValueText>{data.workAddress}</ValueText>
                 </Grid>
               </Grid>
             </Grid>

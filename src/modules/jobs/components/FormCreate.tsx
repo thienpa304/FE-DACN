@@ -155,8 +155,8 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       reset({
         name: profile?.name,
         email: profile?.email,
-        phone: profile?.phone,
-        contactAddress: profile?.address
+        phone: profile?.phone
+        // contactAddress: profile?.address
       });
     }
   }, [JSON.stringify(data), JSON.stringify(profile)]);
@@ -412,6 +412,31 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         }}
                       />
                     </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControl
+                        options={WORK_AT}
+                        element={<SelectInput />}
+                        control={control}
+                        errors={errors}
+                        id="workAddress"
+                        label="Khu vực tuyển dụng"
+                        name="workAddress"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControl
+                        element={<TextField />}
+                        control={control}
+                        errors={errors}
+                        id="contactAddress"
+                        label="Địa chỉ làm việc"
+                        name="contactAddress"
+                        required
+                        multiline
+                        minRows={2}
+                      />
+                    </Grid>
                     {/* <Grid item container xs={12}>
                       <Grid item xs={3}>
                         <FormControl
@@ -439,19 +464,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         />
                       </Grid>
                     </Grid> */}
-                    <Grid item xs={12}>
-                      <FormControl
-                        element={<TextField />}
-                        control={control}
-                        errors={errors}
-                        id="workAddress"
-                        label="Địa chỉ làm việc"
-                        name="workAddress"
-                        required
-                        multiline
-                        minRows={2}
-                      />
-                    </Grid>
+
                     <Grid item xs={12}>
                       <Box display="flex" marginBottom={1}>
                         {isEmpty.find((item) => item === 'requiredSkills') && (
@@ -600,7 +613,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         pattern="phone"
                       />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    {/* <Grid item xs={12} md={8}>
                       <FormControl
                         element={<TextField />}
                         control={control}
@@ -612,7 +625,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                         multiline
                         minRows={1}
                       />
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </CardContent>
                 <CardActions>

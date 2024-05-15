@@ -9,6 +9,10 @@ import { useSearchParams } from 'react-router-dom';
 
 function ResultJobList() {
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const jobTitle = searchParams.get('search');
+  const workAddress = searchParams.get('address');
+  const profession = searchParams.get('profession');
 
   const professionName = PROFESSIONS.find((profession) => {
     const url = rewriteUrl(profession.name);
@@ -16,14 +20,12 @@ function ResultJobList() {
     return url === id;
   })?.name;
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const jobTitle = searchParams.get('search');
-
   return (
     <JobList
-      pageTitle={`Kết quả việc làm: ${jobTitle || professionName}`}
-      profession={professionName}
+      pageTitle={`Kết quả việc làm: ${jobTitle || profession || workAddress}`}
+      profession={profession}
       jobTitle={jobTitle}
+      workAddress={workAddress}
       queryJobs={useQueryAllJob}
     />
   );

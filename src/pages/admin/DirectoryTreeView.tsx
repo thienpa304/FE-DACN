@@ -7,6 +7,7 @@ import professions from 'src/constants/professions';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import { Box, Button, Typography } from '@mui/material';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { isMobile } from 'src/constants/reponsive';
 
 const treeItemStyle = {
   '.MuiTreeItem-label': {
@@ -46,7 +47,8 @@ export default function DirectoryTreeView(props) {
   return (
     <Box
       sx={{
-        boxShadow: '1px 1px 2px #aae2f7'
+        boxShadow: '1px 1px 2px #aae2f7',
+        display: { xs: 'none', md: 'inline' }
       }}
     >
       <TreeView
