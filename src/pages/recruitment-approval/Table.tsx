@@ -23,55 +23,55 @@ import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
 import CheckIcon from '@mui/icons-material/Check';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { TypographyEllipsis } from 'src/components/Typography';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import detailsModal from 'src/utils/detailsModal';
+import { isMobile } from 'src/constants/reponsive';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
-  const navigate = useNavigate();
-  const handleLinkToDetail = () => {
-    navigate(`/job/${jobTitle}`, {
-      state: {
-        postId: data?.id
-      }
-    });
+  const handleOpenDetailModal = () => {
+    const detailsData = {
+      'Tên tin tuyển dụng': data?.row?.jobTitle,
+      'Người đăng': data?.row?.name,
+      'Tên công ty': data?.row?.employer?.companyName,
+      'Ngày đăng': dayjs(data.row?.createAt)
+        .add(7, 'hours')
+        .format('DD-MM-YYYY HH:mm:ss'),
+      'Lượt nộp': data.row?.submissionCount,
+      'Lượt xem': data?.row?.view,
+      'Trạng thái': data?.row?.status,
+      'Kiểm duyệt': renderCheckInvalid.find(
+        (item) => item.value == data?.row?.check
+      )?.label
+    };
+    detailsModal(detailsData);
   };
   return (
-    <Box
-      sx={{
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'wrap',
-        lineHeight: '1.5',
-        display: '-webkit-box',
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical'
-      }}
-    >
-      <LinkText
-        to={`/job/${jobTitle}?id=${btoa(data.id)}`}
-        state={{ postId: data.id }}
-      >
-        {data.value}
-      </LinkText>
-    </Box>
+    <Grid container alignItems={'center'}>
+      <Grid item xs={10.5} sm={12}>
+        <TypographyEllipsis>
+          <LinkText to={`/job/${jobTitle}?id=${btoa(data.id)}`}>
+            {data.value}
+          </LinkText>
+        </TypographyEllipsis>
+      </Grid>
+
+      <Grid item xs={1.5} sm={0} sx={{ display: { sm: 'none', xs: 'inline' } }}>
+        <Tooltip title="Chi tiết">
+          <IconButton size="small" onClick={handleOpenDetailModal}>
+            <ReadMoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Grid>
+    </Grid>
   );
 };
 
 const renderCompany = (data) => {
   return (
     <Grid container alignItems={'center'}>
-      <Grid
-        item
-        xs={12}
-        sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'wrap',
-          lineHeight: '1.5',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical'
-        }}
-      >
+      <Grid item xs={12} component={TypographyEllipsis}>
         <LinkText
           to={`/company/${rewriteUrl(data.value?.companyName)}?id=${btoa(
             data?.value?.userId
@@ -123,6 +123,7 @@ const renderStatus = (data) => {
       onChange={handleChangeValue}
       size="small"
       sx={{
+        fontSize: isMobile && '10px',
         color: displayColor(),
         '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
           {
@@ -223,8 +224,8 @@ const renderCheck = (data) => {
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
-    headerName: 'Tên tin tuyển dụng',
-    minWidth: 200,
+    headerName: 'Tin tuyển dụng',
+    minWidth: !isMobile ? 200 : 130,
     renderCell: renderJobTitle
   },
   {
@@ -290,7 +291,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 130,
+    minWidth: !isMobile ? 130 : 115,
     headerAlign: 'center',
     renderCell: renderStatus,
     sortable: true
@@ -490,6 +491,19 @@ export default function Table({ statusFilter, selectedProfession }) {
           setSelectedRows(ids);
         }}
         loading={isLoading || isLoadingTotalResult}
+        initialState={{
+          columns: {
+            columnVisibilityModel: {
+              name: !isMobile,
+              employer: !isMobile,
+              createAt: !isMobile,
+              submissionCount: !isMobile,
+              view: !isMobile,
+              check: !isMobile
+            }
+          }
+        }}
+        disableRowSelectionOnClick={isMobile}
       />
       <Pagination
         totalPages={totalPages}

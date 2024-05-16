@@ -136,7 +136,13 @@ export default function ModalApply(props: Props) {
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth fullScreen={isMobile}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="md"
+        fullWidth
+        fullScreen={isMobile}
+      >
         <DialogTitle>
           <SubTitle> Vị trí ứng tuyển</SubTitle>
           <Title>{position}</Title>

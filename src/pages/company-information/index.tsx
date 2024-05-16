@@ -16,6 +16,7 @@ import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyI
 import { useLocation, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { isMobile } from 'src/constants/reponsive';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -56,9 +57,6 @@ const renderLogo = (avatar: string) => (
 export default function index() {
   const [searchParams, setSearchParams] = useSearchParams();
   const id = atob(searchParams.get('id'));
-  const { state } = useLocation();
-  const locationState = state as any;
-  // const id = locationState?.id;
   const { company, isLoading } = useQueryCompanyInfoByUser({ employerId: id });
 
   if (isLoading) return <SuspenseLoader />;
@@ -69,7 +67,7 @@ export default function index() {
         sx={{ flex: 1, display: 'flex', alignItems: 'center', px: 5 }}
       >
         {renderLogo(company?.logo)}
-        <Typography variant="h3" ml={2}>
+        <Typography variant={isMobile ? 'h4' : 'h3'} ml={2}>
           {company?.companyName}
         </Typography>
       </CustomContainer>

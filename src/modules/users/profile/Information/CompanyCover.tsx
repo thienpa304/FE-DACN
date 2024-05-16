@@ -13,9 +13,6 @@ import {
 } from '@mui/material';
 import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
 import {
-  GetFileByUserId,
-  UploadFileByUserId,
-  RemoveFileByUserId,
   DocumentType,
   uploadFile,
   removeFileByUrl
@@ -31,6 +28,7 @@ import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
 import useMutateCompanyLogo from '../../hooks/useMutateCompanyLogo';
 import useMutateCompanyBanner from '../../hooks/useMutateCompanyBanner';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { isMobile } from 'src/constants/reponsive';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -107,7 +105,6 @@ function CompanyCover() {
     if (kind === 'avatar') {
       onSaveData({ logo: url });
     } else {
-      // await UploadFileByUserId(user?.userId, image, documentType); // old
       onSaveBanner({ banner: url });
     }
     setImage({ img: imageUrl, error: false });
@@ -120,7 +117,6 @@ function CompanyCover() {
     const documentType =
       kind === 'avatar' ? companyAvatarType : companyCoverType;
 
-    // RemoveFileByUserId(user?.userId, documentType); // old
     if (kind === 'avatar') {
       await removeFileByUrl(company?.logo).then(() =>
         onSaveData({ logo: ' ' })
@@ -242,7 +238,9 @@ function CompanyCover() {
       <Container sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
           {renderAvatar()}
-          <Typography variant="h3">{company?.companyName}</Typography>
+          <Typography variant={isMobile ? 'h4' : 'h3'}>
+            {company?.companyName}
+          </Typography>
         </Box>
         <Box>
           {companyCover.error && coverErrorText}

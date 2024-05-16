@@ -179,10 +179,10 @@ const ProfileManagement = () => {
   const renderAction = (params) => {
     console.log(params);
     const detailsData = {
-      'Tên người dùng': params?.row?.name,
-      Email: <Button variant="contained">ddd</Button>,
-      'Hồ sơ trực tuyến': params?.row?.online,
-      'Hồ sơ đính kèm': params?.row?.document
+      'Tên người dùng': params?.row?.user?.name,
+      Email: params?.row?.user?.email,
+      'Hồ sơ trực tuyến': renderProfile({ ...params, field: 'online' }),
+      'Hồ sơ đính kèm': renderProfile({ ...params, field: 'document' })
     };
     const handleViewDetails = (params) => {
       detailsModal(detailsData);
@@ -244,7 +244,7 @@ const ProfileManagement = () => {
   };
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: 30 }}>
+    <Container maxWidth="lg" sx={{ marginTop: 3 }}>
       <Card>
         <Box
           sx={{
@@ -325,14 +325,17 @@ const ProfileManagement = () => {
                         columns={columns}
                         rows={employeeList}
                         hideFooter
-                        sx={{ minHeight: '65vh' }}
+                        sx={{
+                          minHeight: '65vh'
+                        }}
                         loading={isLoading || isLoadingTotalResult}
                         initialState={{
                           columns: {
                             columnVisibilityModel: {
                               email: !isMobile,
                               online: !isMobile,
-                              document: !isMobile
+                              document: !isMobile,
+                              action: isMobile
                             }
                           }
                         }}

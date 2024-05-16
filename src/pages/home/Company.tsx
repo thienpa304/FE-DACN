@@ -6,11 +6,13 @@ import CompanyCard from 'src/modules/company/components/CompanyCard';
 import BusinessIcon from '@mui/icons-material/Business';
 
 export default function Company(props) {
-  const { pageTitle, sx, numOfJobPerPage, queryCompanys } = props;
-  const { companyList, totalResults } = queryCompanys({ num: 4, page: 1 });
-  // const totalResults = companyList?.length;
+  const { queryCompanys, defaultPageSize } = props;
+  const pageSize = defaultPageSize ? defaultPageSize : 15;
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = numOfJobPerPage ? numOfJobPerPage : 15;
+  const { companyList, totalResults } = queryCompanys({
+    num: pageSize,
+    page: currentPage
+  });
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   const handlePageChange = (pageNumber: number) => {
@@ -55,8 +57,14 @@ export default function Company(props) {
               </Grid>
             ))
           ) : (
-            <Typography fontStyle={'italic'} margin={'auto'}>
-              Chưa có công ty nào
+            <Typography
+              fontStyle={'italic'}
+              textAlign={'center'}
+              color={'gray'}
+              width={'100%'}
+              lineHeight={10}
+            >
+              Chưa có công ty
             </Typography>
           )}
         </Grid>

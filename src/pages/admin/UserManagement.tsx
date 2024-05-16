@@ -8,7 +8,9 @@ import {
   Container,
   Divider,
   Grid,
+  IconButton,
   Link,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { Box } from '@mui/system';
@@ -20,15 +22,41 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import Pagination from 'src/components/Pagination';
 import useDeleteUserById from 'src/modules/admin/hooks/useDeleteUserByAdmin';
 import alertDialog from 'src/utils/alertDialog';
+import { isMobile } from 'src/constants/reponsive';
+import { TypographyEllipsis } from 'src/components/Typography';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import detailsModal from 'src/utils/detailsModal';
 
-const renderCellText = (params) => (
-  <Typography
-    fontStyle={!params.value ? 'italic' : 'normal'}
-    color={!params.value ? 'text.disabled' : 'text.primary'}
-  >
-    {params.value ? params.value : 'Chưa cập nhật'}
-  </Typography>
-);
+const renderCellText = (params) => {
+  const handleOpenDetailModal = () => {
+    const detailsData = {
+      'Tên người dùng': params?.row?.name || 'Chưa cập nhật',
+      Email: params?.row?.email || 'Chưa cập nhật',
+      'Ngày sinh': params.row?.dob || 'Chưa cập nhật',
+      'Giới tính': params?.row?.sex || 'Chưa cập nhật'
+    };
+    detailsModal(detailsData);
+  };
+  return (
+    <Grid container>
+      <Grid item xs={10} md={12}>
+        <TypographyEllipsis
+          fontStyle={!params.value ? 'italic' : 'normal'}
+          color={!params.value ? 'text.disabled' : 'text.primary'}
+        >
+          {params.value ? params.value : 'Chưa cập nhật'}
+        </TypographyEllipsis>
+      </Grid>
+      <Grid item xs={1.5} sm={0} sx={{ display: { sm: 'none', xs: 'inline' } }}>
+        <Tooltip title="Chi tiết">
+          <IconButton size="small" onClick={handleOpenDetailModal}>
+            <ReadMoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Grid>
+    </Grid>
+  );
+};
 
 const renderActionsCell = (params) => {
   const { onDeleteUser } = useDeleteUserById();
@@ -60,7 +88,7 @@ const userManagementColumns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Tên người dùng',
-    minWidth: 200,
+    minWidth: !isMobile ? 200 : 180,
     renderCell: renderCellText
   },
   {
@@ -96,7 +124,7 @@ const userManagementColumns: GridColDef[] = [
   {
     field: 'actions',
     headerName: 'Hành động',
-    minWidth: 150,
+    minWidth: !isMobile ? 150 : 50,
     headerAlign: 'center',
     align: 'center',
     renderCell: renderActionsCell
@@ -142,6 +170,17 @@ const UserManagement = () => {
                 rows={userList}
                 columns={userManagementColumns}
                 hideFooter
+                initialState={{
+                  columns: {
+                    columnVisibilityModel: {
+                      email: !isMobile,
+                      phone: !isMobile,
+                      dob: !isMobile,
+                      sex: !isMobile,
+                      role: !isMobile
+                    }
+                  }
+                }}
               />
               <Pagination
                 totalPages={totalPages}

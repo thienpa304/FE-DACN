@@ -51,11 +51,7 @@ export default function DirectoryTreeView(props) {
         display: { xs: 'none', md: 'inline' }
       }}
     >
-      <TreeView
-        // collapseIcon={<ExpandMoreIcon />}
-        // defaultExpandIcon={<ChevronRightIcon />}
-        sx={{ minHeight: 570 }}
-      >
+      <TreeView sx={{ minHeight: 570, border: 1, borderColor: 'divider' }}>
         <TreeItem
           nodeId={'root'}
           label={<Typography fontWeight={700}>Tất cả</Typography>}
@@ -80,41 +76,41 @@ export default function DirectoryTreeView(props) {
             }}
           />
         ))}
-      </TreeView>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginY: '10px'
-        }}
-      >
-        <Button
-          onClick={handlePrevPage}
-          disabled={page === 1}
-          size="small"
-          sx={{ fontSize: 12 }}
-        >
-          Trước
-        </Button>
-        <Typography
+        <Box
           sx={{
             display: 'flex',
-            alignItems: 'center',
-            fontWeight: 700,
-            fontSize: 12
+            justifyContent: 'space-between',
+            marginY: '10px'
           }}
         >
-          Trang {page} / {totalPages}
-        </Typography>
-        <Button
-          onClick={handleNextPage}
-          disabled={page === totalPages}
-          size="small"
-          sx={{ fontSize: 12 }}
-        >
-          Sau
-        </Button>
-      </Box>
+          <Button
+            onClick={handlePrevPage}
+            disabled={page === 1}
+            size="small"
+            sx={{ fontSize: 12 }}
+          >
+            Trước
+          </Button>
+          <Typography
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              fontWeight: 700,
+              fontSize: 12
+            }}
+          >
+            Trang {page} / {totalPages}
+          </Typography>
+          <Button
+            onClick={handleNextPage}
+            disabled={page === totalPages}
+            size="small"
+            sx={{ fontSize: 12 }}
+          >
+            Sau
+          </Button>
+        </Box>
+      </TreeView>
     </Box>
   );
 }
