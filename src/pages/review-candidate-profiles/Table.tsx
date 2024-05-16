@@ -589,9 +589,11 @@ export default function Table(props) {
   // First time render the page
   useEffect(() => {
     setIsMappingData(true);
-    console.log(111);
 
-    if (!jobs.length || !applicationDetailList.length || start) return;
+    if (!jobs.length || !applicationDetailList.length || start) {
+      setIsMappingData(false);
+      return;
+    }
 
     const initialJobProfileData = matchJobAndProfile();
 

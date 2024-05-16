@@ -21,6 +21,7 @@ import FollowJobButton from './FollowJobButton';
 import LinkText from 'src/components/LinkText';
 import { Job } from '../model';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 function JobCard({ job }: { job: Job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
@@ -99,17 +100,9 @@ function JobCard({ job }: { job: Job }) {
           >
             <Box display="flex">
               <BusinessIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-              <Typography
-                sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitBoxOrient: 'vertical',
-                  WebkitLineClamp: 2
-                }}
-              >
+              <TypographyEllipsis>
                 {job?.employer?.companyName}
-              </Typography>
+              </TypographyEllipsis>
             </Box>
             <Box display="flex">
               <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
@@ -126,15 +119,13 @@ function JobCard({ job }: { job: Job }) {
               <LocationOnOutlinedIcon
                 sx={{ maxHeight: 18, color: 'grey.700' }}
               />
-              <Typography
+              <TypographyEllipsis
                 sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
+                  WebkitLineClamp: 1
                 }}
               >
                 Địa điểm: {job?.workAddress}
-              </Typography>
+              </TypographyEllipsis>
             </Box>
           </Grid>
           <Grid

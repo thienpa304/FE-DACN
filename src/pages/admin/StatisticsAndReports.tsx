@@ -93,10 +93,8 @@ const StatisticsAndReports = () => {
 
   if (!selectedMonth) {
     XAxisInterval = 1;
-    console.log(XAxisInterval);
   } else {
     XAxisInterval = isMobile ? 3 : isTablet ? 2 : 1;
-    console.log(XAxisInterval);
   }
 
   const handleDownloadExcel = () => {
@@ -140,7 +138,7 @@ const StatisticsAndReports = () => {
             alignItems="stretch"
             marginTop={0}
           >
-            <Grid item sm={3} xs={12}>
+            <Grid item sm={3} xs={12} mb={3}>
               <Button
                 fullWidth
                 variant="contained"
@@ -194,74 +192,89 @@ const StatisticsAndReports = () => {
               />
             </Grid>
             <Grid item sm={9} xs={12}>
-              <Grid container mt={3} rowGap={3}>
-                <ChartWrapper xs={12}>
+              <Grid container rowGap={3}>
+                <ChartWrapper item xs={12}>
                   <Typography variant="h4">Số lượng tin đăng tuyển</Typography>
-                  <ResponsiveContainer
-                    width="100%"
-                    minHeight={400}
-                    height="100%"
-                  >
-                    <LineChart
-                      data={formattedJobPostingData}
-                      margin={{ top: 30, right: 30, left: 0, bottom: 20 }}
-                    >
-                      <XAxis
-                        dataKey="time"
-                        label={{
-                          value: 'Tháng',
-                          position: 'insideBottom',
-                          offset: -10
-                        }}
-                        tickSize={10}
-                        interval={XAxisInterval}
-                      />
-                      <YAxis
-                        type="number"
-                        domain={[0, 'dataMax + 5']}
-                        label={{
-                          value: 'Tin đăng',
-                          position: 'insideLeft',
-                          angle: -90,
-                          offset: 20
-                        }}
-                      />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="Tin đăng"
-                        stroke="#8884d8"
-                      />
-                    </LineChart>
+                  <ResponsiveContainer width="100%" height={400}>
+                    {formattedJobPostingData.length <= 0 ? (
+                      <Typography
+                        color="text.disabled"
+                        textAlign="center"
+                        sx={{ marginTop: 10 }}
+                      >
+                        Không có dữ liệu
+                      </Typography>
+                    ) : (
+                      <LineChart
+                        data={formattedJobPostingData}
+                        margin={{ top: 30, right: 30, left: 0, bottom: 20 }}
+                      >
+                        <XAxis
+                          dataKey="time"
+                          label={{
+                            value: 'Tháng',
+                            position: 'insideBottom',
+                            offset: -10
+                          }}
+                          tickSize={10}
+                          interval={XAxisInterval}
+                        />
+                        <YAxis
+                          type="number"
+                          domain={[0, 'dataMax + 5']}
+                          label={{
+                            value: 'Tin đăng',
+                            position: 'insideLeft',
+                            angle: -90,
+                            offset: 20
+                          }}
+                        />
+                        <Tooltip />
+                        <Line
+                          type="monotone"
+                          dataKey="Tin đăng"
+                          stroke="#8884d8"
+                        />
+                      </LineChart>
+                    )}
                   </ResponsiveContainer>
                 </ChartWrapper>
-                <ChartWrapper xs={12} mt={3}>
+                <ChartWrapper item xs={12}>
                   <Typography variant="h4">Thống Kê Ứng Viên</Typography>
                   <ResponsiveContainer
                     width="80%"
-                    minHeight={isMobile ? 400 : 300}
-                    height="100%"
+                    height={isMobile ? 400 : 300}
                   >
-                    <PieChart>
-                      <Tooltip />
-                      <Legend />
-                      <Pie
-                        data={candidateStatistics}
-                        dataKey="value"
-                        nameKey="name"
-                        outerRadius={80}
-                        fill="#8884d8"
-                        startAngle={90}
-                        endAngle={-270}
+                    {candidateStatistics.length <= 0 ? (
+                      <Typography
+                        color="text.disabled"
+                        textAlign="center"
+                        sx={{ marginTop: 10 }}
                       >
-                        {candidateStatistics?.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                    </PieChart>
+                        Không có dữ liệu
+                      </Typography>
+                    ) : (
+                      <PieChart>
+                        <Tooltip />
+                        <Legend />
+                        <Pie
+                          data={candidateStatistics}
+                          dataKey="value"
+                          nameKey="name"
+                          outerRadius={80}
+                          fill="#8884d8"
+                          startAngle={90}
+                          endAngle={-270}
+                        >
+                          {candidateStatistics?.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    )}
                   </ResponsiveContainer>
                 </ChartWrapper>
               </Grid>

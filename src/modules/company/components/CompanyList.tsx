@@ -8,7 +8,7 @@ import { isTablet } from 'src/constants/reponsive';
 
 function CompanyList(props) {
   const { pageTitle, sx, queryCompanys } = props;
-  const pageSize = isTablet ? 14 : 15;
+  const pageSize = 14;
   const [currentPage, setCurrentPage] = useState(1);
   const { companyList, totalResults, isLoading } = queryCompanys({
     num: pageSize,
@@ -47,7 +47,7 @@ function CompanyList(props) {
         <Grid container spacing={2} minHeight={300}>
           {companyList?.length ? (
             companyList.map((company, index) => (
-              <Grid key={company?.userId} item xs={12} sm={6} md={4}>
+              <Grid key={company?.userId} item xs={12} sm={6} md={3}>
                 <CompanyCard company={company} employerId={company?.userId} />
               </Grid>
             ))

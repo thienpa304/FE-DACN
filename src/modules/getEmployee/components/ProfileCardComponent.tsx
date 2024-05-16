@@ -21,6 +21,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GradeIcon from '@mui/icons-material/Grade';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import { isMobile } from 'src/constants/reponsive';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 const EmployeeCard = ({ profile, setSelectedProfile }) => (
   <Card
@@ -52,18 +53,12 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => (
               height: 55
             }}
           >
-            <Typography
+            <TypographyEllipsis
               sx={{
                 ':hover': {
                   color: '#ce8b0e',
                   cursor: 'pointer'
                 },
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 2,
-                lineHeight: 1.5,
                 flex: 1
               }}
               fontWeight={700}
@@ -73,7 +68,7 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => (
               }}
             >
               {profile?.jobTitle}
-            </Typography>
+            </TypographyEllipsis>
             <FollowEmployeeButton employeeProfile={profile} />
           </Box>
         </>
@@ -98,107 +93,72 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => (
             pt: 2
           }}
         >
-          <Typography
+          <TypographyEllipsis
             sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 2,
               height: 52
             }}
             fontWeight={700}
             fontSize={15}
           >
             {profile?.name}
-          </Typography>
+          </TypographyEllipsis>
           <Box display="flex">
             <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-            <Typography
+            <TypographyEllipsis
               sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: 1,
                 fontWeight: 700
               }}
             >
               {profile?.desiredSalary} Triệu
-            </Typography>
+            </TypographyEllipsis>
           </Box>
         </Box>
       </Box>
       <Box display="flex" flexDirection="column" gap={2}>
         <Box display="flex">
           <WorkHistoryIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-          <Typography
+          <TypographyEllipsis
             sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
               WebkitLineClamp: 1
             }}
           >
             {profile?.profession}
-          </Typography>
+          </TypographyEllipsis>
         </Box>
         <Box display="flex">
           <PersonIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-          <Typography
+          <TypographyEllipsis
             sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
               WebkitLineClamp: 1
             }}
           >
             {profile?.currentPosition}
-          </Typography>
+          </TypographyEllipsis>
         </Box>
         <Box display="flex">
           <AccessTimeIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-          <Typography
+          <TypographyEllipsis
             sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
               WebkitLineClamp: 1
             }}
           >
             Kinh nghiệm: {profile?.experience}
-          </Typography>
+          </TypographyEllipsis>
         </Box>
         <Box display="flex">
           <SchoolIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-          <Typography
+          <TypographyEllipsis
             sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
               WebkitLineClamp: 1
             }}
           >
             Trình độ: {profile?.degree}
-          </Typography>
+          </TypographyEllipsis>
         </Box>
         <Box display="flex">
           <GradeIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-          <Typography
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 2
-            }}
-          >
-            Kỹ năng: {profile?.skills}
-          </Typography>
+          <TypographyEllipsis>Kỹ năng: {profile?.skills}</TypographyEllipsis>
         </Box>
       </Box>
     </CardContent>

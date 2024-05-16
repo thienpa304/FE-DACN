@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   Button,
   Card,
@@ -26,6 +26,8 @@ import FormControl from 'src/components/FormControl';
 import TextEditor from 'src/components/TextEditor';
 import { removeHTMLTag } from 'src/utils/inputOutputFormat';
 import useMutateSendEmail from 'src/modules/admin/hooks/useMutateSendEmail';
+import useQueryAllUserByAdmin from 'src/modules/admin/hooks/useQueryAllUserByAdmin';
+import { Role } from 'src/modules/users/model';
 
 const EmailNotification = () => {
   const [recipient, setRecipient] = useState('');
@@ -40,24 +42,37 @@ const EmailNotification = () => {
   });
   const [uploadedFile, setUploadedFile] = useState(null);
   const [isEmpty, setIsEmpty] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const { emailList, inputRecipientKeywords } = useMutateGetEmail();
   const { onSendEmail, isLoading } = useMutateSendEmail();
+  const { userList } = useQueryAllUserByAdmin(
+    {
+      role: selectedUser === 'ALL' ? null : selectedUser
+    },
+    Boolean(selectedUser)
+  );
+  const selectedUserEmailList = userList?.map((item) => ({
+    value: item.email,
+    label: item.email
+  }));
 
   const {
     control,
     handleSubmit,
+    reset,
+    getValues,
     formState: { errors }
   } = useForm<EmailSendType>();
 
   const onSubmit = (data) => {
-    console.log('..');
-
-    if (!removeHTMLTag(data?.html)) setIsEmpty(true);
+    if (!removeHTMLTag(data?.html)) {
+      setIsEmpty(true);
+      return;
+    }
     const formatData = {
       ...data,
       emails: data.emails.map((item) => item?.value || item)
     };
-    console.log(formatData);
     onSendEmail(formatData);
   };
 
@@ -68,33 +83,38 @@ const EmailNotification = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleSendEmail = () => {
-    // Add logic to send the email with the provided details and uploaded file
-    console.log('Sending email:', {
-      recipient,
-      subject,
-      message,
-      priority,
-      isAttachmentIncluded,
-      eventTypes,
-      uploadedFile
-    });
-    // You can use an email sending library or make an API call to your server for email sending
-    // Example API call: fetch('/api/send-email', { method: 'POST', body: formData });
+  const handleGetUserByRole = (user) => {
+    setSelectedUser(user);
   };
+
+  useEffect(() => {
+    const currentValues = getValues();
+    reset({
+      ...currentValues,
+      emails: selectedUserEmailList
+    });
+  }, [JSON.stringify(selectedUserEmailList)]);
 
   useEffect(() => {
     recipient && inputRecipientKeywords({ keyword: recipient });
   }, [recipient]);
 
-  const recipientOption = emailList?.map((item) => {
-    console.log(emailList);
-
-    return {
-      value: item.email,
-      label: item.email
-    };
-  });
+  // const recipientOption = emailList?.map((item) => {
+  //   return {
+  //     value: item.email,
+  //     label: item.email
+  //   };
+  // });
+  const recipientOption = useMemo(
+    () =>
+      emailList?.map((item) => {
+        return {
+          value: item.email,
+          label: item.email
+        };
+      }),
+    [emailList]
+  );
   return (
     <Container maxWidth="md" style={{ marginTop: 20, paddingBottom: 30 }}>
       <Card>
@@ -103,6 +123,49 @@ const EmailNotification = () => {
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+              <Box display={'flex'} flexWrap={'wrap'} gap={1} mb={1}>
+                <Typography alignSelf={'center'} fontWeight={700}>
+                  Chọn nhanh:
+                </Typography>
+                <Button
+                  variant="contained"
+                  sx={{
+                    minWidth: 100,
+                    maxHeight: 40,
+                    bgcolor: selectedUser === 'ALL' ? '#f29c00' : '#fff6e5'
+                  }}
+                  size="small"
+                  onClick={() => handleGetUserByRole('ALL')}
+                >
+                  Tất cả
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    minWidth: 150,
+                    maxHeight: 40,
+                    bgcolor:
+                      selectedUser === Role.EMPLOYER ? '#f29c00' : '#fff6e5'
+                  }}
+                  size="small"
+                  onClick={() => handleGetUserByRole(Role.EMPLOYER)}
+                >
+                  Nhà tuyển dụng
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    minWidth: 150,
+                    maxHeight: 40,
+                    bgcolor:
+                      selectedUser === Role.EMPLOYEE ? '#f29c00' : '#fff6e5'
+                  }}
+                  size="small"
+                  onClick={() => handleGetUserByRole(Role.EMPLOYEE)}
+                >
+                  Người tìm việc
+                </Button>
+              </Box>
               <FormControl
                 element={
                   <Autocomplete
@@ -110,10 +173,11 @@ const EmailNotification = () => {
                       setRecipient(e.target.value);
                     }}
                     freeSolo={true}
+                    limitTags={3}
                   />
                 }
                 control={control}
-                // error={errors}
+                errors={errors}
                 options={recipientOption}
                 fullWidth
                 label="Người nhận"
@@ -121,6 +185,7 @@ const EmailNotification = () => {
                 id="emails"
                 name="emails"
                 pattern="email"
+                defaultValue={selectedUserEmailList}
                 required
               />
             </Grid>
@@ -128,6 +193,7 @@ const EmailNotification = () => {
               <FormControl
                 element={<TextField />}
                 control={control}
+                errors={errors}
                 fullWidth
                 label="Chủ đề"
                 variant="outlined"
@@ -159,40 +225,6 @@ const EmailNotification = () => {
                 name="html"
                 required
               />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isAttachmentIncluded}
-                    onChange={() =>
-                      setIsAttachmentIncluded(!isAttachmentIncluded)
-                    }
-                  />
-                }
-                label="Bao gồm tệp đính kèm"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <div
-                {...getRootProps()}
-                style={{
-                  border: `2px dashed ${isDragActive ? '#00bcd4' : '#bdbdbd'}`,
-                  borderRadius: '4px',
-                  padding: '20px',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  marginTop: '10px'
-                }}
-              >
-                <input {...getInputProps()} />
-                <Typography variant="h6">Chọn tệp đính kèm:</Typography>
-                {uploadedFile ? (
-                  <Typography>{uploadedFile.name}</Typography>
-                ) : (
-                  <Typography>Kéo và thả hoặc nhấn để chọn tệp tin</Typography>
-                )}
-              </div>
             </Grid>
             {/* <Grid item xs={12}>
                 <Typography variant="h6">Chọn loại sự kiện:</Typography>
