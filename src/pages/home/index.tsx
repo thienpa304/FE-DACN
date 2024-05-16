@@ -9,7 +9,8 @@ import CompanyList from 'src/modules/company/components/CompanyList';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryCompanyListByUser from 'src/modules/company/hook/useQueryCompanyListByUser';
 import Company from './Company';
-import { isTablet } from 'src/constants/reponsive';
+import { checkIsTablet } from 'src/utils/responsive';
+import { useTheme } from '@emotion/react';
 
 const OverviewWrapper = styled(Box)(
   () => `
@@ -20,6 +21,8 @@ const OverviewWrapper = styled(Box)(
 `
 );
 const Home = () => {
+  const theme = useTheme();
+  const isTablet = checkIsTablet(theme);
   return (
     <OverviewWrapper pb={2}>
       <Casousel />

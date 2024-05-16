@@ -7,12 +7,16 @@ import { useEffect, useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import Link from 'src/components/Link';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { isTablet } from 'src/constants/reponsive';
+import { isMobile, isTablet } from 'src/constants/reponsive';
+import { useTheme } from '@emotion/react';
+import { checkIsMobile, checkIsTablet } from 'src/utils/responsive';
 
 function HiringJobTab() {
   const { totalResults, isLoading: isLoadingTotalResult } =
     useQueryTotalResultOfJobs();
   const [currentPage, setCurrentPage] = useState(1);
+  const theme = useTheme();
+  const isTablet = checkIsTablet(theme);
   const pageSize = isTablet ? 8 : 9;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
   const { jobs, isLoading } = useQueryAllJob({
