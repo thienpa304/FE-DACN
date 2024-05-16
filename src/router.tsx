@@ -77,7 +77,7 @@ const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
 
 const CompanyFollow = Loader(lazy(() => import('src/pages/company-follow')));
 
-const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
+const JobRecommend = Loader(lazy(() => import('src/pages/recommend-job')));
 
 // Employer
 const EmployeeFollow = Loader(lazy(() => import('src/pages/employee-follow')));
@@ -121,7 +121,7 @@ const routes: RouteObject[] = [
             element: <JobDetail />
           },
           {
-            path: '/profession/:id',
+            path: '/profession',
             element: <ResultJobList />
           },
           {

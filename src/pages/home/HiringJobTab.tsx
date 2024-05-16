@@ -7,12 +7,13 @@ import { useEffect, useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import Link from 'src/components/Link';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { isTablet } from 'src/constants/reponsive';
 
-function UrgentJobTab() {
+function HiringJobTab() {
   const { totalResults, isLoading: isLoadingTotalResult } =
     useQueryTotalResultOfJobs();
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 9;
+  const pageSize = isTablet ? 8 : 9;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
   const { jobs, isLoading } = useQueryAllJob({
     page: currentPage,
@@ -22,9 +23,6 @@ function UrgentJobTab() {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
-  useEffect(() => {
-    console.log(totalResults, jobs);
-  }, [totalResults]);
 
   if (isLoading || isLoadingTotalResult) return <SuspenseLoader />;
 
@@ -33,7 +31,8 @@ function UrgentJobTab() {
       sx={{
         borderColor: '#98E4FF',
         borderRadius: '5px',
-        mt: 2
+        mt: 2,
+        pb: 3
       }}
     >
       <Box
@@ -58,22 +57,32 @@ function UrgentJobTab() {
           Xem thêm
         </Link>
       </Box>
-      <Box p={3}>
-        <Grid container mb={3} spacing={1} minHeight={550}>
+      {jobs.length > 0 ? (
+        <Grid container mb={3} spacing={1} p={3} display={'flex'}>
           {jobs.map((job, index) => (
             <Grid key={job.id} item xs={12} sm={6} md={4}>
               <SmallJobCard key={index} job={job} />
             </Grid>
           ))}
         </Grid>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          handlePageChange={handlePageChange}
-        />
-      </Box>
+      ) : (
+        <Typography
+          fontStyle={'italic'}
+          textAlign={'center'}
+          color={'gray'}
+          width={'100%'}
+          lineHeight={10}
+        >
+          Không có việc làm
+        </Typography>
+      )}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+      />
     </Card>
   );
 }
 
-export default UrgentJobTab;
+export default HiringJobTab;

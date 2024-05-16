@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import useQueryTotalResultOfApplicationByEmployer from 'src/modules/application/hooks/useQueryTotalResultOfApplicationByEmployer';
 import TabsWrapper from 'src/components/TabWrapper';
 import Pagination from 'src/components/Pagination';
+import useApplicationList from 'src/modules/application/hooks/useApplicationList';
 
 const tabs = [
   { label: 'Tất cả', value: '' },
@@ -36,12 +37,14 @@ const CandidateProfiles = () => {
     num: pageSize,
     status: currentQuery.currentTab
   });
+  const { setApplicationList, resetApplicationList } = useApplicationList();
   const { totalResults, isLoading: isLoadingTotalResults } =
     useQueryTotalResultOfApplicationByEmployer({
       status: currentQuery.currentTab
     });
 
   const handleTabsChange = (e, value) => {
+    resetApplicationList(); // Reset application list when changing tab
     setCurrentQuery(() => ({
       currentPage: 1,
       currentTab: value
@@ -56,7 +59,12 @@ const CandidateProfiles = () => {
   };
 
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
-  console.log('rerender 1');
+
+  useEffect(() => {
+    console.log(data);
+
+    setApplicationList(data);
+  }, [JSON.stringify(data)]);
 
   if (isLoadingData || isLoadingTotalResults) return <SuspenseLoader />;
   return (

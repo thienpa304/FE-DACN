@@ -4,6 +4,7 @@ import { jobReducer } from 'src/modules/jobs';
 import { docReduce } from 'src/modules/jobProfile/attachedDocument/documentSlice';
 import { onlineProfileReduce } from 'src/modules/jobProfile/onlineProfile/profileSlice';
 import { workExperienceReduce } from 'src/modules/jobProfile/onlineProfile/workExperienceSlice';
+import { applicationReducer } from 'src/modules/application/applicationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     job: jobReducer,
     document: docReduce,
     onlineProfile: onlineProfileReduce,
-    workExperiences: workExperienceReduce
+    workExperiences: workExperienceReduce,
+    applicationList: applicationReducer
   }
 });
 

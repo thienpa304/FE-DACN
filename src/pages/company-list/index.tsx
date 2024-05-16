@@ -6,7 +6,6 @@ function ShowCompanyPage() {
   return (
     <CompanyList
       pageTitle="Công ty đang tuyển dụng"
-      queryJobs={useQueryAllJob}
       queryCompanys={useQueryCompanyListByUser}
     />
   );

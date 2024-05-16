@@ -1,1 +1,2 @@
 build/ merge=ours
+.env merge=ours

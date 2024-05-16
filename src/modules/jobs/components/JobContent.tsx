@@ -194,7 +194,7 @@ const JobContent: React.FC<Props> = ({ data }) => {
       </Typography>
       <Grid container alignItems={'center'} marginTop={2}>
         <LocationOnIcon color="primary" sx={{ marginRight: 1 }} />
-        <div>{data.workAddress}</div>
+        <Box>{data.contactAddress}</Box>
       </Grid>
     </Container>
   );

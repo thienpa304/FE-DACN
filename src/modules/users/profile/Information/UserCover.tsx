@@ -22,6 +22,7 @@ import { avatarFormat } from 'src/constants/uploadFileRule';
 import useMutateAvatar from '../../hooks/useMutateAvatar';
 import { avatarErrorText } from 'src/components/UploadError';
 import { styled } from '@mui/material/styles';
+import { isMobile } from 'src/constants/reponsive';
 
 const Input = styled('input')({
   display: 'none'
@@ -87,115 +88,138 @@ export default function UserCover() {
         sx={{ pb: 1, borderBottom: 1, borderColor: 'grey.300' }}
       >
         <MilitaryTechIcon color="primary" sx={{ fontSize: 40 }} />
-        <Typography fontWeight={700} fontSize={22} lineHeight={2}>
+        <Typography
+          fontWeight={700}
+          lineHeight={2}
+          sx={{ fontSize: { md: 22, xs: 18 } }}
+        >
           Hồ sơ của tôi
         </Typography>
       </Box>
-      <Box mt={2}>
-        <Grid container columnSpacing={{ sm: 1 }}>
-          <Grid item xs={6} md={4} display="flex" flexWrap="wrap">
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              alignContent="center"
-              justifyItems="center"
-              rowGap={0.5}
-            >
-              <IconButton component="label" sx={{ borderRadius: 10 }}>
-                <Avatar
-                  alt={user.name}
-                  src={userAvatar.avatar}
-                  sx={{
-                    width: 120,
-                    height: 120,
-                    bgcolor: '#a0b9cfc2'
-                  }}
-                />
-                <FormControl
-                  element={<Input type="file" accept="image/*" />}
-                  control={control}
-                  name="userAvatar"
-                  id="userAvatar"
-                  onChange={handleUploadAvatar}
-                />
-              </IconButton>
+      <Grid container columnSpacing={{ sm: 1 }} mt={2} rowGap={1}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          sx={{
+            display: 'flex',
+            justifyContent: { xs: 'center', sm: 'start' },
+            flexWrap: 'wrap'
+          }}
+        >
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            alignContent="center"
+            justifyItems="center"
+            rowGap={0.5}
+          >
+            <IconButton component="label" sx={{ borderRadius: 10 }}>
+              <Avatar
+                alt={user.name}
+                src={userAvatar.avatar}
+                sx={{
+                  width: 120,
+                  height: 120,
+                  bgcolor: '#a0b9cfc2'
+                }}
+              />
+              <FormControl
+                element={<Input type="file" accept="image/*" />}
+                control={control}
+                name="userAvatar"
+                id="userAvatar"
+                onChange={handleUploadAvatar}
+              />
+            </IconButton>
 
-              {!userAvatar.avatar && (
-                <label htmlFor="userAvatar">
+            {!userAvatar.avatar && (
+              <label htmlFor="userAvatar">
+                <Button
+                  component="label"
+                  size="small"
+                  startIcon={<AddPhotoAlternateOutlinedIcon />}
+                  variant="outlined"
+                  color="secondary"
+                >
+                  <FormControl
+                    element={<Input type="file" accept="image/*" />}
+                    control={control}
+                    name="userAvatar"
+                    id="userAvatar"
+                    onChange={handleUploadAvatar}
+                  />
+                  Tải lên
+                </Button>
+              </label>
+            )}
+
+            {userAvatar.avatar && (
+              <>
+                {!save && !isLoading && (
                   <Button
                     component="label"
+                    onClick={handleSubmit(handleSaveAvatar)}
                     size="small"
-                    startIcon={<AddPhotoAlternateOutlinedIcon />}
+                    startIcon={<TaskAltIcon />}
                     variant="outlined"
                     color="secondary"
                   >
-                    <FormControl
-                      element={<Input type="file" accept="image/*" />}
-                      control={control}
-                      name="userAvatar"
-                      id="userAvatar"
-                      onChange={handleUploadAvatar}
-                    />
-                    Tải lên
+                    Lưu
                   </Button>
-                </label>
-              )}
+                )}
 
-              {userAvatar.avatar && (
-                <>
-                  {!save && !isLoading && (
+                {isLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  save && (
                     <Button
                       component="label"
-                      onClick={handleSubmit(handleSaveAvatar)}
+                      onClick={handleSubmit(handleDeleteAvatar)}
                       size="small"
-                      startIcon={<TaskAltIcon />}
+                      startIcon={<DoNotDisturbOnOutlinedIcon />}
                       variant="outlined"
                       color="secondary"
                     >
-                      Lưu
+                      Xóa
                     </Button>
-                  )}
+                  )
+                )}
+              </>
+            )}
+          </Box>
 
-                  {isLoading ? (
-                    <CircularProgress size={20} />
-                  ) : (
-                    save && (
-                      <Button
-                        component="label"
-                        onClick={handleSubmit(handleDeleteAvatar)}
-                        size="small"
-                        startIcon={<DoNotDisturbOnOutlinedIcon />}
-                        variant="outlined"
-                        color="secondary"
-                      >
-                        Xóa
-                      </Button>
-                    )
-                  )}
-                </>
-              )}
-            </Box>
-
-            {userAvatar.error && avatarErrorText}
-          </Grid>
-          <Grid item xs={6} md={8}>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="flex-start"
-              sx={{ lineHeight: 200 }}
-            >
-              <Typography fontSize={18} fontWeight={700} lineHeight={3}>
-                {user.name}
-              </Typography>
-              <Typography>Phone: {user.phone}</Typography>
-              <Typography>Email: {user.email}</Typography>
-            </Box>
-          </Grid>
+          {userAvatar.error && avatarErrorText}
         </Grid>
-      </Box>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={8}
+          sx={{
+            display: { xs: 'flex', sm: 'inline' },
+            justifyContent: { xs: 'center', sm: 'start' }
+          }}
+        >
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems={isMobile ? 'center' : 'flex-start'}
+            sx={{
+              lineHeight: 200
+            }}
+          >
+            <Typography fontSize={18} fontWeight={700} lineHeight={3}>
+              {user.name}
+            </Typography>
+            <Typography>Phone: {user.phone}</Typography>
+            <Typography>Email: {user.email}</Typography>
+          </Box>
+        </Grid>
+      </Grid>
     </Container>
   );
 }

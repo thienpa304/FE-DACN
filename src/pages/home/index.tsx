@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Container } from '@mui/material';
-import UrgentJobTab from './UrgentJobTab';
+import HiringJobTab from './HiringJobTab';
 import ProfessionType from './ProfessionType';
 import Casousel from './Casousel';
 import SearchBar from 'src/components/SearchBar/SearchBar';
@@ -9,6 +9,7 @@ import CompanyList from 'src/modules/company/components/CompanyList';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryCompanyListByUser from 'src/modules/company/hook/useQueryCompanyListByUser';
 import Company from './Company';
+import { isTablet } from 'src/constants/reponsive';
 
 const OverviewWrapper = styled(Box)(
   () => `
@@ -25,11 +26,11 @@ const Home = () => {
       <Container>
         <SearchBar to="profession" />
         <ProfessionType />
-        <UrgentJobTab />
+        <HiringJobTab />
         <Company
           pageTitle="Công ty đang tuyển dụng"
-          queryJobs={useQueryAllJob}
           queryCompanys={useQueryCompanyListByUser}
+          defaultPageSize={isTablet ? 3 : 4}
         />
       </Container>
     </OverviewWrapper>

@@ -11,31 +11,39 @@ import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
 import dayjs from 'dayjs';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
-import Link from 'src/components/Link';
+import { isMobile } from 'src/constants/reponsive';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import detailsModal from 'src/utils/detailsModal';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
-  const navigate = useNavigate();
-  const handleLinkToDetail = () => {
-    navigate(`/job/${jobTitle}?id=${btoa(data?.row?.postId)}`);
+  const handleOpenDetailModal = () => {
+    const detailsData = {
+      'Tên tin đăng': data?.row?.jobTitle,
+      'Tên công ty': data?.row?.companyName,
+      'Ngày đăng tin': dayjs(data?.row?.createdAt).format('DD/MM/YYYY'),
+      'Hạn nộp hồ sơ': dayjs(data?.row?.applicationDeadline).format(
+        'DD/MM/YYYY'
+      ),
+      'Trạng thái': data?.row?.status
+    };
+    detailsModal(detailsData);
   };
   return (
-    <>
-      <Grid container alignItems={'center'}>
-        <Grid item xs={2}>
-          <Tooltip title="Xem trực tiếp">
-            <IconButton size="small" onClick={handleLinkToDetail}>
-              <RemoveRedEyeIcon sx={{ width: 18, height: 18, color: 'gray' }} />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-        <Grid item xs={10}>
-          <LinkText to={`/job/${jobTitle}?id=${btoa(data?.row?.postId)}`}>
-            <TypographyEllipsis> {data.value}</TypographyEllipsis>
-          </LinkText>
-        </Grid>
+    <Grid container alignItems={'center'}>
+      <Grid item xs={10.5} sm={12}>
+        <LinkText to={`/job/${jobTitle}?id=${btoa(data?.row?.postId)}`}>
+          <TypographyEllipsis> {data.value}</TypographyEllipsis>
+        </LinkText>
       </Grid>
-    </>
+      <Grid item xs={1.5} sm={0} sx={{ display: { sm: 'none', xs: 'inline' } }}>
+        <Tooltip title="Chi tiết">
+          <IconButton size="small" onClick={handleOpenDetailModal}>
+            <ReadMoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Grid>
+    </Grid>
   );
 };
 
@@ -59,7 +67,7 @@ const columns: GridColDef[] = [
   {
     field: 'jobTitle',
     headerName: 'Tên tin đăng',
-    minWidth: 400,
+    minWidth: isMobile ? 190 : 400,
     headerAlign: 'center',
     renderCell: renderJobTitle
   },
@@ -89,7 +97,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 150,
+    minWidth: isMobile ? 50 : 150,
     headerAlign: 'center',
     align: 'center',
     renderCell: renderStatus
@@ -106,6 +114,13 @@ export default function TablePost({ data }) {
           pagination: {
             paginationModel: {
               pageSize: 8
+            }
+          },
+          columns: {
+            columnVisibilityModel: {
+              companyName: !isMobile,
+              createAt: !isMobile,
+              applicationDeadline: !isMobile
             }
           }
         }}
