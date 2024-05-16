@@ -13,7 +13,7 @@ const useQueryCompanyListByUser = (params?) => {
   const { data, isLoading, refetch } = useQuery<
     ResponseData<ReponseType>,
     AxiosError<ResponseData<ReponseType>>
-  >(['get-CompanyList', params?.page], () => GetCompanyList.get({ params }), {
+  >(['get-CompanyList', params], () => GetCompanyList.get({ params }), {
     retry: 1,
     refetchOnWindowFocus: false
   });

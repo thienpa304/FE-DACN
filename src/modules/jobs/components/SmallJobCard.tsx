@@ -15,6 +15,7 @@ import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import FollowJobButton from './FollowJobButton';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 function SmallJobCard({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
@@ -39,7 +40,7 @@ function SmallJobCard({ job }) {
           display: '-webkit-box',
           WebkitBoxOrient: 'vertical',
           WebkitLineClamp: 2,
-          whiteSpace: 'normal',
+          whiteSpace: 'wrap',
           height: '3.5em'
         }}
         title={
@@ -84,44 +85,40 @@ function SmallJobCard({ job }) {
             <Box display="flex" flexDirection="column" gap={1}>
               <Box display="flex">
                 <BusinessIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-                <Typography
+                <TypographyEllipsis
                   sx={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: 2,
-                    whiteSpace: 'normal',
                     maxWidth: '90%'
                   }}
                 >
                   {job?.employer?.companyName}
-                </Typography>
+                </TypographyEllipsis>
               </Box>
               <Box display="flex">
                 <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-                <Typography color="secondary" fontWeight={700}>
+                <TypographyEllipsis
+                  sx={{ WebkitLineClamp: 1 }}
+                  color="secondary"
+                  fontWeight={700}
+                >
                   {job?.minSalary || job?.maxSalary
                     ? `${job?.minSalary || 'Thương lượng'} - ${
                         job?.maxSalary || 'Thương lượng'
                       } triệu`
                     : 'Thương lượng'}
-                </Typography>
+                </TypographyEllipsis>
               </Box>
               <Box display="flex">
                 <LocationOnOutlinedIcon
                   sx={{ maxHeight: 18, color: 'grey.700' }}
                 />
-                <Typography
+                <TypographyEllipsis
                   sx={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    WebkitLineClamp: 1,
                     maxWidth: '90%'
                   }}
                 >
                   {job?.workAddress}
-                </Typography>
+                </TypographyEllipsis>
               </Box>
             </Box>
           </Grid>

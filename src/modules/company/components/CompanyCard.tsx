@@ -15,6 +15,7 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 import { Company } from 'src/modules/users/model';
 import FollowCompanyButton from './FollowJobButton';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -114,31 +115,19 @@ function CompanyCard({
         <Box display="flex" flexDirection="column" gap={1}>
           <Box display="flex">
             <WorkHistoryIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-            <Typography
+            <TypographyEllipsis
               sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: 1
               }}
             >
               Lĩnh vực: {company?.careerField}
-            </Typography>
+            </TypographyEllipsis>
           </Box>
           <Box display="flex" my={1}>
             <LocationOnOutlinedIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-            <Typography
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 2
-              }}
-            >
+            <TypographyEllipsis>
               Địa điểm: {company?.companyLocation}
-            </Typography>
+            </TypographyEllipsis>
           </Box>
         </Box>
       </CardContent>

@@ -61,7 +61,6 @@ const ShowCompanyPage = Loader(lazy(() => import('src/pages/company-list')));
 
 // Applications
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
-const UserSettings = Loader(lazy(() => import('src/modules/users/settings')));
 const EmployeeProfile = Loader(
   lazy(() => import('src/pages/employee-profile/JobProfile'))
 );
@@ -317,10 +316,6 @@ const routes: RouteObject[] = [
           {
             path: 'details',
             element: <UserProfile />
-          },
-          {
-            path: 'settings',
-            element: <UserSettings />
           }
         ]
       },

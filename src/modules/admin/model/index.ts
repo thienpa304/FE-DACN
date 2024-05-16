@@ -8,7 +8,7 @@ export type EmailResponseType = {
 };
 
 export interface EmailSendType {
-  emails: string[];
+  emails: any[];
   subject: string;
   html: string;
 }

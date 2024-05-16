@@ -33,7 +33,6 @@ const Home = () => {
         <Company
           pageTitle="Công ty đang tuyển dụng"
           queryCompanys={useQueryCompanyListByUser}
-          defaultPageSize={isTablet ? 3 : 4}
         />
       </Container>
     </OverviewWrapper>

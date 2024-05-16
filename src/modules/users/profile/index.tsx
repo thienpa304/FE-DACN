@@ -22,9 +22,6 @@ export default function ManagementUserSettings() {
 
   return (
     <>
-      <Helmet>
-        <title>User Settings - Applications</title>
-      </Helmet>
       <Container maxWidth="md" sx={{ marginTop: 4 }}>
         <Grid
           container

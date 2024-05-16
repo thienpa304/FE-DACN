@@ -38,6 +38,7 @@ import useDeleteOnlineProfileByAdmin from 'src/modules/jobProfile/onlineProfile/
 import { removeFileByUrl } from 'src/common/firebaseService';
 import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 const ProfileManagement = () => {
   const [searchUserName, setSearchUserName] = useState('');
@@ -69,21 +70,15 @@ const ProfileManagement = () => {
 
   const renderName = (params) => {
     return (
-      <Typography
+      <TypographyEllipsis
         fontStyle={!params.row?.user?.name ? 'italic' : 'normal'}
         color={!params.row?.user?.name ? 'text.disabled' : 'text.primary'}
         sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'wrap',
-          lineHeight: '1.5',
-          display: '-webkit-box',
-          WebkitLineClamp: 3,
-          WebkitBoxOrient: 'vertical'
+          WebkitLineClamp: 3
         }}
       >
         {params.row?.user?.name ? params.row?.user?.name : 'Chưa cập nhật'}
-      </Typography>
+      </TypographyEllipsis>
     );
   };
 

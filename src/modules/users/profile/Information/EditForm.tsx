@@ -63,6 +63,7 @@ export function UserForm(props) {
             id="name"
             label="Họ và tên"
             name="name"
+            required
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -75,6 +76,7 @@ export function UserForm(props) {
             id="email"
             label="Email"
             name="email"
+            required
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -87,6 +89,7 @@ export function UserForm(props) {
             label="Số điện thoại"
             name="phone"
             pattern="phone"
+            required
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -99,6 +102,7 @@ export function UserForm(props) {
             label="Địa chỉ"
             name="address"
             multiline
+            required
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -123,6 +127,7 @@ export function UserForm(props) {
             id="sex"
             label="Giới tính"
             name="sex"
+            required
           />
         </Grid>
         {isEmployee && (
@@ -136,6 +141,7 @@ export function UserForm(props) {
               id="isMarried"
               label="Tình trạng hôn nhân"
               name="isMarried"
+              required
             />
           </Grid>
         )}
@@ -226,6 +232,7 @@ export function CompanyForm(props) {
             fullWidth
             name="careerField"
             label="Lĩnh vực"
+            required
           />
         </Grid>
 
