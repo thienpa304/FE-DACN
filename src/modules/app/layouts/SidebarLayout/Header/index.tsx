@@ -27,6 +27,7 @@ import { Role } from 'src/modules/users/model';
 import { useNavigate } from 'react-router';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { checkIsMobile } from 'src/utils/responsive';
 
 const HeaderWrapper = styled(Box)<{ showSideBar: boolean }>(
   ({ theme, showSideBar }) => `
@@ -166,6 +167,8 @@ function Header({ showSideBar }) {
     setMobileAnchorEl(null);
   };
 
+  const isMobile = checkIsMobile(theme);
+
   return (
     <HeaderWrapper
       showSideBar={showSideBar}
@@ -196,6 +199,7 @@ function Header({ showSideBar }) {
         spacing={2}
         height="100%"
       >
+        {showSideBar && isMobile && <Logo />}
         {!showSideBar && (
           <Box display="flex" height="100%">
             <Logo />
@@ -290,7 +294,7 @@ function Header({ showSideBar }) {
               )}
             </Box>
 
-            <Box display={{ md: 'none', xs: 'flex' }}>
+            <Box display={{ md: 'none', xs: userId ? 'flex' : 'none' }}>
               <>
                 <NavButton onClick={handleMobileClick}>
                   <ButtonText>Công cụ</ButtonText>
@@ -365,7 +369,7 @@ function Header({ showSideBar }) {
             </Link>
           </>
         )}
-        {showSideBar && (
+        {showSideBar && userId && (
           <Box
             component="span"
             sx={{

@@ -77,7 +77,7 @@ const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
 
 const CompanyFollow = Loader(lazy(() => import('src/pages/company-follow')));
 
-const JobRecommend = Loader(lazy(() => import('src/pages/job-recommend')));
+const JobRecommend = Loader(lazy(() => import('src/pages/recommend-job')));
 
 // Employer
 const EmployeeFollow = Loader(lazy(() => import('src/pages/employee-follow')));
@@ -87,6 +87,7 @@ const FindProfiles = Loader(lazy(() => import('src/pages/find-profiles')));
 const RecommendProfile = Loader(
   lazy(() => import('src/pages/recommend-profiles'))
 );
+const TestGPT = Loader(lazy(() => import('src/pages/testGPT')));
 
 // Status
 const Status404 = Loader(lazy(() => import('src/modules/status/Status404')));
@@ -120,7 +121,7 @@ const routes: RouteObject[] = [
             element: <JobDetail />
           },
           {
-            path: '/profession/:id',
+            path: '/profession',
             element: <ResultJobList />
           },
           {
@@ -130,6 +131,10 @@ const routes: RouteObject[] = [
           {
             path: '/company',
             element: <ShowCompanyPage />
+          },
+          {
+            path: '/testGPT',
+            element: <TestGPT />
           }
         ]
       },

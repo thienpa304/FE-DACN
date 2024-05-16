@@ -92,7 +92,7 @@ function ProfessionType() {
             lg={12 / 7}
             component={Link}
             key={index}
-            to={`/profession/${rewriteUrl(profession?.name)}`}
+            to={`/profession?profession=${profession?.name}`}
             state={{ profession: profession.name, pageTitle: profession.name }}
             sx={{
               display: 'flex',

@@ -21,6 +21,7 @@ import { renderJobTitle } from 'src/pages/recruitment-list/TablePost';
 import useQueryEmployeeByKeywords from '../hook/useQueryEmployeeByKeywords';
 import Pagination from 'src/components/Pagination';
 import JobFilter from 'src/modules/jobs/components/JobFilter';
+import { isMobile } from 'src/constants/reponsive';
 
 export default function RecommendProfile() {
   const jobPageSize = 9;
@@ -78,6 +79,7 @@ export default function RecommendProfile() {
           addInfo(data?.row);
         }}
         variant="contained"
+        size={isMobile ? 'small' : 'medium'}
       >
         Bắt đầu
       </Button>
@@ -87,7 +89,7 @@ export default function RecommendProfile() {
     {
       field: 'jobTitle',
       headerName: 'Tên tin đăng',
-      minWidth: 550,
+      minWidth: !isMobile ? 550 : 165,
       headerAlign: 'center',
       renderCell: renderJobTitle
     },
@@ -101,7 +103,7 @@ export default function RecommendProfile() {
     {
       field: 'action',
       headerName: 'Tìm hồ sơ',
-      minWidth: 150,
+      minWidth: !isMobile ? 150 : 110,
       headerAlign: 'center',
       align: 'center',
       renderCell: renderAtion
@@ -156,6 +158,11 @@ export default function RecommendProfile() {
                   pagination: {
                     paginationModel: {
                       pageSize: jobPageSize
+                    }
+                  },
+                  columns: {
+                    columnVisibilityModel: {
+                      keywords: !isMobile
                     }
                   }
                 }}

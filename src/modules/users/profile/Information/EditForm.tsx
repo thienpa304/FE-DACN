@@ -98,6 +98,7 @@ export function UserForm(props) {
             id="address"
             label="Địa chỉ"
             name="address"
+            multiline
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -203,6 +204,7 @@ export function CompanyForm(props) {
             label="Địa chỉ"
             name="companyLocation"
             required
+            multiline
           />
         </Grid>
         <Grid item xs={12}>

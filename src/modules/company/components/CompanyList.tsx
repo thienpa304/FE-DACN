@@ -6,14 +6,14 @@ import BusinessIcon from '@mui/icons-material/Business';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 
 function CompanyList(props) {
-  const { pageTitle, sx, numOfJobPerPage, queryCompanys } = props;
+  const { pageTitle, sx, defaultPageSize, queryCompanys } = props;
+  const pageSize = defaultPageSize ? defaultPageSize : 15;
+  const [currentPage, setCurrentPage] = useState(1);
   const { companyList, totalResults, isLoading } = queryCompanys({
-    num: 9,
-    page: 1
+    num: pageSize,
+    page: currentPage
   });
   // const totalResults = companyList?.length;
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = numOfJobPerPage ? numOfJobPerPage : 15;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   const handlePageChange = (pageNumber: number) => {

@@ -8,11 +8,13 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  styled
+  styled,
+  Divider
 } from '@mui/material';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { CompanyForm, UserForm } from './EditForm';
 import EditButton from 'src/components/EditButton';
+import { isMobile } from 'src/constants/reponsive';
 
 export const InputLabel = styled(Grid)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
@@ -35,10 +37,10 @@ export const InfoGrid = (props) => {
     <Grid container sx={{ borderTop: 1, borderColor: 'grey.300' }}>
       {item.label !== 'Giới thiệu doanh nghiệp' && (
         <>
-          <InputLabel item xs={6} md={4}>
+          <InputLabel item xs={12} sm={6} md={4}>
             {item.label}
           </InputLabel>
-          <InputData item xs={6} md={8}>
+          <InputData item xs={12} sm={6} md={8}>
             <Typography lineHeight={2}>{item.value}</Typography>
           </InputData>
         </>
@@ -102,18 +104,29 @@ export default function InfoField(props) {
         <Box display="flex">
           {editIcon}
           <Box>
-            <Typography fontWeight={700} fontSize={22} lineHeight={3}>
+            <Typography
+              fontWeight={700}
+              sx={{
+                fontSize: { md: 22, xs: 18 },
+                lineHeight: { md: 3 }
+              }}
+            >
               {title}
             </Typography>
           </Box>
         </Box>
         <EditButton onClick={handleEdit} />
-        <Dialog open={open} fullWidth maxWidth="md">
+        <Dialog open={open} fullWidth maxWidth={'md'} fullScreen={isMobile}>
           <DialogTitle
-            sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.3rem' }}
+            sx={{
+              textAlign: 'center',
+              fontWeight: 700,
+              fontSize: { md: '1.3rem', xs: '1rem' }
+            }}
           >
             {title}
           </DialogTitle>
+          <Divider />
           <DialogContent>{myForm}</DialogContent>
         </Dialog>
       </Box>

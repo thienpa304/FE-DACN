@@ -17,61 +17,61 @@ import Pagination from 'src/components/Pagination';
 import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import dayjs from 'dayjs';
 import { Job } from 'src/modules/jobs/model';
-import sendChatGPTRequest from 'src/modules/ai/sendChatGPTRequest';
-import { checkContent } from 'src/modules/ai/roles';
+import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
+import { checkContent } from 'src/gpt/roles';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
 import CheckIcon from '@mui/icons-material/Check';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { TypographyEllipsis } from 'src/components/Typography';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import detailsModal from 'src/utils/detailsModal';
+import { isMobile } from 'src/constants/reponsive';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
-  const navigate = useNavigate();
-  const handleLinkToDetail = () => {
-    navigate(`/job/${jobTitle}`, {
-      state: {
-        postId: data?.id
-      }
-    });
+  const handleOpenDetailModal = () => {
+    const detailsData = {
+      'Tên tin tuyển dụng': data?.row?.jobTitle,
+      'Người đăng': data?.row?.name,
+      'Tên công ty': data?.row?.employer?.companyName,
+      'Ngày đăng': dayjs(data.row?.createAt)
+        .add(7, 'hours')
+        .format('DD-MM-YYYY HH:mm:ss'),
+      'Lượt nộp': data.row?.submissionCount,
+      'Lượt xem': data?.row?.view,
+      'Trạng thái': data?.row?.status,
+      'Kiểm duyệt': renderCheckInvalid.find(
+        (item) => item.value == data?.row?.check
+      )?.label
+    };
+    detailsModal(detailsData);
   };
   return (
-    <Box
-      sx={{
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'wrap',
-        lineHeight: '1.5',
-        display: '-webkit-box',
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical'
-      }}
-    >
-      <LinkText
-        to={`/job/${jobTitle}?id=${btoa(data.id)}`}
-        state={{ postId: data.id }}
-      >
-        {data.value}
-      </LinkText>
-    </Box>
+    <Grid container alignItems={'center'}>
+      <Grid item xs={10.5} sm={12}>
+        <TypographyEllipsis>
+          <LinkText to={`/job/${jobTitle}?id=${btoa(data.id)}`}>
+            {data.value}
+          </LinkText>
+        </TypographyEllipsis>
+      </Grid>
+
+      <Grid item xs={1.5} sm={0} sx={{ display: { sm: 'none', xs: 'inline' } }}>
+        <Tooltip title="Chi tiết">
+          <IconButton size="small" onClick={handleOpenDetailModal}>
+            <ReadMoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Grid>
+    </Grid>
   );
 };
 
 const renderCompany = (data) => {
   return (
     <Grid container alignItems={'center'}>
-      <Grid
-        item
-        xs={12}
-        sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'wrap',
-          lineHeight: '1.5',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical'
-        }}
-      >
+      <Grid item xs={12} component={TypographyEllipsis}>
         <LinkText
           to={`/company/${rewriteUrl(data.value?.companyName)}?id=${btoa(
             data?.value?.userId
@@ -123,6 +123,7 @@ const renderStatus = (data) => {
       onChange={handleChangeValue}
       size="small"
       sx={{
+        fontSize: isMobile && '10px',
         color: displayColor(),
         '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
           {
@@ -223,8 +224,8 @@ const renderCheck = (data) => {
 const columns: GridColDef[] = [
   {
     field: 'jobTitle',
-    headerName: 'Tên tin tuyển dụng',
-    minWidth: 200,
+    headerName: 'Tin tuyển dụng',
+    minWidth: !isMobile ? 200 : 130,
     renderCell: renderJobTitle
   },
   {
@@ -290,7 +291,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Trạng thái',
-    minWidth: 130,
+    minWidth: !isMobile ? 130 : 115,
     headerAlign: 'center',
     renderCell: renderStatus,
     sortable: true
@@ -403,54 +404,60 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   return (
     <Box>
-      <Grid
-        container
+      <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'right',
-          gap: 2
+          display: 'block',
+          float: { md: 'right' },
+          minWidth: { md: 500 },
+          maxWidth: 500
         }}
       >
-        <Grid item xs={1}>
-          <Typography fontWeight={700}>
-            Đã chọn: {selectedRows.length}
-          </Typography>
-        </Grid>
-        <Grid item xs={2.2} display="flex">
-          <SelectInput
-            options={APPROVAL_STATUS}
-            onChange={handleChangeValue}
-            value={selectedRows.length > 0 ? quickApproveValue : ''}
-            sx={{
-              color: APPROVAL_STATUS.find(
-                (item) => item.value === quickApproveValue
-              )?.optionColor
-            }}
-            disabled={!selectedRows.length}
-            label="Duyệt nhanh"
-          />
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ py: 1, px: 0 }}
-            color="info"
-            onClick={handleQuickApprove}
-            disabled={!selectedRows.length || !quickApproveValue}
-          >
-            <CheckIcon sx={{ fontSize: 15 }} />
-          </Button>
-        </Grid>
         <Grid
-          item
           container
-          xs={1.7}
           sx={{
-            display: 'flex',
             alignItems: 'center'
           }}
+          spacing={1}
         >
-          <Grid item xs>
+          <Grid item md={3} xs={12}>
+            <Typography fontWeight={700}>
+              Đã chọn: {selectedRows.length}
+            </Typography>
+          </Grid>
+          <Grid item md={5} xs={12} display={'flex'}>
+            <SelectInput
+              options={APPROVAL_STATUS}
+              onChange={handleChangeValue}
+              value={selectedRows.length > 0 ? quickApproveValue : ''}
+              sx={{
+                color: APPROVAL_STATUS.find(
+                  (item) => item.value === quickApproveValue
+                )?.optionColor
+              }}
+              disabled={!selectedRows.length}
+              label="Duyệt nhanh"
+            />
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ py: 1, px: 0 }}
+              color="info"
+              onClick={handleQuickApprove}
+              disabled={!selectedRows.length || !quickApproveValue}
+            >
+              <CheckIcon sx={{ fontSize: 15 }} />
+            </Button>
+          </Grid>
+          <Grid
+            item
+            container
+            md={4}
+            xs={12}
+            sx={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
             <Button
               onClick={() => setStart(selectedRows.length > 0)}
               variant="contained"
@@ -459,37 +466,20 @@ export default function Table({ statusFilter, selectedProfession }) {
               fullWidth
               sx={{ py: 1, px: 0, bgcolor: '#FC4100' }}
             >
-              {!selectedRows.length
-                ? 'Chưa chọn tin đăng'
-                : !start
-                ? 'Kiểm duyệt'
-                : 'Đang kiểm duyệt...'}
+              <Grid item xs={!start ? 12 : 9}>
+                {!selectedRows.length
+                  ? 'Chưa chọn tin đăng'
+                  : !start
+                  ? 'Kiểm duyệt'
+                  : 'Đang kiểm duyệt...'}
+              </Grid>
+              <Grid item xs={start ? 3 : 0}>
+                {start && <CircularProgress size={18} color="secondary" />}
+              </Grid>
             </Button>
           </Grid>
-          <Grid item xs={2}>
-            {start && <CircularProgress size={18} color="secondary" />}
-          </Grid>
         </Grid>
-      </Grid>
-      {/* <Box sx={{ justifyContent: 'right', display: 'flex' }}>
-        {start && <CircularProgress />}
-        <Button
-          onClick={() => {
-            setStart(true);
-          }}
-          variant="contained"
-          size="small"
-          color="error"
-          disabled={start || !selectedRows.length}
-          sx={{ mr: 1 }}
-        >
-          {!selectedRows.length
-            ? 'Chưa chọn tin đăng'
-            : !start
-            ? 'Kiểm duyệt'
-            : 'Đang kiểm duyệt...'}
-        </Button>
-      </Box> */}
+      </Box>
       <TableData
         sx={{ minHeight: '72vh', width: '100%' }}
         rows={showList}
@@ -501,6 +491,19 @@ export default function Table({ statusFilter, selectedProfession }) {
           setSelectedRows(ids);
         }}
         loading={isLoading || isLoadingTotalResult}
+        initialState={{
+          columns: {
+            columnVisibilityModel: {
+              name: !isMobile,
+              employer: !isMobile,
+              createAt: !isMobile,
+              submissionCount: !isMobile,
+              view: !isMobile,
+              check: !isMobile
+            }
+          }
+        }}
+        disableRowSelectionOnClick={isMobile}
       />
       <Pagination
         totalPages={totalPages}

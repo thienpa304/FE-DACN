@@ -94,21 +94,19 @@ function Sidebar() {
                 : darken(theme.colors.alpha.black[100], 0.5)
           }}
         >
-          <Scrollbar>
-            <Box mt={3}>
-              <Grid container justifyContent={'center'}>
-                <Logo />
-              </Grid>
-            </Box>
-            <Divider
-              sx={{
-                mt: theme.spacing(3),
-                mx: theme.spacing(2),
-                background: theme.colors.alpha.trueWhite[10]
-              }}
-            />
-            <SidebarMenu />
-          </Scrollbar>
+          <Box mt={3}>
+            <Grid container justifyContent={'center'}>
+              <Logo />
+            </Grid>
+          </Box>
+          <Divider
+            sx={{
+              mt: theme.spacing(3),
+              mx: theme.spacing(2),
+              background: theme.colors.alpha.trueWhite[10]
+            }}
+          />
+          <SidebarMenu />
         </SidebarWrapper>
       </Drawer>
     </>
