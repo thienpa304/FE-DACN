@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+  Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   Container,
   Divider,
   Grid,
-  Typography
+  Typography,
+  styled
 } from '@mui/material';
 import {
   BarChart,
@@ -20,138 +24,251 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  Cell
+  Cell,
+  ResponsiveContainer
 } from 'recharts';
 import useQueryJobPostingsReport from 'src/modules/admin/hooks/useQueryPostingsReport';
 import useQueryCandidateStatistics from 'src/modules/admin/hooks/useQueryCandidateStatistics';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import useQueryJobPostingsReportByQuery from 'src/modules/admin/hooks/useQueryPostingsReportByQuery';
+import useQueryCandidateStatisticsByQuery from 'src/modules/admin/hooks/useQueryCandidateStatisticsByQuery';
+import { MonthCalendar, YearCalendar } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
+import { isMobile, isTablet } from 'src/constants/reponsive';
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
+
+const ChartWrapper = styled(Grid)({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center'
+});
+
+const CalendarStyles = {
+  maxWidth: '100%',
+  maxHeight: 210,
+  border: '1px solid #ccc',
+  borderRadius: 2,
+  p: 0,
+  overflowY: 'auto'
+};
 
 const StatisticsAndReports = () => {
-  // Example Data
-  // const jobPostingData = [
-  //   { name: 'January', value: 65 },
-  //   { name: 'February', value: 59 },
-  //   { name: 'March', value: 80 },
-  //   { name: 'April', value: 81 },
-  //   { name: 'May', value: 56 }
-  // ];
-
-  const applicantData = [
-    { name: 'Engineer', value: 12 },
-    { name: 'Designer', value: 19 },
-    { name: 'Manager', value: 3 },
-    { name: 'Analyst', value: 5 },
-    { name: 'Developer', value: 2 }
-  ];
-
-  const recruitmentStatusData = [
-    { name: 'Chờ duyệt', value: 10 },
-    { name: 'Đã duyệt', value: 5 },
-    { name: 'Từ chối', value: 8 },
-    { name: 'Hết hạn', value: '5' }
-  ];
-
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#814289'];
+  const [selectedYear, setSelectedYear] = useState<Dayjs | null>(dayjs());
+  const [selectedMonth, setSelectedMonth] = useState<Dayjs | null>(dayjs());
+
+  // const { jobPostingData, isLoading: isLoadingJobData } =
+  //   useQueryJobPostingsReport();
+  // const { candidateStatistics, isLoading: isLoadingCandidate } =
+  //   useQueryCandidateStatistics();
 
   const { jobPostingData, isLoading: isLoadingJobData } =
-    useQueryJobPostingsReport();
+    useQueryJobPostingsReportByQuery({
+      year: selectedYear?.year(),
+      month: selectedMonth && selectedMonth?.month() + 1
+    });
   const { candidateStatistics, isLoading: isLoadingCandidate } =
-    useQueryCandidateStatistics();
+    useQueryCandidateStatisticsByQuery({
+      year: selectedYear?.year(),
+      month: selectedMonth && selectedMonth?.month() + 1
+    });
+
+  const handleSatisticByMonth = (e) => {
+    const isChecked = e.target.checked;
+    if (!isChecked) setSelectedMonth(null);
+    else setSelectedMonth(dayjs());
+  };
+
+  const formattedJobPostingData = jobPostingData?.map((item) => ({
+    ...item,
+    time:
+      (dayjs(item?.time, 'MMM').isValid() &&
+        dayjs(item?.time, 'MMM').format('MM')) ||
+      item.time
+  }));
+
+  let XAxisInterval = 1;
+
+  if (!selectedMonth) {
+    XAxisInterval = 1;
+    console.log(XAxisInterval);
+  } else {
+    XAxisInterval = isMobile ? 3 : isTablet ? 2 : 1;
+    console.log(XAxisInterval);
+  }
+
+  const handleDownloadExcel = () => {
+    const statisticsData = [
+      { data: jobPostingData, sheetName: 'Job_Posting' },
+      { data: candidateStatistics, sheetName: 'Candidate' }
+    ];
+
+    const wb = XLSX.utils.book_new();
+
+    statisticsData.forEach(({ data, sheetName }) => {
+      const ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    });
+
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    saveAs(data, 'devices_data.xlsx');
+  };
 
   if (isLoadingJobData || isLoadingCandidate) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="stretch"
-        spacing={3}
-        marginTop={0}
-      >
-        <Grid item xs={12}>
-          <Card>
-            <CardHeader title="Thống kê và Báo cáo" />
-            <Divider />
-            <CardContent>
-              <Grid container>
-                <Grid item xs={8}>
-                  {/* Bar Chart - Job Postings */}
-                  <Typography variant="h6">
-                    Số Lượng Công Việc Đăng Tuyển
-                  </Typography>
-                  <BarChart
-                    width={500}
-                    height={350}
-                    data={jobPostingData}
-                    margin={{ top: 30, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <XAxis
-                      dataKey="name"
-                      label={{
-                        value: 'Tháng',
-                        position: 'insideBottomRight',
-                        offset: 0
-                      }}
-                    />
-                    <YAxis
-                      type="number"
-                      domain={[0, 'dataMax + 5']}
-                      label={{
-                        value: 'Công việc',
-                        position: 'insideLeft',
-                        angle: -90,
-                        offset: 15
-                      }}
-                    />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Tooltip />
-                    <Bar dataKey="value" fill="#8884d8" />
-                  </BarChart>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography variant="h6">Thống Kê Ứng Viên</Typography>
-                  <PieChart width={300} height={300}>
-                    <Tooltip />
-                    <Legend />
-                    <Pie
-                      data={candidateStatistics}
-                      dataKey="value"
-                      nameKey="name"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      startAngle={90}
-                      endAngle={-270}
-                    >
-                      {applicantData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    {/* Corrected component name */}
-                  </PieChart>
-                </Grid>
-              </Grid>
-              {/* Line Chart - Recruitment Status */}
-              <Typography variant="h6">Tình Trạng Tuyển Dụng</Typography>
-              <LineChart
-                width={600}
-                height={300}
-                data={recruitmentStatusData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      <Card>
+        <CardHeader title="Thống kê và Báo cáo" />
+        <Divider />
+        <CardContent
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            my: 2,
+            padding: 2
+          }}
+        >
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="stretch"
+            marginTop={0}
+          >
+            <Grid item sm={3} xs={12}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={handleDownloadExcel}
               >
-                <XAxis dataKey="name" />
-                <YAxis />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" />
-              </LineChart>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+                Tải Excel
+              </Button>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  my: 2
+                }}
+              >
+                <Typography variant="h4" textAlign={'center'}>
+                  Thống kê theo năm
+                </Typography>
+              </Box>
+              <YearCalendar
+                value={selectedYear?.isValid() && dayjs(selectedYear)}
+                onChange={(newValue) => setSelectedYear(newValue)}
+                disableFuture
+                maxDate={dayjs()}
+                sx={{
+                  ...CalendarStyles
+                }}
+              />
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  mt: 2
+                }}
+              >
+                <Typography variant="h4" textAlign={'center'}>
+                  Thống kê theo tháng
+                </Typography>
+                <Checkbox defaultChecked onChange={handleSatisticByMonth} />
+              </Box>
+              <MonthCalendar
+                value={selectedMonth?.isValid() && dayjs(selectedMonth)}
+                onChange={(newValue) => setSelectedMonth(newValue)}
+                disableFuture={selectedYear?.year() === dayjs().year()}
+                sx={{
+                  ...CalendarStyles,
+                  display: !selectedMonth && 'none'
+                }}
+              />
+            </Grid>
+            <Grid item sm={9} xs={12}>
+              <Grid container mt={3} rowGap={3}>
+                <ChartWrapper xs={12}>
+                  <Typography variant="h4">Số lượng tin đăng tuyển</Typography>
+                  <ResponsiveContainer
+                    width="100%"
+                    minHeight={400}
+                    height="100%"
+                  >
+                    <LineChart
+                      data={formattedJobPostingData}
+                      margin={{ top: 30, right: 30, left: 0, bottom: 20 }}
+                    >
+                      <XAxis
+                        dataKey="time"
+                        label={{
+                          value: 'Tháng',
+                          position: 'insideBottom',
+                          offset: -10
+                        }}
+                        tickSize={10}
+                        interval={XAxisInterval}
+                      />
+                      <YAxis
+                        type="number"
+                        domain={[0, 'dataMax + 5']}
+                        label={{
+                          value: 'Tin đăng',
+                          position: 'insideLeft',
+                          angle: -90,
+                          offset: 20
+                        }}
+                      />
+                      <Tooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="Tin đăng"
+                        stroke="#8884d8"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartWrapper>
+                <ChartWrapper xs={12} mt={3}>
+                  <Typography variant="h4">Thống Kê Ứng Viên</Typography>
+                  <ResponsiveContainer
+                    width="80%"
+                    minHeight={isMobile ? 400 : 300}
+                    height="100%"
+                  >
+                    <PieChart>
+                      <Tooltip />
+                      <Legend />
+                      <Pie
+                        data={candidateStatistics}
+                        dataKey="value"
+                        nameKey="name"
+                        outerRadius={80}
+                        fill="#8884d8"
+                        startAngle={90}
+                        endAngle={-270}
+                      >
+                        {candidateStatistics?.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </ChartWrapper>
+              </Grid>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
     </Container>
   );
 };
