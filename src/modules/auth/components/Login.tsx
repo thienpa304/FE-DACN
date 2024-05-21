@@ -99,10 +99,25 @@ export default function Login() {
                 id="password"
                 autoComplete="current-password"
               />
-              {/* <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Nhớ mật khẩu"
-              /> */}
+              <Box
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+              >
+                {/* <FormControlLabel
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Nhớ mật khẩu"
+                /> */}
+                <Box></Box>
+                <Link
+                  href="/forgot-password"
+                  variant="body2"
+                  fontWeight={700}
+                  color="secondary"
+                >
+                  Quên mật khấu
+                </Link>
+              </Box>
               <LoadingButton
                 onClick={handleSubmit(handleLogin)}
                 loading={isLoading}

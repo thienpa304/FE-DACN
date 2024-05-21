@@ -1,6 +1,6 @@
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useState } from 'react';
-import { getEmbedding } from 'src/gpt/sendChatGPTRequest';
+import { getEmbedding } from 'src/GPT/sendChatGPTRequest';
 import { GridColDef } from '@mui/x-data-grid';
 import TableData from 'src/components/TableData';
 import { Box, Button, Container, Typography } from '@mui/material';

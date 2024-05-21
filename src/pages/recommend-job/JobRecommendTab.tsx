@@ -24,7 +24,6 @@ export default function JobRecommendTab(props) {
     sex: sex
   });
 
-  console.log(filter);
   const { totalResults, refetch: refetchTotal } = useQueryTotalResultOfJobs(
     {
       keywords: keywords,

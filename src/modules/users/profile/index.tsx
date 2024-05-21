@@ -7,13 +7,15 @@ import InfoAccountTab from './InfoAccountTab';
 import InfoCompanyTab from './InfoCompanyTab';
 import { useApp } from 'src/modules/app/hooks';
 import TabsWrapper from 'src/components/TabWrapper';
+import ManageAccount from './ManageAccount';
 
 export default function ManagementUserSettings() {
   const { isEmployer } = useApp();
   const [currentTab, setCurrentTab] = useState<string>('info_account');
   const tabs = [
     { value: 'info_account', label: 'Thông tin cá nhân', show: true },
-    { value: 'info_company', label: 'Thông tin công ty', show: isEmployer }
+    { value: 'info_company', label: 'Thông tin công ty', show: isEmployer },
+    { value: 'manage_account', label: 'Quản lý tài khoản', show: true }
   ];
 
   const handleTabsChange = (event: ChangeEvent<{}>, value: string): void => {
@@ -52,6 +54,7 @@ export default function ManagementUserSettings() {
           <Grid item xs={12}>
             {currentTab === 'info_account' && <InfoAccountTab />}
             {currentTab === 'info_company' && <InfoCompanyTab />}
+            {currentTab === 'manage_account' && <ManageAccount />}
           </Grid>
         </Grid>
       </Container>

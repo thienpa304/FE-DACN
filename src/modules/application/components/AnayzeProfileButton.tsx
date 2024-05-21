@@ -19,6 +19,7 @@ import {
   preprocessJobData,
   preprocessProfileData
 } from 'src/utils/reviewProfile';
+import { LoadingButton } from '@mui/lab';
 
 export default function AnayzeProfileButton(props) {
   const {
@@ -228,7 +229,8 @@ export default function AnayzeProfileButton(props) {
 
   return (
     <Box display="flex" sx={{ alignItems: 'center', gap: 1 }}>
-      <Button
+      <LoadingButton
+        loading={isAnalyzing}
         onClick={() => {
           setStart(true);
         }}
@@ -241,8 +243,7 @@ export default function AnayzeProfileButton(props) {
       >
         <GradeIcon fontSize="small" />
         Phân tích độ phù hợp
-      </Button>
-      {isAnalyzing && <CircularProgress />}
+      </LoadingButton>
       {showResult && (
         <Box
           sx={{

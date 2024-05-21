@@ -11,7 +11,7 @@ import { isMobile, isTablet } from 'src/constants/reponsive';
 import { useTheme } from '@emotion/react';
 import { checkIsMobile, checkIsTablet } from 'src/utils/responsive';
 
-function HiringJobTab() {
+function JobOpeningsTab() {
   const { totalResults, isLoading: isLoadingTotalResult } =
     useQueryTotalResultOfJobs();
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,4 +89,4 @@ function HiringJobTab() {
   );
 }
 
-export default HiringJobTab;
+export default JobOpeningsTab;

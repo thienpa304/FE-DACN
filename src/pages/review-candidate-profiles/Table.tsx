@@ -63,7 +63,6 @@ const ViewJobDetail = ({ applicationId, setSelectedId }) => {
     (item) => item.application_id === applicationId
   )?.jobPosting.postId;
   const { data, isLoading } = useQueryJobById(jobId);
-  console.log(data, applicationId, jobId);
 
   useEffect(() => {
     setItemDetail(data);

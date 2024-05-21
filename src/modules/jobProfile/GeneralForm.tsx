@@ -295,7 +295,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
                     options={SKILLS.map((item) => item.value)}
                   />
                 }
-                defaultValue={data?.skills?.split(', ')}
+                defaultValue={data?.skills?.split(',')}
                 control={control}
                 errors={errors}
                 id="skills"

@@ -27,7 +27,7 @@ const ApprovalStatusOption = [
   ...APPROVAL_STATUS
 ];
 
-const RecruitmentApproval = () => {
+const JobApproval = () => {
   const [status, setStatus] = useState('');
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [isProfessionView, setIsProfessionView] = useState(false);
@@ -126,4 +126,4 @@ const RecruitmentApproval = () => {
   );
 };
 
-export default RecruitmentApproval;
+export default JobApproval;

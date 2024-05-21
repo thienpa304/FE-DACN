@@ -17,8 +17,7 @@ const useQueryAttachedDocument = () => {
     ResponseData<AttachedDocument>,
     AxiosError<ResponseData<AttachedDocument>>
   >(['get-AttachedDocument'], AttachedDocumentService.get, {
-    retry: (failureCount, error) =>
-      error.response.status === 400 ? false : failureCount < 2,
+    retry: 0,
     refetchOnWindowFocus: false,
     enabled: isLoggedIn && isEmployee
   });

@@ -7,6 +7,7 @@ import BaseLayout from './modules/app/layouts/BaseLayout';
 import SidebarLayout from './modules/app/layouts/SidebarLayout';
 import AuthRouteProvider from './modules/auth/components/AuthRouteProvider';
 import { Role } from './modules/users/model';
+
 import UserManagementTable from './pages/admin/UserManagement';
 import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManagement';
 import EmailNotification from './pages/admin/EmailNotification';
@@ -21,17 +22,13 @@ const Loader = (Component) => (props) =>
   );
 
 // Recruitment
-const RecruitmentCreate = Loader(
-  lazy(() => import('src/pages/recruitment-create'))
-);
+const JobCreate = Loader(lazy(() => import('src/pages/job-create')));
 const StatisticsAndReports = Loader(
   lazy(() => import('src/pages/admin/StatisticsAndReports'))
 );
-const RecruitmentList = Loader(
-  lazy(() => import('src/pages/recruitment-list'))
-);
+const JobList = Loader(lazy(() => import('src/pages/job-list')));
 const RecruitmentListApproval = Loader(
-  lazy(() => import('src/pages/recruitment-approval'))
+  lazy(() => import('src/pages/job-approval'))
 );
 const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
 
@@ -48,11 +45,14 @@ const Login = Loader(lazy(() => import('src/modules/auth/components/Login')));
 const Register = Loader(
   lazy(() => import('src/modules/auth/components/Register'))
 );
+const ForgotPassword = Loader(
+  lazy(() => import('src/modules/auth/components/ForgotPassword'))
+);
 
 // Pages
 const Home = Loader(lazy(() => import('src/pages/home')));
 const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
-const HiringJob = Loader(lazy(() => import('src/pages/hiring-job')));
+const JobOpenings = Loader(lazy(() => import('src/pages/job-openings')));
 const ResultJobList = Loader(lazy(() => import('src/pages/result-job-list')));
 const CompanyInformation = Loader(
   lazy(() => import('src/pages/company-information'))
@@ -62,7 +62,7 @@ const ShowCompanyPage = Loader(lazy(() => import('src/pages/company-list')));
 // Applications
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
 const EmployeeProfile = Loader(
-  lazy(() => import('src/pages/employee-profile/JobProfile'))
+  lazy(() => import('src/pages/employee-profile'))
 );
 const OnlineProfile = Loader(
   lazy(() => import('src/modules/jobProfile/onlineProfile'))
@@ -113,7 +113,7 @@ const routes: RouteObject[] = [
           },
           {
             path: '/hiring-job',
-            element: <HiringJob />
+            element: <JobOpenings />
           },
           {
             path: '/job/:id',
@@ -189,6 +189,10 @@ const routes: RouteObject[] = [
         element: <Register />
       },
       {
+        path: 'forgot-password',
+        element: <ForgotPassword />
+      },
+      {
         path: 'status',
         children: [
           {
@@ -250,11 +254,11 @@ const routes: RouteObject[] = [
           },
           {
             path: 'create',
-            element: <RecruitmentCreate />
+            element: <JobCreate />
           },
           {
             path: 'list',
-            element: <RecruitmentList />
+            element: <JobList />
           },
           {
             path: 'list/:id',

@@ -11,9 +11,9 @@ import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
 import dayjs from 'dayjs';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
-import { isMobile } from 'src/constants/reponsive';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
+import { isMobile } from 'src/constants/reponsive';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);

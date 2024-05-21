@@ -153,7 +153,6 @@ export default function Personal() {
   const theme = useTheme();
   const isMobile = checkIsMobile(theme);
   const isTablet = checkIsTablet(theme);
-  console.log(isTablet);
 
   return (
     <Container id="personal">

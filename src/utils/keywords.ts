@@ -36,26 +36,27 @@ export const loadKeywords = (analysisResults: any[], document?: any) => {
   const result = analysisResults[0];
   if (!result) return '';
 
-  const startIndex = result.indexOf('[');
+  const startIndex = result?.indexOf('[');
+  const endIndex = result?.lastIndexOf(']');
+  if (startIndex === undefined || endIndex === undefined) return '';
+
   if (startIndex === -1) {
-    console.log("Không tìm thấy ký tự '['");
+    console.error("Không tìm thấy ký tự '['");
     return '';
   }
 
-  // Tìm vị trí kết thúc của ']'
-  const endIndex = result.lastIndexOf(']');
   if (endIndex === -1) {
-    console.log("Không tìm thấy ký tự ']'");
+    console.error("Không tìm thấy ký tự ']'");
     return '';
   }
 
   // Trích xuất chuỗi con từ vị trí startIndex đến endIndex
   const extractedString = result
-    .substring(startIndex + 1, endIndex)
-    .replace(/["]/g, '');
+    ?.substring(startIndex + 1, endIndex)
+    ?.replace(/["]/g, '');
 
   // B1: Thay thế dấu "'" thành dấu '"' để đảm bảo JSON hợp lệ
-  const jsonString = extractedString.replace(/[_!@#$%^&*;|<>'"\n\t\r]/g, '');
+  const jsonString = extractedString?.replace(/[_!@#$%^&*;|<>'"\n\t\r]/g, '');
 
   // B2: Parse string sang array
   const keywordArray = jsonString.split(',');

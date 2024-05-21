@@ -61,8 +61,6 @@ const CandidateProfiles = () => {
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   useEffect(() => {
-    console.log(data);
-
     setApplicationList(data);
   }, [JSON.stringify(data)]);
 

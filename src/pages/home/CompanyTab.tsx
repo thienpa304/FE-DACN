@@ -18,13 +18,12 @@ import {
 } from 'src/utils/responsive';
 import { isMobile } from 'src/constants/reponsive';
 
-export default function Company(props) {
+export default function CompanyTab(props) {
   const { queryCompanys } = props;
   const theme = useTheme();
   // const isDesktop = checkIsDesktop(theme);
   const { isLargeDesktop, isDesktop, isTablet } = useResponsive();
   const pageSize = isMobile ? 4 : isTablet ? 4 : isDesktop ? 3 : 4;
-  console.log(isMobile, isTablet, isDesktop, isLargeDesktop);
 
   const [currentPage, setCurrentPage] = useState(1);
   const { companyList, totalResults } = queryCompanys({

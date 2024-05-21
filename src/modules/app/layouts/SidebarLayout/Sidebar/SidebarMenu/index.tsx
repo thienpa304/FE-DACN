@@ -393,7 +393,7 @@ function SidebarMenu() {
                       to={`/${rolePath}/user-manage`}
                       startIcon={<UserManageIcon />}
                     >
-                      Quản lý người dùng
+                      Quản lý tài khoản
                     </Button>
                   </ListItem>
                 </List>

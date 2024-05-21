@@ -27,7 +27,7 @@ import {
   SKILLS,
   WORK_AT
 } from 'src/constants/option';
-import { jobAnalysist, translate } from 'src/gpt/roles';
+import { jobAnalysist, translate } from 'src/GPT/roles';
 import FormControl from 'src/components/FormControl';
 import SelectInput, { Option } from 'src/components/SelectInput';
 import TextEditor from 'src/components/TextEditor';
@@ -42,7 +42,7 @@ import _ from 'lodash';
 import { preProcessText, removeHTMLTag } from 'src/utils/inputOutputFormat';
 import { loadKeywords } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
-import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
+import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import Autocomplete from 'src/components/Autocomplete';
 
 const defaultValues = {
@@ -163,7 +163,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
   useEffect(() => {
     if (analysisResults.length > 0 && analysisResults[0]) {
-      const keywords = loadKeywords(analysisResults);
+      const keywords = loadKeywords(analysisResults) || '';
 
       const keywordToStore = onSaveNewData.requiredSkills + ', ' + keywords;
 
@@ -223,7 +223,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                             options={PROFESSION.map((item) => item.value)}
                           />
                         }
-                        defaultValue={data?.profession?.split(', ')}
+                        defaultValue={data?.profession?.split(',')}
                         control={control}
                         errors={errors}
                         id="profession"
@@ -487,7 +487,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
                             options={SKILLS.map((item) => item.value)}
                           />
                         }
-                        defaultValue={data?.requiredSkills?.split(', ')}
+                        defaultValue={data?.requiredSkills?.split(',')}
                         control={control}
                         errors={errors}
                         id="requiredSkills"
