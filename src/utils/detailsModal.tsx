@@ -12,7 +12,6 @@ function detailsModal(data) {
   const handleClose = () => {
     root.unmount();
   };
-  console.log(data);
 
   root.render(
     <ThemeProvider>

@@ -11,11 +11,12 @@ import ModalApply from '../../application/components/ModalApply';
 import { toInputDateString } from 'src/utils/inputOutputFormat';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import { useApp } from 'src/modules/app/hooks';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import FollowJobButton from './FollowJobButton';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import CustomContainer from 'src/components/CustomContainer';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
+import { isMobile } from 'src/constants/reponsive';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -90,7 +91,12 @@ const CardApply: React.FC<Props> = ({ data }) => {
                 </Grid>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Grid container alignItems={'center'}>
+                <Grid
+                  container
+                  alignItems={'center'}
+                  wrap="nowrap"
+                  overflow={'hidden'}
+                >
                   <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
                   <LabelText> Hạn nộp hồ sơ : </LabelText>
                   <ValueText>{data.applicationDeadline}</ValueText>
@@ -119,7 +125,8 @@ const CardApply: React.FC<Props> = ({ data }) => {
                   marginTop: 2,
                   display: 'flex',
                   gap: 2,
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  justifyContent: isMobile && 'center'
                 }}
               >
                 <Button
@@ -129,7 +136,9 @@ const CardApply: React.FC<Props> = ({ data }) => {
                       : () => {
                           navigate('/login', {
                             state: {
-                              from: window.location.pathname,
+                              from:
+                                window.location.pathname +
+                                window.location.search,
                               postId: data.postId
                             }
                           });

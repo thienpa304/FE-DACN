@@ -18,6 +18,7 @@ import { useTheme } from '@mui/material/styles';
 import { checkIsMobile } from 'src/utils/responsive';
 import alertDialog from 'src/utils/alertDialog';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { isMobile, isTablet } from 'src/constants/reponsive';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -38,7 +39,8 @@ const Item = styled(Box)(({ theme }) => ({
   minHeight: 50,
   paddingInline: 15,
   fontSize: 15,
-  color: 'gray'
+  color: 'gray',
+  flexGrow: 1
 }));
 
 const ProfileSection = ({
@@ -72,7 +74,7 @@ const ProfileSection = ({
           <Grid
             item
             lg={6}
-            md={5}
+            md={4}
             xs={12}
             display="flex"
             alignItems="center"
@@ -90,16 +92,17 @@ const ProfileSection = ({
             />
             <Typography variant="h4">{profile?.jobTitle}</Typography>
           </Grid>
-          <Grid item lg={6} md={7} xs={12} display="flex" alignItems="center">
+          <Grid item lg={6} md={8} xs={12} display="flex" alignItems="center">
             <Stack
               direction="row"
               divider={
-                isMobile ? null : (
+                isTablet ? null : (
                   <Box component="hr" border={1} borderColor="grey.300" />
                 )
               }
               useFlexGap
               flexWrap="wrap"
+              spacing={{ xs: 1, sm: 2 }}
             >
               <Item>Lượt xem: {profile?.view}</Item>
               <Item>
@@ -116,6 +119,7 @@ const ProfileSection = ({
                   variant="outlined"
                   color="secondary"
                   startIcon={<ModeEditIcon />}
+                  fullWidth
                 >
                   Cập nhật
                 </Button>

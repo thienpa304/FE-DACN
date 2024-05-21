@@ -1,131 +1,155 @@
-const sendChatGPTRequest = async (
-  request: string,
-  content: any[],
-  max_tokens = null,
-  logit_bias = null
-) => {
-  const responses = [];
+import alertDialog from 'src/utils/alertDialog';
 
-  if (!content || content.length === 0) {
-    return responses;
-  }
+// Common function to handle API requests
+const sendRequest = async (url, headers, body) => {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(body)
+    });
 
-  const sendMessage = async (inputText) => {
-    if (!inputText.trim()) return;
-
-    try {
-      const response = await fetch(
-        'https://api.chatanywhere.cn/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
-            // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
-          },
-          body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [
-              {
-                role: 'system',
-                content: request
-              },
-              { role: 'user', content: inputText }
-            ],
-            temperature: 0,
-            presence_penalty: 0.7,
-            frequency_penalty: 0.7,
-            max_tokens: max_tokens,
-            logit_bias: logit_bias
-          })
-        }
-      );
-
-      const data = await response.json();
-      return data?.choices?.[0]?.message?.content;
-    } catch (error) {
-      console.error('Error:', error);
+    const data = await response.json();
+    if (data?.error) {
+      throw new Error(data.error.message);
     }
-  };
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
 
-  await Promise.all(
-    content.map(async (inputText) => {
-      const response = await sendMessage(JSON.stringify(inputText)).catch(
-        () => ''
-      );
-      responses.push(response);
-    })
+// Common function to process messages
+const processMessages = async (content, sendMessage) => {
+  const responses = [];
+  let hasShownAlert = false;
+
+  const results = await Promise.allSettled(
+    content.map((inputText) => sendMessage(JSON.stringify(inputText)))
   );
+
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      responses.push(result.value);
+    } else if (result.status === 'rejected') {
+      if (!hasShownAlert) {
+        console.error('Error in sendMessage:', result.reason);
+        alertDialog({
+          selectedId: '_',
+          handleConfirm: () => {},
+          message: result.reason.message,
+          hideCancelButton: true
+        });
+        hasShownAlert = true;
+      }
+      break;
+    }
+  }
 
   return responses;
 };
 
-export const getEmbedding = async (content: any[]) => {
-  const responses = [];
+const sendChatGPTRequest = async (
+  request,
+  content,
+  max_tokens = null,
+  logit_bias = null
+) => {
+  if (!content || content.length === 0) return [];
 
-  if (!content || content.length === 0) {
-    return responses;
-  }
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization:
+      // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' // free
+      'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+  };
+
+  const sendMessage = async (inputText) => {
+    if (!inputText.trim()) return;
+
+    const body = {
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: request },
+        { role: 'user', content: inputText }
+      ],
+      temperature: 0,
+      presence_penalty: 0.7,
+      frequency_penalty: 0.7,
+      max_tokens: max_tokens,
+      logit_bias: logit_bias
+    };
+
+    const data = await sendRequest(
+      'https://api.chatanywhere.cn/v1/chat/completions',
+      headers,
+      body
+    );
+    return data?.choices?.[0]?.message?.content;
+  };
+
+  return await processMessages(content, sendMessage);
+};
+
+export const getEmbedding = async (content) => {
+  if (!content || content.length === 0) return [];
+  debugger;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization:
+      // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' // free
+      'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+  };
 
   const sendMessage = async (inputText) => {
     if (!inputText) return;
 
-    try {
-      const response = await fetch(
-        'https://api.chatanywhere.cn/v1/embeddings',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
-            // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' //free
-          },
-          body: JSON.stringify({
-            model: 'text-embedding-3-large',
-            input: inputText
-            // dimensions: 100
-          })
-        }
-      );
+    const body = {
+      model: 'text-embedding-3-large',
+      input: inputText
+    };
 
-      const data = await response.json();
-      return data?.data?.map((item) => item.embedding);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    const data = await sendRequest(
+      'https://api.chatanywhere.cn/v1/embeddings',
+      headers,
+      body
+    );
+    return data?.data?.map((item) => item.embedding);
   };
 
-  await Promise.all(
-    content.map(async (inputText) => {
-      let i = 0;
-      const employer_Requirement = (
-        await sendMessage(inputText?.employer_Requirement)
-      ).map((res) => ({
-        word: inputText?.employer_Requirement[i++],
-        result: res
-      }));
+  const processEmbeddings = async (content) => {
+    const results = await Promise.allSettled(
+      content.map(async (inputText) => {
+        let i = 0;
+        const employer_Requirement = (
+          await sendMessage(inputText?.employer_Requirement)
+        )?.map((res) => ({
+          word: inputText?.employer_Requirement[i++],
+          result: res
+        }));
 
-      i = 0;
+        i = 0;
 
-      const employee_Profile = (
-        await sendMessage(inputText?.employee_Profile)
-      ).map((res) => ({
-        word: inputText?.employee_Profile[i++],
-        result: res
-      }));
+        const employee_Profile = (
+          await sendMessage(inputText?.employee_Profile)
+        )?.map((res) => ({
+          word: inputText?.employee_Profile[i++],
+          result: res
+        }));
 
-      responses.push({
-        id: inputText?.id,
-        employer_Requirement: employer_Requirement,
-        employee_Profile: employee_Profile
-      });
-      console.log(responses);
-    })
-  );
+        return {
+          id: inputText?.id,
+          employer_Requirement: employer_Requirement,
+          employee_Profile: employee_Profile
+        };
+      })
+    );
 
-  return responses;
+    return processMessages(results, sendMessage);
+  };
+
+  return await processEmbeddings(content);
 };
 
 export default sendChatGPTRequest;

@@ -23,8 +23,8 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useNavigate } from 'react-router';
 import SubmitBox from '../SubmitBox';
 import { getFileByUrl } from 'src/common/firebaseService';
-import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
-import { cvAnalysist, translate } from 'src/gpt/roles';
+import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
+import { cvAnalysist, translate } from 'src/GPT/roles';
 import pdfToText from 'react-pdftotext';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 

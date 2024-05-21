@@ -12,7 +12,7 @@ import {
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
-import TablePost from 'src/pages/recruitment-list/TablePost';
+import TablePost from 'src/pages/job-list/TablePost';
 import TabsWrapper from 'src/components/TabWrapper';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
@@ -25,7 +25,7 @@ const tabs = [
   { label: 'Hết hạn', value: 'Hết hạn' }
 ];
 
-const RecruitmentList = () => {
+const JobList = () => {
   const pageSize = 9;
   const [currentTab, setCurrentTab] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -97,4 +97,4 @@ const RecruitmentList = () => {
   );
 };
 
-export default RecruitmentList;
+export default JobList;

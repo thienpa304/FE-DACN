@@ -17,7 +17,7 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import TableData from 'src/components/TableData';
 import { GridColDef } from '@mui/x-data-grid';
-import { renderJobTitle } from 'src/pages/recruitment-list/TablePost';
+import { renderJobTitle } from 'src/pages/job-list/TablePost';
 import useQueryEmployeeByKeywords from '../hook/useQueryEmployeeByKeywords';
 import Pagination from 'src/components/Pagination';
 import JobFilter from 'src/modules/jobs/components/JobFilter';

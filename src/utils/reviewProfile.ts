@@ -1,6 +1,6 @@
-import { RoundOneCheck, extractSkill, translate } from 'src/gpt/roles';
-import { preProcessText } from './inputOutputFormat';
-import sendChatGPTRequest, { getEmbedding } from 'src/gpt/sendChatGPTRequest';
+import { RoundOneCheck, extractSkill, translate } from 'src/GPT/roles';
+import { checkIsJSON, preProcessText } from './inputOutputFormat';
+import sendChatGPTRequest, { getEmbedding } from 'src/GPT/sendChatGPTRequest';
 import { getFileByUrl } from 'src/common/firebaseService';
 import pdfToText from 'react-pdftotext';
 import { User } from 'src/modules/users/model';
@@ -146,8 +146,8 @@ export const firstRoundForGeneralInfo = (job, profile) => {
 const isProfileQualified = (profile, job) => {
   const { profession, degree, experience } = profile;
 
-  const employeeProfessionList = profession.split(', ');
-  const jobProfessionList = job.profession.split(', ');
+  const employeeProfessionList = profession.split(',');
+  const jobProfessionList = job.profession.split(',');
   if (!employeeProfessionList.some((item) => jobProfessionList.includes(item)))
     return false;
 
@@ -193,13 +193,16 @@ const handleRoundOne = async (
   );
   console.log('cvContentProfile', cvContentProfile);
 
-  const result = await sendChatGPTRequest(
+  const response = await sendChatGPTRequest(
     RoundOneCheck,
     cvEnclosedProfileList
   ).catch(() => []);
+  const result = Array.isArray(response)
+    ? response?.filter((item) => checkIsJSON(item))
+    : [];
   setAnalyzedProfile(cvContentProfile);
-  if (result !== null && result !== undefined)
-    handleGoToAnalyzeResult(true, result);
+
+  handleGoToAnalyzeResult(true, result);
 };
 
 const handleRoundTwo = async (
@@ -252,10 +255,14 @@ const handleRoundTwo = async (
 
   console.log(dataSendToGPT);
   const skillList = await Promise.all(
-    dataSendToGPT.map(async (item) => {
+    dataSendToGPT?.map(async (item) => {
+      const extractRequiredSkillList = dataSendToGPT?.map(
+        (data) => data?.employee_Profile?.profile
+      );
+
       const skillsList = await sendChatGPTRequest(
         extractSkill,
-        [item.employee_Profile.profile],
+        extractRequiredSkillList,
         null,
         {
           '58': 5,
@@ -279,17 +286,20 @@ const handleRoundTwo = async (
       };
     })
   );
-  const responses = await getEmbedding(skillList);
+  const responses = (await getEmbedding(skillList)) || [];
 
-  const result = responses.map((item) => {
-    const acc = item.employer_Requirement.filter((require) =>
-      item.employee_Profile.some(
-        (skills) => dot(skills.result, require.result) > 0.6
-      )
+  const result = responses?.map((item) => {
+    const acc = item?.employer_Requirement?.filter((require) =>
+      item?.employee_Profile?.some((skills) => {
+        if (skills?.result?.length === require?.result?.length) {
+          return dot(skills.result, require.result) > 0.6;
+        }
+        console.error('Vectors must have the same number of dimensions');
+      })
     );
     return {
       id: item.id,
-      result: (100 / item.employer_Requirement.length) * acc.length
+      result: (100 / item?.employer_Requirement?.length) * acc?.length
     };
   });
 
@@ -302,83 +312,34 @@ const handleRoundThree = async (
 ) => {
   console.log('Start round 3');
 
-  // const traslatedKeywords = await Promise.all(
-  //   passRoundProfiles.map(async (item) => {
-  //     const skillsList = await sendChatGPTRequest(
-  //       translate,
-  //       [
-  //         item.employee_Profile.application.keywords,
-  //         item.employer_Requirement.keywords
-  //       ],
-  //       null,
-  //       {
-  //         '58': 5,
-  //         '60': 5
-  //       }
-  //     );
-  //     // const requiredList = await sendChatGPTRequest(
-  //     //   translate,
-  //     //   [item.employer_Requirement.keywords],
-  //     //   null,
-  //     //   {
-  //     //     '58': 5,
-  //     //     '60': 5
-  //     //   }
-  //     // );
-
-  //     return {
-  //       id: item.id,
-  //       employee_Profile: loadKeywords([skillsList[0]])?.split(',') || '',
-  //       employer_Requirement: loadKeywords([skillsList[1]])?.split(',') || ''
-  //     };
-  //   })
-  // );
-
   const response = await getEmbedding(
     passRoundProfiles.map((item) => ({
       id: item.id,
-      employee_Profile: item.employer_Requirement.keywords.split(','),
-      employer_Requirement:
-        item.employee_Profile.application.keywords.split(',')
+      employee_Profile: item.employee_Profile.application.keywords.split(','),
+      employer_Requirement: item.employer_Requirement.keywords.split(',')
     }))
   );
 
   const resultList = await Promise.all(
-    response.map(async (item) => {
-      let score = item.employee_Profile.reduce((acc, profile) => {
-        const hasMatch = item.employer_Requirement.some((requirement) => {
+    response?.map(async (item) => {
+      let score = item?.employee_Profile?.reduce((acc, profile) => {
+        const hasMatch = item?.employer_Requirement?.some((requirement) => {
           const cosineSimilarity = dot(profile.result, requirement.result);
           return cosineSimilarity > 0.6;
         });
         return hasMatch ? acc + 5 : acc;
       }, 0);
 
-      const lackOfSkillsList = await Promise.all(
-        item.employer_Requirement
-          .filter(
+      const lackOfSkillsList =
+        item?.employer_Requirement
+          ?.filter(
             (require) =>
-              !item.employee_Profile.some(
+              !item?.employee_Profile?.some(
                 (skills) => dot(skills.result, require.result) > 0.6
               )
           )
-          .map(async (require) => require.word)
-      );
+          ?.map((require) => require.word) || [];
 
-      // const sentence = await sendChatGPTRequest(
-      //   extractSkill,
-      //   [lackOfSkillsList],
-      //   null,
-      //   {
-      //     '58': 5,
-      //     '60': 5
-      //   }
-      // );
-      console.log(lackOfSkillsList);
-
-      // let skills;
-      // if (lackOfSkillsList.length > 0) {
-      //   skills = loadKeywords(lackOfSkillsList).split(',');
-      // }
       const hints =
         lackOfSkillsList.length > 0
           ? `Để tăng tỉ lệ đậu bạn có thể trang bị thêm kĩ năng: ${[
@@ -387,8 +348,6 @@ const handleRoundThree = async (
               .slice(0, 4)
               .join(', ')}`
           : 'Hồ sơ của bạn đã đáp ứng yêu cầu của tin tuyển dụng này';
-
-      // console.log('score', score);
 
       return {
         id: item.id,
@@ -503,10 +462,13 @@ export const review = async ({
 
 export const parseResponseJSONData = async (result: any[]) => {
   return Promise.all(
-    result.map(
-      async (data) =>
-        data &&
-        JSON.parse(data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1))
-    )
+    result.map(async (data) => {
+      console.log(data.indexOf('{'));
+
+      if (data?.indexOf('{') >= 0 && data?.lastIndexOf('}') >= 0)
+        return JSON.parse(
+          data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1)
+        );
+    })
   );
 };

@@ -116,7 +116,13 @@ export default function InfoField(props) {
           </Box>
         </Box>
         <EditButton onClick={handleEdit} />
-        <Dialog open={open} fullWidth maxWidth={'md'} fullScreen={isMobile}>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          fullWidth
+          maxWidth={'md'}
+          fullScreen={isMobile}
+        >
           <DialogTitle
             sx={{
               textAlign: 'center',

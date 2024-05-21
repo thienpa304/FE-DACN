@@ -83,10 +83,11 @@ export default function ModalApply(props: Props) {
   });
 
   const handleClose = () => {
-    if (url) removeFileByUrl(url);
+    if (url) removeFileByUrl(url).then(() => setUrl(''));
     setIsChecked(null);
     setHintsMessage(null);
     setShowResult(null);
+    setSelectedProfile(null);
     onClose();
   };
   const handleApply = (data) => {
@@ -276,7 +277,8 @@ export default function ModalApply(props: Props) {
             display: 'flex',
             justifyContent: { sm: 'space-between', xs: 'center' },
             flexWrap: 'wrap',
-            px: 2
+            p: 2,
+            gap: 2
           }}
         >
           <AnayzeProfileButton
@@ -289,13 +291,19 @@ export default function ModalApply(props: Props) {
             setHintsMessage={setHintsMessage}
           />
           <Box sx={{ display: 'flex', columnGap: 1 }}>
-            <Button onClick={handleClose} variant="outlined" color="secondary">
+            <Button
+              onClick={handleClose}
+              variant="outlined"
+              color="secondary"
+              sx={{ minWidth: 120 }}
+            >
               Hủy
             </Button>
             <Button
               onClick={handleSubmit(handleApply)}
               variant="contained"
               color="info"
+              sx={{ minWidth: 120 }}
             >
               Nộp hồ sơ
             </Button>

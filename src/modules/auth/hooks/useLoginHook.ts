@@ -1,14 +1,11 @@
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { ResponseData } from 'src/common/http-request';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from 'src/modules/app/hooks';
 import { localStorage } from 'src/utils';
 import { LoginService } from '../authService';
 import { LoginRequest, LoginResponse } from '../model';
-import useProfileHook from 'src/modules/users/hooks/useUserHook';
-import useQueryOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useQueryOnlineProfile';
-import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 
 const useLogin = () => {
   const { toast } = useApp();
@@ -32,7 +29,7 @@ const useLogin = () => {
   >(LoginService.create, {
     onSuccess: (res) => {
       const { userData, access_token } = res.data;
-      if (res.status === 200 && userData?.userId) {
+      if (userData?.userId && res.status === 200) {
         toast.success({ massage: res.message });
         setUserApp(userData);
         setAccessTokenApp(access_token);

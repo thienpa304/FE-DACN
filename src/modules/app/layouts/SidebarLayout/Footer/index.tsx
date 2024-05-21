@@ -108,8 +108,8 @@ const Footer = () => {
             flexWrap="wrap"
             sx={{ justifyContent: { xs: 'center', sm: 'normal' } }}
           >
-            {downloadIcon.map((item) => (
-              <Link href={item.link}>
+            {downloadIcon.map((item, index) => (
+              <Link key={index} href={item.link}>
                 <Box
                   component={'img'}
                   src={`/static/images/icons/${item.icon}.svg`}

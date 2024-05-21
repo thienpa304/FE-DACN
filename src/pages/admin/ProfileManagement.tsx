@@ -172,7 +172,6 @@ const ProfileManagement = () => {
   };
 
   const renderAction = (params) => {
-    console.log(params);
     const detailsData = {
       'Tên người dùng': params?.row?.user?.name,
       Email: params?.row?.user?.email,

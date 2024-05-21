@@ -17,8 +17,8 @@ import Pagination from 'src/components/Pagination';
 import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import dayjs from 'dayjs';
 import { Job } from 'src/modules/jobs/model';
-import sendChatGPTRequest from 'src/gpt/sendChatGPTRequest';
-import { checkContent } from 'src/gpt/roles';
+import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
+import { checkContent } from 'src/GPT/roles';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
 import CheckIcon from '@mui/icons-material/Check';
@@ -27,6 +27,7 @@ import { TypographyEllipsis } from 'src/components/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
 import { isMobile } from 'src/constants/reponsive';
+import { checkIsJSON } from 'src/utils/inputOutputFormat';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
@@ -346,8 +347,10 @@ export default function Table({ statusFilter, selectedProfession }) {
   const handleCheck = async (dataToSend: Partial<Job>[]) => {
     const result = await sendChatGPTRequest(checkContent, dataToSend);
 
-    const jsonResult = result.map((item) => JSON.parse(item));
-    const resultList = jobs.map((job) => {
+    const jsonResult = result?.map(
+      (item) => checkIsJSON(item) && JSON.parse(item)
+    );
+    const resultList = jobs?.map((job) => {
       const found = jsonResult.find((item) => item.id === job.postId);
       if (found) {
         mutate([found.id, { check: found.result }]);

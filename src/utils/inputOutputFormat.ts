@@ -11,7 +11,7 @@ export function convertStringToObjectList(
   options: Option[]
 ): Option[] {
   if (!inputString) return null;
-  const inputArray = inputString.split(', ');
+  const inputArray = inputString.split(',');
 
   const objectList = inputArray.map((label) => {
     const option = options.find((option) => option.label === label);
@@ -109,3 +109,13 @@ export function convertObjectListToStringForSkill(objectList): string {
 
   return text.join(', ');
 }
+
+export const checkIsJSON = (data) => {
+  try {
+    const jsonString = JSON.stringify(data);
+    JSON.parse(data);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};

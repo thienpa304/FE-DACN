@@ -1,8 +1,8 @@
 import React from 'react';
 import FormCreate from 'src/modules/jobs/components/FormCreate';
 
-const RecruitmentCreate = () => {
+const JobCreate = () => {
   return <FormCreate />;
 };
 
-export default RecruitmentCreate;
+export default JobCreate;

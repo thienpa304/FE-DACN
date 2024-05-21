@@ -1,10 +1,10 @@
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import JobList from 'src/modules/jobs/components/JobList';
 
-function HiringJob() {
+function JobOpenings() {
   return (
     <JobList pageTitle="Công việc đang tuyển" queryJobs={useQueryAllJob} />
   );
 }
 
-export default HiringJob;
+export default JobOpenings;

@@ -122,7 +122,7 @@ const employerMenu = {
 const adminMenu = {
   basic: [
     {
-      label: 'Quản lý người dùng',
+      label: 'Quản lý tài khoản',
       linkTo: '/admin/user-manage'
     },
     {

@@ -57,7 +57,7 @@ export function useQueryJobByIdList(idList: number[]) {
           // Cập nhật dataList
           setDataList(dataList);
         })
-        .catch((e) => console.log(e));
+        .catch((e) => console.error(e));
     },
     {
       retry: 1,

@@ -19,8 +19,8 @@ import { styled } from '@mui/material/styles';
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
-import useSignOutHook from 'src/modules/auth/hooks/useSignOutHook';
 import { useApp } from 'src/modules/app/hooks';
+import useQueryLogout from 'src/modules/auth/hooks/useQueryLogout';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -61,13 +61,15 @@ function HeaderUserbox() {
   const {
     user: { email, role, avatar }
   } = useApp();
-  const signOut = useSignOutHook();
+  const [isLogout, setIsLogout] = useState(false);
+  useQueryLogout(isLogout);
   const rolePath = role.toLowerCase();
   const user = {
     name: email.replace(/@.*/, ''),
     avatar: avatar?.trim() || '/static/images/avatars/avatar-empty.jpeg',
     jobtitle: `${rolePath}`
   };
+  const { user: currUser } = useApp();
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -81,7 +83,7 @@ function HeaderUserbox() {
   };
 
   const handleSignOut = (): void => {
-    signOut();
+    setIsLogout(true);
     setOpen(false);
   };
   return (
