@@ -17,7 +17,8 @@ const useQueryOnlineProfile = () => {
     ResponseData<OnlineProfile>,
     AxiosError<ResponseData<OnlineProfile>>
   >(['get-OnlineProfile'], OnlineProfileService.get, {
-    retry: 0,
+    retry: (failureCount, error) =>
+      error.response.status === 404 ? false : failureCount < 2,
     refetchOnWindowFocus: false,
     enabled: isLoggedIn && isEmployee
   });
