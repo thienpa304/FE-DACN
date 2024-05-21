@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkFE_DACN=self.webpackChunkFE_DACN||[]).push([[783],{99783:(e,n,u)=>{u.r(n),u.d(n,{default:()=>c});var s=u(54567),t=u(64188),a=u(70579);const c=function(){return(0,a.jsx)(t.A,{pageTitle:"C\xf4ng vi\u1ec7c \u0111ang tuy\u1ec3n",queryJobs:s.A})}}}]);
+//# sourceMappingURL=783.f975b7b1.chunk.js.map
