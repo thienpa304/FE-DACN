@@ -29,12 +29,11 @@ const JobList = () => {
   const pageSize = 9;
   const [currentTab, setCurrentTab] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { jobs, totalResults, isLoading } = useQueryJobByOwner({
+  const { jobs, totalResults, isLoading, totalPages } = useQueryJobByOwner({
     status: currentTab,
     page: currentPage,
     num: pageSize
   });
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   const handleTabsChange = (e, value) => {
     setCurrentTab(value);

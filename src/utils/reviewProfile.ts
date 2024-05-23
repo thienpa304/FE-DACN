@@ -1,4 +1,9 @@
-import { RoundOneCheck, extractSkill, translate } from 'src/GPT/roles';
+import {
+  RoundOneCheck,
+  extractCommonInfo,
+  extractSkill,
+  translate
+} from 'src/GPT/roles';
 import { checkIsJSON, preProcessText } from './inputOutputFormat';
 import sendChatGPTRequest, { getEmbedding } from 'src/GPT/sendChatGPTRequest';
 import { getFileByUrl } from 'src/common/firebaseService';
@@ -17,6 +22,15 @@ export const LOW_SCORE = 30; // 30 - 80
 export const NORMAL_SCORE = 80; // 80 - 110
 export const HIGH_SCORE = 110; // higher than 110
 
+export const ratingStar = (score: number) => {
+  return score >= HIGH_SCORE
+    ? 3
+    : score >= NORMAL_SCORE
+    ? 2
+    : score >= LOW_SCORE
+    ? 1
+    : 0;
+};
 export type ProfileTypeInfo = {
   personal_information: User;
   online_profile?: OnlineProfile;
@@ -192,11 +206,57 @@ const handleRoundOne = async (
     attachProfileList
   );
   console.log('cvContentProfile', cvContentProfile);
+  console.log('cvEnclosedProfileList', cvEnclosedProfileList);
 
-  const response = await sendChatGPTRequest(
-    RoundOneCheck,
-    cvEnclosedProfileList
-  ).catch(() => []);
+  //   const extractCommonInfo = cvEnclosedProfileList.map((item) => {
+  //     .then((res) => {
+  //       res.push(item?.employee_Profile?.application?.id);
+  //       return res;
+  //     });
+  //     return response;
+  // });
+
+  // const cvList = cvEnclosedProfileList.map((item) => {
+  //   return item?.employee_Profile?.application?.CV;
+  // });
+
+  const extractPromise = async () => {
+    return Promise.all(
+      cvEnclosedProfileList.map(async (item) => {
+        const result = await sendChatGPTRequest(extractCommonInfo, [
+          item?.employee_Profile?.application?.CV
+        ]);
+
+        const validResult = result.filter((res) => checkIsJSON(res));
+
+        const extractedResult = validResult.map((res) => {
+          const jsonRes = JSON.parse(res);
+          return {
+            employee_Profile: jsonRes,
+            employer_Requirement: item?.employer_Requirement,
+            id: item?.employee_Profile?.application?.id
+          };
+        });
+        // result[0] + '\n -id: ' + item?.employee_Profile?.application?.id;
+        return extractedResult;
+      })
+    );
+  };
+
+  // const extractCommonInfo = await sendChatGPTRequest(
+  //   'Trích ra thông tin về Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm và id trong employee_Profile?.application?.id trong hồ sơ sau',
+  //   [cvContentProfile[0]?.employee_Profile?.application?.CV]
+  // );
+
+  const commonInfo = await extractPromise();
+
+  console.log('extractCommonInfo', commonInfo);
+
+  const response = await sendChatGPTRequest(RoundOneCheck, commonInfo).catch(
+    () => []
+  );
+  console.log('response', response);
+
   const result = Array.isArray(response)
     ? response?.filter((item) => checkIsJSON(item))
     : [];

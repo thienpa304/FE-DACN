@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { Employee, User } from 'src/modules/users/model';
 import { GetEmployeeService } from '../getEmployeeService';
 import { useApp } from 'src/modules/app/hooks';
@@ -10,7 +10,7 @@ import { ProfileShowType } from '../model';
 const useQueryEmployee = (params?) => {
   const { isEmployer } = useApp();
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<ProfileShowType[]>,
+    ResponseData<PaginationType<ProfileShowType[]>>,
     AxiosError<ResponseData<ProfileShowType[]>>
   >(
     ['get-AllEmployees', params],
@@ -33,7 +33,9 @@ const useQueryEmployee = (params?) => {
   );
 
   return {
-    profile: data?.data || [],
+    profile: data?.data?.items || [],
+    totalPages: data?.data?.meta.totalPages,
+    totalItems: data?.data?.meta.totalItems,
     isLoading,
     refetch
   };

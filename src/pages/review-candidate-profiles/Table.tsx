@@ -11,6 +11,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  Rating,
   Tooltip,
   Typography,
   useTheme
@@ -32,7 +33,8 @@ import {
   NORMAL_SCORE,
   HIGH_SCORE,
   firstRoundForGeneralInfo,
-  parseResponseJSONData
+  parseResponseJSONData,
+  ratingStar
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryJobById, {
@@ -150,26 +152,41 @@ const renderJobTitle = (data) => {
 
 const renderProfileName = (data) => {
   const handleOpenDetailModal = () => {
-    let result = '';
-    if (data?.row?.matchingScore >= HIGH_SCORE) result = 'Cao';
-    else if (
-      data?.row?.matchingScore >= NORMAL_SCORE &&
-      data?.row?.matchingScore < HIGH_SCORE
-    )
-      result = 'Trung bình';
-    else if (
-      data?.row?.matchingScore >= LOW_SCORE &&
-      data?.row?.matchingScore < NORMAL_SCORE
-    )
-      result = 'Thấp';
-    else if (data?.row?.matchingScore < 0) result = 'Không phù hợp';
+    // let result = '';
+    // if (data?.row?.matchingScore >= HIGH_SCORE) result = 'Cao';
+    // else if (
+    //   data?.row?.matchingScore >= NORMAL_SCORE &&
+    //   data?.row?.matchingScore < HIGH_SCORE
+    // )
+    //   result = 'Trung bình';
+    // else if (
+    //   data?.row?.matchingScore >= LOW_SCORE &&
+    //   data?.row?.matchingScore < NORMAL_SCORE
+    // )
+    //   result = 'Thấp';
+    // else if (data?.row?.matchingScore < 0) result = 'Không phù hợp';
+
+    const rating = ratingStar(data?.row?.matchingScore);
+    console.log(rating);
 
     const detailsData = {
       'Tên hồ sơ': data?.row?.name,
       'Vị trí ứng tuyển': data?.row?.jobTitle,
       'Loại hồ sơ': data?.row?.applicationType,
       'Trạng thái': data?.row?.status,
-      'Độ phù hợp': result
+      'Độ phù hợp': (
+        <Rating
+          value={rating}
+          max={3}
+          size="small"
+          readOnly
+          sx={{
+            display: 'flex',
+            height: '100%',
+            alignItems: 'center'
+          }}
+        />
+      )
     };
     detailsModal(detailsData);
   };
@@ -244,39 +261,41 @@ const renderStatus = (data) => {
 
 export const renderMatchingScore = (data) => {
   // if (isAnalyzing) return <CircularProgress />;
-  let result = '';
-  if (data.value >= HIGH_SCORE) result = 'Cao';
-  else if (data.value >= NORMAL_SCORE && data.value < HIGH_SCORE)
-    result = 'Trung bình';
-  else if (data.value >= LOW_SCORE && data.value < NORMAL_SCORE)
-    result = 'Thấp';
-  else if (data.value < 0) result = 'Không phù hợp';
+  // let result = '';
+  // if (data.value >= HIGH_SCORE) result = 'Cao';
+  // else if (data.value >= NORMAL_SCORE && data.value < HIGH_SCORE)
+  //   result = 'Trung bình';
+  // else if (data.value >= LOW_SCORE && data.value < NORMAL_SCORE)
+  //   result = 'Thấp';
+  // else if (data.value < 0) result = 'Không phù hợp';
+  const rating = ratingStar(data.value);
 
   return data.value === undefined || data.value === null ? (
     <Typography sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
-      Chưa xác định
+      Chưa phân tích
     </Typography>
   ) : (
-    <Box
-      sx={{
-        width: '90%',
-        borderRadius: 2,
-        p: 1,
-        bgcolor:
-          data.value >= HIGH_SCORE
-            ? '#ffc107'
-            : data.value >= NORMAL_SCORE
-            ? '#A1C398'
-            : data.value >= LOW_SCORE
-            ? '#b5b5b5'
-            : '#efefef',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      {result}
-    </Box>
+    // <Box
+    //   sx={{
+    //     width: '90%',
+    //     borderRadius: 2,
+    //     p: 1,
+    //     bgcolor:
+    //       data.value >= HIGH_SCORE
+    //         ? '#ffc107'
+    //         : data.value >= NORMAL_SCORE
+    //         ? '#A1C398'
+    //         : data.value >= LOW_SCORE
+    //         ? '#b5b5b5'
+    //         : '#efefef',
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignItems: 'center'
+    //   }}
+    // >
+    //   {result}
+    // </Box>
+    <Rating value={rating} max={3} precision={0.5} readOnly />
   );
 };
 

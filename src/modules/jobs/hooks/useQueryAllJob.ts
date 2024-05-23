@@ -1,12 +1,12 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { JobViewService } from '../jobService';
 
 const useQueryAllJob = (params?) => {
   const { data, isLoading, refetch, isFetching } = useQuery<
-    ResponseData<Job[]>,
+    ResponseData<PaginationType<Job[]>>,
     AxiosError<ResponseData<Job[]>>
   >(
     ['get-AllJobs', params],
@@ -26,7 +26,13 @@ const useQueryAllJob = (params?) => {
   );
 
   return {
-    jobs: data?.data?.map((item) => ({ ...item, id: item.postId })) || [],
+    jobs:
+      data?.data?.items?.map((item) => ({ ...item, id: item.postId })) || [],
+    totalItems: data?.data?.meta.totalItems,
+    itemCount: data?.data?.meta.itemCount,
+    itemPerPage: data?.data?.meta.itemPerPage,
+    totalPages: data?.data?.meta.totalPages,
+    currentPage: data?.data?.meta.currentPage,
     isLoading,
     refetch,
     isFetching

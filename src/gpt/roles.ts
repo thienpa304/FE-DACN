@@ -10,13 +10,10 @@ Nội dung tin tuyển dụng cung cấp như sau:
 
 export const RoundOneCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc.
 Hãy đọc hồ sơ xin việc (emplyee_Profile) và thông tin tuyển dụng (employer_Requirement) sau đó so sánh và đánh giá xem thông tin emplyee_Profile có phù hợp với thông tin tuyển dụng hay không. Hãy đánh giá xem emplyee_Profile theo các tiêu chí sau.
-Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (dob), ngành nghề (profession), bằng cấp (degree), kinh nghiệm (experience) và so sánh với yêu cầu tương ứng trong tin tuyển dụng theo các tiêu chí sau:
-- 1. Nếu emplyee_Profile thiếu bất kì 1 thông tin sex, dob, profession, degree, experience thì không đạt.
-- 2. sex trong emplyee_Profile phải hoàn toàn phù hợp với sex trong employer_Requirement thì mới đạt yêu cầu (ví dụ cùng là Nam hoặc cùng là Nữ).
-- 3. Dựa vào ngày sinh (dob) tính ra độ tuổi hiện tại, độ tuổi hiện tại phải lớn hơn minAge và nhỏ hơn maxAge trong employer_Requirement thì mới đạt.
-- 4. profession trong emplyee_Profile phải có ít nhất 1 ngành nghề chung ngành với ngành trong profession trong employer_Requirement thì mới đạt yêu cầu, Sử dụng các phương pháp như Phân tích ngữ cảnh, Phân tích ngữ cảnh dựa trên ngữ nghĩa, mạng ngữ nghĩa (Semantic Networks) để đánh giá mức độ liên quan giữa các từ khóa. (Ví dụ Kỹ sư phần mềm, Công nghệ thông tin, Khoa học Máy tính, Web, Frontend, Backend... là mức độ liên quan cao; Quảng cáo, sale, bán sỉ, bán lẻ, Marketing, Bán hàng, Kinh doanh... là mức độ liên quan cao).
-- 5. degree trong emplyee_Profile phải cao hơn hoặc bằng với degree trong employer_Requirement thì mới đạt yêu cầu (ví dụ Tiến sĩ > Thạc sĩ > cử nhân > cao đẳng > trung cấp > phổ thông, ... tương tự).
-- 6. experience trong emplyee_Profile phải lớn hơn experience trong employer_Requirement thì mới đạt yêu cầu (ví dụ trên 5 năm trở > 5 năm > 4 năm > ...> 1 năm > dưới 1 năm, ... tương tự).
+- 1. Nếu emplyee_Profile thiếu bất kì 1 thông tin profession, degree, experience thì không đạt.
+- 2. profession trong emplyee_Profile phải có ít nhất 1 ngành nghề có mức độ liên quan cao so với ngành trong profession trong employer_Requirement thì mới đạt yêu cầu, Sử dụng các phương pháp như Phân tích ngữ cảnh, Phân tích ngữ cảnh dựa trên ngữ nghĩa để đánh giá mức độ liên quan giữa các từ khóa. (Ví dụ Kỹ sư phần mềm, Công nghệ thông tin, Khoa học Máy tính, Web, Frontend, Backend... là mức độ liên quan cao; Quảng cáo, sale, bán sỉ, bán lẻ, Marketing, Bán hàng, Kinh doanh... là mức độ liên quan cao).
+- 3. degree trong emplyee_Profile phải cao hơn hoặc bằng với degree trong employer_Requirement thì mới đạt yêu cầu (ví dụ Tiến sĩ > Thạc sĩ > cử nhân > cao đẳng > trung cấp > phổ thông, ... tương tự).
+- 4. experience trong emplyee_Profile phải cao hơn experience trong employer_Requirement thì mới đạt yêu cầu (ví dụ trên 5 năm trở > 5 năm > 4 năm > ...> 1 năm > dưới 1 năm, ... tương tự).
 * result chỉ có thể là 1 trong 2 con số -10 hoặc 30.
 * Nếu đạt hết TẤT CẢ 6 tiêu chí trên thì result là con số 30. Ví dụ result là: 30
 * Nếu có bất kì 1 tiêu chí nào không đạt yêu cầu thì dừng phân tích ngay, đồng thời trả ra result là con số -10. Ví dụ result là: -10
@@ -39,3 +36,15 @@ export const extractSkill = `Trích ra danh sách các kĩ năng (bao gồm kĩ 
 
 export const translate = `Hãy dịch các từ khóa sau sang tiếng Việt, và viết hoa chữ cái đầu. 
 ***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "Backend", "Tiếng hoa", "Đàm phán", "Làm việc nhóm", "Giao tiếp", "Thuyết trình"]. `;
+
+export const extractCommonInfo = `Trích ra thông tin về ngành nghề (profession), trình độ học vấn (education), số năm kinh nghiệm làm việc trong ngành (experience) trong hồ sơ xin việc. Kết quả các thông tin có định dạng sau:
+- profession: tên ngành nghề,
+- education: (Tiến sĩ, Thạc sĩ, cử nhân, cao đẳng, trung cấp, phổ thông, ...),
+- experience: (số) năm. (nếu không có kinh nghiệp làm việc thì trả về 0 năm)
+***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) là ở dạng Object, không chứa bất kì lời nào khác. Ví dụ câu trả lời là:
+{ 
+    "profession": "Công nghệ thông tin",
+    "education": "Thạc sĩ",
+    "experience": "3 năm", 
+}
+`;

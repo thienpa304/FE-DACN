@@ -32,16 +32,17 @@ const CandidateProfiles = () => {
     currentPage: 1,
     currentTab: ''
   });
-  const { data, isLoading: isLoadingData } = useQueryCandidateApplications({
+  const {
+    data,
+    isLoading: isLoadingData,
+    totalItems,
+    totalPages
+  } = useQueryCandidateApplications({
     page: currentQuery.currentPage,
     num: pageSize,
     status: currentQuery.currentTab
   });
   const { setApplicationList, resetApplicationList } = useApplicationList();
-  const { totalResults, isLoading: isLoadingTotalResults } =
-    useQueryTotalResultOfApplicationByEmployer({
-      status: currentQuery.currentTab
-    });
 
   const handleTabsChange = (e, value) => {
     resetApplicationList(); // Reset application list when changing tab
@@ -58,13 +59,14 @@ const CandidateProfiles = () => {
     }));
   };
 
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
+  // const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   useEffect(() => {
     setApplicationList(data);
   }, [JSON.stringify(data)]);
 
-  if (isLoadingData || isLoadingTotalResults) return <SuspenseLoader />;
+  if (isLoadingData) return <SuspenseLoader />;
+
   return (
     <Container maxWidth="xl">
       <Grid

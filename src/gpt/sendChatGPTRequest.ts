@@ -94,7 +94,7 @@ const sendChatGPTRequest = async (
 
 export const getEmbedding = async (content) => {
   if (!content || content.length === 0) return [];
-  debugger;
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization:
@@ -119,9 +119,14 @@ export const getEmbedding = async (content) => {
   };
 
   const processEmbeddings = async (content) => {
+    const responses = [];
+    let hasShownAlert = false;
+
     const results = await Promise.allSettled(
       content.map(async (inputText) => {
         let i = 0;
+        console.log('inputText', inputText);
+
         const employer_Requirement = (
           await sendMessage(inputText?.employer_Requirement)
         )?.map((res) => ({
@@ -146,7 +151,25 @@ export const getEmbedding = async (content) => {
       })
     );
 
-    return processMessages(results, sendMessage);
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        responses.push(result.value);
+      } else if (result.status === 'rejected') {
+        if (!hasShownAlert) {
+          console.error('Error in sendMessage:', result.reason);
+          alertDialog({
+            selectedId: '_',
+            handleConfirm: () => {},
+            message: result.reason.message,
+            hideCancelButton: true
+          });
+          hasShownAlert = true;
+        }
+        break;
+      }
+    }
+
+    return responses;
   };
 
   return await processEmbeddings(content);

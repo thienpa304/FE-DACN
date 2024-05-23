@@ -309,20 +309,15 @@ const columns: GridColDef[] = [
 ];
 
 export default function Table({ statusFilter, selectedProfession }) {
-  const { totalResults, isLoading: isLoadingTotalResult } =
-    useQueryTotalResultOfJobsByAdmin({
-      status: ApprovalStatus[statusFilter],
-      profession: selectedProfession
-    });
   const { mutate } = useMutateJobStatus();
   const [start, setStart] = useState(false);
   const [showList, setShowList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
   const pageSize = 9;
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
+  // const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
-  const { jobs, isLoading } = useQueryJobByAdmin({
+  const { jobs, isLoading, totalPages, totalItems } = useQueryJobByAdmin({
     page: currentPage,
     num: pageSize,
     status: ApprovalStatus[statusFilter],
@@ -493,7 +488,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
         }}
-        loading={isLoading || isLoadingTotalResult}
+        loading={isLoading}
         initialState={{
           columns: {
             columnVisibilityModel: {

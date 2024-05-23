@@ -15,14 +15,16 @@ import { isMobile } from 'src/constants/reponsive';
 
 function alertDialog({
   selectedId,
-  handleConfirm,
+  handleConfirm = () => {},
   message = 'Bạn có chắc chắn muốn xóa?',
-  hideCancelButton = false
+  hideCancelButton = false,
+  title = 'Thông báo'
 }: {
-  selectedId: number | string;
-  handleConfirm: (id: number | string, ...args: any[]) => void;
+  selectedId?: number | string;
+  handleConfirm?: (id: number | string, ...args: any[]) => void;
   message?: any;
   hideCancelButton?: boolean;
+  title?: string;
 }) {
   const domNode = document.createElement('div'); // Tạo một thẻ div mới cho Portal
   const root = createRoot(domNode);
@@ -50,7 +52,7 @@ function alertDialog({
             sx={{ fontSize: { sm: 18, xs: 16 }, textAlign: 'center' }}
             fontWeight={700}
           >
-            Thông báo
+            {title}
           </Typography>
         </DialogTitle>
         <DialogContent

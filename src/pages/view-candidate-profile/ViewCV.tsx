@@ -172,6 +172,37 @@ const ViewCV = (props) => {
                     </Typography>
                   )}
                 </CustomContainer>
+
+                <CustomContainer mt={4} sx={{ p: { md: 3, xs: 1 } }}>
+                  <Typography fontSize={20} fontWeight={700} gutterBottom>
+                    Chứng chỉ khác
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                  {user?.online_profile?.another_degrees?.map(
+                    (degree, index) => (
+                      <Box key={index} mb={3}>
+                        {index !== 0 && (
+                          <Divider
+                            sx={{ my: 3, width: '80%', marginX: 'auto' }}
+                          />
+                        )}
+                        <Typography sx={bodyText}>
+                          <strong>Tên chứng chỉ: </strong> {degree.degreeName}
+                        </Typography>
+                        <Typography sx={bodyText}>
+                          <strong>Mức độ thành thạo: </strong> {degree.level}
+                        </Typography>
+                      </Box>
+                    )
+                  )}
+                  {!user?.online_profile?.another_degrees.length && (
+                    <Typography
+                      sx={[bodyText, { color: '#999', fontStyle: 'italic' }]}
+                    >
+                      Chưa cập nhật
+                    </Typography>
+                  )}
+                </CustomContainer>
               </>
             )}
 
