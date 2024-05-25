@@ -34,8 +34,8 @@ const useQueryEmployee = (params?) => {
 
   return {
     profile: data?.data?.items || [],
-    totalPages: data?.data?.meta.totalPages,
-    totalItems: data?.data?.meta.totalItems,
+    totalPages: data?.data?.meta?.totalPages,
+    totalItems: data?.data?.meta?.totalItems,
     isLoading,
     refetch
   };

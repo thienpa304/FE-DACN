@@ -28,8 +28,8 @@ const useQueryJobByOwner = (params?) => {
   return {
     jobs:
       data?.data?.items?.map((item) => ({ ...item, id: item.postId })) || [],
-    totalResults: data?.data?.meta.totalItems,
-    totalPages: data?.data?.meta.totalPages,
+    totalResults: data?.data?.meta?.totalItems,
+    totalPages: data?.data?.meta?.totalPages,
     isLoading
   };
 };

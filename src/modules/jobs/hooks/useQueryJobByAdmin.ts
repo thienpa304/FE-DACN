@@ -29,12 +29,13 @@ const useQueryJobByAdmin = (params?) => {
   );
 
   return {
-    jobs: data?.data?.items.map((item) => ({ ...item, id: item.postId })) || [],
-    totalItems: data?.data?.meta.totalItems,
-    itemCount: data?.data?.meta.itemCount,
-    itemPerPage: data?.data?.meta.itemPerPage,
-    totalPages: data?.data?.meta.totalPages,
-    currentPage: data?.data?.meta.currentPage,
+    jobs:
+      data?.data?.items?.map((item) => ({ ...item, id: item.postId })) || [],
+    totalItems: data?.data?.meta?.totalItems,
+    itemCount: data?.data?.meta?.itemCount,
+    itemPerPage: data?.data?.meta?.itemPerPage,
+    totalPages: data?.data?.meta?.totalPages,
+    currentPage: data?.data?.meta?.currentPage,
     isLoading,
     refetch
   };

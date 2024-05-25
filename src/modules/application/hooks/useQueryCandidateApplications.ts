@@ -21,7 +21,7 @@ const useQueryCandidateApplications = (params?) => {
     }
   );
 
-  console.log('...api...', data?.data?.meta.itemCount);
+  console.log('...api...', data?.data?.meta?.itemCount);
 
   return {
     data:
@@ -29,11 +29,11 @@ const useQueryCandidateApplications = (params?) => {
         ...item,
         id: item.application_id
       })) || [],
-    totalItems: data?.data?.meta.totalItems,
-    itemCount: data?.data?.meta.itemCount,
-    itemPerPage: data?.data?.meta.itemPerPage,
-    totalPages: data?.data?.meta.totalPages,
-    currentPage: data?.data?.meta.currentPage,
+    totalItems: data?.data?.meta?.totalItems,
+    itemCount: data?.data?.meta?.itemCount,
+    itemPerPage: data?.data?.meta?.itemPerPage,
+    totalPages: data?.data?.meta?.totalPages,
+    currentPage: data?.data?.meta?.currentPage,
     isLoading,
     refetch,
     isFetching
