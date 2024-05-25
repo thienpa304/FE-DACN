@@ -8,7 +8,7 @@ import SearchBar from 'src/components/SearchBar/SearchBar';
 import CompanyList from 'src/modules/company/components/CompanyList';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import useQueryCompanyListByUser from 'src/modules/company/hook/useQueryCompanyListByUser';
-import Company from './CompanyTab';
+import CompanyTab from './CompanyTab';
 import { checkIsTablet } from 'src/utils/responsive';
 import { useTheme } from '@emotion/react';
 
@@ -30,7 +30,7 @@ const Home = () => {
         <SearchBar to="profession" />
         <ProfessionType />
         <JobOpeningsTab />
-        <Company
+        <CompanyTab
           pageTitle="Công ty đang tuyển dụng"
           queryCompanys={useQueryCompanyListByUser}
         />

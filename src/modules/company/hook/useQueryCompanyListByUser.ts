@@ -1,26 +1,21 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { Company } from 'src/modules/users/model';
 import { GetCompanyList } from '../../users/userService';
 
-type ReponseType = {
-  companyList: Company[];
-  totalCompany: number;
-};
-
 const useQueryCompanyListByUser = (params?) => {
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<ReponseType>,
-    AxiosError<ResponseData<ReponseType>>
+    ResponseData<PaginationType<Company[]>>,
+    AxiosError<ResponseData<Company[]>>
   >(['get-CompanyList', params], () => GetCompanyList.get({ params }), {
     retry: 1,
     refetchOnWindowFocus: false
   });
 
   return {
-    companyList: data?.data?.companyList,
-    totalResults: data?.data?.totalCompany,
+    companyList: data?.data?.items,
+    totalPages: data?.data?.meta.totalPages,
     isLoading,
     refetch
   };

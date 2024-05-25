@@ -11,7 +11,7 @@ const useQueryFollowEmployee = (params?) => {
     ResponseData<PaginationType<any[]>>,
     AxiosError<ResponseData<any[]>>
   >(
-    ['get-FollowEmployees', params?.page],
+    ['get-FollowEmployees', params],
     () => FollowEmployeesService.get({ params }),
     {
       keepPreviousData: true,

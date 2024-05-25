@@ -212,7 +212,7 @@ const StatisticsAndReports = () => {
                         <XAxis
                           dataKey="time"
                           label={{
-                            value: 'Tháng',
+                            value: selectedMonth ? 'Ngày' : 'Tháng',
                             position: 'insideBottom',
                             offset: -10
                           }}

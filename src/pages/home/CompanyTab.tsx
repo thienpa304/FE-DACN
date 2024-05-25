@@ -26,11 +26,10 @@ export default function CompanyTab(props) {
   const pageSize = isMobile ? 4 : isTablet ? 4 : isDesktop ? 3 : 4;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const { companyList, totalResults } = queryCompanys({
+  const { companyList, totalPages } = queryCompanys({
     num: pageSize,
     page: currentPage
   });
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   return (
     <Card

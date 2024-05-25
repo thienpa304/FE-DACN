@@ -40,7 +40,7 @@ function CompanyCard({
         border: 1,
         borderRadius: '3px',
         borderColor: '#98E4FF',
-        height: '350px'
+        height: '360px'
       }}
     >
       <CardHeader

@@ -133,8 +133,7 @@ const userManagementColumns: GridColDef[] = [
 
 const UserManagement = () => {
   const pageSize = 8;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [users, setUsers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); 
   const { userList, isLoading, totalPages } = useQueryAllUserByAdmin({
     page: currentPage,
     num: pageSize

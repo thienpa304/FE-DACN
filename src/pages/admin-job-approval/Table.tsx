@@ -124,13 +124,8 @@ const renderStatus = (data) => {
       onChange={handleChangeValue}
       size="small"
       sx={{
-        fontSize: isMobile && '10px',
-        color: displayColor(),
-        '.css-dyke5w-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select':
-          {
-            fontSize: 13
-            // mx: -1
-          }
+        fontSize: isMobile ? 10 : 13,
+        color: displayColor()
       }}
     />
   );
@@ -315,9 +310,8 @@ export default function Table({ statusFilter, selectedProfession }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
   const pageSize = 9;
-  // const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
-  const { jobs, isLoading, totalPages, totalItems } = useQueryJobByAdmin({
+  const { jobs, isLoading, totalPages } = useQueryJobByAdmin({
     page: currentPage,
     num: pageSize,
     status: ApprovalStatus[statusFilter],
@@ -384,16 +378,38 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   const handleQuickApprove = () => {
     alertDialog({
-      selectedId: '_',
       handleConfirm,
-      message: `Chuyển tin tuyển dụng đã chọn sang trạng thái ${ApprovalStatus[quickApproveValue]}?`
+      message: `Chuyển tin tuyển dụng đã chọn sang trạng thái ${ApprovalStatus[
+        quickApproveValue
+      ].toUpperCase()}?`
     });
   };
 
   const handleConfirm = () => {
-    Promise.all(
-      selectedRows.map((id) => mutate([id, { status: quickApproveValue }]))
-    );
+    const handleConfirmApprove = () => {
+      debugger;
+      Promise.all(
+        selectedRows.map((id) => mutate([id, { status: quickApproveValue }]))
+      );
+    };
+    const violationJob = jobs.find((item) => {
+      console.log(item.check);
+
+      return selectedRows.includes(item.postId) && item.check == true;
+    });
+
+    if (
+      selectedRows.some(
+        (row) =>
+          violationJob && quickApproveValue === Object.keys(ApprovalStatus)[0]
+      )
+    ) {
+      alertDialog({
+        handleConfirm: handleConfirmApprove,
+        message:
+          'Có tin tuyển dụng đang ở trạng thái vi phạm, bạn có chắc muốn các duyệt tin tuyển dụng đã chọn không?'
+      });
+    } else handleConfirmApprove();
   };
 
   return (
@@ -461,11 +477,7 @@ export default function Table({ statusFilter, selectedProfession }) {
               sx={{ py: 1, px: 0, bgcolor: '#FC4100' }}
             >
               <Grid item xs={!start ? 12 : 9}>
-                {!selectedRows.length
-                  ? 'Chưa chọn tin đăng'
-                  : !start
-                  ? 'Kiểm duyệt'
-                  : 'Đang kiểm duyệt...'}
+                {!start ? 'Kiểm duyệt' : 'Đang kiểm duyệt...'}
               </Grid>
               <Grid item xs={start ? 3 : 0}>
                 {start && <CircularProgress size={18} color="secondary" />}

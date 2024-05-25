@@ -52,11 +52,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import { deepEqual } from 'src/utils/formatData';
-import { Job } from 'src/modules/jobs/model';
 
 const ViewJobDetail = ({ postId, setSelectedId }) => {
-  if (!Boolean(postId)) return;
+  if (!postId) return;
 
   const { data, isLoading } = useQueryJobById(postId);
 
@@ -286,7 +284,7 @@ const columns: GridColDef[] = [
   {
     field: 'matchingScore',
     headerName: 'Độ phù hợp',
-    minWidth: 150,
+    minWidth: 140,
     align: 'center',
     headerAlign: 'center',
     renderCell: renderMatchingScore,
@@ -295,7 +293,8 @@ const columns: GridColDef[] = [
 ];
 
 export default function Table(props) {
-  const { pageSize, data, currentPage, totalPages, handlePageChange } = props;
+  const { pageSize, data, currentPage, totalPages, handlePageChange, loading } =
+    props;
   // data : danh sách Application
   const [analyzedProfile, setAnalyzedProfile] = useState<
     ProfileApplicationType[]
@@ -314,18 +313,11 @@ export default function Table(props) {
     resultData: null
   });
   const [selectedRows, setSelectedRows] = useState([]);
-  const [isMappingData, setIsMappingData] = useState(true);
   const [quickApproveValue, setQuickApproveValue] = useState(null);
 
-  // const applicationIdList = data?.map((item) => item?.application_id);
-
-  // const jobsIdList: number[] = useMemo(
-  //   () => [...new Set<number>(data?.map((item) => item?.postId))],
-  //   [data]
-  // );
-
-  // const { jobs, isLoading: isLoadingJobs } = useQueryJobByIdList(jobsIdList);
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
+
+  console.log(loading);
 
   const finishedAll = () => {
     setStart(false);
@@ -403,57 +395,6 @@ export default function Table(props) {
       else if (!roundThreeFinished) setRoundThreeFinished(true);
     }
   };
-
-  // const matchJobAndProfile = (): ProfileApplicationType[] =>
-  //   data
-  //     ?.map((item) => {
-  //       const job = jobs?.find((job) => job?.postId === item?.postId);
-  //       if (!job) return null;
-
-  //       const {
-  //         application_id,
-  //         name,
-  //         email,
-  //         phone,
-  //         applicationType,
-  //         status,
-  //         matchingScore,
-  //         employee,
-  //         CV,
-  //         id
-  //       } = item;
-  //       const { postId, jobTitle } = job;
-  //       const keywords = getKeywords(item);
-
-  //       const applicationInfo = {
-  //         id: application_id,
-  //         employer_Requirement: preprocessJobData(job),
-  //         employee_Profile: {
-  //           online_profile: employee?.online_profile,
-  //           attached_document: employee?.attached_document,
-  //           personal_information: {
-  //             ...employee?.user,
-  //             name,
-  //             email,
-  //             phone
-  //           },
-  //           application: {
-  //             id,
-  //             application_id,
-  //             postId,
-  //             CV,
-  //             applicationType,
-  //             jobTitle,
-  //             keywords,
-  //             name,
-  //             status,
-  //             matchingScore
-  //           }
-  //         }
-  //       };
-  //       return applicationInfo;
-  //     })
-  //     .filter(Boolean);
 
   const handleReview = () => {
     if (!roundOneFinished) {
@@ -535,30 +476,6 @@ export default function Table(props) {
       handleAnalyzeResult(goToAnalyzeResult.resultData);
     }
   }, [goToAnalyzeResult.signal]);
-
-  // First time render the page
-  // useEffect(() => {
-  //   const initializeData = () => {
-  //     setIsMappingData(true);
-
-  //     if (!jobs.length || start) {
-  //       setIsMappingData(false);
-  //       return;
-  //     }
-
-  //     const initialJobProfileData = matchJobAndProfile();
-
-  //     if (!deepEqual(initialJobProfileData, showList)) {
-  //       setShowList(initialJobProfileData);
-  //     }
-  //     if (!deepEqual(initialJobProfileData, analyzedProfile)) {
-  //       setAnalyzedProfile(initialJobProfileData);
-  //     }
-  //     setIsMappingData(false);
-  //   };
-
-  //   initializeData();
-  // }, [data, JSON.stringify(jobs)]);
 
   useEffect(() => {
     setShowList(data);
@@ -676,20 +593,20 @@ export default function Table(props) {
           }
         }}
         hideFooter
-        sx={{ height: '74vh', width: '100%' }}
+        sx={{ minHeight: '74vh', width: '100%' }}
         checkboxSelection
         disableRowSelectionOnClick={isMobile}
         rowSelection={true}
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
         }}
-        // loading={isLoadingJobs || isMappingData}
+        loading={loading}
       />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         handlePageChange={handlePageChange}
-        disabled={start}
+        disabled={start || loading}
       />
     </>
   );

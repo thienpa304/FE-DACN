@@ -45,7 +45,7 @@ export const InfoGrid = (props) => {
           </InputData>
         </>
       )}
-      {item.label === 'Giới thiệu doanh nghiệp' && (
+      {item.label === 'Giới thiệu doanh nghiệp' && item.value && (
         <>
           <InputLabel item xs={12}>
             {item.label}

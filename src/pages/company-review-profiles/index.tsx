@@ -98,12 +98,11 @@ const CandidateProfiles = () => {
     num: pageSize,
     status: currentTab
   });
-  // const jobsIdList: number[] = useMemo(
-  //   () => [...new Set<number>(data?.map((item) => item?.postId))],
-  //   [data]
-  // );
-  const jobsIdList = [...new Set<number>(data?.map((item) => item?.postId))];
-  console.log('jobsIdList', jobsIdList);
+  const jobsIdList: number[] = useMemo(
+    () => [...new Set<number>(data?.map((item) => item?.postId))],
+    [data]
+  );
+
   const { jobs, isLoading: isLoadingJobs } = useQueryJobByIdList(jobsIdList);
 
   const handleTabsChange = (e, value) => {
@@ -117,11 +116,6 @@ const CandidateProfiles = () => {
 
     return matchJobAndProfile(jobs, data);
   }, [data, jobs]);
-  // console.log('jobs', jobs);
-  // console.log('data', data);
-  // console.log('initialJobProfileData', initialJobProfileData);
-
-  if (isLoadingData) return <SuspenseLoader />;
 
   return (
     <Container maxWidth="xl">
@@ -161,6 +155,7 @@ const CandidateProfiles = () => {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 handlePageChange={setCurrentPage}
+                loading={isLoadingData || isLoadingJobs}
               />
             </CardContent>
           </Card>

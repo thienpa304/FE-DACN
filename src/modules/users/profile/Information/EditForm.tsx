@@ -245,7 +245,6 @@ export function CompanyForm(props) {
             id="description"
             label="Mô tả công ty"
             name="description"
-            required
           />
         </Grid>
       </Grid>

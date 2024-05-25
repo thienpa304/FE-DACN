@@ -51,7 +51,7 @@ const ProfileManagement = () => {
   const [viewProfessionMode, setViewProfessionMode] = useState(true);
 
   const pageSize = 10;
-  const { employeeList, isLoading, refetch, totalPages, totalItems } =
+  const { employeeList, isLoading, refetch, totalPages } =
     useQueryEmployeesByAdmin(
       {
         profession: selectedProfession,
