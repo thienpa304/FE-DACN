@@ -19,7 +19,7 @@ import EditExperience from './EditWork';
 import useMutateDeleteExperience from './hooks/useMutateDeleteExperience';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 import useWorkExperience from '../../hooks/useWorkExperience';
-import { toOutputDateString } from 'src/utils/inputOutputFormat';
+import { toOutputDateString } from 'src/utils/formatData';
 import alertDialog from 'src/utils/alertDialog';
 
 export default function ExperienceView(props) {

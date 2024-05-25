@@ -39,9 +39,6 @@ function JobList(props) {
     num: pageSize,
     ...filter
   });
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
 
   const handleFilter = (data: any) => {
     setFilter((prev) => ({ ...prev, ...data }));
@@ -93,7 +90,7 @@ function JobList(props) {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        handlePageChange={setCurrentPage}
       />
     </Container>
   );

@@ -1,21 +1,19 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { FollowJobService } from '../jobService';
 import { useApp } from 'src/modules/app/hooks';
+import { Company } from 'src/modules/users/model';
 
-interface responseType {
-  userId: number;
-  jobs: any[];
-}
+type ResponseType = Partial<Job> & Partial<Company>;
 
 const useQueryFollowJobs = (params?) => {
   const { isEmployee } = useApp();
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<responseType>,
-    AxiosError<ResponseData<responseType>>
-  >(['get-FollowJobs', params?.page], () => FollowJobService.get({ params }), {
+    ResponseData<PaginationType<ResponseType[]>>,
+    AxiosError<ResponseData<ResponseType[]>>
+  >(['get-FollowJobs', params], () => FollowJobService.get({ params }), {
     keepPreviousData: true,
     retry: 1,
     refetchOnWindowFocus: false,
@@ -23,7 +21,8 @@ const useQueryFollowJobs = (params?) => {
   });
 
   return {
-    jobFollow: data?.data?.jobs,
+    jobFollow: data?.data?.items,
+    totalPages: data?.data?.meta.totalPages,
     isLoading,
     refetch
   };

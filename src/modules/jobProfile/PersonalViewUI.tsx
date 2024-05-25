@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
-import { toOutputDateString } from 'src/utils/inputOutputFormat';
+import { toOutputDateString } from 'src/utils/formatData';
 
 const bodyText = {
   fontSize: 14,

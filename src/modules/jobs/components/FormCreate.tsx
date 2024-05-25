@@ -39,11 +39,12 @@ import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
 import DatePicker from 'src/components/DatePicker';
 import _ from 'lodash';
-import { preProcessText, removeHTMLTag } from 'src/utils/inputOutputFormat';
+import { preProcessText, removeHTMLTag } from 'src/utils/formatData';
 import { loadKeywords } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import Autocomplete from 'src/components/Autocomplete';
+import { Job } from '../model';
 
 const defaultValues = {
   sex: '',
@@ -122,7 +123,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     handleAnalysis(newData);
   };
 
-  const handleAnalysis = async (newData) => {
+  const handleAnalysis = async (newData: Job) => {
     const jobDescription = preProcessText(
       JSON.stringify(newData.jobDescription)
     );
@@ -130,6 +131,7 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       JSON.stringify(newData.jobRequirements)
     );
     const processedText = {
+      jobTitle: newData.jobTitle,
       jobDescription: jobDescription,
       jobRequirements: jobRequirements
     };

@@ -14,8 +14,13 @@ import { rewriteUrl } from 'src/utils/rewriteUrl';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
 import { isMobile } from 'src/constants/reponsive';
+import { useMemo, useState } from 'react';
+import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQueryJobAppliedByEmployee';
+import Pagination from 'src/components/Pagination';
 
 const renderJobTitle = (data) => {
+  console.log(data);
+
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const handleOpenDetailModal = () => {
     const detailsData = {
@@ -104,18 +109,34 @@ const columns: GridColDef[] = [
   }
 ];
 
-export default function TablePost({ data }) {
+export default function TablePost(props) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
+  const { data, isLoading, totalPages } = useQueryJobAppliedByEmployee({
+    page: currentPage,
+    num: pageSize
+  });
+
+  const flattenedApplications = useMemo(
+    () =>
+      data.map((app) => ({
+        ...app,
+        postId: app.jobPosting.postId,
+        jobTitle: app.jobPosting.jobTitle,
+        applicationDeadline: app.jobPosting.applicationDeadline,
+        companyName: app.jobPosting.employer.companyName
+      })),
+    [data]
+  );
+  console.log(flattenedApplications);
+
   return (
-    <Box sx={{ height: '72.7vh', width: '100%' }}>
+    <Box>
       <TableData
-        rows={data}
+        sx={{ minHeight: '72vh', width: '100%' }}
+        rows={flattenedApplications}
         columns={columns}
         initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 8
-            }
-          },
           columns: {
             columnVisibilityModel: {
               companyName: !isMobile,
@@ -124,6 +145,13 @@ export default function TablePost({ data }) {
             }
           }
         }}
+        hideFooter
+        loading={isLoading}
+      />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={setCurrentPage}
       />
     </Box>
   );

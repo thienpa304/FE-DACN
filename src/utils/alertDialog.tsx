@@ -7,6 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {
   DialogContent,
   DialogContentText,
+  Divider,
   Typography,
   styled
 } from '@mui/material';
@@ -55,6 +56,7 @@ function alertDialog({
             {title}
           </Typography>
         </DialogTitle>
+        <Divider />
         <DialogContent
           // display="flex"
           // justifyContent="center"

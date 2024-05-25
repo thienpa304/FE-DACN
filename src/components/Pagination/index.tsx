@@ -1,5 +1,6 @@
 import { Pagination as Page } from '@mui/material';
 import React from 'react';
+import { handlePageChange as handleChange } from 'src/utils/pagination';
 
 export default function Pagination({
   currentPage,
@@ -11,7 +12,7 @@ export default function Pagination({
     <Page
       count={totalPages}
       page={currentPage}
-      onChange={(event, page) => handlePageChange(page)}
+      onChange={(event, page) => handleChange(page, handlePageChange)}
       color="secondary"
       variant="outlined"
       shape="rounded"

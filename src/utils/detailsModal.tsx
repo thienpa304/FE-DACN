@@ -19,7 +19,14 @@ function detailsModal(data) {
         <DialogContent>
           {Object.keys(data).map((key, index) => (
             <Box key={index}>
-              <TypographyEllipsis sx={{ WebkitLineClamp: 3, mb: 2 }}>
+              <TypographyEllipsis
+                sx={{
+                  WebkitLineClamp: 3,
+                  mb: 2
+                  // alignItems: 'center',
+                  // display: 'flex'
+                }}
+              >
                 <b>{key}: </b>
                 {data[key]}
               </TypographyEllipsis>

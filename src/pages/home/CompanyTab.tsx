@@ -32,9 +32,6 @@ export default function CompanyTab(props) {
   });
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
   return (
     <Card
       sx={{
@@ -88,7 +85,7 @@ export default function CompanyTab(props) {
         <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
-          handlePageChange={handlePageChange}
+          handlePageChange={setCurrentPage}
         />
       </Box>
     </Card>

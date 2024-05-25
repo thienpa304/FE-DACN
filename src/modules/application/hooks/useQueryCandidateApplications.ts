@@ -11,12 +11,7 @@ const useQueryCandidateApplications = (params?) => {
     ResponseData<PaginationType<Application[]>>,
     AxiosError<ResponseData<Application[]>>
   >(
-    [
-      'application-getList',
-      params?.page,
-      params?.status,
-      params?.matchingScore
-    ],
+    ['application-getList', params],
     () => CandidateProfilesService.get({ params }),
     {
       keepPreviousData: true,
@@ -25,6 +20,8 @@ const useQueryCandidateApplications = (params?) => {
       enabled: isEmployer
     }
   );
+
+  console.log('...api...', data?.data?.meta.itemCount);
 
   return {
     data:

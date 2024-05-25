@@ -21,10 +21,6 @@ function JobOpeningsTab() {
     num: pageSize
   });
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
   if (isLoading) return <SuspenseLoader />;
 
   return (
@@ -80,7 +76,7 @@ function JobOpeningsTab() {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        handlePageChange={setCurrentPage}
       />
     </Card>
   );

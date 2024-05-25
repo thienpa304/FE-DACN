@@ -1,11 +1,17 @@
-import { Box, Container, Grid, Pagination, Typography } from '@mui/material';
+import { Box, Container, Grid, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import CompanyCard from 'src/modules/company/components/CompanyCard';
 import useQueryFollowCompany from 'src/modules/company/hook/useQueryFollowCompany';
 
 export default function JobFollow() {
-  const { companyFollow, isLoading } = useQueryFollowCompany();
+  const pageSize = 12;
+  const [currentPage, setCurrentPage] = useState(1);
+  const { companyFollow, isLoading, totalPages } = useQueryFollowCompany({
+    page: currentPage,
+    num: pageSize
+  });
 
   if (isLoading) return <SuspenseLoader />;
   if (!companyFollow?.length) {
@@ -32,20 +38,20 @@ export default function JobFollow() {
       </Typography>
       <Grid container mb={3} spacing={2}>
         {companyFollow?.map((company, index) => (
-          <Grid key={company.postId} item xs={12} sm={6} md={4}>
+          <Grid key={company?.employerId} item xs={12} sm={6} md={4}>
             <CompanyCard
               key={index}
-              company={company}
+              company={company?.employer}
               employerId={company?.employerId}
             />
           </Grid>
         ))}
       </Grid>
-      {/* <Pagination
+      <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
-      /> */}
+        handlePageChange={setCurrentPage}
+      />
     </Container>
   );
 }

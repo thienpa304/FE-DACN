@@ -1,10 +1,11 @@
 import {
   RoundOneCheck,
+  cvAnalysist,
   extractCommonInfo,
   extractSkill,
   translate
 } from 'src/GPT/roles';
-import { checkIsJSON, preProcessText } from './inputOutputFormat';
+import { checkIsJSON, preProcessText } from './formatData';
 import sendChatGPTRequest, { getEmbedding } from 'src/GPT/sendChatGPTRequest';
 import { getFileByUrl } from 'src/common/firebaseService';
 import pdfToText from 'react-pdftotext';
@@ -92,29 +93,17 @@ const findMatchedProfile = (
 };
 
 export const preprocessJobData = (job) => ({
-  id: job?.postId,
-  jobTitle: job?.jobTitle,
-  profession: job?.profession,
+  ...job,
   jobDescription: preProcessText(job?.jobDescription),
   jobRequirements: preProcessText(job?.jobRequirements),
-  benefits: preProcessText(job?.benefits),
-  workAddress: job?.workAddress,
-  minAge: job?.minAge,
-  maxAge: job?.maxAge,
-  sex: job?.sex,
-  requiredSkills: job?.requiredSkills,
-  employmentType: job?.employmentType,
-  degree: job?.degree,
-  experience: job?.experience,
-  positionLevel: job?.positionLevel,
-  keywords: job?.keywords
+  benefits: preProcessText(job?.benefits)
 });
 
 export const preprocessProfileData = (profile) => ({
   ...profile,
   personal_information: {
-    dob: profile?.personal_information?.dob,
-    sex: profile?.personal_information?.sex
+    dob: profile?.employee?.user?.dob,
+    sex: profile?.employee?.user?.sex
   }
 });
 
@@ -135,6 +124,8 @@ export const matchProfileById = (
 };
 
 export const firstRoundForGeneralInfo = (job, profile) => {
+  console.log('profile', profile);
+
   const { personal_information, online_profile, attached_document } = profile;
 
   const birthday = dayjs(personal_information?.dob, 'YYYY-MM-DD').isValid()
@@ -205,20 +196,6 @@ const handleRoundOne = async (
     cvEnclosedProfileList,
     attachProfileList
   );
-  console.log('cvContentProfile', cvContentProfile);
-  console.log('cvEnclosedProfileList', cvEnclosedProfileList);
-
-  //   const extractCommonInfo = cvEnclosedProfileList.map((item) => {
-  //     .then((res) => {
-  //       res.push(item?.employee_Profile?.application?.id);
-  //       return res;
-  //     });
-  //     return response;
-  // });
-
-  // const cvList = cvEnclosedProfileList.map((item) => {
-  //   return item?.employee_Profile?.application?.CV;
-  // });
 
   const extractPromise = async () => {
     return Promise.all(
@@ -233,7 +210,11 @@ const handleRoundOne = async (
           const jsonRes = JSON.parse(res);
           return {
             employee_Profile: jsonRes,
-            employer_Requirement: item?.employer_Requirement,
+            employer_Requirement: {
+              profession: item?.employer_Requirement?.profession,
+              degree: item?.employer_Requirement?.degree,
+              experience: item?.employer_Requirement?.experience
+            },
             id: item?.employee_Profile?.application?.id
           };
         });
@@ -243,25 +224,28 @@ const handleRoundOne = async (
     );
   };
 
-  // const extractCommonInfo = await sendChatGPTRequest(
-  //   'Trích ra thông tin về Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm và id trong employee_Profile?.application?.id trong hồ sơ sau',
-  //   [cvContentProfile[0]?.employee_Profile?.application?.CV]
-  // );
-
   const commonInfo = await extractPromise();
 
-  console.log('extractCommonInfo', commonInfo);
+  const messagesToSend = commonInfo.map((item) => {
+    console.log('item', item[0]?.employer_Requirement?.profession);
 
-  const response = await sendChatGPTRequest(RoundOneCheck, commonInfo).catch(
-    () => []
-  );
+    return `
+    - application_id: ${item[0]?.id}
+    - Yêu cầu tuyển dụng: ngành nghề: [${item[0]?.employer_Requirement?.profession}]; trình độ: ${item[0]?.employer_Requirement?.degree}; kinh nghiệm: ${item[0]?.employer_Requirement?.experience};
+    - Thông tin hồ sơ xin việc: ngành nghề: ${item[0]?.employee_Profile?.profession}; trình độ ${item[0]?.employee_Profile?.degree}; kinh nghiệm ${item[0]?.employee_Profile?.experience}
+    `;
+  });
+
+  const response = await sendChatGPTRequest(
+    RoundOneCheck,
+    messagesToSend
+  ).catch(() => []);
   console.log('response', response);
 
   const result = Array.isArray(response)
     ? response?.filter((item) => checkIsJSON(item))
     : [];
   setAnalyzedProfile(cvContentProfile);
-
   handleGoToAnalyzeResult(true, result);
 };
 
@@ -270,34 +254,32 @@ const handleRoundTwo = async (
   handleAnalyzeResult: (result: any[]) => Promise<void>
 ) => {
   console.log('Start round 2');
+
   const dataSendToGPT = passRoundProfiles.map((item) => {
     let profile;
     if (item?.employee_Profile?.online_profile) {
+      const onlineProfile = item?.employee_Profile?.online_profile;
       profile = {
-        jobTitle: item?.employee_Profile?.online_profile?.jobTitle,
-        skills: item?.employee_Profile?.online_profile.skills,
-        another_degree:
-          item?.employee_Profile?.online_profile.another_degree?.map(
-            (degree) => degree.Name
-          ),
-        education_informations:
-          item?.employee_Profile?.online_profile.education_informations?.map(
-            (education) => education.degreeName
-          ),
-        work_experiences:
-          item?.employee_Profile?.online_profile.work_experiences?.map(
-            (experience) => {
-              return {
-                jobTitle: experience?.jobTitle,
-                jobDescription: experience?.jobDescription
-              };
-            }
-          )
+        jobTitle: onlineProfile.jobTitle,
+        skills: onlineProfile.skills,
+        another_degree: (onlineProfile.another_degree || []).map(
+          (degree) => degree.Name
+        ),
+        education_informations: (
+          onlineProfile.education_informations || []
+        ).map((education) => education.degreeName),
+        work_experiences: (onlineProfile.work_experiences || []).map(
+          (experience) => ({
+            jobTitle: experience?.jobTitle,
+            jobDescription: experience?.jobDescription
+          })
+        )
       };
     } else if (item?.employee_Profile?.attached_document) {
+      const attachedDocument = item?.employee_Profile?.attached_document;
       profile = {
-        skills: item?.employee_Profile?.attached_document.skills,
-        CV: item?.employee_Profile?.attached_document.CV
+        skills: attachedDocument.skills,
+        CV: attachedDocument.CV
       };
     } else {
       profile = item?.employee_Profile?.application.CV;
@@ -314,30 +296,18 @@ const handleRoundTwo = async (
   });
 
   console.log(dataSendToGPT);
+
   const skillList = await Promise.all(
     dataSendToGPT?.map(async (item) => {
       const extractRequiredSkillList = dataSendToGPT?.map(
         (data) => data?.employee_Profile?.profile
       );
-
       const skillsList = await sendChatGPTRequest(
         extractSkill,
         extractRequiredSkillList,
         null,
-        {
-          '58': 5,
-          '60': 5
-        }
+        { '58': 5, '60': 5 }
       );
-      // const requiredList = await sendChatGPTRequest(
-      //   translate,
-      //   [item.employer_Requirement.requiredSkills],
-      //   null,
-      //   {
-      //     '58': 5,
-      //     '60': 5
-      //   }
-      // );
       return {
         id: item.employee_Profile.application_id,
         employee_Profile: loadKeywords(skillsList)?.split(',') || '',
@@ -346,20 +316,26 @@ const handleRoundTwo = async (
       };
     })
   );
+
   const responses = (await getEmbedding(skillList)) || [];
 
   const result = responses?.map((item) => {
-    const acc = item?.employer_Requirement?.filter((require) =>
+    const matchingSkills = item?.employer_Requirement?.filter((require) =>
       item?.employee_Profile?.some((skills) => {
         if (skills?.result?.length === require?.result?.length) {
           return dot(skills.result, require.result) > 0.6;
+        } else {
+          console.error('Vectors must have the same number of dimensions');
+          return false;
         }
-        console.error('Vectors must have the same number of dimensions');
       })
     );
+    const matchPercentage = matchingSkills
+      ? (100 / item?.employer_Requirement?.length) * matchingSkills.length
+      : 0;
     return {
       id: item.id,
-      result: (100 / item?.employer_Requirement?.length) * acc?.length
+      result: matchPercentage
     };
   });
 
@@ -372,54 +348,89 @@ const handleRoundThree = async (
 ) => {
   console.log('Start round 3');
 
-  const response = await getEmbedding(
-    passRoundProfiles.map((item) => ({
-      id: item.id,
-      employee_Profile: item.employee_Profile.application.keywords.split(','),
-      employer_Requirement: item.employer_Requirement.keywords.split(',')
-    }))
-  );
+  try {
+    // Step 1: Retrieve keywords for profiles
+    const profilesWithKeywords = await Promise.all(
+      passRoundProfiles.map(async (item) => {
+        if (
+          item?.employee_Profile?.application?.applicationType !== 'Nộp nhanh'
+        ) {
+          return item;
+        } else {
+          const keywords = await loadKeywords(
+            await sendChatGPTRequest(cvAnalysist, [
+              item?.employee_Profile?.application?.CV
+            ])
+          );
+          return {
+            ...item,
+            employee_Profile: {
+              application: {
+                keywords
+              }
+            }
+          };
+        }
+      })
+    );
 
-  const resultList = await Promise.all(
-    response?.map(async (item) => {
-      let score = item?.employee_Profile?.reduce((acc, profile) => {
-        const hasMatch = item?.employer_Requirement?.some((requirement) => {
-          const cosineSimilarity = dot(profile.result, requirement.result);
-          return cosineSimilarity > 0.6;
-        });
-        return hasMatch ? acc + 5 : acc;
-      }, 0);
+    console.log('Profiles with keywords:', profilesWithKeywords);
 
-      const lackOfSkillsList =
-        item?.employer_Requirement
-          ?.filter(
-            (require) =>
-              !item?.employee_Profile?.some(
-                (skills) => dot(skills.result, require.result) > 0.6
-              )
-          )
-          ?.map((require) => require.word) || [];
-
-      const hints =
-        lackOfSkillsList.length > 0
-          ? `Để tăng tỉ lệ đậu bạn có thể trang bị thêm kĩ năng: ${[
-              ...new Set(lackOfSkillsList)
-            ]
-              .slice(0, 4)
-              .join(', ')}`
-          : 'Hồ sơ của bạn đã đáp ứng yêu cầu của tin tuyển dụng này';
-
-      return {
+    // Step 2: Calculate similarity scores between profiles and job requirements
+    const response = await getEmbedding(
+      profilesWithKeywords.map((item) => ({
         id: item.id,
-        result: score,
-        hints: hints
-      };
-    })
-  );
+        employee_Profile:
+          item?.employee_Profile?.application.keywords?.split(','),
+        employer_Requirement: item?.employer_Requirement?.keywords?.split(',')
+      }))
+    );
 
-  const list = resultList.map((result) => JSON.stringify(result));
+    // Step 3: Analyze results and provide hints
+    const resultList = await Promise.all(
+      response?.map(async (item) => {
+        let score = item?.employee_Profile?.reduce((acc, profile) => {
+          const hasMatch = item?.employer_Requirement?.some((requirement) => {
+            const cosineSimilarity = dot(profile.result, requirement.result);
+            return cosineSimilarity > 0.6;
+          });
+          return hasMatch ? acc + 5 : acc;
+        }, 0);
 
-  handleAnalyzeResult(list);
+        const lackOfSkillsList =
+          item?.employer_Requirement
+            ?.filter(
+              (require) =>
+                !item?.employee_Profile?.some(
+                  (skills) => dot(skills.result, require.result) > 0.6
+                )
+            )
+            ?.map((require) => require.word) || [];
+
+        const hints =
+          lackOfSkillsList.length > 0
+            ? `Để tăng tỉ lệ đậu bạn có thể trang bị thêm kĩ năng: ${[
+                ...new Set(lackOfSkillsList)
+              ]
+                .slice(0, 4)
+                .join(', ')}`
+            : 'Hồ sơ của bạn đã đáp ứng yêu cầu của tin tuyển dụng này';
+
+        return {
+          id: item.id,
+          result: score,
+          hints: hints
+        };
+      })
+    );
+
+    // Step 4: Convert results to list and pass to the handler function
+    const list = resultList.map((result) => JSON.stringify(result));
+    await handleAnalyzeResult(list);
+  } catch (error) {
+    console.error('Error in round 3 analysis:', error);
+    // Handle or log the error appropriately
+  }
 };
 
 export const fetchDataFromUrl = async (url, type) => {
@@ -531,4 +542,37 @@ export const parseResponseJSONData = async (result: any[]) => {
         );
     })
   );
+};
+
+export const getKeywords = (item) => {
+  return (
+    item?.keywords ||
+    item?.employee?.online_profile?.keywords ||
+    item?.employee?.attached_document?.keywords
+  );
+};
+
+export const calculateMatchingScore = (
+  profile: any,
+  responses: any[],
+  roundOneFinished: boolean
+) => {
+  const foundItem = responses.find((res) => res?.id === profile?.id);
+  const profileMatchingScore =
+    profile?.employee_Profile?.application?.matchingScore;
+
+  if (foundItem?.result != null) {
+    return (profileMatchingScore || 0) + foundItem.result;
+  } else if (
+    !roundOneFinished &&
+    (profile?.employee_Profile?.online_profile ||
+      profile?.employee_Profile?.attached_document)
+  ) {
+    return firstRoundForGeneralInfo(
+      profile?.employer_Requirement,
+      profile?.employee_Profile
+    );
+  } else {
+    return profileMatchingScore;
+  }
 };

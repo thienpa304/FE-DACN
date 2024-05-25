@@ -11,7 +11,7 @@ import {
   convertObjectListToStringForSkill,
   convertToObjectsForSkill,
   findObjectKey
-} from 'src/utils/inputOutputFormat';
+} from 'src/utils/formatData';
 import NumericFormatCustom from 'src/components/NumberFormatCustom';
 import EditButton from 'src/components/EditButton';
 import ButtonGroup from 'src/components/ButtonGroup';

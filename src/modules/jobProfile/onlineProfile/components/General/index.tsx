@@ -11,10 +11,7 @@ import {
   PROFESSION,
   WORK_AT
 } from 'src/constants/option';
-import {
-  convertStringToObjectList,
-  findObjectKey
-} from 'src/utils/inputOutputFormat';
+import { convertStringToObjectList, findObjectKey } from 'src/utils/formatData';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 import { Degree } from 'src/constants/enum';
 

@@ -33,10 +33,6 @@ export default function FindProfiles() {
     }));
   };
 
-  const handlePageChange = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
-
   if (isLoading) return <SuspenseLoader />;
 
   return (
@@ -84,7 +80,7 @@ export default function FindProfiles() {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        handlePageChange={setCurrentPage}
       />
     </Container>
   );

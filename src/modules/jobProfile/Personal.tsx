@@ -34,10 +34,7 @@ import {
   removeFileByUrl
 } from 'src/common/firebaseService';
 import { avatarFormat } from 'src/constants/uploadFileRule';
-import {
-  toOutputDateString,
-  toInputDateString
-} from 'src/utils/inputOutputFormat';
+import { toOutputDateString, toInputDateString } from 'src/utils/formatData';
 import ButtonGroup from 'src/components/ButtonGroup';
 import { avatarErrorText } from 'src/components/UploadError';
 import useMutateAvatar from 'src/modules/users/hooks/useMutateAvatar';

@@ -12,7 +12,7 @@ import {
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
-import TablePost from 'src/pages/job-list/TablePost';
+import TablePost from 'src/pages/company-job-list/TablePost';
 import TabsWrapper from 'src/components/TabWrapper';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';

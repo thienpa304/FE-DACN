@@ -24,7 +24,7 @@ import TagInput from 'src/components/TagInput';
 import { useForm } from 'react-hook-form';
 import FormControl from 'src/components/FormControl';
 import TextEditor from 'src/components/TextEditor';
-import { removeHTMLTag } from 'src/utils/inputOutputFormat';
+import { removeHTMLTag } from 'src/utils/formatData';
 import useMutateSendEmail from 'src/modules/admin/hooks/useMutateSendEmail';
 import useQueryAllUserByAdmin from 'src/modules/admin/hooks/useQueryAllUserByAdmin';
 import { Role } from 'src/modules/users/model';

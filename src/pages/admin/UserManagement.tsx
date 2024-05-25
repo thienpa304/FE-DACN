@@ -135,20 +135,10 @@ const UserManagement = () => {
   const pageSize = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
-  const { userList, isLoading } = useQueryAllUserByAdmin({
+  const { userList, isLoading, totalPages } = useQueryAllUserByAdmin({
     page: currentPage,
     num: pageSize
   });
-
-  const { totalResults } = useQueryTotalUserResultByAdmin();
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  if (isLoading || !userList[0]?.id) {
-    return <SuspenseLoader />;
-  }
 
   return (
     <Container maxWidth="xl">
@@ -181,11 +171,12 @@ const UserManagement = () => {
                     }
                   }
                 }}
+                loading={isLoading}
               />
               <Pagination
                 totalPages={totalPages}
                 currentPage={currentPage}
-                handlePageChange={handlePageChange}
+                handlePageChange={setCurrentPage}
               />
             </CardContent>
           </Card>

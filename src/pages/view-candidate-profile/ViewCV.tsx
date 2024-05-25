@@ -11,7 +11,7 @@ import CustomContainer from 'src/components/CustomContainer';
 import dayjs from 'dayjs';
 import PersonalViewUI from 'src/modules/jobProfile/PersonalViewUI';
 import GeneralViewUI from 'src/modules/jobProfile/GeneralViewUI';
-import { toOutputDateString } from 'src/utils/inputOutputFormat';
+import { toOutputDateString } from 'src/utils/formatData';
 import { isMobile } from 'src/constants/reponsive';
 
 const bodyText = {
@@ -119,7 +119,7 @@ const ViewCV = (props) => {
                       </Box>
                     )
                   )}
-                  {!user?.online_profile?.education_informations.length && (
+                  {!user?.online_profile?.education_informations?.length && (
                     <Typography
                       sx={[bodyText, { color: '#999', fontStyle: 'italic' }]}
                     >
@@ -164,7 +164,7 @@ const ViewCV = (props) => {
                       </Box>
                     )
                   )}
-                  {!user?.online_profile?.work_experiences.length && (
+                  {!user?.online_profile?.work_experiences?.length && (
                     <Typography
                       sx={[bodyText, { color: '#999', fontStyle: 'italic' }]}
                     >
@@ -195,7 +195,7 @@ const ViewCV = (props) => {
                       </Box>
                     )
                   )}
-                  {!user?.online_profile?.another_degrees.length && (
+                  {!user?.online_profile?.another_degrees?.length && (
                     <Typography
                       sx={[bodyText, { color: '#999', fontStyle: 'italic' }]}
                     >

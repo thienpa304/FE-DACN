@@ -13,17 +13,12 @@ import {
   IconButton,
   Rating,
   Tooltip,
-  Typography,
-  useTheme
+  Typography
 } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
-import { useMemo, useState, forwardRef, useEffect } from 'react';
+import { useMemo, useState, forwardRef, useEffect, useCallback } from 'react';
 import SelectInput from 'src/components/SelectInput';
-import useQueryCandidateApplicationById, {
-  useQueryCandidateApplicationByIdList
-} from 'src/modules/application/hooks/useQueryCandidateApplicationById';
 import {
   ProfileApplicationType,
   preprocessJobData,
@@ -34,7 +29,9 @@ import {
   HIGH_SCORE,
   firstRoundForGeneralInfo,
   parseResponseJSONData,
-  ratingStar
+  ratingStar,
+  calculateMatchingScore,
+  getKeywords
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryJobById, {
@@ -47,7 +44,7 @@ import alertDialog from 'src/utils/alertDialog';
 import { ApprovalStatus } from 'src/constants/enum';
 import { TypographyEllipsis } from 'src/components/Typography';
 import CardApply from 'src/modules/jobs/components/CardApply';
-import TabContent from '../job-detail/TabContent';
+import TabContent from '../view-job-detail/TabContent';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 import useApplicationList from 'src/modules/application/hooks/useApplicationList';
 import useJob from 'src/modules/jobs/hooks/useJob';
@@ -55,25 +52,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import { deepEqual } from 'src/utils/formatData';
+import { Job } from 'src/modules/jobs/model';
 
-const ViewJobDetail = ({ applicationId, setSelectedId }) => {
-  if (!Boolean(applicationId)) return;
-  const { applicationList } = useApplicationList();
-  const { setItemDetail, itemDetail } = useJob();
+const ViewJobDetail = ({ postId, setSelectedId }) => {
+  if (!Boolean(postId)) return;
 
-  const jobId = applicationList?.find(
-    (item) => item.application_id === applicationId
-  )?.jobPosting.postId;
-  const { data, isLoading } = useQueryJobById(jobId);
+  const { data, isLoading } = useQueryJobById(postId);
 
-  useEffect(() => {
-    setItemDetail(data);
-  }, [data]);
-
-  if (isLoading || !data) return <SuspenseLoader />;
+  if (isLoading) return <SuspenseLoader />;
   return (
     <Dialog
-      open={Boolean(applicationId)}
+      open={Boolean(postId)}
       onClose={() => {
         setSelectedId(null);
       }}
@@ -120,78 +110,58 @@ const ViewJobDetail = ({ applicationId, setSelectedId }) => {
 };
 
 const renderJobTitle = (data) => {
-  const [selectedId, setSelectedId] = useState(null);
-  // console.log(data);
+  const {
+    employee_Profile: { application }
+  } = data?.row;
 
-  if (data.value) {
-    return (
-      <>
-        <TypographyEllipsis
-          sx={{
-            color: '#319fce',
-            ':hover': {
-              textDecoration: 'none',
-              cursor: 'pointer'
-            },
-            textDecoration: 'none'
-          }}
-          onClick={() => {
-            setSelectedId(data?.row?.id);
-          }}
-        >
-          {data.value}
-        </TypographyEllipsis>
-        <ViewJobDetail
-          applicationId={selectedId}
-          setSelectedId={setSelectedId}
-        />
-      </>
-    );
-  }
+  const [selectedId, setSelectedId] = useState(null);
+
+  return (
+    <>
+      <TypographyEllipsis
+        sx={{
+          color: '#319fce',
+          ':hover': {
+            textDecoration: 'none',
+            cursor: 'pointer'
+          },
+          textDecoration: 'none'
+        }}
+        onClick={() => {
+          setSelectedId(data?.row?.postId);
+        }}
+      >
+        {application.jobTitle}
+      </TypographyEllipsis>
+      <ViewJobDetail postId={selectedId} setSelectedId={setSelectedId} />
+    </>
+  );
 };
 
 const renderProfileName = (data) => {
-  const handleOpenDetailModal = () => {
-    // let result = '';
-    // if (data?.row?.matchingScore >= HIGH_SCORE) result = 'Cao';
-    // else if (
-    //   data?.row?.matchingScore >= NORMAL_SCORE &&
-    //   data?.row?.matchingScore < HIGH_SCORE
-    // )
-    //   result = 'Trung bình';
-    // else if (
-    //   data?.row?.matchingScore >= LOW_SCORE &&
-    //   data?.row?.matchingScore < NORMAL_SCORE
-    // )
-    //   result = 'Thấp';
-    // else if (data?.row?.matchingScore < 0) result = 'Không phù hợp';
+  const { employee_Profile } = data?.row;
+  const { application } = employee_Profile;
 
-    const rating = ratingStar(data?.row?.matchingScore);
-    console.log(rating);
+  const handleOpenDetailModal = () => {
+    const rating = ratingStar(application.matchingScore);
 
     const detailsData = {
-      'Tên hồ sơ': data?.row?.name,
-      'Vị trí ứng tuyển': data?.row?.jobTitle,
-      'Loại hồ sơ': data?.row?.applicationType,
-      'Trạng thái': data?.row?.status,
+      'Tên hồ sơ': application.name,
+      'Vị trí ứng tuyển': application.jobTitle,
+      'Loại hồ sơ': application.applicationType,
+      'Trạng thái': application.status,
       'Độ phù hợp': (
         <Rating
           value={rating}
           max={3}
           size="small"
           readOnly
-          sx={{
-            display: 'flex',
-            height: '100%',
-            alignItems: 'center'
-          }}
+          sx={{ position: 'relative', bottom: -5 }}
         />
       )
     };
     detailsModal(detailsData);
   };
-
-  const { data: profile } = useQueryCandidateApplicationById(data?.row?.id);
 
   return (
     <Grid container alignItems={'center'}>
@@ -206,10 +176,10 @@ const renderProfileName = (data) => {
             textDecoration: 'none'
           }}
           onClick={() => {
-            openProfile({ profile: profile });
+            openProfile({ profile: employee_Profile });
           }}
         >
-          {data.value}
+          {application.name}
         </TypographyEllipsis>
       </Grid>
       <Grid item xs={1.5} sm={0} sx={{ display: { sm: 'none', xs: 'inline' } }}>
@@ -224,24 +194,28 @@ const renderProfileName = (data) => {
 };
 
 const renderStatus = (data) => {
+  const {
+    employee_Profile: { application }
+  } = data?.row;
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
   const [value, setValue] = useState(null); // Initialize value as null
 
   useEffect(() => {
-    if (!data.value || !APPROVAL_STATUS) return;
+    if (!application.status || !APPROVAL_STATUS) return;
     const initValue = APPROVAL_STATUS.find(
-      (item) => item.label === data.value
+      (item) => item.label === application.status
     )?.value;
 
     setValue(initValue); // Set the initial value
-  }, [data.value]); // Run this effect whenever data.value changes
+  }, [application.status]); // Run this effect whenever data.value changes
 
   const handleChangeValue = (newValue) => {
-    onSaveApplicationStatus([data.id, { status: newValue.target.value }]).then(
-      () => {
-        setValue(newValue.target.value);
-      }
-    );
+    onSaveApplicationStatus([
+      application.id,
+      { status: newValue.target.value }
+    ]).then(() => {
+      setValue(newValue.target.value);
+    });
   };
 
   // Return the SelectInput component
@@ -259,43 +233,19 @@ const renderStatus = (data) => {
   );
 };
 
-export const renderMatchingScore = (data) => {
-  // if (isAnalyzing) return <CircularProgress />;
-  // let result = '';
-  // if (data.value >= HIGH_SCORE) result = 'Cao';
-  // else if (data.value >= NORMAL_SCORE && data.value < HIGH_SCORE)
-  //   result = 'Trung bình';
-  // else if (data.value >= LOW_SCORE && data.value < NORMAL_SCORE)
-  //   result = 'Thấp';
-  // else if (data.value < 0) result = 'Không phù hợp';
-  const rating = ratingStar(data.value);
+const renderMatchingScore = (data) => {
+  const {
+    employee_Profile: { application }
+  } = data?.row;
+  const rating = ratingStar(application.matchingScore);
 
-  return data.value === undefined || data.value === null ? (
+  return application.matchingScore === undefined ||
+    application.matchingScore === null ? (
     <Typography sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
       Chưa phân tích
     </Typography>
   ) : (
-    // <Box
-    //   sx={{
-    //     width: '90%',
-    //     borderRadius: 2,
-    //     p: 1,
-    //     bgcolor:
-    //       data.value >= HIGH_SCORE
-    //         ? '#ffc107'
-    //         : data.value >= NORMAL_SCORE
-    //         ? '#A1C398'
-    //         : data.value >= LOW_SCORE
-    //         ? '#b5b5b5'
-    //         : '#efefef',
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     alignItems: 'center'
-    //   }}
-    // >
-    //   {result}
-    // </Box>
-    <Rating value={rating} max={3} precision={0.5} readOnly />
+    <Rating value={rating} max={3} readOnly />
   );
 };
 
@@ -320,7 +270,9 @@ const columns: GridColDef[] = [
     minWidth: 150,
     // sortable: true,
     headerAlign: 'center',
-    align: 'center'
+    align: 'center',
+    renderCell: (data) =>
+      data?.row?.employee_Profile?.application?.applicationType
   },
   {
     field: 'status',
@@ -363,27 +315,16 @@ export default function Table(props) {
   });
   const [selectedRows, setSelectedRows] = useState([]);
   const [isMappingData, setIsMappingData] = useState(true);
+  const [quickApproveValue, setQuickApproveValue] = useState(null);
 
-  const applicationIdList = data?.map((item) => item?.application_id);
+  // const applicationIdList = data?.map((item) => item?.application_id);
 
-  const jobsIdList: Set<number> = new Set(
-    data?.map((item) => {
-      return item?.jobPosting?.postId;
-    })
-  );
+  // const jobsIdList: number[] = useMemo(
+  //   () => [...new Set<number>(data?.map((item) => item?.postId))],
+  //   [data]
+  // );
 
-  // Convert Set back to an array if needed
-  const uniqueJobsIdList: number[] = [...jobsIdList];
-
-  const { jobs, isLoading: isLoadingJobs } =
-    useQueryJobByIdList(uniqueJobsIdList);
-
-  const {
-    data: applicationDetailList,
-    isLoading: isLoadingApplication,
-    refetch
-  } = useQueryCandidateApplicationByIdList(applicationIdList);
-
+  // const { jobs, isLoading: isLoadingJobs } = useQueryJobByIdList(jobsIdList);
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
 
   const finishedAll = () => {
@@ -394,7 +335,8 @@ export default function Table(props) {
     setIsAnalyzing(false);
     setPassRoundProfiles([]);
     setGoToAnalyzeResult({ signal: false, resultData: null });
-    setAnalyzedProfile(matchJobAndProfile());
+    // setAnalyzedProfile(matchJobAndProfile());
+    console.log('Finished All');
   };
 
   const handleSetAnalyzedProfile = async (data: ProfileApplicationType[]) => {
@@ -412,13 +354,16 @@ export default function Table(props) {
   const handleAnalyzeResult = async (result: any[]) => {
     const responses = await parseResponseJSONData(result);
     const updatedAnalyzedProfile = updateAnalyzedProfile(responses);
-
     updateRoundStates(updatedAnalyzedProfile);
   };
 
   const updateAnalyzedProfile = (responses: any[]) => {
     return analyzedProfile.map((profile) => {
-      const matchingScore = calculateMatchingScore(profile, responses);
+      const matchingScore = calculateMatchingScore(
+        profile,
+        responses,
+        roundOneFinished
+      );
       console.log('matchingScore', matchingScore);
 
       return {
@@ -434,27 +379,6 @@ export default function Table(props) {
     });
   };
 
-  const calculateMatchingScore = (profile: any, responses: any[]) => {
-    const foundItem = responses.find((res) => res?.id === profile?.id);
-    if (foundItem?.result !== undefined) {
-      return profile?.employee_Profile?.application?.matchingScore !== undefined
-        ? profile?.employee_Profile?.application?.matchingScore +
-            foundItem.result
-        : foundItem.result;
-    } else if (
-      !roundOneFinished &&
-      (profile?.employee_Profile?.online_profile ||
-        profile?.employee_Profile?.attached_document)
-    ) {
-      return firstRoundForGeneralInfo(
-        profile?.employer_Requirement,
-        profile?.employee_Profile
-      );
-    } else {
-      return profile?.employee_Profile?.application?.matchingScore;
-    }
-  };
-
   const updateRoundStates = (updatedAnalyzedProfile: any[]) => {
     if (!roundOneFinished) {
       const passRoundData = updatedAnalyzedProfile.filter(
@@ -463,17 +387,15 @@ export default function Table(props) {
       setPassRoundProfiles(passRoundData);
     }
 
+    console.log('updatedAnalyzedProfile,', updatedAnalyzedProfile);
+
     setAnalyzedProfile(updatedAnalyzedProfile);
-    const resultList = updatedAnalyzedProfile.map((profile) => ({
-      ...profile?.employee_Profile?.application,
-      id: profile.id
-    }));
-    setShowList((prev) => {
-      return prev.map((item) => {
-        const foundItem = resultList.find((res) => res?.id === item?.id);
-        return foundItem || item;
-      });
-    });
+    setShowList((prev) =>
+      prev.map(
+        (item) =>
+          updatedAnalyzedProfile.find((res) => res?.id === item?.id) || item
+      )
+    );
 
     if (start) {
       if (!roundOneFinished) setRoundOneFinished(true);
@@ -482,110 +404,122 @@ export default function Table(props) {
     }
   };
 
-  const matchJobAndProfile = (): ProfileApplicationType[] =>
-    data
-      ?.map((item) => {
-        const job = jobs?.find(
-          (job) => job?.postId === item?.jobPosting?.postId
-        );
-        const profile = applicationDetailList?.find(
-          (app) => app?.application?.application_id === item?.application_id
-        );
+  // const matchJobAndProfile = (): ProfileApplicationType[] =>
+  //   data
+  //     ?.map((item) => {
+  //       const job = jobs?.find((job) => job?.postId === item?.postId);
+  //       if (!job) return null;
 
-        if (!job || !profile) return null;
+  //       const {
+  //         application_id,
+  //         name,
+  //         email,
+  //         phone,
+  //         applicationType,
+  //         status,
+  //         matchingScore,
+  //         employee,
+  //         CV,
+  //         id
+  //       } = item;
+  //       const { postId, jobTitle } = job;
+  //       const keywords = getKeywords(item);
 
-        const preprocessedJobData = preprocessJobData(job);
-        const preprocessedProfileData = preprocessProfileData(profile);
-
-        return {
-          id: item?.application_id,
-          employer_Requirement: preprocessedJobData,
-          employee_Profile: {
-            ...preprocessedProfileData,
-            application: {
-              ...preprocessedProfileData.application,
-              jobTitle: job?.jobTitle,
-              keywords: preprocessedProfileData?.application?.keywords
-                ? preprocessedProfileData?.application?.keywords
-                : preprocessedProfileData?.online_profile
-                ? profile?.online_profile.keywords
-                : preprocessedProfileData?.attached_document?.keywords
-            }
-          }
-        };
-      })
-      .filter(Boolean);
+  //       const applicationInfo = {
+  //         id: application_id,
+  //         employer_Requirement: preprocessJobData(job),
+  //         employee_Profile: {
+  //           online_profile: employee?.online_profile,
+  //           attached_document: employee?.attached_document,
+  //           personal_information: {
+  //             ...employee?.user,
+  //             name,
+  //             email,
+  //             phone
+  //           },
+  //           application: {
+  //             id,
+  //             application_id,
+  //             postId,
+  //             CV,
+  //             applicationType,
+  //             jobTitle,
+  //             keywords,
+  //             name,
+  //             status,
+  //             matchingScore
+  //           }
+  //         }
+  //       };
+  //       return applicationInfo;
+  //     })
+  //     .filter(Boolean);
 
   const handleReview = () => {
     if (!roundOneFinished) {
-      // Round 1: Reset matching scores and start round 1
-      const resetScoreList = analyzedProfile
-        .filter((item) => {
-          return selectedRows.includes(item.id);
-        })
-        .map((profile) => ({
-          ...profile,
-          employee_Profile: {
-            ...profile.employee_Profile,
-            application: {
-              ...profile.employee_Profile.application,
-              matchingScore: null
-            }
-          }
-        }));
-
-      setAnalyzedProfile(resetScoreList);
-      review({
-        round: 1,
-        handleAnalyzeResult,
-        setIsAnalyzing: handleIsAnalyzing,
-        resetMatchingScoreList: resetScoreList,
-        setAnalyzedProfile: handleSetAnalyzedProfile,
-        handleGoToAnalyzeResult
-      });
+      startReviewRound(1);
     } else if (!roundTwoFinished && passRoundProfiles.length > 0) {
-      // Round 2: Proceed to round 2 if round 1 is finished
-      review({
-        round: 2,
-        handleAnalyzeResult,
-        setIsAnalyzing: handleIsAnalyzing,
-        passRoundProfiles
-      });
+      startReviewRound(2);
     } else if (!roundThreeFinished) {
-      // Round 3: Proceed to round 3 if round 2 is finished
-      review({
-        round: 3,
-        handleAnalyzeResult,
-        setIsAnalyzing: handleIsAnalyzing,
-        passRoundProfiles
-      });
+      startReviewRound(3);
     } else {
-      // All rounds finished, save matching scores and finish all
-      Promise.all(
-        showList
-          .filter((item) => {
-            return selectedRows.includes(item.id);
-          })
-          .map((item) =>
-            onSaveApplicationStatus([
-              item.id,
-              { matchingScore: item.matchingScore }
-            ])
-          )
-      ).then(() => {
-        refetch();
-      });
-      finishedAll();
-      console.log('Finished All');
+      finishAllRounds();
     }
+  };
+
+  const startReviewRound = (round) => {
+    const resetScoreList = analyzedProfile
+      .filter((item) => selectedRows.includes(item.id))
+      .map(resetMatchingScore);
+
+    setAnalyzedProfile(resetScoreList);
+
+    review({
+      round,
+      handleAnalyzeResult,
+      setIsAnalyzing: handleIsAnalyzing,
+      resetMatchingScoreList: resetScoreList,
+      setAnalyzedProfile: handleSetAnalyzedProfile,
+      handleGoToAnalyzeResult,
+      passRoundProfiles: round !== 1 ? passRoundProfiles : undefined
+    });
+  };
+
+  const resetMatchingScore = (profile) => ({
+    ...profile,
+    employee_Profile: {
+      ...profile.employee_Profile,
+      application: {
+        ...profile.employee_Profile.application,
+        matchingScore: null
+      }
+    }
+  });
+
+  const finishAllRounds = () => {
+    Promise.all(
+      showList
+        .filter((item) => selectedRows.includes(item.id))
+        .map((item) =>
+          onSaveApplicationStatus([
+            item.id,
+            {
+              matchingScore: item?.employee_Profile?.application?.matchingScore
+            }
+          ])
+        )
+    ).then(finishedAll);
   };
 
   const handleQuickApprove = () => {
     alertDialog({
-      selectedId: '_',
       handleConfirm,
       message: `Chuyển các hồ sơ đã chọn sang trạng thái ${ApprovalStatus[quickApproveValue]}?`
     });
+  };
+
+  const handleChangeValue = (e) => {
+    setQuickApproveValue(e.target.value);
   };
 
   const handleConfirm = () => {
@@ -593,9 +527,7 @@ export default function Table(props) {
       selectedRows.map((id) =>
         onSaveApplicationStatus([id, { status: quickApproveValue }])
       )
-    ).then(() => {
-      refetch();
-    });
+    );
   };
 
   useEffect(() => {
@@ -605,50 +537,39 @@ export default function Table(props) {
   }, [goToAnalyzeResult.signal]);
 
   // First time render the page
+  // useEffect(() => {
+  //   const initializeData = () => {
+  //     setIsMappingData(true);
+
+  //     if (!jobs.length || start) {
+  //       setIsMappingData(false);
+  //       return;
+  //     }
+
+  //     const initialJobProfileData = matchJobAndProfile();
+
+  //     if (!deepEqual(initialJobProfileData, showList)) {
+  //       setShowList(initialJobProfileData);
+  //     }
+  //     if (!deepEqual(initialJobProfileData, analyzedProfile)) {
+  //       setAnalyzedProfile(initialJobProfileData);
+  //     }
+  //     setIsMappingData(false);
+  //   };
+
+  //   initializeData();
+  // }, [data, JSON.stringify(jobs)]);
+
   useEffect(() => {
-    setIsMappingData(true);
-
-    if (!jobs.length || !applicationDetailList.length || start) {
-      setIsMappingData(false);
-      return;
-    }
-
-    const initialJobProfileData = matchJobAndProfile();
-
-    const resultList = initialJobProfileData?.map((item) => {
-      item.employee_Profile.application.id = item.id;
-      return item.employee_Profile.application;
-    });
-
-    if (JSON.stringify(resultList) !== JSON.stringify(showList)) {
-      console.log('showList', resultList);
-
-      setShowList(() => resultList);
-    }
-
-    // Check if the profile values are really different
-    if (
-      JSON.stringify(initialJobProfileData) !== JSON.stringify(analyzedProfile)
-    ) {
-      setAnalyzedProfile(initialJobProfileData);
-    }
-    setIsMappingData(false);
-  }, [
-    JSON.stringify(data),
-    JSON.stringify(jobs),
-    JSON.stringify(applicationDetailList)
-  ]);
+    setShowList(data);
+    setAnalyzedProfile(data);
+  }, [data]);
 
   // Start Round 1, 2, 3
   useEffect(() => {
     if (!start) return;
     handleReview();
   }, [start, roundOneFinished, roundTwoFinished, roundThreeFinished]);
-
-  const [quickApproveValue, setQuickApproveValue] = useState(null);
-  const handleChangeValue = (e) => {
-    setQuickApproveValue(e.target.value);
-  };
 
   return (
     <>
@@ -762,7 +683,7 @@ export default function Table(props) {
         onRowSelectionModelChange={(ids) => {
           setSelectedRows(ids);
         }}
-        loading={isLoadingApplication || isLoadingJobs || isMappingData}
+        // loading={isLoadingJobs || isMappingData}
       />
       <Pagination
         currentPage={currentPage}

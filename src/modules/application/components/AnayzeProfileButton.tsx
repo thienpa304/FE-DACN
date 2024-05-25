@@ -142,6 +142,9 @@ export default function AnayzeProfileButton(props) {
         analyzedProfile?.employee_Profile?.online_profile ||
         analyzedProfile?.employee_Profile?.attached_document
       ) {
+        debugger;
+        console.log('....', analyzedProfile?.employee_Profile);
+
         const matchingScore = firstRoundForGeneralInfo(
           analyzedProfile?.employer_Requirement,
           analyzedProfile?.employee_Profile
@@ -149,7 +152,6 @@ export default function AnayzeProfileButton(props) {
 
         console.log('matchingScore', matchingScore);
         setAnalyzeResult(() => matchingScore);
-        console.log();
         if (matchingScore >= LOW_SCORE) {
           setPassOneProfiles(() => [analyzedProfile]);
         } else {
@@ -164,7 +166,7 @@ export default function AnayzeProfileButton(props) {
       const matchingScore: number = response?.result;
       if (matchingScore + analyzeResult < LOW_SCORE) {
         setHints(
-          'Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm'
+          'Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Ngành nghề, trình độ, kinh nghiệm'
         );
       } else setHints(response?.hints);
       setAnalyzeResult((prev) => prev + matchingScore);
@@ -216,7 +218,13 @@ export default function AnayzeProfileButton(props) {
     }
     const data: ProfileApplicationType = {
       id: 1,
-      employee_Profile: preprocessProfileData(profileData),
+      employee_Profile: {
+        ...profileData,
+        personal_information: {
+          dob: profileData?.personal_information?.dob,
+          sex: profileData?.personal_information?.sex
+        }
+      },
       employer_Requirement: preprocessJobData(job)
     };
     setAnalyzedProfile(() => data);

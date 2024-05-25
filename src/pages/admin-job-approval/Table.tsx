@@ -27,7 +27,7 @@ import { TypographyEllipsis } from 'src/components/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
 import { isMobile } from 'src/constants/reponsive';
-import { checkIsJSON } from 'src/utils/inputOutputFormat';
+import { checkIsJSON } from 'src/utils/formatData';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
@@ -324,10 +324,6 @@ export default function Table({ statusFilter, selectedProfession }) {
     profession: selectedProfession
   });
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
   const preProcessData = (job: Job) => {
     return {
       postId: job?.postId,
@@ -506,7 +502,7 @@ export default function Table({ statusFilter, selectedProfession }) {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        handlePageChange={setCurrentPage}
         disabled={start}
       />
     </Box>
