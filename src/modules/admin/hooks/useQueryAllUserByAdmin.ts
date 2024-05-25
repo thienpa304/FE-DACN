@@ -19,8 +19,8 @@ const useQueryAllUserByAdmin = (params?, isEnabled = true) => {
 
   return {
     userList:
-      data?.data?.items.map((user) => ({ ...user, id: user.userId })) || [],
-    totalPages: data?.data?.meta.totalPages,
+      data?.data?.items?.map((user) => ({ ...user, id: user.userId })) || [],
+    totalPages: data?.data?.meta?.totalPages,
     isLoading,
     refetch
   };

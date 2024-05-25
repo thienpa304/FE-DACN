@@ -25,8 +25,8 @@ const useQueryEmployeesByAdmin = (params?, isFetch?) => {
   return {
     employeeList:
       data?.data?.items?.map((user) => ({ ...user, id: user.userId })) || [],
-    totalPages: data?.data?.meta.totalPages,
-    totalItems: data?.data?.meta.totalItems,
+    totalPages: data?.data?.meta?.totalPages,
+    totalItems: data?.data?.meta?.totalItems,
     isLoading,
     refetch
   };

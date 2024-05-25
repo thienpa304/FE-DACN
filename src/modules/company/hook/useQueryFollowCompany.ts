@@ -26,7 +26,7 @@ const useQueryFollowCompany = (params?) => {
 
   return {
     companyFollow: data?.data?.items,
-    totalPages: data?.data?.meta.totalPages,
+    totalPages: data?.data?.meta?.totalPages,
     isLoading,
     refetch
   };

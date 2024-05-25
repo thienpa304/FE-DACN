@@ -19,9 +19,11 @@ const useQueryJobAppliedByEmployee = (params?) => {
 
   return {
     data:
-      data?.data?.items.map((item) => ({ ...item, id: item.application_id })) ||
-      [],
-    totalPages: data?.data?.meta.totalPages,
+      data?.data?.items?.map((item) => ({
+        ...item,
+        id: item.application_id
+      })) || [],
+    totalPages: data?.data?.meta?.totalPages,
     isLoading
   };
 };

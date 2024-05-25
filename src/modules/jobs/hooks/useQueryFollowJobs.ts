@@ -22,7 +22,7 @@ const useQueryFollowJobs = (params?) => {
 
   return {
     jobFollow: data?.data?.items,
-    totalPages: data?.data?.meta.totalPages,
+    totalPages: data?.data?.meta?.totalPages,
     isLoading,
     refetch
   };
