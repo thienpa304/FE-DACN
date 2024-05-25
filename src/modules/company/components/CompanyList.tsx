@@ -17,10 +17,6 @@ function CompanyList(props) {
   // const totalResults = companyList?.length;
   const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
   if (isLoading) return <SuspenseLoader />;
   return (
     <Container disableGutters maxWidth="lg" sx={{ py: 3, ...sx }}>
@@ -61,7 +57,7 @@ function CompanyList(props) {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        handlePageChange={setCurrentPage}
       />
     </Container>
   );

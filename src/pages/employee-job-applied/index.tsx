@@ -9,10 +9,9 @@ import {
 import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQueryJobAppliedByEmployee';
 import TablePost from './TablePost';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { useState } from 'react';
 
 const JobApplied = () => {
-  const { data, isLoading } = useQueryJobAppliedByEmployee();
-  if (isLoading) return <SuspenseLoader />;
   return (
     <Container maxWidth="xl">
       <Grid
@@ -28,7 +27,7 @@ const JobApplied = () => {
             <CardHeader title="Danh Sách Việc Đã Ứng Tuyển" />
             <Divider />
             <CardContent>
-              <TablePost data={data || []} />
+              <TablePost />
             </CardContent>
           </Card>
         </Grid>

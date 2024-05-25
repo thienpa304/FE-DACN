@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { Employee, User } from 'src/modules/users/model';
 import { RecommendEmployeeService } from '../getEmployeeService';
 import { useApp } from 'src/modules/app/hooks';
@@ -16,8 +16,8 @@ type PropsType = {
 const useQueryEmployeeByKeywords = (params?) => {
   const { isEmployer } = useApp();
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<PropsType>,
-    AxiosError<ResponseData<PropsType>>
+    ResponseData<PaginationType<Partial<Job[]>>>,
+    AxiosError<ResponseData<Partial<Job[]>>>
   >(
     ['get-ProfileByKeywords', params],
     () => {
@@ -39,8 +39,9 @@ const useQueryEmployeeByKeywords = (params?) => {
   );
 
   return {
-    profile: data?.data?.result || [],
-    totalResults: data?.data?.totalCount,
+    profile: data?.data?.items || [],
+    totalResults: data?.data?.meta.totalItems,
+    totalPages: data?.data?.meta.totalPages,
     isLoading,
     refetch
   };

@@ -17,7 +17,7 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import TableData from 'src/components/TableData';
 import { GridColDef } from '@mui/x-data-grid';
-import { renderJobTitle } from 'src/pages/job-list/TablePost';
+import { renderJobTitle } from 'src/pages/company-job-list/TablePost';
 import useQueryEmployeeByKeywords from '../hook/useQueryEmployeeByKeywords';
 import Pagination from 'src/components/Pagination';
 import JobFilter from 'src/modules/jobs/components/JobFilter';
@@ -35,6 +35,7 @@ export default function RecommendProfile() {
   const {
     jobs,
     totalResults: totalJobResults,
+    totalPages,
     isLoading
   } = useQueryJobByOwner({
     page: jobCurrentPage,
@@ -45,6 +46,7 @@ export default function RecommendProfile() {
   const {
     profile,
     totalResults: totalProfileResults,
+    totalPages: totalProfilePages,
     isLoading: isLoadingProfile
   } = useQueryEmployeeByKeywords({
     page: profileCurrentPage,
@@ -53,10 +55,6 @@ export default function RecommendProfile() {
     ...jobInfo,
     ...filter
   });
-
-  const totalJobPages = Math.ceil(totalJobResults / jobPageSize) || 1;
-  const totalProfilePages =
-    Math.ceil(totalProfileResults / profilePageSize) || 1;
 
   const addInfo = (job) => {
     setJobInfo({
@@ -112,20 +110,6 @@ export default function RecommendProfile() {
 
   useEffect(() => {
     if (!profile) return;
-    const testProfiles = profile?.map((item) => {
-      return {
-        ...item,
-        personal_information: {
-          sex: item?.employee?.user?.sex,
-          dob: item?.employee?.user?.dob
-        },
-        online_profile: {
-          profession: item?.profession,
-          degree: item?.degree,
-          experience: item?.experience
-        }
-      };
-    });
     setShowProfile(profile);
     const section = document.getElementById('recommend-profile');
     section?.scrollIntoView({ behavior: 'smooth' });
@@ -175,7 +159,7 @@ export default function RecommendProfile() {
               />
               <Pagination
                 currentPage={jobCurrentPage}
-                totalPages={totalJobPages}
+                totalPages={totalPages}
                 handlePageChange={setJobCurrentPage}
               />
             </CardContent>

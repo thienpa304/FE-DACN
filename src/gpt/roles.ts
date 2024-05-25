@@ -9,18 +9,14 @@ Nội dung tin tuyển dụng cung cấp như sau:
 `;
 
 export const RoundOneCheck = `Bây giờ, bạn là một chuyên gia phân tích hồ sơ xin việc.
-Hãy đọc hồ sơ xin việc (emplyee_Profile) và thông tin tuyển dụng (employer_Requirement) sau đó so sánh và đánh giá xem thông tin emplyee_Profile có phù hợp với thông tin tuyển dụng hay không. Hãy đánh giá xem emplyee_Profile theo các tiêu chí sau.
-Sau đó, trích lọc ra các thông tin sau: giới tính (sex), ngày sinh (dob), ngành nghề (profession), bằng cấp (degree), kinh nghiệm (experience) và so sánh với yêu cầu tương ứng trong tin tuyển dụng theo các tiêu chí sau:
-- 1. Nếu emplyee_Profile thiếu bất kì 1 thông tin sex, dob, profession, degree, experience thì không đạt.
-- 2. sex trong emplyee_Profile phải hoàn toàn phù hợp với sex trong employer_Requirement thì mới đạt yêu cầu (ví dụ cùng là Nam hoặc cùng là Nữ).
-- 3. Dựa vào ngày sinh (dob) tính ra độ tuổi hiện tại, độ tuổi hiện tại phải lớn hơn minAge và nhỏ hơn maxAge trong employer_Requirement thì mới đạt.
-- 4. profession trong emplyee_Profile phải có ít nhất 1 ngành nghề chung ngành với ngành trong profession trong employer_Requirement thì mới đạt yêu cầu, Sử dụng các phương pháp như Phân tích ngữ cảnh, Phân tích ngữ cảnh dựa trên ngữ nghĩa, mạng ngữ nghĩa (Semantic Networks) để đánh giá mức độ liên quan giữa các từ khóa. (Ví dụ Kỹ sư phần mềm, Công nghệ thông tin, Khoa học Máy tính, Web, Frontend, Backend... là mức độ liên quan cao; Quảng cáo, sale, bán sỉ, bán lẻ, Marketing, Bán hàng, Kinh doanh... là mức độ liên quan cao).
-- 5. degree trong emplyee_Profile phải cao hơn hoặc bằng với degree trong employer_Requirement thì mới đạt yêu cầu (ví dụ Tiến sĩ > Thạc sĩ > cử nhân > cao đẳng > trung cấp > phổ thông, ... tương tự).
-- 6. experience trong emplyee_Profile phải lớn hơn experience trong employer_Requirement thì mới đạt yêu cầu (ví dụ trên 5 năm trở > 5 năm > 4 năm > ...> 1 năm > dưới 1 năm, ... tương tự).
+Hãy đọc hồ sơ xin việc và yêu cầu tuyển dụng sau đó so sánh và đánh giá xem thông tin emplyee_Profile có phù hợp với thông tin tuyển dụng hay không. Hãy đánh giá xem hồ sơ xin việc theo các tiêu chí sau.
+- 1. Ngành nghề trong hồ sơ xin việc phải có ít nhất 1 ngành nghề liên quan tới ngành nghề trong danh sách các ngành nghề trong yêu cầu tuyển dụng thì mới đạt yêu cầu. (Ví dụ Kỹ sư phần mềm, Công nghệ thông tin, Khoa học Máy tính, Web, Frontend, Backend... là mức độ liên quan cao; Quảng cáo, sale, bán sỉ, bán lẻ, Marketing, Bán hàng, Kinh doanh... là mức độ liên quan cao).
+- 2. Trình độ trong hồ sơ xin việc phải cao hơn hoặc bằng với trình độ trong yêu cầu tuyển dụng thì mới đạt yêu cầu.
+- 3. kinh nghiệm trong hồ sơ xin việc phải cao hơn kinh nghiệm trong yêu cầu tuyển dụng thì mới đạt yêu cầu.
 * result chỉ có thể là 1 trong 2 con số -10 hoặc 30.
-* Nếu đạt hết TẤT CẢ 6 tiêu chí trên thì result là con số 30. Ví dụ result là: 30
+* Nếu đạt hết TẤT CẢ 4 tiêu chí trên thì result là con số 30. Ví dụ result là: 30
 * Nếu có bất kì 1 tiêu chí nào không đạt yêu cầu thì dừng phân tích ngay, đồng thời trả ra result là con số -10. Ví dụ result là: -10
-***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng Object bao gồm 2 thuộc tính là id (tương ứng với application_id trong emplyee_Profile.application) và result (là con số result sau khi phân tích, là 1 trong 2 con số 30 hoặc -10). Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu emplyee_Profile.application.id = 1, emplyee_Profile đạt hết tất cả tiêu chí thì trả về:
+***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng Object bao gồm 2 thuộc tính là id (tương ứng với application_id) và result (là con số result sau khi phân tích, là 1 trong 2 con số 30 hoặc -10). Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu application.id = 1, hồ sơ xin việc đạt hết tất cả tiêu chí thì trả về:
 {
     "id": 1,
     "result": 30
@@ -39,3 +35,15 @@ export const extractSkill = `Trích ra danh sách các kĩ năng (bao gồm kĩ 
 
 export const translate = `Hãy dịch các từ khóa sau sang tiếng Việt, và viết hoa chữ cái đầu. 
 ***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) là ở dạng Array duy nhất, không chứa bất kì lời nào khác. Ví dụ câu trả lời là: ["PHP", "Backend", "Tiếng hoa", "Đàm phán", "Làm việc nhóm", "Giao tiếp", "Thuyết trình"]. `;
+
+export const extractCommonInfo = `Trích ra thông tin về ngành nghề (profession), trình độ học vấn (degree), số năm kinh nghiệm làm việc trong ngành (experience) trong hồ sơ xin việc. Kết quả các thông tin có định dạng sau:
+- profession: tên ngành nghề,
+- degree: (Tiến sĩ, Thạc sĩ, cử nhân, cao đẳng, trung cấp, phổ thông, ...),
+- experience: (số) năm. (nếu không có kinh nghiệp làm việc thì trả về 0 năm)
+***Lưu ý quan trọng: Câu trả lời của bạn (ChatGPT) là ở dạng Object, không chứa bất kì lời nào khác. Ví dụ câu trả lời là:
+{ 
+    "profession": "Công nghệ thông tin",
+    "degree": "Thạc sĩ",
+    "experience": "3 năm", 
+}
+`;

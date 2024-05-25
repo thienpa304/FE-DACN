@@ -15,10 +15,7 @@ import dayjs from 'dayjs';
 import useMutateUserData from '../../hooks/useMutateUserHook';
 import useMutateCompany from '../../hooks/useMutateCompany';
 import TextField from 'src/components/TextField';
-import {
-  toInputDateString,
-  toOutputDateString
-} from 'src/utils/inputOutputFormat';
+import { toInputDateString, toOutputDateString } from 'src/utils/formatData';
 import ButtonGroup from 'src/components/ButtonGroup';
 import { useApp } from 'src/modules/app/hooks';
 import { setUser } from 'src/modules/app/appSlice';
@@ -248,7 +245,6 @@ export function CompanyForm(props) {
             id="description"
             label="Mô tả công ty"
             name="description"
-            required
           />
         </Grid>
       </Grid>

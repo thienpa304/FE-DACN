@@ -8,7 +8,6 @@ interface responseType {
 }
 
 const useQueryTotalResultOfJobs = (params?, querykey = null) => {
-  // debugger;
   const { data, isLoading, refetch } = useQuery<
     ResponseData<responseType>,
     AxiosError<ResponseData<responseType>>

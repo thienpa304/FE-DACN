@@ -1,12 +1,12 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { Employee } from '../../users/model';
 import { AdminEmployeesService } from '../adminService';
 
 const useQueryEmployeesByAdmin = (params?, isFetch?) => {
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<Employee[]>,
+    ResponseData<PaginationType<Employee[]>>,
     AxiosError<ResponseData<Employee[]>>
   >(
     ['get-AllEmployees', params?.page, params?.profession, params?.name],
@@ -24,7 +24,9 @@ const useQueryEmployeesByAdmin = (params?, isFetch?) => {
 
   return {
     employeeList:
-      data?.data?.map((user) => ({ ...user, id: user.userId })) || [],
+      data?.data?.items?.map((user) => ({ ...user, id: user.userId })) || [],
+    totalPages: data?.data?.meta.totalPages,
+    totalItems: data?.data?.meta.totalItems,
     isLoading,
     refetch
   };

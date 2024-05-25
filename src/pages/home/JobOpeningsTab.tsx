@@ -12,23 +12,16 @@ import { useTheme } from '@emotion/react';
 import { checkIsMobile, checkIsTablet } from 'src/utils/responsive';
 
 function JobOpeningsTab() {
-  const { totalResults, isLoading: isLoadingTotalResult } =
-    useQueryTotalResultOfJobs();
   const [currentPage, setCurrentPage] = useState(1);
   const theme = useTheme();
   const isTablet = checkIsTablet(theme);
   const pageSize = isTablet ? 8 : 9;
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
-  const { jobs, isLoading } = useQueryAllJob({
+  const { jobs, isLoading, totalPages } = useQueryAllJob({
     page: currentPage,
     num: pageSize
   });
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
-  if (isLoading || isLoadingTotalResult) return <SuspenseLoader />;
+  if (isLoading) return <SuspenseLoader />;
 
   return (
     <Card
@@ -83,7 +76,7 @@ function JobOpeningsTab() {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        handlePageChange={setCurrentPage}
       />
     </Card>
   );

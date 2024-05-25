@@ -9,7 +9,7 @@ import {
   PROFESSION,
   WORK_AT
 } from 'src/constants/option';
-import { convertStringToObjectList } from 'src/utils/inputOutputFormat';
+import { convertStringToObjectList } from 'src/utils/formatData';
 import useDocumentHook from '../hooks/useDocumentHook';
 import { Degree } from 'src/constants/enum';
 function AttachedGeneral() {

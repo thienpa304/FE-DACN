@@ -8,7 +8,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled } from '@mui/material/styles';
 import { Job } from '../model';
 import ModalApply from '../../application/components/ModalApply';
-import { toInputDateString } from 'src/utils/inputOutputFormat';
+import { toInputDateString } from 'src/utils/formatData';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import { useApp } from 'src/modules/app/hooks';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';

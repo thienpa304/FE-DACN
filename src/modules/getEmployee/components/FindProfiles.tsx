@@ -4,23 +4,21 @@ import ProfileCard from './ProfileCard';
 import useQueryEmployee from '../hook/useQueryEmployee';
 import SearchBar from 'src/components/SearchBar/SearchBar';
 import JobFilter from '../../jobs/components/JobFilter';
-import { useLocation } from 'react-router';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useSearchParams } from 'react-router-dom';
+import Pagination from 'src/components/Pagination';
 
 export default function FindProfiles() {
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState(null);
-  const { state } = useLocation();
-  const locationState = state as any;
   const [searchParams, setSearchParams] = useSearchParams();
   const jobTitle = searchParams.get('search');
   const workAddress = searchParams.get('address');
   const profession = searchParams.get('profession');
 
   const pageSize = 12;
-  const { profile, isLoading } = useQueryEmployee({
-    page: page,
+  const { profile, isLoading, totalPages } = useQueryEmployee({
+    page: currentPage,
     num: pageSize,
     ...filter,
     profession: profession,
@@ -79,6 +77,11 @@ export default function FindProfiles() {
           </Box>
         )}
       </Container>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={setCurrentPage}
+      />
     </Container>
   );
 }

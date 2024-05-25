@@ -2,7 +2,9 @@ import {
   Box,
   Button,
   CircularProgress,
+  Container,
   IconButton,
+  Rating,
   Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -17,9 +19,63 @@ import {
   review,
   firstRoundForGeneralInfo,
   preprocessJobData,
-  preprocessProfileData
+  preprocessProfileData,
+  ratingStar
 } from 'src/utils/reviewProfile';
 import { LoadingButton } from '@mui/lab';
+import alertDialog from 'src/utils/alertDialog';
+
+const renderAnalyzeResult = (analyzeResult: number, hints: string) => {
+  const rating = ratingStar(analyzeResult);
+
+  return (
+    <>
+      <Box display={'flex'} textAlign={'left'}>
+        <Typography fontWeight={700} fontSize={16} mr={2}>
+          Độ phù hợp
+        </Typography>
+        {/* <Box
+          sx={{
+            width: 150,
+            borderRadius: 3,
+            p: 1,
+            bgcolor:
+              analyzeResult >= HIGH_SCORE
+                ? '#ffc107'
+                : analyzeResult >= NORMAL_SCORE
+                ? '#4caf50'
+                : analyzeResult >= LOW_SCORE
+                ? '#b5b5b5'
+                : '#efefef',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+        >
+          {analyzeResult >= HIGH_SCORE
+            ? 'Cao'
+            : analyzeResult >= NORMAL_SCORE
+            ? 'Trung bình'
+            : analyzeResult >= LOW_SCORE
+            ? 'Thấp'
+            : 'Không phù hợp'}
+        </Box> */}
+        <Rating value={rating} max={3} readOnly />
+      </Box>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        // justifyContent={'left'}
+        mt={2}
+        textAlign={'left'}
+      >
+        <Typography fontWeight={700} fontSize={16}>
+          Gợi ý:
+        </Typography>
+        <Typography mt={1}>{hints}</Typography>
+      </Box>
+    </>
+  );
+};
 
 export default function AnayzeProfileButton(props) {
   const {
@@ -59,6 +115,12 @@ export default function AnayzeProfileButton(props) {
     setIsAnalyzing(false);
     setPassOneProfiles([]);
     setGoToAnalyzeResult({ signal: false, resultData: null });
+    console.log('Finised All');
+    alertDialog({
+      message: renderAnalyzeResult(analyzeResult, hints),
+      hideCancelButton: true,
+      title: 'Kết quả phân tích'
+    });
   };
 
   const handleSetAnalyzedProfile = async (data: ProfileApplicationType[]) => {
@@ -71,6 +133,7 @@ export default function AnayzeProfileButton(props) {
 
   const handleGoToAnalyzeResult = (signal: boolean, resultData) => {
     setGoToAnalyzeResult({ signal: signal, resultData: resultData });
+    console.log('resultData', resultData);
   };
 
   const handleAnalyzeResult = async (result: any[]) => {
@@ -79,6 +142,9 @@ export default function AnayzeProfileButton(props) {
         analyzedProfile?.employee_Profile?.online_profile ||
         analyzedProfile?.employee_Profile?.attached_document
       ) {
+        debugger;
+        console.log('....', analyzedProfile?.employee_Profile);
+
         const matchingScore = firstRoundForGeneralInfo(
           analyzedProfile?.employer_Requirement,
           analyzedProfile?.employee_Profile
@@ -86,9 +152,9 @@ export default function AnayzeProfileButton(props) {
 
         console.log('matchingScore', matchingScore);
         setAnalyzeResult(() => matchingScore);
-        if (matchingScore >= LOW_SCORE)
+        if (matchingScore >= LOW_SCORE) {
           setPassOneProfiles(() => [analyzedProfile]);
-        else {
+        } else {
           setHints(
             'Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Giới tính, độ tuổi ngành nghề, trình độ, kinh nghiệm'
           );
@@ -98,7 +164,11 @@ export default function AnayzeProfileButton(props) {
     } else {
       const response = JSON.parse(result[0]);
       const matchingScore: number = response?.result;
-      setHints(response?.hints);
+      if (matchingScore + analyzeResult < LOW_SCORE) {
+        setHints(
+          'Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Ngành nghề, trình độ, kinh nghiệm'
+        );
+      } else setHints(response?.hints);
       setAnalyzeResult((prev) => prev + matchingScore);
     }
 
@@ -148,7 +218,13 @@ export default function AnayzeProfileButton(props) {
     }
     const data: ProfileApplicationType = {
       id: 1,
-      employee_Profile: preprocessProfileData(profileData),
+      employee_Profile: {
+        ...profileData,
+        personal_information: {
+          dob: profileData?.personal_information?.dob,
+          sex: profileData?.personal_information?.sex
+        }
+      },
       employer_Requirement: preprocessJobData(job)
     };
     setAnalyzedProfile(() => data);
@@ -204,7 +280,6 @@ export default function AnayzeProfileButton(props) {
         });
       else {
         finishedAll();
-        console.log('Finised All');
       }
     } else if (roundTwoFinished && !roundThreeFinished) {
       console.log('Round 2 finished');
@@ -219,7 +294,6 @@ export default function AnayzeProfileButton(props) {
     } else if (roundThreeFinished) {
       console.log('Round 3 finished');
       finishedAll();
-      console.log('Finised All');
     }
   }, [roundOneFinished, roundTwoFinished, roundThreeFinished]);
 
@@ -244,7 +318,7 @@ export default function AnayzeProfileButton(props) {
         <GradeIcon fontSize="small" />
         Phân tích độ phù hợp
       </LoadingButton>
-      {showResult && (
+      {/* {showResult && (
         <Box
           sx={{
             width: 150,
@@ -270,7 +344,7 @@ export default function AnayzeProfileButton(props) {
             ? 'Thấp'
             : 'Không phù hợp'}
         </Box>
-      )}
+      )} */}
     </Box>
   );
 }

@@ -11,7 +11,7 @@ import CustomContainer from 'src/components/CustomContainer';
 import dayjs from 'dayjs';
 import PersonalViewUI from 'src/modules/jobProfile/PersonalViewUI';
 import GeneralViewUI from 'src/modules/jobProfile/GeneralViewUI';
-import { toOutputDateString } from 'src/utils/inputOutputFormat';
+import { toOutputDateString } from 'src/utils/formatData';
 import { isMobile } from 'src/constants/reponsive';
 
 const bodyText = {
@@ -119,7 +119,7 @@ const ViewCV = (props) => {
                       </Box>
                     )
                   )}
-                  {!user?.online_profile?.education_informations.length && (
+                  {!user?.online_profile?.education_informations?.length && (
                     <Typography
                       sx={[bodyText, { color: '#999', fontStyle: 'italic' }]}
                     >
@@ -164,7 +164,38 @@ const ViewCV = (props) => {
                       </Box>
                     )
                   )}
-                  {!user?.online_profile?.work_experiences.length && (
+                  {!user?.online_profile?.work_experiences?.length && (
+                    <Typography
+                      sx={[bodyText, { color: '#999', fontStyle: 'italic' }]}
+                    >
+                      Chưa cập nhật
+                    </Typography>
+                  )}
+                </CustomContainer>
+
+                <CustomContainer mt={4} sx={{ p: { md: 3, xs: 1 } }}>
+                  <Typography fontSize={20} fontWeight={700} gutterBottom>
+                    Chứng chỉ khác
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                  {user?.online_profile?.another_degrees?.map(
+                    (degree, index) => (
+                      <Box key={index} mb={3}>
+                        {index !== 0 && (
+                          <Divider
+                            sx={{ my: 3, width: '80%', marginX: 'auto' }}
+                          />
+                        )}
+                        <Typography sx={bodyText}>
+                          <strong>Tên chứng chỉ: </strong> {degree.degreeName}
+                        </Typography>
+                        <Typography sx={bodyText}>
+                          <strong>Mức độ thành thạo: </strong> {degree.level}
+                        </Typography>
+                      </Box>
+                    )
+                  )}
+                  {!user?.online_profile?.another_degrees?.length && (
                     <Typography
                       sx={[bodyText, { color: '#999', fontStyle: 'italic' }]}
                     >

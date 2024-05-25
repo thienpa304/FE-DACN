@@ -5,6 +5,17 @@ export interface ResponseData<K = unknown> {
   message: string;
 }
 
+export interface PaginationType<K = unknown> {
+  items: K;
+  meta: {
+    totalItems: number;
+    itemCount: number;
+    itemPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
 const headerRequest = () => {
   const header: any = {
     'Content-Type': 'application/json'

@@ -14,7 +14,6 @@ export default function JobRecommendTab(props) {
   const { id, profile } = props;
   const { keywords, profession, degree, experience, sex } = profile;
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredJob, setFilteredJob] = useState<Job[]>([]);
   const [filter, setFilter] = useState({
     profession: profession,
     employmentType: '',
@@ -23,24 +22,9 @@ export default function JobRecommendTab(props) {
     positionLevel: '',
     sex: sex
   });
-
-  const { totalResults, refetch: refetchTotal } = useQueryTotalResultOfJobs(
-    {
-      keywords: keywords,
-      profession: profession,
-      sex: sex,
-      ...filter
-    },
-    id
-  );
-
   const pageSize = 4;
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
-  // if (id === 'online') {
-  //   setOnlineTotalPage(totalPages);
-  // } else if (id === 'document') setDocumentTotalPage(totalPages);
 
-  const { jobs, isLoading, isFetching } = useQueryAllJob({
+  const { jobs, isLoading, totalPages } = useQueryAllJob({
     keywords: keywords,
     profession: profession,
     page: currentPage,
@@ -48,26 +32,11 @@ export default function JobRecommendTab(props) {
     ...filter
   });
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
   const handleFilter = (data: any) => {
     setFilter((prev) => ({ ...prev, ...data }));
   };
 
   useEffect(() => {
-    // filter jobs by profession, degree, experience
-    if (profession && degree && experience) {
-      const result = jobs.filter(
-        (job) => profession.includes(job.profession)
-        // && compareDegrees(degree, job.degree) > 0 &&
-        // compareExperience(experience, job.experience) > 0
-      );
-      // if (JSON.stringify(result) === JSON.stringify(filteredJob)) return;
-      setFilteredJob(jobs);
-    } else setFilteredJob(jobs);
-
     const section = document.getElementById(id);
     // if (section) section.scrollIntoView({ behavior: 'smooth' });
   }, [JSON.stringify(jobs)]);
@@ -98,12 +67,12 @@ export default function JobRecommendTab(props) {
       />
       <Box p={3}>
         <Grid container mb={3} spacing={2}>
-          {filteredJob.map((job, index) => (
+          {jobs.map((job, index) => (
             <Grid key={job?.postId} item xs={12} sm={6}>
               <SmallJobCard key={index} job={job} />
             </Grid>
           ))}
-          {filteredJob.length === 0 && (
+          {jobs.length === 0 && (
             <Grid item xs={12}>
               <Typography
                 fontSize={16}
@@ -119,7 +88,7 @@ export default function JobRecommendTab(props) {
         <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
-          handlePageChange={handlePageChange}
+          handlePageChange={setCurrentPage}
         />
       </Box>
     </Card>

@@ -309,7 +309,7 @@ export default function ModalApply(props: Props) {
             </Button>
           </Box>
         </DialogActions>
-        {hintsMessage && (
+        {/* {hintsMessage && (
           <Box mb={1} p={2} gap={1} display="flex" flexDirection="column">
             <Divider sx={{ mb: 1, color: '#f29c00' }} />
             <Typography fontWeight={700} fontSize={18}>
@@ -319,7 +319,7 @@ export default function ModalApply(props: Props) {
               {hintsMessage}
             </Typography>
           </Box>
-        )}
+        )} */}
       </Dialog>
     </div>
   );

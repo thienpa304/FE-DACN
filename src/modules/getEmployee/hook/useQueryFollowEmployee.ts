@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { ProfileShowType } from '../model';
 import { FollowEmployeesService } from '../getEmployeeService';
 import { useApp } from 'src/modules/app/hooks';
@@ -8,10 +8,10 @@ import { useApp } from 'src/modules/app/hooks';
 const useQueryFollowEmployee = (params?) => {
   const { isEmployer } = useApp();
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<any[]>,
+    ResponseData<PaginationType<any[]>>,
     AxiosError<ResponseData<any[]>>
   >(
-    ['get-FollowEmployees', params?.page],
+    ['get-FollowEmployees', params],
     () => FollowEmployeesService.get({ params }),
     {
       keepPreviousData: true,
@@ -22,7 +22,8 @@ const useQueryFollowEmployee = (params?) => {
   );
 
   return {
-    employeeFollow: data?.data,
+    employeeFollow: data?.data?.items,
+    totalPages: data?.data?.meta.totalPages,
     isLoading,
     refetch
   };

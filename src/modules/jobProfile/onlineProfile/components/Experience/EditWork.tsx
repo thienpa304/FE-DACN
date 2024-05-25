@@ -20,10 +20,7 @@ import useMutateExperience from './hooks/useMutateExperience';
 import useMutateUpdateExperience from './hooks/useMutateUpdateExperience';
 import DatePicker from 'src/components/DatePicker';
 import dayjs from 'dayjs';
-import {
-  toInputDateString,
-  toOutputDateString
-} from 'src/utils/inputOutputFormat';
+import { toInputDateString, toOutputDateString } from 'src/utils/formatData';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 import ButtonGroup from 'src/components/ButtonGroup';
 import useWorkExperience from '../../hooks/useWorkExperience';

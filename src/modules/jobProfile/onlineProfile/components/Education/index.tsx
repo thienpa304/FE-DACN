@@ -17,7 +17,7 @@ import useMutateDeleteEducation from './hooks/useMutateDeleteEducation';
 import dayjs from 'dayjs';
 import EditDataGrid from 'src/components/EditDataGrid';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
-import { toOutputDateString } from 'src/utils/inputOutputFormat';
+import { toOutputDateString } from 'src/utils/formatData';
 import DatePicker from 'src/components/DatePicker';
 
 const DatePickerStyle = {

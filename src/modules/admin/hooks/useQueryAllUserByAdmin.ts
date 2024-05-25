@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { User } from '../../users/model';
 import { GetAllUser } from '../../users/userService';
 import { useApp } from 'src/modules/app/hooks';
@@ -8,7 +8,7 @@ import { useApp } from 'src/modules/app/hooks';
 const useQueryAllUserByAdmin = (params?, isEnabled = true) => {
   const { isAdmin } = useApp();
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<User[]>,
+    ResponseData<PaginationType<User[]>>,
     AxiosError<ResponseData<User[]>>
   >(['get-Alluser', params], () => GetAllUser.get({ params }), {
     keepPreviousData: true,
@@ -18,7 +18,9 @@ const useQueryAllUserByAdmin = (params?, isEnabled = true) => {
   });
 
   return {
-    userList: data?.data?.map((user) => ({ ...user, id: user.userId })) || [],
+    userList:
+      data?.data?.items.map((user) => ({ ...user, id: user.userId })) || [],
+    totalPages: data?.data?.meta.totalPages,
     isLoading,
     refetch
   };

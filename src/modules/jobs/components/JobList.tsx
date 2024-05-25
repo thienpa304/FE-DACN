@@ -33,23 +33,12 @@ function JobList(props) {
     jobTitle: jobTitle,
     workAddress: workAddress
   });
-  const {
-    totalResults,
-    refetch: refetchTotalResults,
-    isLoading: isLoadingTotalResult
-  } = useQueryTotalResultOfJobs({
-    ...filter
-  });
   const pageSize = numOfJobPerPage ? numOfJobPerPage : 15;
-  const totalPages = Math.ceil(totalResults / pageSize);
-  const { jobs, refetch, isLoading } = queryJobs({
+  const { jobs, totalItems, totalPages, refetch, isLoading } = queryJobs({
     page: currentPage,
     num: pageSize,
     ...filter
   });
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
 
   const handleFilter = (data: any) => {
     setFilter((prev) => ({ ...prev, ...data }));
@@ -57,8 +46,9 @@ function JobList(props) {
 
   useEffect(() => {
     refetch();
-    refetchTotalResults();
   }, [filter]);
+
+  if (isLoading) return <SuspenseLoader />;
 
   return (
     <Container disableGutters maxWidth="md" sx={{ py: 3, ...sx }}>
@@ -79,12 +69,11 @@ function JobList(props) {
       <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff' }}>
         <Typography fontSize={18} mb={2}>
           <Box style={{ color: '#ce8b0e', display: 'inline' }}>
-            {totalResults ? totalResults : 0}
+            {totalItems ? totalItems : 0}
           </Box>{' '}
           việc làm đang tuyển dụng
         </Typography>
         <Grid container spacing={2} minHeight={300}>
-          {(isLoading || isLoadingTotalResult) && <SuspenseLoader />}
           {jobs.length ? (
             jobs.map((job, index) => (
               <Grid key={job?.id} item xs={12}>
@@ -101,7 +90,7 @@ function JobList(props) {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        handlePageChange={handlePageChange}
+        handlePageChange={setCurrentPage}
       />
     </Container>
   );

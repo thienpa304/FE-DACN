@@ -1,5 +1,5 @@
 import { Degree, Experience } from 'src/constants/enum';
-import { findObjectKey } from './inputOutputFormat';
+import { findObjectKey } from './formatData';
 
 export function compareExperience(
   employee: string,

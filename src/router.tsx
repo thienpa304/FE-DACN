@@ -22,19 +22,21 @@ const Loader = (Component) => (props) =>
   );
 
 // Recruitment
-const JobCreate = Loader(lazy(() => import('src/pages/job-create')));
+const JobCreate = Loader(lazy(() => import('src/pages/company-job-create')));
 const StatisticsAndReports = Loader(
   lazy(() => import('src/pages/admin/StatisticsAndReports'))
 );
-const JobList = Loader(lazy(() => import('src/pages/job-list')));
+const JobList = Loader(lazy(() => import('src/pages/company-job-list')));
 const RecruitmentListApproval = Loader(
-  lazy(() => import('src/pages/job-approval'))
+  lazy(() => import('src/pages/admin-job-approval'))
 );
-const RecruitmentEdit = Loader(lazy(() => import('src/pages/job-edit')));
+const RecruitmentEdit = Loader(
+  lazy(() => import('src/pages/company-job-edit'))
+);
 
 // Candidate
 const CandidateProfiles = Loader(
-  lazy(() => import('src/pages/review-candidate-profiles'))
+  lazy(() => import('src/pages/company-review-profiles'))
 );
 const ViewCandidateProfile = Loader(
   lazy(() => import('src/pages/view-candidate-profile'))
@@ -51,13 +53,17 @@ const ForgotPassword = Loader(
 
 // Pages
 const Home = Loader(lazy(() => import('src/pages/home')));
-const JobDetail = Loader(lazy(() => import('src/pages/job-detail')));
-const JobOpenings = Loader(lazy(() => import('src/pages/job-openings')));
-const ResultJobList = Loader(lazy(() => import('src/pages/result-job-list')));
-const CompanyInformation = Loader(
-  lazy(() => import('src/pages/company-information'))
+const JobDetail = Loader(lazy(() => import('src/pages/view-job-detail')));
+const JobOpenings = Loader(lazy(() => import('src/pages/view-job-openings')));
+const ResultJobList = Loader(
+  lazy(() => import('src/pages/view-result-job-list'))
 );
-const ShowCompanyPage = Loader(lazy(() => import('src/pages/company-list')));
+const CompanyInformation = Loader(
+  lazy(() => import('src/pages/view-company-information'))
+);
+const ShowCompanyPage = Loader(
+  lazy(() => import('src/pages/view-company-list'))
+);
 
 // Applications
 const UserProfile = Loader(lazy(() => import('src/modules/users/profile')));
@@ -70,21 +76,29 @@ const OnlineProfile = Loader(
 const AttachedDocument = Loader(
   lazy(() => import('src/modules/jobProfile/attachedDocument'))
 );
-const JobApplied = Loader(lazy(() => import('src/pages/job-applied')));
+const JobApplied = Loader(lazy(() => import('src/pages/employee-job-applied')));
 
-const JobFollow = Loader(lazy(() => import('src/pages/job-follow')));
+const JobFollow = Loader(lazy(() => import('src/pages/employee-follow-job')));
 
-const CompanyFollow = Loader(lazy(() => import('src/pages/company-follow')));
+const CompanyFollow = Loader(
+  lazy(() => import('src/pages/employee-follow-company'))
+);
 
-const JobRecommend = Loader(lazy(() => import('src/pages/recommend-job')));
+const JobRecommend = Loader(
+  lazy(() => import('src/pages/employee-recommend-job'))
+);
 
 // Employer
-const EmployeeFollow = Loader(lazy(() => import('src/pages/employee-follow')));
+const EmployeeFollow = Loader(
+  lazy(() => import('src/pages/company-follow-employee'))
+);
 
-const FindProfiles = Loader(lazy(() => import('src/pages/find-profiles')));
+const FindProfiles = Loader(
+  lazy(() => import('src/pages/company-find-profiles'))
+);
 
 const RecommendProfile = Loader(
-  lazy(() => import('src/pages/recommend-profiles'))
+  lazy(() => import('src/pages/company-recommend-profiles'))
 );
 const TestGPT = Loader(lazy(() => import('src/pages/testGPT')));
 

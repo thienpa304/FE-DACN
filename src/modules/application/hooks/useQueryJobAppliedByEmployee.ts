@@ -1,16 +1,16 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { ResponseData } from 'src/common/http-request';
+import { PaginationType, ResponseData } from 'src/common/http-request';
 import { ApplicationService } from '../applicationService';
 import { Application } from '../model';
 import { useApp } from 'src/modules/app/hooks';
 
-const useQueryJobAppliedByEmployee = () => {
+const useQueryJobAppliedByEmployee = (params?) => {
   const { isEmployee } = useApp();
   const { data, isLoading } = useQuery<
-    ResponseData<Application[]>,
+    ResponseData<PaginationType<Application[]>>,
     AxiosError<ResponseData<Application[]>>
-  >('job-applied-getList', ApplicationService.get, {
+  >(['job-applied-getList', params], () => ApplicationService.get({ params }), {
     retry: 1,
     refetchOnWindowFocus: false,
     enabled: isEmployee,
@@ -19,7 +19,9 @@ const useQueryJobAppliedByEmployee = () => {
 
   return {
     data:
-      data?.data?.map((item) => ({ ...item, id: item.application_id })) || [],
+      data?.data?.items.map((item) => ({ ...item, id: item.application_id })) ||
+      [],
+    totalPages: data?.data?.meta.totalPages,
     isLoading
   };
 };

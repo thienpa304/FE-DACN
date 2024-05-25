@@ -50,21 +50,17 @@ const ProfileManagement = () => {
   });
   const [viewProfessionMode, setViewProfessionMode] = useState(true);
 
-  const { totalResults, isLoading: isLoadingTotalResult } =
-    useQueryTotalResultOfEmployeeByAdmin({
-      profession: selectedProfession
-    });
   const pageSize = 10;
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
-  const { employeeList, isLoading, refetch } = useQueryEmployeesByAdmin(
-    {
-      profession: selectedProfession,
-      page: currentPage,
-      num: pageSize,
-      name: searchUserName
-    },
-    !viewProfessionMode
-  );
+  const { employeeList, isLoading, refetch, totalPages } =
+    useQueryEmployeesByAdmin(
+      {
+        profession: selectedProfession,
+        page: currentPage,
+        num: pageSize,
+        name: searchUserName
+      },
+      !viewProfessionMode
+    );
   const { onDeleteDocumentProfile } = useDeleteDocumentProfileByAdmin();
   const { onDeleteOnlineProfile } = useDeleteOnlineProfileByAdmin();
 
@@ -322,7 +318,7 @@ const ProfileManagement = () => {
                         sx={{
                           minHeight: '65vh'
                         }}
-                        loading={isLoading || isLoadingTotalResult}
+                        loading={isLoading}
                         initialState={{
                           columns: {
                             columnVisibilityModel: {

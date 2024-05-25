@@ -12,7 +12,7 @@ import {
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
-import TablePost from 'src/pages/job-list/TablePost';
+import TablePost from 'src/pages/company-job-list/TablePost';
 import TabsWrapper from 'src/components/TabWrapper';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
@@ -29,12 +29,11 @@ const JobList = () => {
   const pageSize = 9;
   const [currentTab, setCurrentTab] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { jobs, totalResults, isLoading } = useQueryJobByOwner({
+  const { jobs, totalResults, isLoading, totalPages } = useQueryJobByOwner({
     status: currentTab,
     page: currentPage,
     num: pageSize
   });
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   const handleTabsChange = (e, value) => {
     setCurrentTab(value);

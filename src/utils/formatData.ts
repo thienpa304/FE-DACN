@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { object } from 'prop-types';
 
 interface Option {
   value: any;
@@ -119,3 +118,18 @@ export const checkIsJSON = (data) => {
   }
   return true;
 };
+
+export const parseResponseJSONData = async (result: any[]) => {
+  return Promise.all(
+    result.map(async (data) => {
+      console.log(data.indexOf('{'));
+
+      if (data?.indexOf('{') >= 0 && data?.lastIndexOf('}') >= 0)
+        return JSON.parse(
+          data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1)
+        );
+    })
+  );
+};
+
+export const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
