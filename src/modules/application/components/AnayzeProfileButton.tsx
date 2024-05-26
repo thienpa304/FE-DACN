@@ -142,9 +142,6 @@ export default function AnayzeProfileButton(props) {
         analyzedProfile?.employee_Profile?.online_profile ||
         analyzedProfile?.employee_Profile?.attached_document
       ) {
-        debugger;
-        console.log('....', analyzedProfile?.employee_Profile);
-
         const matchingScore = firstRoundForGeneralInfo(
           analyzedProfile?.employer_Requirement,
           analyzedProfile?.employee_Profile
@@ -256,7 +253,6 @@ export default function AnayzeProfileButton(props) {
 
   // go to round 1
   useEffect(() => {
-    console.log(analyzedProfile);
     if (start && selectedProfile) {
       setAnalyzeResult(null);
       setShowResult(false);

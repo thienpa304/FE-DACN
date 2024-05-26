@@ -63,7 +63,6 @@ export default function EditGridInfo(props) {
   const handleSaveInfo = (data) => {
     for (let key in data) {
       if (!data.hasOwnProperty(key)) continue;
-      console.log(key, dateType.includes(key));
 
       if (dateType.includes(key)) {
         debugger;
@@ -71,7 +70,6 @@ export default function EditGridInfo(props) {
         data[key] = dateString;
       }
     }
-    console.log(data);
 
     if (row?.id) handleUpdate(row?.id, data);
     else handleSave(data);

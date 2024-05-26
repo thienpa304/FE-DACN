@@ -49,8 +49,6 @@ export default function OnlineGeneral() {
   });
 
   useEffect(() => {
-    console.log(profile);
-
     setNewData(formatInputData(profile as OnlineProfile));
   }, [profile]);
 

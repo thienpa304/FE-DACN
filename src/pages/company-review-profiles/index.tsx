@@ -112,8 +112,6 @@ const CandidateProfiles = () => {
 
   // First time render the page
   const initialJobProfileData = useMemo(() => {
-    console.log('...');
-
     return matchJobAndProfile(jobs, data);
   }, [data, jobs]);
 

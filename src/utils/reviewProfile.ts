@@ -227,8 +227,6 @@ const handleRoundOne = async (
   const commonInfo = await extractPromise();
 
   const messagesToSend = commonInfo.map((item) => {
-    console.log('item', item[0]?.employer_Requirement?.profession);
-
     return `
     - application_id: ${item[0]?.id}
     - Yêu cầu tuyển dụng: ngành nghề: [${item[0]?.employer_Requirement?.profession}]; trình độ: ${item[0]?.employer_Requirement?.degree}; kinh nghiệm: ${item[0]?.employer_Requirement?.experience};
@@ -240,7 +238,6 @@ const handleRoundOne = async (
     RoundOneCheck,
     messagesToSend
   ).catch(() => []);
-  console.log('response', response);
 
   const result = Array.isArray(response)
     ? response?.filter((item) => checkIsJSON(item))
@@ -534,8 +531,6 @@ export const review = async ({
 export const parseResponseJSONData = async (result: any[]) => {
   return Promise.all(
     result.map(async (data) => {
-      console.log(data.indexOf('{'));
-
       if (data?.indexOf('{') >= 0 && data?.lastIndexOf('}') >= 0)
         return JSON.parse(
           data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1)

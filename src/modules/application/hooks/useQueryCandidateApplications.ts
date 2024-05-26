@@ -21,8 +21,6 @@ const useQueryCandidateApplications = (params?) => {
     }
   );
 
-  console.log('...api...', data?.data?.meta?.itemCount);
-
   return {
     data:
       data?.data?.items?.map((item) => ({

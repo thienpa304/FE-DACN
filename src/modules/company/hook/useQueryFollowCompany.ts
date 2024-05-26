@@ -24,8 +24,6 @@ const useQueryFollowCompany = (params?) => {
     () =>
       FollowCompanyService.get({ params }).then((res) => {
         if (res.data?.meta?.itemCount) {
-          console.log('res?.data?.items', res?.data?.items);
-
           const idList = res?.data?.items?.map((item) => item.employerId);
           setFollowCompanyList(idList);
         }

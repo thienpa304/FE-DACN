@@ -272,7 +272,6 @@ export default function testGPT() {
         employee_Profile: randomList2
       }
     ]).then((response) => {
-      console.log(response);
       const analyzedData = response.map((item: any) => {
         return item.employer_Requirement.map((req: any, index: number) => {
           return {

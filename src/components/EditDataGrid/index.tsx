@@ -76,8 +76,6 @@ const EditDataGrid = (props) => {
 
     const handleAddClick = () => {
       if (isMobile) {
-        console.log(openEditOnMobile);
-
         setOpenEditOnMobile(() => ({ open: true, row: null }));
         return;
       }
