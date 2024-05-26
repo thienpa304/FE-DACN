@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import useQueryFollowJobs from '../hooks/useQueryFollowJobs';
-import { Box, IconButton } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box } from '@mui/material';
 import useMutateFollowJobById from '../hooks/useMutateFollowJobById';
 import { useApp } from 'src/modules/app/hooks';
-import SuspenseLoader from 'src/components/SuspenseLoader';
-import { Job } from '../model';
 import FollowButton from 'src/components/FollowButton';
+import useFollowJobList from 'src/modules/jobs/hooks/useFollowJobList';
+import useJobList from '../hooks/useJobList';
+import useQueryFollowJobs from '../hooks/useQueryFollowJobs';
 
 export default function FollowJobButton(props) {
   const { job, sx } = props;
-  const { jobFollow } = useQueryFollowJobs();
   const { onFollowJobById } = useMutateFollowJobById();
   const { isEmployee } = useApp();
   const [isFollow, setIsFollow] = useState(false);
+  const { followJobsList } = useFollowJobList();
+  const { jobList } = useJobList();
+  useQueryFollowJobs({ jobIds: jobList?.join(',') });
 
   const handleToggleFollow = (id) => {
     onFollowJobById([id]);
@@ -22,9 +22,10 @@ export default function FollowJobButton(props) {
   };
 
   useEffect(() => {
-    const foundItem = jobFollow?.find((item) => item.postId === job?.postId);
+    if (!job || !followJobsList?.length) return;
+    const foundItem = followJobsList?.includes(job?.postId);
     foundItem && setIsFollow(true);
-  }, [jobFollow, job]);
+  }, [JSON.stringify(followJobsList), JSON.stringify(job)]);
 
   if (!job || !isEmployee) return;
 

@@ -13,7 +13,7 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LinkText from 'src/components/LinkText';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import { Company } from 'src/modules/users/model';
-import FollowCompanyButton from './FollowJobButton';
+import FollowCompanyButton from './FollowCompanyButton';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import { TypographyEllipsis } from 'src/components/Typography';
 

@@ -87,7 +87,10 @@ export default function UserCover() {
         display="flex"
         sx={{ pb: 1, borderBottom: 1, borderColor: 'grey.300' }}
       >
-        <MilitaryTechIcon color="primary" sx={{ fontSize: 40 }} />
+        <MilitaryTechIcon
+          color="primary"
+          sx={{ fontSize: { md: 40, xs: 30 } }}
+        />
         <Typography
           fontWeight={700}
           lineHeight={2}

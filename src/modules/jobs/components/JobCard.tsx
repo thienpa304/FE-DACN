@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Grid,
@@ -24,8 +24,9 @@ import { rewriteUrl } from 'src/utils/rewriteUrl';
 import { TypographyEllipsis } from 'src/components/Typography';
 
 function JobCard({ job }: { job: Job }) {
-  const [companyAvatar, setCompanyAvatar] = useState(
-    job?.employer?.logo || defaultImage.companyAvatar
+  const companyAvatar = useMemo(
+    () => job?.employer?.logo || defaultImage.companyAvatar,
+    [job?.employer?.logo]
   );
 
   return (

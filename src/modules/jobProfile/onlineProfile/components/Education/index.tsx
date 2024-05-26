@@ -19,6 +19,7 @@ import EditDataGrid from 'src/components/EditDataGrid';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
 import { toOutputDateString } from 'src/utils/formatData';
 import DatePicker from 'src/components/DatePicker';
+import { useResponsive } from 'src/utils/responsive';
 
 const DatePickerStyle = {
   '.css-i4bv87-MuiSvgIcon-root': {
@@ -41,6 +42,7 @@ const DatePickerStyle = {
 };
 
 export default function Education() {
+  const { isMobile } = useResponsive();
   const { profile, setProfile } = useOnlineProfile();
   const { onSaveData } = useMutateEducation();
   const { onSaveDataById } = useMutateUpdateEducation();
@@ -115,9 +117,13 @@ export default function Education() {
 
   const columns: GridColDef[] = [
     {
+      field: 'id',
+      headerName: 'ID'
+    },
+    {
       field: 'schoolName',
       headerName: 'Trường/ Trung tâm đào tạo',
-      width: 240,
+      width: !isMobile ? 240 : 190,
       editable: true
     },
     {
@@ -193,9 +199,26 @@ export default function Education() {
           profile={profile}
           rows={rows}
           columns={columns}
+          title={'Thông tin học vấn'}
           handleSave={handleSaveEducationData}
           handleUpdate={handleUpdateEducationData}
           handleDelete={handleDeleteEducationData}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5
+              }
+            },
+            columns: {
+              columnVisibilityModel: {
+                specialization: !isMobile,
+                degreeName: !isMobile,
+                startDate: !isMobile,
+                endDate: !isMobile,
+                id: false
+              }
+            }
+          }}
         />
       </Box>
 

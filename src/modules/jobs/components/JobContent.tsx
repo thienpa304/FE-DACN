@@ -170,7 +170,9 @@ const JobContent: React.FC<Props> = ({ data }) => {
       <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
         Kĩ năng bắt buộc
       </Typography>
-      <Typography marginTop={2.5}>{data.requiredSkills}</Typography>
+      <Typography marginTop={2.5}>
+        {data?.requiredSkills?.split(',')?.join(', ')}
+      </Typography>
       <Typography variant="h3" fontSize={22} noWrap marginTop={2.5}>
         Mô tả công việc
       </Typography>

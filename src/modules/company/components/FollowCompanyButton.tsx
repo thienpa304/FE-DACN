@@ -4,13 +4,17 @@ import { Box, Button } from '@mui/material';
 import { useApp } from 'src/modules/app/hooks';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import useMutateFollowCompanyById from '../hook/useMutateFollowCompanyById';
+import useCompanyList from '../hook/useCompanyList';
+import useFollowCompanyList from '../hook/useFollowCompanyList';
 
 export default function FollowCompanyButton(props) {
   const { sx, employerId } = props;
-  const { companyFollow } = useQueryFollowCompany();
   const { onFollowCompanyById } = useMutateFollowCompanyById();
   const { isEmployee } = useApp();
   const [isFollow, setIsFollow] = useState(false);
+  const { companyList } = useCompanyList();
+  const { followCompanysList } = useFollowCompanyList();
+  useQueryFollowCompany({ companyIds: companyList?.join(',') });
 
   const handleToggleFollow = (id) => {
     onFollowCompanyById([id]);
@@ -18,11 +22,9 @@ export default function FollowCompanyButton(props) {
   };
 
   useEffect(() => {
-    const foundItem = companyFollow?.find(
-      (item) => item.employerId === employerId
-    );
+    const foundItem = followCompanysList?.includes(employerId);
     foundItem && setIsFollow(true);
-  }, [companyFollow, employerId]);
+  }, [JSON.stringify(followCompanysList), employerId]);
 
   if (!employerId || !isEmployee) return;
 

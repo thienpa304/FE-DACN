@@ -113,11 +113,11 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
     setOnSaveNewData({
       ...newData,
       requiredSkills: Array.isArray(newData.requiredSkills)
-        ? newData.requiredSkills.map((item) => item.value || item).join(', ')
+        ? newData.requiredSkills.map((item) => item.value || item).join(',')
         : newData.requiredSkills,
       sex: newData.sex === 'Tất cả' ? null : newData.sex,
       profession: Array.isArray(newData.profession)
-        ? newData.profession.map((item) => item.value || item).join(', ')
+        ? newData.profession.map((item) => item.value || item).join(',')
         : newData.profession
     });
     handleAnalysis(newData);

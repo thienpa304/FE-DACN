@@ -19,15 +19,17 @@ import { isMobile } from 'src/constants/reponsive';
 export const InputLabel = styled(Grid)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
   fontWeight: 700,
+  minHeight: 50,
   display: 'flex',
   alignItems: 'center',
-  minHeight: 50
+  justifyContent: isMobile ? 'center' : 'left'
 }));
 
 export const InputData = styled(Grid)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
+  justifyContent: isMobile ? 'center' : 'left'
 }));
 
 export const InfoGrid = (props) => {
@@ -108,7 +110,7 @@ export default function InfoField(props) {
               fontWeight={700}
               sx={{
                 fontSize: { md: 22, xs: 18 },
-                lineHeight: { md: 3 }
+                lineHeight: 2
               }}
             >
               {title}

@@ -19,6 +19,8 @@ export function convertStringToObjectList(
     }
     return null;
   });
+  console.log('inputArray, options', inputArray, options);
+  console.log('objectList', objectList);
 
   return objectList.filter((object) => object !== null);
 }
@@ -29,14 +31,10 @@ export function convertObjectListToString(objectList: Option[]): string {
     .map((option) => option.label)
     .filter((label) => label !== null);
 
-  return labels.join(', ');
+  return labels.join(',');
 }
 
-export function toInputDateString(
-  data: string,
-  inputFormat?: string,
-  outputFormat?: string
-) {
+export function toInputDateString(data: string, inputFormat?: string) {
   if (!data) return '';
   return dayjs(data, inputFormat).isValid()
     ? dayjs(data, inputFormat).toISOString()
@@ -106,7 +104,7 @@ export function convertObjectListToStringForSkill(objectList): string {
     .map((item) => item.text)
     .filter((text) => text !== null);
 
-  return text.join(', ');
+  return text.join(',');
 }
 
 export const checkIsJSON = (data) => {
@@ -133,3 +131,9 @@ export const parseResponseJSONData = async (result: any[]) => {
 };
 
 export const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+export const isIsoDate = (str) => {
+  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+  const d = new Date(str);
+  return d instanceof Date && !isNaN(d.getTime()) && d.toISOString() === str; // valid date
+};

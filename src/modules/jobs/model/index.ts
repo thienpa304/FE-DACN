@@ -50,3 +50,5 @@ export type Job = {
   keywords: string;
   check: boolean;
 };
+
+export type FollowJobType = Partial<Job> & Partial<Company>;

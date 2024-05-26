@@ -11,3 +11,6 @@ export const FollowJobService = new BaseService('employee/follow-job');
 export const TotalResultEachProfession = new BaseService(
   'job-postings/totalResultsOfProfession'
 );
+export const TotalResultEachProfessionByAdmin = new BaseService(
+  'admin/job-postings/totalResultsOfProfession'
+);

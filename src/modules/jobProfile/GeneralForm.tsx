@@ -108,13 +108,15 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
       profession: convertObjectListToString(data?.profession as Option[]),
       workAddress: convertObjectListToString(data?.workAddress as Option[]),
       skills: Array.isArray(data.skills)
-        ? data.skills.map((item) => item.value || item).join(', ')
+        ? data.skills.map((item) => item.value || item).join(',')
         : data.skills
     };
   };
 
   useEffect(() => {
     reset(data);
+    console.log(data);
+
     data?.skills &&
       setSetEmployeeSkills(convertToObjectsForSkill(data?.skills));
   }, [data]);

@@ -16,10 +16,10 @@ export const checkIsLargeDesktop = (theme) => {
 
 export const useResponsive = () => {
   const theme = useTheme();
-  const isMobile = checkIsMobile(theme);
-  const isTablet = checkIsTablet(theme);
-  const isDesktop = checkIsDesktop(theme);
-  const isLargeDesktop = checkIsLargeDesktop(theme);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const isDesktop = useMediaQuery(theme.breakpoints.down('lg'));
+  const isLargeDesktop = useMediaQuery(theme.breakpoints.up('lg'));
 
   return {
     isMobile,

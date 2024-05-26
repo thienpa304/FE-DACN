@@ -46,7 +46,7 @@ import { TypographyEllipsis } from 'src/components/Typography';
 import CardApply from 'src/modules/jobs/components/CardApply';
 import TabContent from '../view-job-detail/TabContent';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
-import useApplicationList from 'src/modules/application/hooks/useApplicationList';
+import useApplicationList from 'src/modules/jobs/hooks/useFollowJobList';
 import useJob from 'src/modules/jobs/hooks/useJob';
 import CloseIcon from '@mui/icons-material/Close';
 import { isMobile } from 'src/constants/reponsive';

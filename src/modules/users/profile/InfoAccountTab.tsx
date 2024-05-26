@@ -44,7 +44,10 @@ export default function InfoAccountTab() {
           data={UserData}
           title="Thông tin cá nhân"
           editIcon={
-            <ListAltOutlinedIcon color="primary" sx={{ fontSize: 60 }} />
+            <ListAltOutlinedIcon
+              color="primary"
+              sx={{ fontSize: { md: 40, xs: 30 } }}
+            />
           }
           openForm="User"
         />

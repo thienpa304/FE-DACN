@@ -33,7 +33,7 @@ export function UserForm(props) {
   } = useForm<User>({
     defaultValues: {
       ...user,
-      dob: toInputDateString(user.dob as string, 'DD-MM-YYYY', 'DD-MM-YYYY'),
+      dob: toInputDateString(user.dob as string, 'DD-MM-YYYY'),
       sex: GENDER.find((item) => item.label === user.sex)?.value,
       isMarried: user.isMarried ? 'Đã kết hôn' : 'Độc thân'
     }

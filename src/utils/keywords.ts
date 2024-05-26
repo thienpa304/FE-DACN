@@ -32,7 +32,7 @@ export const loadKeywords = (analysisResults: any[], document?: any) => {
   const keywordArray = jsonString.split(',');
 
   const keywordList = keywordArray.slice(0, 20);
-  return keywordList?.join(', ');
+  return keywordList?.join(',');
 };
 
 function removeDateAttributes(data) {

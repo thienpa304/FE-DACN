@@ -79,7 +79,7 @@ const Footer = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <Typography fontWeight={700} fontSize={18} lineHeight={3}>
-            Kết nối với TopViệcLàm
+            Kết nối với VN CareerHub
           </Typography>
           <Box
             display="flex"
