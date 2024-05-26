@@ -12,8 +12,10 @@ import useMutateUpdateDegree from './hooks/useMutateUpdateDegree';
 import useMutateDeleteDegree from './hooks/useMutateDeleteDegree';
 import EditDataGrid from 'src/components/EditDataGrid';
 import useOnlineProfile from '../../hooks/useOnlineProfile';
+import { useResponsive } from 'src/utils/responsive';
 
 function Degree() {
+  const { isMobile } = useResponsive();
   const { profile } = useOnlineProfile();
   const { onSaveData } = useMutateDegree();
   const { onSaveDataById } = useMutateUpdateDegree();
@@ -51,9 +53,13 @@ function Degree() {
 
   const columns: GridColDef[] = [
     {
+      field: 'id',
+      headerName: 'ID'
+    },
+    {
       field: 'degreeName',
       headerName: 'Chứng chỉ',
-      width: 420,
+      width: !isMobile ? 420 : 190,
       editable: true
     },
     {
@@ -86,10 +92,24 @@ function Degree() {
         <EditDataGrid
           rows={rows}
           columns={columns}
+          title={'Thông tin chứng chỉ'}
           handleSave={handleSaveDegreeData}
           handleUpdate={handleUpdateDegreeData}
           handleDelete={handleDeleteDegreeData}
           profile={profile}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5
+              }
+            },
+            columns: {
+              columnVisibilityModel: {
+                level: !isMobile,
+                id: false
+              }
+            }
+          }}
         />
       </Box>
     </Container>

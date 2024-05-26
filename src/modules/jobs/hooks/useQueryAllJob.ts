@@ -3,8 +3,10 @@ import { useQuery } from 'react-query';
 import { PaginationType, ResponseData } from 'src/common/http-request';
 import { Job } from '../model';
 import { JobViewService } from '../jobService';
+import useJobList from './useJobList';
 
 const useQueryAllJob = (params?) => {
+  const { setJobList } = useJobList();
   const { data, isLoading, refetch, isFetching } = useQuery<
     ResponseData<PaginationType<Job[]>>,
     AxiosError<ResponseData<Job[]>>
@@ -16,7 +18,13 @@ const useQueryAllJob = (params?) => {
           params[key] = '';
         }
       }
-      return JobViewService.get({ params });
+      return JobViewService.get({ params }).then((res) => {
+        if (res.data?.meta?.itemCount) {
+          const idList: number[] = res?.data?.items?.map((item) => item.postId);
+          setJobList(idList);
+        }
+        return res;
+      });
     },
     {
       keepPreviousData: true,

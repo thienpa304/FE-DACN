@@ -9,6 +9,8 @@ import useQueryTotalResultOfJobs from '../hooks/useQueryTotalResultOfJobs';
 import WorkIcon from '@mui/icons-material/Work';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import SearchBar from 'src/components/SearchBar/SearchBar';
+import useQueryFollowJobs from '../hooks/useQueryFollowJobs';
+import useFollowJobList from 'src/modules/jobs/hooks/useFollowJobList';
 
 function JobList(props) {
   const {

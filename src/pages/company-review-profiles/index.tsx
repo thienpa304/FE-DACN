@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import useQueryTotalResultOfApplicationByEmployer from 'src/modules/application/hooks/useQueryTotalResultOfApplicationByEmployer';
 import TabsWrapper from 'src/components/TabWrapper';
 import Pagination from 'src/components/Pagination';
-import useApplicationList from 'src/modules/application/hooks/useApplicationList';
+import useApplicationList from 'src/modules/jobs/hooks/useFollowJobList';
 import { deepEqual } from 'src/utils/formatData';
 import {
   ProfileApplicationType,

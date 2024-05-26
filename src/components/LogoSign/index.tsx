@@ -38,7 +38,7 @@ function Logo() {
             mr: 2
           }}
         >
-          TopViệcLàm
+          VN CareerHub
         </Typography>
       </LogoWrapper>
     </Box>

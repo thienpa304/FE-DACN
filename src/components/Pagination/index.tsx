@@ -6,7 +6,9 @@ export default function Pagination({
   currentPage,
   totalPages,
   handlePageChange,
-  disabled = false
+  disabled = false,
+  sx = null,
+  ...props
 }) {
   return (
     <Page
@@ -17,8 +19,9 @@ export default function Pagination({
       variant="outlined"
       shape="rounded"
       size="large"
-      sx={{ display: 'flex', justifyContent: 'center' }}
+      sx={{ display: 'flex', justifyContent: 'center', ...sx }}
       disabled={disabled}
+      {...props}
     />
   );
 }

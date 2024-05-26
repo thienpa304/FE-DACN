@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { checkIsMobile } from 'src/utils/responsive';
+import HeaderNotifications from './Buttons/Notifications';
 
 const HeaderWrapper = styled(Box)<{ showSideBar: boolean }>(
   ({ theme, showSideBar }) => `
@@ -351,7 +352,10 @@ function Header({ showSideBar }) {
 
       <Box display="flex" alignItems="center">
         {userId ? (
-          <HeaderUserbox />
+          <>
+            <HeaderNotifications />
+            <HeaderUserbox />
+          </>
         ) : (
           <>
             <Link href="/login" variant="body2">

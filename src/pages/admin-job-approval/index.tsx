@@ -16,6 +16,7 @@ import { useState } from 'react';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
 import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import useQueryTotalJobsEachProfessionByAdmin from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfessionByAdmin';
 
 const ApprovalStatusOption = [
   {
@@ -32,7 +33,7 @@ const JobApproval = () => {
   const [selectedProfession, setSelectedProfession] = useState(null);
   const [isProfessionView, setIsProfessionView] = useState(false);
 
-  const { dataList, isLoading } = useQueryTotalJobsEachProfession();
+  const { dataList, isLoading } = useQueryTotalJobsEachProfessionByAdmin();
 
   const handleChangeStatusFilter = (e) => {
     setStatus(e.target.value);

@@ -4,7 +4,10 @@ import { jobReducer } from 'src/modules/jobs';
 import { docReduce } from 'src/modules/jobProfile/attachedDocument/documentSlice';
 import { onlineProfileReduce } from 'src/modules/jobProfile/onlineProfile/profileSlice';
 import { workExperienceReduce } from 'src/modules/jobProfile/onlineProfile/workExperienceSlice';
-import { applicationReducer } from 'src/modules/application/applicationSlice';
+import { followJobReducer } from 'src/modules/jobs/followJobSlice';
+import { jobListReducer } from 'src/modules/jobs/jobListSlice';
+import { companyListReducer } from 'src/modules/company/companyListSlice';
+import { followCompanyReducer } from 'src/modules/company/followCompanySlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +16,10 @@ export const store = configureStore({
     document: docReduce,
     onlineProfile: onlineProfileReduce,
     workExperiences: workExperienceReduce,
-    applicationList: applicationReducer
+    followJobList: followJobReducer,
+    jobList: jobListReducer,
+    companyList: companyListReducer,
+    followCompanyList: followCompanyReducer
   }
 });
 

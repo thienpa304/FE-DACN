@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Snackbar, Alert, AlertTitle, Typography } from '@mui/material';
+import {
+  Button,
+  Snackbar,
+  Alert,
+  AlertTitle,
+  Typography,
+  Dialog,
+  DialogTitle,
+  Divider,
+  DialogContent
+} from '@mui/material';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -20,6 +30,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
 import alertDialog from 'src/utils/alertDialog';
+import EditGridInfo from './EditGridInfo';
+import { useResponsive } from 'src/utils/responsive';
 
 const randomId = () =>
   `${Math.floor(Math.random() * 10000)}${Math.random()
@@ -34,12 +46,25 @@ interface EditToolbarProps {
 }
 
 const EditDataGrid = (props) => {
-  const { columns, rows, handleSave, handleUpdate, handleDelete, profile } =
-    props;
+  const {
+    columns,
+    rows,
+    handleSave,
+    handleUpdate,
+    handleDelete,
+    profile,
+    title,
+    ...rest
+  } = props;
   const [currentRows, setCurrentRows] = useState<GridRowsProp>([]);
   const [initialRows, setInitialRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [error, setError] = useState({ type: null, errorField: null });
+  const [openEditOnMobile, setOpenEditOnMobile] = useState({
+    open: false,
+    row: null
+  });
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
     setCurrentRows(rows?.length > 0 ? rows : []);
@@ -50,6 +75,12 @@ const EditDataGrid = (props) => {
     const { setCurrentRows, setRowModesModel } = props;
 
     const handleAddClick = () => {
+      if (isMobile) {
+        console.log(openEditOnMobile);
+
+        setOpenEditOnMobile(() => ({ open: true, row: null }));
+        return;
+      }
       if (!profile?.userId) {
         setError({ type: 'noProfile', errorField: null });
         return;
@@ -90,6 +121,10 @@ const EditDataGrid = (props) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
+  };
+
+  const handleEditOnMobile = (row) => {
+    setOpenEditOnMobile({ open: true, row: row });
   };
 
   const handleEditClick = (id: GridRowId) => {
@@ -180,7 +215,7 @@ const EditDataGrid = (props) => {
       headerName: 'Chỉnh sửa',
       width: 100,
       cellClassName: 'actions',
-      getActions: ({ id }) => {
+      getActions: ({ id, row }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
@@ -209,7 +244,9 @@ const EditDataGrid = (props) => {
             icon={<EditIcon />}
             label="Edit"
             className="textPrimary"
-            onClick={() => handleEditClick(id)}
+            onClick={() =>
+              isMobile ? handleEditOnMobile(row) : handleEditClick(id)
+            }
             color="inherit"
             key="edit"
           />,
@@ -267,6 +304,7 @@ const EditDataGrid = (props) => {
           },
           '.MuiDataGrid-columnHeaderTitle': { fontWeight: 700 }
         }}
+        {...rest}
       />
       <Snackbar
         open={error?.type}
@@ -286,6 +324,15 @@ const EditDataGrid = (props) => {
           <strong>{error?.errorField}</strong>
         </Alert>
       </Snackbar>
+      <EditGridInfo
+        row={openEditOnMobile.row}
+        open={openEditOnMobile.open}
+        close={() => setOpenEditOnMobile(() => ({ open: false, row: null }))}
+        title={title}
+        handleSave={handleSave}
+        handleUpdate={handleUpdate}
+        columns={columns}
+      />
     </>
   );
 };

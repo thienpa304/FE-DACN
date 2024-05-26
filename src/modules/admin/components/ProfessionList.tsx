@@ -1,4 +1,5 @@
 import { Grid, IconButton, Typography } from '@mui/material';
+import { useMemo } from 'react';
 import professions from 'src/constants/professions';
 
 const professionButtons = [
@@ -15,6 +16,19 @@ export default function ProfessionList(props) {
   const handleOption = (professionName) => {
     handleSelectProfession(professionName);
     handleViewProfessionMode(false);
+  };
+
+  const countAll = useMemo(
+    () => total?.reduce((sum, item) => sum + item.count, 0),
+    [total]
+  );
+
+  const getCount = (item) => {
+    if (item.code === 0) return;
+    const count =
+      total?.find((profession) => profession.profession_value === item.name)
+        ?.count || 0;
+    return ' (' + count + ')';
   };
 
   return (
@@ -54,12 +68,7 @@ export default function ProfessionList(props) {
               <img src={item.icon} alt={item.name} width="100" height="100" />
               <Typography sx={{ mt: 1 }}>
                 {item.name}
-                {total &&
-                  ' (' +
-                    (total?.find(
-                      (profession) => profession.profession_value === item.name
-                    )?.count || 0) +
-                    ')'}
+                {total && getCount(item)}
               </Typography>
             </IconButton>
           </Grid>
