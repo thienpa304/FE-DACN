@@ -43,8 +43,6 @@ export default function Autocomplete(props) {
         value={selectedOptions}
         isOptionEqualToValue={(option, value) => {
           if (option.value) {
-            // console.log(option.value, '....', value.value);
-
             return option?.value?.trim() === value?.value?.trim();
           }
           return option?.trim() === value?.trim();

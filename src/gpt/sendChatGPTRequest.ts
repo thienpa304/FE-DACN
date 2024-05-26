@@ -35,12 +35,10 @@ const processMessages = async (content, sendMessage) => {
     } else if (result.status === 'rejected') {
       if (!hasShownAlert) {
         console.error('Error in sendMessage:', result.reason);
-        alertDialog({
-          selectedId: '_',
-          handleConfirm: () => {},
-          message: result.reason.message,
-          hideCancelButton: true
-        });
+        // alertDialog({
+        //   message: result.reason.message,
+        //   hideCancelButton: true
+        // });
         hasShownAlert = true;
       }
       break;
@@ -125,8 +123,6 @@ export const getEmbedding = async (content) => {
     const results = await Promise.allSettled(
       content.map(async (inputText) => {
         let i = 0;
-        console.log('inputText', inputText);
-
         const employer_Requirement = (
           await sendMessage(inputText?.employer_Requirement)
         )?.map((res) => ({
@@ -135,7 +131,6 @@ export const getEmbedding = async (content) => {
         }));
 
         i = 0;
-
         const employee_Profile = (
           await sendMessage(inputText?.employee_Profile)
         )?.map((res) => ({
@@ -157,12 +152,10 @@ export const getEmbedding = async (content) => {
       } else if (result.status === 'rejected') {
         if (!hasShownAlert) {
           console.error('Error in sendMessage:', result.reason);
-          alertDialog({
-            selectedId: '_',
-            handleConfirm: () => {},
-            message: result.reason.message,
-            hideCancelButton: true
-          });
+          // alertDialog({
+          //   message: result.reason.message,
+          //   hideCancelButton: true
+          // });
           hasShownAlert = true;
         }
         break;

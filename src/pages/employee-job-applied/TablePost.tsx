@@ -19,8 +19,6 @@ import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQuery
 import Pagination from 'src/components/Pagination';
 
 const renderJobTitle = (data) => {
-  console.log(data);
-
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const handleOpenDetailModal = () => {
     const detailsData = {
@@ -128,8 +126,6 @@ export default function TablePost(props) {
       })),
     [data]
   );
-  console.log(flattenedApplications);
-
   return (
     <Box>
       <TableData

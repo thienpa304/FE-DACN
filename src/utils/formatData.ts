@@ -19,8 +19,6 @@ export function convertStringToObjectList(
     }
     return null;
   });
-  console.log('inputArray, options', inputArray, options);
-  console.log('objectList', objectList);
 
   return objectList.filter((object) => object !== null);
 }
@@ -120,8 +118,6 @@ export const checkIsJSON = (data) => {
 export const parseResponseJSONData = async (result: any[]) => {
   return Promise.all(
     result.map(async (data) => {
-      console.log(data.indexOf('{'));
-
       if (data?.indexOf('{') >= 0 && data?.lastIndexOf('}') >= 0)
         return JSON.parse(
           data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1)

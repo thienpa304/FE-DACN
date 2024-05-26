@@ -79,7 +79,7 @@ function UploadButton(props: Props) {
         // update progress
         setPercent(percent);
       },
-      (err) => console.log(err),
+      (err) => console.error(err),
       () => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {

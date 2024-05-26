@@ -44,8 +44,6 @@ export function useQueryJobByIdList(idList: number[]) {
   >(
     ['jobs-getByIdList', JSON.stringify(idList)],
     async () => {
-      console.log('idList', idList);
-
       if (!idList.length) return [];
       Promise.allSettled(idList.map((id) => JobViewService.getById(id)))
         .then((results) => {

@@ -317,8 +317,6 @@ export default function Table(props) {
 
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
 
-  console.log(loading);
-
   const finishedAll = () => {
     setStart(false);
     setRoundOneFinished(false);

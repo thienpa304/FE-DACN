@@ -115,8 +115,6 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
 
   useEffect(() => {
     reset(data);
-    console.log(data);
-
     data?.skills &&
       setSetEmployeeSkills(convertToObjectsForSkill(data?.skills));
   }, [data]);

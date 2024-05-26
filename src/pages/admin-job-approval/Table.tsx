@@ -393,8 +393,6 @@ export default function Table({ statusFilter, selectedProfession }) {
       );
     };
     const violationJob = jobs.find((item) => {
-      console.log(item.check);
-
       return selectedRows.includes(item.postId) && item.check == true;
     });
 
