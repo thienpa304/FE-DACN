@@ -60,9 +60,7 @@ const sendChatGPTRequest = async (
 
   const headers = {
     'Content-Type': 'application/json',
-    Authorization:
-      // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' // free
-      'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+    Authorization: process.env.GPT_API_KEY || process.env.FREE_GPT_API_KEY
   };
 
   const sendMessage = async (inputText) => {
@@ -97,9 +95,7 @@ export const getEmbedding = async (content) => {
 
   const headers = {
     'Content-Type': 'application/json',
-    Authorization:
-      // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' // free
-      'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+    Authorization: process.env.GPT_API_KEY || process.env.FREE_GPT_API_KEY
   };
 
   const sendMessage = async (inputText) => {
