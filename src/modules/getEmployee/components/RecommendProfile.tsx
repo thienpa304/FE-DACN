@@ -171,7 +171,7 @@ export default function RecommendProfile() {
           Hồ sơ gợi ý
         </Typography>
         <JobFilter handleFilter={handleFilter} />
-        <Grid container xs={12} sx={{ width: '100%' }}>
+        <Grid container sx={{ width: '100%' }}>
           <Grid item xs={12}>
             <Container
               sx={{

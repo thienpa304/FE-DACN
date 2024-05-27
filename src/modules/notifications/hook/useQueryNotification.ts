@@ -10,7 +10,9 @@ export const useQueryNotification = (params?) => {
     AxiosError<ResponseData<Notification[]>>
   >(['get-notifications', params], () => NotificationService.get({ params }), {
     retry: 1,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 10, // 10 minutes
+    refetchOnMount: false
   });
 
   return {

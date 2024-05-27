@@ -58,7 +58,7 @@ const Footer = () => {
             Về chúng tôi
           </Typography>
           <Typography fontWeight={700} lineHeight={3}>
-            Công Ty Cổ Phần Việc Làm TopViecLam
+            Công Ty Cổ Phần VN CareerHub
           </Typography>
           <Typography lineHeight={1.8} fontSize={12}>
             Phòng 102, Tòa nhà 20-20B Trần Cao Vân, Phường Đa Kao, Quận 1, Thành

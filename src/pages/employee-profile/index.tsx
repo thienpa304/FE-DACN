@@ -62,7 +62,6 @@ const ProfileSection = ({
   };
 
   const theme = useTheme();
-  const isMobile = checkIsMobile(theme);
 
   return (
     <>
@@ -111,6 +110,7 @@ const ProfileSection = ({
                   checked={!isHidden}
                   onChange={handleHideProfile}
                   name={`isHidden${id}`}
+                  disabled={!profile}
                 />
               </Item>
               <Item>

@@ -79,14 +79,14 @@ const CardApply: React.FC<Props> = ({ data }) => {
             >
               <SubTitle>{data?.employer?.companyName}</SubTitle>
             </Link>
-            <Title>{data.jobTitle}</Title>
+            <Title>{data?.jobTitle}</Title>
             <Grid container spacing={1}>
               <Grid item xs={12} md={6}>
                 <Grid container alignItems={'center'}>
                   <PaidIcon color="primary" sx={{ margin: '0 5px' }} />
                   <LabelText> Mức lương : </LabelText>
                   <ValueText>
-                    {data.minSalary} - {data.maxSalary} triệu
+                    {data?.minSalary} - {data?.maxSalary} triệu
                   </ValueText>
                 </Grid>
               </Grid>
@@ -99,7 +99,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
                 >
                   <DateRangeIcon color="primary" sx={{ margin: '0 5px' }} />
                   <LabelText> Hạn nộp hồ sơ : </LabelText>
-                  <ValueText>{data.applicationDeadline}</ValueText>
+                  <ValueText>{data?.applicationDeadline}</ValueText>
                 </Grid>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -107,7 +107,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
                   <AccessibilityIcon color="primary" sx={{ margin: '0 5px' }} />
                   <LabelText> Độ tuổi : </LabelText>
                   <ValueText>
-                    {data.minAge} - {data.maxAge}
+                    {data?.minAge} - {data?.maxAge}
                   </ValueText>
                 </Grid>
               </Grid>
@@ -115,7 +115,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
                 <Grid container alignItems={'center'}>
                   <LocationOnIcon color="primary" sx={{ margin: '0 5px' }} />
                   <LabelText> Khu vực ứng tuyển : </LabelText>
-                  <ValueText>{data.workAddress}</ValueText>
+                  <ValueText>{data?.workAddress}</ValueText>
                 </Grid>
               </Grid>
             </Grid>
@@ -139,7 +139,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
                               from:
                                 window.location.pathname +
                                 window.location.search,
-                              postId: data.postId
+                              postId: data?.postId
                             }
                           });
                         }
@@ -158,9 +158,9 @@ const CardApply: React.FC<Props> = ({ data }) => {
       </Grid>
       <ModalApply
         open={openFormApply}
-        postId={data.postId}
+        postId={data?.postId}
         onClose={onCloseFormApply}
-        position={data.jobTitle}
+        position={data?.jobTitle}
         company={data?.employer?.companyName}
         job={data}
       />

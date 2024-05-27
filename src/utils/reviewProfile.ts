@@ -292,8 +292,6 @@ const handleRoundTwo = async (
     };
   });
 
-  console.log(dataSendToGPT);
-
   const skillList = await Promise.all(
     dataSendToGPT?.map(async (item) => {
       const extractRequiredSkillList = dataSendToGPT?.map(

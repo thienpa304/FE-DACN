@@ -8,7 +8,8 @@ const useProfileHook = () => {
   const { data, isLoading, refetch } = useQuery('get-Profile', GetProfile.get, {
     retry: 1,
     refetchOnWindowFocus: false,
-    enabled: isLoggedIn
+    enabled: isLoggedIn,
+    refetchOnMount: false
   });
 
   return {

@@ -26,15 +26,17 @@ const dateType = ['startDate', 'endDate'];
 export default function EditGridInfo(props) {
   const {
     row,
+    columns,
     open,
     close,
     handleClose,
     title,
-    columns,
     handleSave,
     handleUpdate
   } = props;
   const { isMobile } = useResponsive();
+  console.log('row', row);
+  console.log('columns', columns);
 
   const defaultValues = columns.reduce((acc, column) => {
     acc[column.field] = '';

@@ -35,7 +35,6 @@ import TextField from 'src/components/TextField';
 import NumericFormatCustom from 'src/components/NumberFormatCustom';
 import Footer from 'src/components/Footer';
 import useMutateJob from '../hooks/useMutateJob';
-import useQueryJobById from '../hooks/useQueryJobById';
 import useMutateJobById from '../hooks/useMutateJobById';
 import DatePicker from 'src/components/DatePicker';
 import _ from 'lodash';
@@ -45,6 +44,7 @@ import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import Autocomplete from 'src/components/Autocomplete';
 import { Job } from '../model';
+import useQueryJobByIdByOwner from '../hooks/useQueryJobByIdByOwner';
 
 const defaultValues = {
   sex: '',
@@ -71,7 +71,7 @@ type Props = {
 const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
   const { onSaveData } = useMutateJob();
   const { onSaveDataById } = useMutateJobById();
-  const { data, isLoading, isFetching } = useQueryJobById(selectedId);
+  const { data, isLoading, isFetching } = useQueryJobByIdByOwner(selectedId);
   const [analysisResults, setAnalysisResults] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [documentText, setDocumentText] = useState('');

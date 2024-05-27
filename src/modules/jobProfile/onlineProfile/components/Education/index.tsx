@@ -116,10 +116,10 @@ export default function Education() {
   };
 
   const columns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: 'ID'
-    },
+    // {
+    //   field: 'id',
+    //   headerName: 'ID'
+    // },
     {
       field: 'schoolName',
       headerName: 'Trường/ Trung tâm đào tạo',
