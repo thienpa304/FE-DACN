@@ -34,9 +34,6 @@ import {
   getKeywords
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import useQueryJobById, {
-  useQueryJobByIdList
-} from 'src/modules/jobs/hooks/useQueryJobById';
 import Pagination from 'src/components/Pagination';
 import openProfile from 'src/utils/openProfile';
 import CheckIcon from '@mui/icons-material/Check';
@@ -52,11 +49,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import useQueryJobByIdByOwner from 'src/modules/jobs/hooks/useQueryJobByIdByOwner';
 
 const ViewJobDetail = ({ postId, setSelectedId }) => {
   if (!postId) return;
 
-  const { data, isLoading } = useQueryJobById(postId);
+  const { data, isLoading } = useQueryJobByIdByOwner(postId);
+  console.log(data);
 
   if (isLoading) return <SuspenseLoader />;
   return (
@@ -109,7 +108,8 @@ const ViewJobDetail = ({ postId, setSelectedId }) => {
 
 const renderJobTitle = (data) => {
   const {
-    employee_Profile: { application }
+    employee_Profile: { application },
+    employer_Requirement
   } = data?.row;
 
   const [selectedId, setSelectedId] = useState(null);
@@ -126,7 +126,7 @@ const renderJobTitle = (data) => {
           textDecoration: 'none'
         }}
         onClick={() => {
-          setSelectedId(data?.row?.postId);
+          setSelectedId(employer_Requirement?.postId);
         }}
       >
         {application.jobTitle}

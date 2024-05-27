@@ -87,7 +87,7 @@ function HeaderNotifications() {
   };
 
   return (
-    <Box mr={2}>
+    <Box>
       <Tooltip arrow title="Notifications">
         <IconButton color="primary" ref={ref} onClick={handleOpen}>
           <NotificationsBadge
@@ -123,9 +123,10 @@ function HeaderNotifications() {
           <Typography variant="h4">Thông báo</Typography>
         </Box>
         <Divider />
-        <List sx={{ p: 0 }}>
+        <List sx={{ p: 0, minHeight: 220 }}>
           {showList?.map((item, index) => (
             <ListItem
+              key={index}
               sx={{
                 p: 2,
                 minWidth: 350,
@@ -133,7 +134,7 @@ function HeaderNotifications() {
                 borderBottom: '1px solid #e0e0e0'
               }}
             >
-              <Box key={index} flex="1">
+              <Box flex="1">
                 <Box display="flex" justifyContent="space-between">
                   <Typography sx={{ fontWeight: 'bold' }}>
                     {item?.title}

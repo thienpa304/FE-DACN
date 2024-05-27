@@ -19,13 +19,15 @@ function alertDialog({
   handleConfirm = () => {},
   message = 'Bạn có chắc chắn muốn xóa?',
   hideCancelButton = false,
-  title = 'Thông báo'
+  title = 'Thông báo',
+  confirmButtonText = 'Xác nhận'
 }: {
   selectedId?: number | string;
   handleConfirm?: (id: number | string, ...args: any[]) => void;
   message?: any;
   hideCancelButton?: boolean;
   title?: string;
+  confirmButtonText?: string;
 }) {
   const domNode = document.createElement('div'); // Tạo một thẻ div mới cho Portal
   const root = createRoot(domNode);
@@ -87,7 +89,7 @@ function alertDialog({
             fullWidth
             color="primary"
           >
-            Xác nhận
+            {confirmButtonText}
           </Button>
           <Button
             onClick={handleClose}

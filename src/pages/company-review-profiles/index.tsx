@@ -24,7 +24,7 @@ import {
   preprocessJobData
 } from 'src/utils/reviewProfile';
 import { Job } from 'src/modules/jobs/model';
-import { useQueryJobByIdList } from 'src/modules/jobs/hooks/useQueryJobById';
+import { useQueryJobByIdListByOwner } from 'src/modules/jobs/hooks/useQueryJobByIdByOwner';
 
 const tabs = [
   { label: 'Tất cả', value: '' },
@@ -103,7 +103,8 @@ const CandidateProfiles = () => {
     [data]
   );
 
-  const { jobs, isLoading: isLoadingJobs } = useQueryJobByIdList(jobsIdList);
+  const { jobs, isLoading: isLoadingJobs } =
+    useQueryJobByIdListByOwner(jobsIdList);
 
   const handleTabsChange = (e, value) => {
     setCurrentPage(1);

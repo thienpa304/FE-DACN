@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ProfileShowType } from '../model';
 import { EmployeeCard, ProfileCardDialog } from './ProfileCardComponent';
+import useQueryEmployee from '../hook/useQueryEmployee';
+import useQueryEmployeeById from '../hook/useQueryEmployeeById';
 
 function ProfileCard({ profile }: { profile: ProfileShowType }) {
   const [selectedProfile, setSelectedProfile] = useState<ProfileShowType>(null);
@@ -10,7 +12,10 @@ function ProfileCard({ profile }: { profile: ProfileShowType }) {
     avatar: profile?.employee?.user?.avatar,
     ...profile?.employee?.user
   };
-
+  console.log(selectedProfile);
+  // useQueryEmployeeById(selectedProfile?.userId, {
+  //   id: selectedProfile?.userId
+  // });
   useEffect(() => {
     const {
       employee,

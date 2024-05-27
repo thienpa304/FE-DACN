@@ -38,7 +38,7 @@ export async function RemoveFileByUserId(userId: number, kind: DocumentType) {
   try {
     await getDownloadURL(fileRef);
     await deleteObject(fileRef);
-    console.log('Đã xóa ảnh thành công.');
+    console.log('Đã xóa thành công.');
   } catch (error) {
     console.error('Không thể xóa ảnh. Lỗi: ', error);
   }
@@ -67,7 +67,7 @@ export async function removeFileByUrl(url: string) {
   try {
     await getDownloadURL(fileRef);
     await deleteObject(fileRef);
-    console.log('Đã xóa ảnh thành công.');
+    console.log('Đã xóa thành công.');
   } catch (error) {
     console.error('Không thể xóa ảnh. Lỗi: ', error);
   }

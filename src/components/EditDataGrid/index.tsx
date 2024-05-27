@@ -30,7 +30,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
 import alertDialog from 'src/utils/alertDialog';
-import EditGridInfo from './EditGridInfo';
+import EditGridInfo from './EditFormOnMobile';
 import { useResponsive } from 'src/utils/responsive';
 
 const randomId = () =>
@@ -79,11 +79,15 @@ const EditDataGrid = (props) => {
         setOpenEditOnMobile(() => ({ open: true, row: null }));
         return;
       }
+
+      // Have not fill common info
       if (!profile?.userId) {
         setError({ type: 'noProfile', errorField: null });
         return;
       }
+      // Is editing
       if (currentRows[0]?.isNew) return;
+
       const id = randomId();
       const newRow = { id, isNew: true };
       const emptyRow = columns.reduce((acc, column) => {
@@ -322,15 +326,17 @@ const EditDataGrid = (props) => {
           <strong>{error?.errorField}</strong>
         </Alert>
       </Snackbar>
-      <EditGridInfo
-        row={openEditOnMobile.row}
-        open={openEditOnMobile.open}
-        close={() => setOpenEditOnMobile(() => ({ open: false, row: null }))}
-        title={title}
-        handleSave={handleSave}
-        handleUpdate={handleUpdate}
-        columns={columns}
-      />
+      {isMobile && (
+        <EditGridInfo
+          row={openEditOnMobile.row}
+          open={openEditOnMobile.open}
+          close={() => setOpenEditOnMobile(() => ({ open: false, row: null }))}
+          title={title}
+          handleSave={handleSave}
+          handleUpdate={handleUpdate}
+          columns={columns}
+        />
+      )}
     </>
   );
 };
