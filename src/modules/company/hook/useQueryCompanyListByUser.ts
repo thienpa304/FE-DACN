@@ -29,6 +29,7 @@ const useQueryCompanyListByUser = (params?) => {
   return {
     companyList: data?.data?.items,
     totalPages: data?.data?.meta?.totalPages,
+    totalItems: data?.data?.meta?.totalItems,
     isLoading,
     refetch
   };

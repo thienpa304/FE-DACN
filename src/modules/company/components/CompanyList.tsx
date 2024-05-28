@@ -10,12 +10,17 @@ function CompanyList(props) {
   const { pageTitle, sx, queryCompanys } = props;
   const pageSize = 14;
   const [currentPage, setCurrentPage] = useState(1);
-  const { companyList, totalResults, isLoading } = queryCompanys({
+  const {
+    companyList,
+    totalItems: totalResults,
+    isLoading,
+    totalPages
+  } = queryCompanys({
     num: pageSize,
     page: currentPage
   });
   // const totalResults = companyList?.length;
-  const totalPages = Math.ceil(totalResults / pageSize) || 1;
+  // const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   if (isLoading) return <SuspenseLoader />;
   return (
