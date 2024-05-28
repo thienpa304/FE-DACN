@@ -5,10 +5,12 @@ import { Job } from '../model';
 import { JobService, JobViewService } from '../jobService';
 import { useApp } from 'src/modules/app/hooks';
 import { useEffect, useState } from 'react';
+import useJob from './useJob';
 
 export default function useQueryJobByIdByOwner(id) {
-  const { isEmployer } = useApp();
   if (!id) return {};
+  const { isEmployer } = useApp();
+  const { setItemDetail, itemDetail } = useJob();
   const { data, isLoading, isFetching } = useQuery<
     ResponseData<Job>,
     AxiosError<ResponseData<Job>>
@@ -18,20 +20,18 @@ export default function useQueryJobByIdByOwner(id) {
     enabled: isEmployer
   });
 
-  const [job, setJob] = useState<Job>();
-
   useEffect(() => {
     if (data?.data) {
-      const saveJob = {
+      const jobData = {
         ...data?.data,
         sex: data?.data?.sex === null ? 'Tất cả' : data?.data?.sex
       };
-      setJob(saveJob);
+      setItemDetail(jobData);
     }
   }, [JSON.stringify(data)]);
 
   return {
-    data: job,
+    data: itemDetail,
     isLoading,
     isFetching
   };

@@ -13,8 +13,6 @@ import {
 import { useMemo, useRef, useState } from 'react';
 import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsActiveTwoTone';
 import { styled } from '@mui/material/styles';
-
-import { formatDistance, subDays } from 'date-fns';
 import { useQueryNotification } from 'src/modules/notifications/hook/useQueryNotification';
 import Pagination from 'src/components/Pagination';
 import dayjs from 'dayjs';
@@ -118,12 +116,12 @@ function HeaderNotifications() {
           sx={{ p: 2 }}
           display="flex"
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="center"
         >
           <Typography variant="h4">Thông báo</Typography>
         </Box>
         <Divider />
-        <List sx={{ p: 0, minHeight: 220 }}>
+        <List sx={{ p: 0, minHeight: 220, maxWidth: 500 }}>
           {showList?.map((item, index) => (
             <ListItem
               key={index}

@@ -9,6 +9,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  Tab,
   Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -17,16 +18,23 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryJobByOwner from 'src/modules/jobs/hooks/useQueryJobByOwner';
 import TableData from 'src/components/TableData';
 import { GridColDef } from '@mui/x-data-grid';
-import { renderJobTitle } from 'src/pages/company-job-list/TablePost';
+import {
+  renderJobTitle,
+  renderStatus
+} from 'src/pages/company-job-list/TablePost';
 import useQueryEmployeeByKeywords from '../hook/useQueryEmployeeByKeywords';
 import Pagination from 'src/components/Pagination';
 import JobFilter from 'src/modules/jobs/components/JobFilter';
 import { isMobile } from 'src/constants/reponsive';
+import alertDialog from 'src/utils/alertDialog';
+import TabsWrapper from 'src/components/TabWrapper';
+import { tabs } from 'src/pages/company-job-list';
 
 export default function RecommendProfile() {
   const jobPageSize = 9;
   const profilePageSize = 8;
   const [jobCurrentPage, setJobCurrentPage] = useState(1);
+  const [currentTab, setCurrentTab] = useState('');
   const [profileCurrentPage, setProfleCurrentPage] = useState(1);
   const [keywords, setKeywords] = useState('');
   const [showProfile, setShowProfile] = useState([]);
@@ -40,7 +48,7 @@ export default function RecommendProfile() {
   } = useQueryJobByOwner({
     page: jobCurrentPage,
     num: jobPageSize,
-    status: 'Đã duyệt'
+    status: currentTab
   });
 
   const {
@@ -69,6 +77,11 @@ export default function RecommendProfile() {
     }));
   };
 
+  const handleTabsChange = (e, value) => {
+    setCurrentTab(value);
+    setJobCurrentPage(1);
+  };
+
   const renderAtion = (data) => {
     return (
       <Button
@@ -79,7 +92,7 @@ export default function RecommendProfile() {
         variant="contained"
         size={isMobile ? 'small' : 'medium'}
       >
-        Bắt đầu
+        Tìm kiếm
       </Button>
     );
   };
@@ -87,16 +100,23 @@ export default function RecommendProfile() {
     {
       field: 'jobTitle',
       headerName: 'Tên tin đăng',
-      minWidth: !isMobile ? 550 : 165,
+      minWidth: !isMobile ? 500 : 160,
       headerAlign: 'center',
       renderCell: renderJobTitle
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      minWidth: 100,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: renderStatus
     },
     {
       field: 'keywords',
       headerName: 'Từ khóa',
       minWidth: 400,
       headerAlign: 'center'
-      // renderCell: renderJobTitle
     },
     {
       field: 'action',
@@ -109,11 +129,20 @@ export default function RecommendProfile() {
   ];
 
   useEffect(() => {
-    if (!profile) return;
-    setShowProfile(profile);
-    const section = document.getElementById('recommend-profile');
-    section?.scrollIntoView({ behavior: 'smooth' });
-  }, [JSON.stringify(profile)]);
+    if (totalProfileResults === undefined) return;
+    console.log('totalProfileResults', totalProfileResults);
+    if (totalProfileResults <= 0) {
+      alertDialog({
+        title: 'Kết quả tìm kiếm',
+        message: 'Không tìm thấy hồ sơ phù hợp',
+        hideCancelButton: true
+      });
+    } else {
+      // setShowProfile(profile);
+      const section = document.getElementById('recommend-profile');
+      section?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [profile]);
 
   if (isLoading) return <SuspenseLoader />;
 
@@ -135,6 +164,23 @@ export default function RecommendProfile() {
             <CardHeader title="Tìm kiếm theo tin tuyển dụng" />
             <Divider />
             <CardContent>
+              <TabsWrapper
+                onChange={handleTabsChange}
+                value={currentTab}
+                variant="scrollable"
+                scrollButtons={false}
+                sx={{
+                  display: { md: 'inline-block' },
+                  borderBottom: 1,
+                  borderColor: 'divider'
+                }}
+              >
+                {tabs.map((tab) => {
+                  return (
+                    <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  );
+                })}
+              </TabsWrapper>
               <TableData
                 rows={jobs}
                 columns={columns}
@@ -146,7 +192,8 @@ export default function RecommendProfile() {
                   },
                   columns: {
                     columnVisibilityModel: {
-                      keywords: !isMobile
+                      keywords: !isMobile,
+                      status: !isMobile
                     }
                   }
                 }}
@@ -183,7 +230,7 @@ export default function RecommendProfile() {
             >
               {isLoadingProfile && <CircularProgress />}
               <Grid container spacing={1} mb={2}>
-                {showProfile?.map((item, index) => (
+                {profile?.map((item, index) => (
                   <Grid key={index} item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                       <ProfileCard profile={item} />
@@ -192,7 +239,7 @@ export default function RecommendProfile() {
                 ))}
               </Grid>
 
-              {!Boolean(showProfile?.length) ? (
+              {!totalProfileResults ? (
                 <Box
                   sx={{
                     display: 'flex',

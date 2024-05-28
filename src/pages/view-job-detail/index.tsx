@@ -12,17 +12,12 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 const JobDetail = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const postId = atob(searchParams.get('id'));
-  const { setItemDetail, itemDetail } = useJob();
   const { data, isLoading } = useQueryJobById(postId);
-
-  useEffect(() => {
-    setItemDetail(data);
-  }, [data]);
 
   if (isLoading) return <SuspenseLoader />;
   return (
     <Container sx={{ paddingY: 2 }}>
-      <CardApply data={itemDetail} />
+      <CardApply data={data} />
       <TabContent />
       <CompanyInfoTab sx={{ mt: 2 }} company={data?.employer} />
     </Container>

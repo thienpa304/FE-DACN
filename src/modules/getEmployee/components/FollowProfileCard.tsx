@@ -1,27 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { EmployeeCard, ProfileCardDialog } from './ProfileCardComponent';
 import useQueryFollowOnlineProfileById from '../hook/useQueryFollowOnlineProfileById';
 import useQueryFollowDocumentProfileById from '../hook/useQueryFollowDocumentProfileById';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import useQueryEmployeeById from '../hook/useQueryEmployeeById';
+import { applicationType } from '../model';
+import { formatProfile } from './ProfileCard';
 
 function FollowProfileCard({ profile }) {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [formattedProfile, setFormattedProfile] = useState(null);
 
-  const { onlineProfile, isLoading: isLoadingOnline } =
-    useQueryFollowOnlineProfileById({
-      userId: selectedProfile?.userId,
-      isOnlineProfile: selectedProfile?.isOnlineProfile
-    });
+  const type = useMemo(() => {
+    if (selectedProfile?.isOnlineProfile === true)
+      return applicationType.online_profile;
+    else if (selectedProfile?.isOnlineProfile === false)
+      return applicationType.attached_document;
+    else return null;
+  }, [selectedProfile?.isOnlineProfile]);
 
-  const { documentProfile, isLoading: isLoadingDocument } =
-    useQueryFollowDocumentProfileById({
-      userId: selectedProfile?.userId,
-      isOnlineProfile: selectedProfile?.isOnlineProfile
-    });
+  const { profile: profileData, isLoading } = useQueryEmployeeById(
+    selectedProfile?.userId,
+    {
+      type: type
+    }
+  );
 
-  const processedProfile = { ...profile, ...profile.file };
-  delete processedProfile.file;
+  const processedProfile = useMemo(() => {
+    const newProfile = { ...profile, ...profile.file };
+    delete newProfile.file;
+    return newProfile;
+  }, [profile]);
 
   const handleClose = () => {
     setSelectedProfile(null);
@@ -29,76 +38,26 @@ function FollowProfileCard({ profile }) {
   };
 
   useEffect(() => {
-    if (!onlineProfile) return;
-    const {
-      name,
-      email,
-      dob,
-      phone,
-      sex,
-      isMarried,
-      avatar,
-      address,
-      ...online_profile
-    } = onlineProfile;
+    if (selectedProfile?.userId) {
+      const newProfile = formatProfile({ ...profileData });
+      setFormattedProfile(() => newProfile);
+    }
+  }, [selectedProfile?.userId, selectedProfile?.applicationType, profileData]);
 
-    const newProfile = {
-      personal_information: {
-        name,
-        email,
-        dob,
-        phone,
-        sex,
-        isMarried,
-        avatar,
-        address
-      },
-      online_profile
-    };
-    setFormattedProfile(newProfile);
-  }, [JSON.stringify(onlineProfile)]);
-
-  useEffect(() => {
-    if (!documentProfile) return;
-    const {
-      name,
-      email,
-      dob,
-      phone,
-      sex,
-      isMarried,
-      avatar,
-      address,
-      ...attached_document
-    } = documentProfile;
-
-    const newProfile = {
-      personal_information: {
-        name,
-        email,
-        dob,
-        phone,
-        sex,
-        isMarried,
-        avatar,
-        address
-      },
-      attached_document
-    };
-    setFormattedProfile(newProfile);
-  }, [JSON.stringify(documentProfile)]);
-
-  if (isLoadingDocument || isLoadingOnline) return <SuspenseLoader />;
   return (
     <>
       <EmployeeCard
         profile={processedProfile}
         setSelectedProfile={setSelectedProfile}
       />
-      <ProfileCardDialog
-        selectedProfile={formattedProfile}
-        setSelectedProfile={handleClose}
-      />
+      {isLoading ? (
+        <SuspenseLoader />
+      ) : (
+        <ProfileCardDialog
+          selectedProfile={formattedProfile}
+          setSelectedProfile={handleClose}
+        />
+      )}
     </>
   );
 }

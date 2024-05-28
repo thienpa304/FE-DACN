@@ -18,15 +18,14 @@ import { rewriteUrl } from 'src/utils/rewriteUrl';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
+import { useState } from 'react';
+import { ViewJobDetail } from '../company-review-profiles/Table';
 
 export const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const navigate = useNavigate();
-  const handleLinkToDetail = () => {
-    navigate(`/job/${jobTitle}?id=${btoa(data?.row?.postId)}`, {
-      state: { postId: data?.row?.postId }
-    });
-  };
+  const [selectedId, setSelectedId] = useState(null);
+
   const handleOpenDetailModal = () => {
     const detailsData = {
       'Tên tin đăng': data?.row?.jobTitle,
@@ -43,7 +42,10 @@ export const renderJobTitle = (data) => {
       <Grid container alignItems={'center'}>
         <Grid item xs={0} sm={1} display={!isMobile ? 'inline' : 'none'}>
           <Tooltip title="Xem trực tiếp">
-            <IconButton size="small" onClick={handleLinkToDetail}>
+            <IconButton
+              size="small"
+              onClick={() => setSelectedId(data?.row?.postId)}
+            >
               <RemoveRedEyeIcon
                 sx={{ width: '100%', height: 18, color: 'gray' }}
               />
@@ -71,11 +73,12 @@ export const renderJobTitle = (data) => {
           </Tooltip>
         </Grid>
       </Grid>
+      <ViewJobDetail postId={selectedId} setSelectedId={setSelectedId} />
     </>
   );
 };
 
-const renderStatus = (data) => {
+export const renderStatus = (data) => {
   const color = APPROVAL_STATUS.find((item) => item.label === data.value).color;
   return (
     <Chip label={data.value} size="small" color={color} variant="outlined" />

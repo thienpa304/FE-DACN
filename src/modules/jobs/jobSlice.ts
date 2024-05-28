@@ -18,11 +18,14 @@ export const JobSlice = createSlice({
   reducers: {
     setItemDetail: (state, action: PayloadAction<Partial<Job>>) => {
       state.itemDetail = { ...state.itemDetail, ...action.payload };
+    },
+    resetItemDetail: (state) => {
+      state.itemDetail = {};
     }
   }
 });
 
-export const { setItemDetail } = JobSlice.actions;
+export const { setItemDetail, resetItemDetail } = JobSlice.actions;
 
 export const selectJob = (state: RootState) => state.job;
 
