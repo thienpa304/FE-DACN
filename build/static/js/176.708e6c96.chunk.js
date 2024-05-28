@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkFE_DACN=self.webpackChunkFE_DACN||[]).push([[176],{10176:(e,s,t)=>{t.r(s),t.d(s,{default:()=>u});var o=t(54567),r=t(64188),c=t(51318),n=t(70579);const u=function(){const[e,s]=(0,c.ok)(),t=e.get("search"),u=e.get("address"),a=e.get("profession");return(0,n.jsx)(r.A,{pageTitle:"K\u1ebft qu\u1ea3 vi\u1ec7c l\xe0m: ".concat(t||a||u),profession:a,jobTitle:t,workAddress:u,queryJobs:o.A})}}}]);
-//# sourceMappingURL=176.708e6c96.chunk.js.map
