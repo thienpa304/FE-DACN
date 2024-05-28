@@ -133,9 +133,11 @@ export const firstRoundForGeneralInfo = (job, profile) => {
     : dayjs(personal_information?.dob, 'DD-MM-YYYY');
   const age = dayjs().year() - birthday.year();
   console.log(age);
-
+  debugger;
   if (
-    (job?.sex !== null && job?.sex !== personal_information?.sex) ||
+    (job?.sex !== null &&
+      job?.sex !== 'Tất cả' &&
+      job?.sex !== personal_information?.sex) ||
     job?.minAge > age ||
     job?.maxAge < age
   )
