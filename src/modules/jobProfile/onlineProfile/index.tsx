@@ -32,7 +32,7 @@ import { OnlineProfile as OnlineProfileType } from '../model';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import { cvAnalysist, translate } from 'src/GPT/roles';
-import { checkIsMobile } from 'src/utils/responsive';
+import { checkIsMobile, useResponsive } from 'src/utils/responsive';
 
 const MyBox = ({ children }) => (
   <Box bgcolor="#ffff" sx={{ mb: 4, boxShadow: '2px 2px 6px #aae2f7' }}>
@@ -77,8 +77,7 @@ export default function OnlineProfile() {
   const { onUpdateData } = useMutateUpdateOnlineProfile();
   const navigate = useNavigate();
 
-  const theme = useTheme();
-  const isMobile = checkIsMobile(theme);
+  const { isMobile } = useResponsive();
 
   const handleSubmit = async () => {
     setIsAnalyzing(true);
