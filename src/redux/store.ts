@@ -8,6 +8,7 @@ import { followJobReducer } from 'src/modules/jobs/followJobSlice';
 import { jobListReducer } from 'src/modules/jobs/jobListSlice';
 import { companyListReducer } from 'src/modules/company/companyListSlice';
 import { followCompanyReducer } from 'src/modules/company/followCompanySlice';
+import { employeeReducer } from 'src/modules/getEmployee/employeeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
     followJobList: followJobReducer,
     jobList: jobListReducer,
     companyList: companyListReducer,
-    followCompanyList: followCompanyReducer
+    followCompanyList: followCompanyReducer,
+    employee: employeeReducer
   }
 });
 

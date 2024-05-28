@@ -154,6 +154,7 @@ export function UserForm(props) {
 export function CompanyForm(props) {
   const { close, user } = props;
   const { onSaveData: onSaveCompany } = useMutateCompany();
+  console.log(user);
 
   const {
     control,

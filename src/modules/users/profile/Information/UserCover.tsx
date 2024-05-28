@@ -23,6 +23,7 @@ import useMutateAvatar from '../../hooks/useMutateAvatar';
 import { avatarErrorText } from 'src/components/UploadError';
 import { styled } from '@mui/material/styles';
 import { isMobile } from 'src/constants/reponsive';
+import { LoadingButton } from '@mui/lab';
 
 const Input = styled('input')({
   display: 'none'
@@ -38,6 +39,7 @@ export default function UserCover() {
     error: false,
     imageFile: null
   });
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     handleGetAvatar();
@@ -61,18 +63,22 @@ export default function UserCover() {
   };
 
   const handleSaveAvatar = async (data) => {
+    setIsUploading(true);
     const url = await uploadFile(userAvatar.imageFile).catch(() => '');
     setUserAvatar({ ...userAvatar, avatar: url, error: false });
     const newData = { ...data, avatar: url };
     onSaveData(newData);
     setSave(true);
+    setIsUploading(false);
   };
 
   const handleDeleteAvatar = async (data) => {
+    setIsUploading(true);
     await removeFileByUrl(userAvatar.avatar);
     setUserAvatar({ ...userAvatar, avatar: null, error: false });
     const newData = { ...data, avatar: ' ' };
     onSaveData(newData);
+    setIsUploading(false);
   };
 
   const { control, handleSubmit } = useForm<User>({
@@ -141,12 +147,13 @@ export default function UserCover() {
 
             {!userAvatar.avatar && (
               <label htmlFor="userAvatar">
-                <Button
+                <LoadingButton
                   component="label"
                   size="small"
                   startIcon={<AddPhotoAlternateOutlinedIcon />}
                   variant="outlined"
                   color="secondary"
+                  loading={isLoading || isUploading}
                 >
                   <FormControl
                     element={<Input type="file" accept="image/*" />}
@@ -156,40 +163,38 @@ export default function UserCover() {
                     onChange={handleUploadAvatar}
                   />
                   Tải lên
-                </Button>
+                </LoadingButton>
               </label>
             )}
 
             {userAvatar.avatar && (
               <>
-                {!save && !isLoading && (
-                  <Button
+                {!save && (
+                  <LoadingButton
                     component="label"
                     onClick={handleSubmit(handleSaveAvatar)}
                     size="small"
                     startIcon={<TaskAltIcon />}
                     variant="outlined"
                     color="secondary"
+                    loading={isLoading || isUploading}
                   >
                     Lưu
-                  </Button>
+                  </LoadingButton>
                 )}
 
-                {isLoading ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  save && (
-                    <Button
-                      component="label"
-                      onClick={handleSubmit(handleDeleteAvatar)}
-                      size="small"
-                      startIcon={<DoNotDisturbOnOutlinedIcon />}
-                      variant="outlined"
-                      color="secondary"
-                    >
-                      Xóa
-                    </Button>
-                  )
+                {save && (
+                  <LoadingButton
+                    component="label"
+                    onClick={handleSubmit(handleDeleteAvatar)}
+                    size="small"
+                    startIcon={<DoNotDisturbOnOutlinedIcon />}
+                    variant="outlined"
+                    color="secondary"
+                    loading={isLoading || isUploading}
+                  >
+                    Xóa
+                  </LoadingButton>
                 )}
               </>
             )}

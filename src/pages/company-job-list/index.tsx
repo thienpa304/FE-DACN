@@ -17,7 +17,7 @@ import TabsWrapper from 'src/components/TabWrapper';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 
-const tabs = [
+export const tabs = [
   { label: 'Tất cả', value: '' },
   { label: 'Đã duyệt', value: 'Đã duyệt' },
   { label: 'Chờ duyệt', value: 'Chờ duyệt' },

@@ -51,11 +51,10 @@ import detailsModal from 'src/utils/detailsModal';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import useQueryJobByIdByOwner from 'src/modules/jobs/hooks/useQueryJobByIdByOwner';
 
-const ViewJobDetail = ({ postId, setSelectedId }) => {
+export const ViewJobDetail = ({ postId, setSelectedId }) => {
   if (!postId) return;
 
   const { data, isLoading } = useQueryJobByIdByOwner(postId);
-  console.log(data);
 
   if (isLoading) return <SuspenseLoader />;
   return (
@@ -75,7 +74,7 @@ const ViewJobDetail = ({ postId, setSelectedId }) => {
           fontSize: '1.3rem'
         }}
       >
-        Vị trí ứng tuyển
+        Việc làm ứng tuyển
         <IconButton
           aria-label="close"
           onClick={() => setSelectedId(null)}

@@ -1,5 +1,12 @@
 import alertDialog from 'src/utils/alertDialog';
 
+const FREE_GPT_API_KEY =
+  'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2'; // free
+const GPT_API_KEY =
+  'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx';
+
+const API_KEY = GPT_API_KEY || FREE_GPT_API_KEY;
+
 // Common function to handle API requests
 const sendRequest = async (url, headers, body) => {
   try {
@@ -58,9 +65,7 @@ const sendChatGPTRequest = async (
 
   const headers = {
     'Content-Type': 'application/json',
-    Authorization:
-      // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' // free
-      'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+    Authorization: API_KEY
   };
 
   const sendMessage = async (inputText) => {
@@ -95,9 +100,7 @@ export const getEmbedding = async (content) => {
 
   const headers = {
     'Content-Type': 'application/json',
-    Authorization:
-      // 'Bearer sk-idLv1WJ8H0Xec0FjTujkzGClFhuOLvUcVw7FJBA0ERBhN8Y2' // free
-      'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx'
+    Authorization: API_KEY
   };
 
   const sendMessage = async (inputText) => {

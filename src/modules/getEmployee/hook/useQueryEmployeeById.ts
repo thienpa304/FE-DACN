@@ -6,14 +6,18 @@ import { GetEmployeeService } from '../getEmployeeService';
 import { useApp } from 'src/modules/app/hooks';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 import { ProfileShowType } from '../model';
+import useEmployee from './useEmployee';
+import { useEffect } from 'react';
 
 const useQueryEmployeeById = (id, params?) => {
+  const { setEmployeeDetail, employeeDetail } = useEmployee();
   const { isEmployer } = useApp();
-  const { data, isLoading } = useQuery<
-    ResponseData<PaginationType<ProfileShowType[]>>,
-    AxiosError<ResponseData<ProfileShowType[]>>
+
+  const { data, isLoading, refetch } = useQuery<
+    ResponseData<ProfileShowType>,
+    AxiosError<ResponseData<ProfileShowType>>
   >(
-    ['get-EmployeeById', params],
+    ['get-EmployeeById', id, params?.type],
     () => {
       return GetEmployeeService.getById(id, { params });
     },
@@ -21,15 +25,25 @@ const useQueryEmployeeById = (id, params?) => {
       keepPreviousData: true,
       retry: 1,
       refetchOnWindowFocus: false,
-      enabled: isEmployer && params.id
+      enabled:
+        isEmployer &&
+        Boolean(id) &&
+        params?.type !== null &&
+        params?.type !== undefined,
+      onSuccess(data) {
+        console.log('success');
+      }
     }
   );
 
+  useEffect(() => {
+    if (data?.data) setEmployeeDetail(data?.data);
+  }, [JSON.stringify(data?.data)]);
+
   return {
-    profile: data?.data?.items || [],
-    totalPages: data?.data?.meta?.totalPages,
-    totalItems: data?.data?.meta?.totalItems,
-    isLoading
+    profile: data?.data,
+    isLoading,
+    refetch
   };
 };
 

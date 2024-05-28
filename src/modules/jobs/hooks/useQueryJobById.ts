@@ -7,10 +7,12 @@ import { useApp } from 'src/modules/app/hooks';
 import { useEffect, useState } from 'react';
 import alertDialog from 'src/utils/alertDialog';
 import { useNavigate } from 'react-router';
+import useJob from './useJob';
 
 export default function useQueryJobById(id) {
   if (!id) return {};
   const navigate = useNavigate();
+  const { setItemDetail, itemDetail } = useJob();
   const { data, isLoading, isFetching } = useQuery<
     ResponseData<Job>,
     AxiosError<ResponseData<Job>>
@@ -29,20 +31,18 @@ export default function useQueryJobById(id) {
     }
   });
 
-  const [job, setJob] = useState<Job>();
-
   useEffect(() => {
     if (data?.data) {
       const saveJob = {
         ...data?.data,
         sex: data?.data?.sex === null ? 'Tất cả' : data?.data?.sex
       };
-      setJob(saveJob);
+      setItemDetail(saveJob);
     }
   }, [JSON.stringify(data)]);
 
   return {
-    data: job,
+    data: itemDetail,
     isLoading,
     isFetching
   };

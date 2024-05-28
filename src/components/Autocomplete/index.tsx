@@ -42,10 +42,16 @@ export default function Autocomplete(props) {
         disabled={disabled}
         value={selectedOptions}
         isOptionEqualToValue={(option, value) => {
-          if (option.value) {
+          if (
+            option.value &&
+            value?.value &&
+            typeof option?.value === 'string' &&
+            typeof value?.value === 'string'
+          ) {
             return option?.value?.trim() === value?.value?.trim();
-          }
-          return option?.trim() === value?.trim();
+          } else if (typeof option === 'string' && typeof value === 'string') {
+            return option?.trim() === value?.trim();
+          } else return option === value;
         }}
         // autoComplete
         // autoSelect

@@ -1,6 +1,10 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { selectJob, setItemDetail as setItemDetailAction } from '../jobSlice';
+import {
+  selectJob,
+  setItemDetail as setItemDetailAction,
+  resetItemDetail as resetItemDetailAction
+} from '../jobSlice';
 import { Job } from '../model';
 
 const useJob = () => {
@@ -11,9 +15,14 @@ const useJob = () => {
     dispatch(setItemDetailAction(data));
   };
 
+  const resetItemDetail = () => {
+    dispatch(resetItemDetailAction());
+  };
+
   return {
     itemDetail,
-    setItemDetail
+    setItemDetail,
+    resetItemDetail
   };
 };
 
