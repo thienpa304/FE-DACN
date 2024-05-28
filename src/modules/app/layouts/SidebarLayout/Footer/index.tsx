@@ -54,13 +54,26 @@ const Footer = () => {
     >
       <Grid container spacing={5}>
         <Grid item md={6} xs={12}>
-          <Typography fontWeight={700} fontSize={18} lineHeight={3}>
+          <Typography
+            fontWeight={700}
+            fontSize={18}
+            lineHeight={3}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             Về chúng tôi
           </Typography>
-          <Typography fontWeight={700} lineHeight={3}>
+          <Typography
+            fontWeight={700}
+            lineHeight={3}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             Công Ty Cổ Phần VN CareerHub
           </Typography>
-          <Typography lineHeight={1.8} fontSize={12}>
+          <Typography
+            lineHeight={1.8}
+            fontSize={12}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             Phòng 102, Tòa nhà 20-20B Trần Cao Vân, Phường Đa Kao, Quận 1, Thành
             phố Hồ Chí Minh
             <br />
@@ -78,14 +91,19 @@ const Footer = () => {
           </Typography>
         </Grid>
         <Grid item md={6} xs={12}>
-          <Typography fontWeight={700} fontSize={18} lineHeight={3}>
+          <Typography
+            fontWeight={700}
+            fontSize={18}
+            lineHeight={3}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             Kết nối với VN CareerHub
           </Typography>
           <Box
             display="flex"
             gap={2}
             flexWrap="wrap"
-            sx={{ justifyContent: { xs: 'center', sm: 'normal' } }}
+            sx={{ justifyContent: { xs: 'center', md: 'left' } }}
           >
             {webIcon.map((item, index) => (
               <Link key={index} href={item.link}>
@@ -99,14 +117,19 @@ const Footer = () => {
             ))}
           </Box>
 
-          <Typography fontWeight={700} fontSize={18} mt={3}>
+          <Typography
+            fontWeight={700}
+            fontSize={18}
+            mt={3}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             Ứng dụng di động
           </Typography>
           <Box
             display="flex"
             gap={2}
             flexWrap="wrap"
-            sx={{ justifyContent: { xs: 'center', sm: 'normal' } }}
+            sx={{ justifyContent: { xs: 'center', md: 'left' } }}
           >
             {downloadIcon.map((item, index) => (
               <Link key={index} href={item.link}>

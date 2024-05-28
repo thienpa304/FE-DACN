@@ -27,6 +27,7 @@ import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import { cvAnalysist, translate } from 'src/GPT/roles';
 import pdfToText from 'react-pdftotext';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
+import { useResponsive } from 'src/utils/responsive';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   background: '#ffff',
@@ -60,6 +61,7 @@ export default function AttachedDocument() {
   const navigate = useNavigate();
   const [finished, setFinished] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const { isMobile } = useResponsive();
 
   const handleSaveProfile = async () => {
     if (!profile?.CV) return;
@@ -127,7 +129,7 @@ export default function AttachedDocument() {
           Tạo hồ sơ đính kèm
         </Typography>
         <Grid container columnSpacing={2} mt={2}>
-          <Grid item xs={10}>
+          <Grid item xs={!isMobile ? 10 : 12}>
             {sections.map((section) => (
               <CustomBox key={section.id}>
                 {section.id === 'cv' && <AttachCV />}
@@ -136,7 +138,11 @@ export default function AttachedDocument() {
               </CustomBox>
             ))}
           </Grid>
-          <Grid item xs={2}>
+          <Grid
+            item
+            xs={!isMobile ? 2 : 0}
+            sx={{ display: { xs: 'none', sm: 'inline' } }}
+          >
             <CustomBox width={200} position="sticky" top={60}>
               <TableOfContents sections={sections} />
             </CustomBox>

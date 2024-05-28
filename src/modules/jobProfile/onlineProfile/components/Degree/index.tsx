@@ -53,10 +53,6 @@ function Degree() {
 
   const columns: GridColDef[] = [
     {
-      field: 'id',
-      headerName: 'ID'
-    },
-    {
       field: 'degreeName',
       headerName: 'Chứng chỉ',
       width: !isMobile ? 420 : 190,
