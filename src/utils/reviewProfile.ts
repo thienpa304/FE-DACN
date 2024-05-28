@@ -135,7 +135,9 @@ export const firstRoundForGeneralInfo = (job, profile) => {
   console.log(age);
 
   if (
-    (job?.sex !== null && job?.sex !== personal_information?.sex) ||
+    (job?.sex !== null &&
+      job?.sex !== 'Tất cả' &&
+      job?.sex !== personal_information?.sex) ||
     job?.minAge > age ||
     job?.maxAge < age
   )
