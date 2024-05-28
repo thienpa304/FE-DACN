@@ -119,7 +119,10 @@ const JobContent: React.FC<Props> = ({ data }) => {
                   <WcIcon />
                 </AvatarWrapper>
               </ListItemAvatar>
-              <ListItemText primary={data.sex} secondary="Giới tính" />
+              <ListItemText
+                primary={data.sex || 'Tất cả'}
+                secondary="Giới tính"
+              />
             </ListItem>
           </Grid>
         </Grid>

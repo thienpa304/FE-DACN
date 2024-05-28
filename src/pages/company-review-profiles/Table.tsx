@@ -50,11 +50,15 @@ import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import useQueryJobByIdByOwner from 'src/modules/jobs/hooks/useQueryJobByIdByOwner';
+import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
+import useQueryJobByIdByAdmin from 'src/modules/jobs/hooks/useQueryJobByIdByAdmin';
 
-export const ViewJobDetail = ({ postId, setSelectedId }) => {
+export const ViewJobDetail = (props) => {
+  const { postId, setSelectedId, isAdmin } = props;
   if (!postId) return;
+  const useQueryJob = isAdmin ? useQueryJobByIdByAdmin : useQueryJobByIdByOwner;
 
-  const { data, isLoading } = useQueryJobByIdByOwner(postId);
+  const { data, isLoading } = useQueryJob(postId);
 
   if (isLoading) return <SuspenseLoader />;
   return (

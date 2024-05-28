@@ -28,8 +28,15 @@ import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
 import { isMobile } from 'src/constants/reponsive';
 import { checkIsJSON } from 'src/utils/formatData';
+import { ViewJobDetail } from '../company-review-profiles/Table';
+import ViewJobDialog from './ViewJobDialog';
+import useJob from 'src/modules/jobs/hooks/useJob';
 
 const renderJobTitle = (data) => {
+  const [selectedId, setSelectedId] = useState(null);
+  const { itemDetail, setItemDetail } = useJob();
+  console.log(data);
+
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const handleOpenDetailModal = () => {
     const detailsData = {
@@ -48,13 +55,25 @@ const renderJobTitle = (data) => {
     };
     detailsModal(detailsData);
   };
+
   return (
     <Grid container alignItems={'center'}>
       <Grid item xs={10.5} sm={12}>
-        <TypographyEllipsis>
-          <LinkText to={`/job/${jobTitle}?id=${btoa(data.id)}`}>
-            {data.value}
-          </LinkText>
+        <TypographyEllipsis
+          sx={{
+            color: '#319fce',
+            ':hover': {
+              textDecoration: 'none',
+              cursor: 'pointer'
+            },
+            textDecoration: 'none'
+          }}
+          onClick={() => {
+            setSelectedId(data.id);
+            setItemDetail(data?.row);
+          }}
+        >
+          {data.value}
         </TypographyEllipsis>
       </Grid>
 
@@ -65,6 +84,11 @@ const renderJobTitle = (data) => {
           </IconButton>
         </Tooltip>
       </Grid>
+      <ViewJobDialog
+        postId={selectedId}
+        setSelectedId={setSelectedId}
+        data={data?.row}
+      />
     </Grid>
   );
 };
