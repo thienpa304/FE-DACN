@@ -132,6 +132,7 @@ export const firstRoundForGeneralInfo = (job, profile) => {
     ? dayjs(personal_information?.dob, 'YYYY-MM-DD')
     : dayjs(personal_information?.dob, 'DD-MM-YYYY');
   const age = dayjs().year() - birthday.year();
+  console.log(age);
 
   if (
     (job?.sex !== null && job?.sex !== personal_information?.sex) ||
@@ -151,8 +152,12 @@ export const firstRoundForGeneralInfo = (job, profile) => {
 const isProfileQualified = (profile, job) => {
   const { profession, degree, experience } = profile;
 
-  const employeeProfessionList = profession.split(',');
-  const jobProfessionList = job.profession.split(',');
+  const employeeProfessionList = profession
+    .split(',')
+    .map((item) => item.trim());
+  const jobProfessionList = job.profession
+    .split(',')
+    .map((item) => item.trim());
   if (!employeeProfessionList.some((item) => jobProfessionList.includes(item)))
     return false;
 
