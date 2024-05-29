@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  Divider,
-  Button,
-  TextField,
-  InputAdornment,
-  Avatar,
-  Grid,
-  Container
-} from '@mui/material';
+import { Box, Typography, Card, Divider, Grid } from '@mui/material';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
 import professions from 'src/constants/professions';
 import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 import Link from 'src/components/Link';
-import { rewriteUrl } from 'src/utils/rewriteUrl';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { useResponsive } from 'src/utils/responsive';
 
 function ProfessionType() {
   const [open, setOpen] = React.useState(false);
   const { dataList, isLoading } = useQueryTotalJobsEachProfession();
+  const { isMobile, isTablet, isDesktop } = useResponsive();
 
   const matchProfessionWithCount = professions
     .map((profession) => {
@@ -48,8 +38,6 @@ function ProfessionType() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  if (isLoading) return <SuspenseLoader />;
   return (
     <Card sx={{ borderColor: '#98E4FF', borderRadius: '5px', mt: 2 }}>
       <Box
@@ -83,7 +71,7 @@ function ProfessionType() {
         professionList={matchProfessionWithCount}
       />
 
-      <Grid container p={2} rowGap={2}>
+      <Grid container p={2} rowGap={2} minHeight={180}>
         {professionToShow?.map((profession, index) => (
           <Grid
             item
@@ -93,7 +81,10 @@ function ProfessionType() {
             component={Link}
             key={index}
             to={`/profession?profession=${profession?.name}`}
-            state={{ profession: profession.name, pageTitle: profession.name }}
+            state={{
+              profession: profession.name,
+              pageTitle: profession.name
+            }}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -113,15 +104,14 @@ function ProfessionType() {
               src={profession.icon}
               alt="shopping-bag"
               sx={{
-                maxWidth: (theme) => ({
+                width: {
                   xs: '70px',
                   sm: '90px'
-                }),
+                },
                 objectFit: 'cover',
-                width: 'auto',
-                height: 'auto',
                 borderRadius: 1
               }}
+              loading={index !== 0 ? 'lazy' : 'eager'}
             />
             <Box display={'flex'} columnGap="2px" alignItems="center">
               <Typography

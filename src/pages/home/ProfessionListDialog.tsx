@@ -8,10 +8,7 @@ import {
   Grid
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import professions from 'src/constants/professions';
-import Link from 'src/components/Link';
-import { fontWeight } from 'html2canvas/dist/types/css/property-descriptors/font-weight';
-import { rewriteUrl } from 'src/utils/rewriteUrl';
+import Link from 'src/components/Link'; 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {

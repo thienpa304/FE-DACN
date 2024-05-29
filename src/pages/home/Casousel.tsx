@@ -3,7 +3,7 @@ import { Paper, Box } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 
-const images = [
+export const casouselImages = [
   {
     imgPath: 'https://cdn.syncfusion.com/content/images/Careers/career-logo.png'
   },
@@ -26,7 +26,7 @@ function Casousel() {
   return (
     <Paper elevation={12}>
       <AutoPlaySwipeableViews interval={4000}>
-        {images.map((step, index) => (
+        {casouselImages.map((step, index) => (
           <div key={index}>
             {Math.abs(activeStep - index) <= 3 ? (
               <Box
@@ -38,6 +38,7 @@ function Casousel() {
                   objectFit: 'cover'
                 }}
                 src={step.imgPath}
+                loading="lazy"
               />
             ) : null}
           </div>

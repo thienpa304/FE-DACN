@@ -55,7 +55,9 @@ const CardApply: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <CustomContainer sx={{ px: 5, pb: 5, mb: 2 }}>
+    <CustomContainer
+      sx={{ px: 5, pb: 5, mb: 2, minHeight: !isEmployer && !isAdmin && 280 }}
+    >
       <Grid container>
         <Grid
           item
