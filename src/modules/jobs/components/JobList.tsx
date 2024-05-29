@@ -50,8 +50,6 @@ function JobList(props) {
     refetch();
   }, [filter]);
 
-  if (isLoading) return <SuspenseLoader />;
-
   return (
     <Container disableGutters maxWidth="md" sx={{ py: 3, ...sx }}>
       <Box
@@ -75,19 +73,23 @@ function JobList(props) {
           </Box>{' '}
           việc làm đang tuyển dụng
         </Typography>
-        <Grid container spacing={2} minHeight={300}>
-          {jobs.length ? (
-            jobs.map((job, index) => (
-              <Grid key={job?.id} item xs={12}>
-                <JobCard key={index} job={job} />
-              </Grid>
-            ))
-          ) : (
-            <Typography fontStyle={'italic'} margin={'auto'}>
-              Không tìm thấy việc làm phù hợp
-            </Typography>
-          )}
-        </Grid>
+        {isLoading ? (
+          <SuspenseLoader />
+        ) : (
+          <Grid container spacing={2} minHeight={300}>
+            {jobs.length ? (
+              jobs.map((job, index) => (
+                <Grid key={job?.id} item xs={12}>
+                  <JobCard key={index} job={job} />
+                </Grid>
+              ))
+            ) : (
+              <Typography fontStyle={'italic'} margin={'auto'}>
+                Không tìm thấy việc làm phù hợp
+              </Typography>
+            )}
+          </Grid>
+        )}
       </Container>
       <Pagination
         totalPages={totalPages}
