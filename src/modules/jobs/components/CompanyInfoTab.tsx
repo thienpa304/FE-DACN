@@ -17,7 +17,7 @@ export default function CompanyInfoTab(props) {
   const { sx, company, companyPage = false } = props;
 
   return (
-    <CustomContainer sx={{ px: 5, ...sx }}>
+    <CustomContainer sx={{ px: 5, ...sx, minHeight: 300 }}>
       <Box
         sx={{ display: { xs: 'normal', sm: 'flex' } }}
         justifyContent="space-between"
