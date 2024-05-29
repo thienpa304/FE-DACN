@@ -38,7 +38,7 @@ function Casousel() {
                   objectFit: 'cover'
                 }}
                 src={step.imgPath}
-                loading="lazy"
+                loading={index !== 0 ? 'lazy' : 'eager'}
               />
             ) : null}
           </div>

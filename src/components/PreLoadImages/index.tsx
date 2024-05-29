@@ -1,13 +1,17 @@
 import { Box } from '@mui/material';
+import { useEffect } from 'react';
 
 const PreloadImages = ({ sources }) => {
-  return (
-    <Box sx={{ display: 'none' }}>
-      {sources.map((src, index) => (
-        <link key={index} rel="preload" href={src} as="image" />
-      ))}
-    </Box>
-  );
+  useEffect(() => {
+    sources.forEach((src) => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.href = src;
+      link.as = 'image';
+      document.head.appendChild(link);
+    });
+  }, [sources]);
+  return null;
 };
 
 export default PreloadImages;

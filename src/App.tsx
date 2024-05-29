@@ -1,10 +1,7 @@
 import { useRoutes } from 'react-router-dom';
 import router from 'src/router';
-
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/ThemeProvider';
 import Snackbar from './modules/app/Snackbar';
@@ -15,20 +12,23 @@ import { defaultImage } from './constants/uploadFileRule';
 
 const professionImg = professions.map((item) => item.icon);
 const casouselImg = casouselImages.map((item) => item.imgPath);
+const logo =
+  'https://thuvienvector.com/upload/images/items/vector-logo-truong-dai-hoc-bach-khoa-hcm-file-cdr-coreldraw-ai-217.webp';
 
 const imagesToPreload = [
   // Add more image paths as needed
-  ...professionImg,
   ...casouselImg,
   defaultImage.companyAvatar,
-  defaultImage.companyCover
+  defaultImage.companyCover,
+  logo,
+  ...professionImg
 ];
 
 function App() {
   const content = useRoutes(router);
   return (
     <>
-      {/* <PreloadImages sources={imagesToPreload} /> */}
+      <PreloadImages sources={imagesToPreload} />
       <ThemeProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Snackbar />

@@ -111,7 +111,7 @@ function ProfessionType() {
                 objectFit: 'cover',
                 borderRadius: 1
               }}
-              loading={index !== 0 ? 'lazy' : 'eager'}
+              loading="lazy"
             />
             <Box display={'flex'} columnGap="2px" alignItems="center">
               <Typography
