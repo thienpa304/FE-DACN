@@ -40,11 +40,11 @@ type Props = {
 };
 const JobContent: React.FC<Props> = ({ data }) => {
   return (
-    <Container>
+    <Container sx={{ minHeight: 1200 }}>
       <Typography variant="h3" fontSize={22} noWrap marginBottom={2.5}>
         Thông tin chung
       </Typography>
-      <CommonInfo>
+      <CommonInfo sx={{ minHeight: 240, width: '100%' }}>
         <Grid container sx={{ my: 0.5 }}>
           <Grid item xs={12} md={4}>
             <ListItem>
