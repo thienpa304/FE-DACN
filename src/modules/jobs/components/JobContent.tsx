@@ -40,7 +40,7 @@ type Props = {
 };
 const JobContent: React.FC<Props> = ({ data }) => {
   return (
-    <Container sx={{ minHeight: 1200 }}>
+    <Container sx={{ height: '100%' }}>
       <Typography variant="h3" fontSize={22} noWrap marginBottom={2.5}>
         Thông tin chung
       </Typography>

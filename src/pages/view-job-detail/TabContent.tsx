@@ -3,9 +3,9 @@ import JobContent from 'src/modules/jobs/components/JobContent';
 import useJob from 'src/modules/jobs/hooks/useJob';
 
 function TabContent() {
-  const { itemDetail } = useJob(); 
+  const { itemDetail } = useJob();
   return (
-    <CustomContainer sx={{ py: 3, mb: 2 }}>
+    <CustomContainer sx={{ py: 3, mb: 2, minHeight: 1000 }}>
       <JobContent data={itemDetail} />
     </CustomContainer>
   );
