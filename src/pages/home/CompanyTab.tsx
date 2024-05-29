@@ -1,29 +1,24 @@
 import {
   Box,
   Card,
-  Container,
   Grid,
   Typography,
   useTheme
 } from '@mui/material';
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import Link from 'src/components/Link';
 import Pagination from 'src/components/Pagination';
 import CompanyCard from 'src/modules/company/components/CompanyCard';
 import BusinessIcon from '@mui/icons-material/Business';
 import {
-  checkIsDesktop,
-  checkIsTablet,
   useResponsive
 } from 'src/utils/responsive';
 import { isMobile } from 'src/constants/reponsive';
 
 export default function CompanyTab(props) {
   const { queryCompanys } = props;
-  const theme = useTheme();
-  // const isDesktop = checkIsDesktop(theme);
-  const { isLargeDesktop, isDesktop, isTablet } = useResponsive();
-  const pageSize = isMobile ? 4 : isTablet ? 4 : isDesktop ? 3 : 4;
+  const { isDesktop, isTablet } = useResponsive();
+  const pageSize = isMobile ? 1 : isTablet ? 2 : isDesktop ? 3 : 2;
 
   const [currentPage, setCurrentPage] = useState(1);
   const { companyList, totalPages } = queryCompanys({
@@ -62,7 +57,7 @@ export default function CompanyTab(props) {
         </Link>
       </Box>
       <Box p={3}>
-        <Grid container spacing={1} minHeight={400} mb={2}>
+        <Grid container spacing={1} height={400} mb={2}>
           {companyList?.length ? (
             companyList.map((company) => (
               <Grid key={company?.userId} item xs={12} sm={6} md={4} lg={3}>

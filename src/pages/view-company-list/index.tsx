@@ -1,4 +1,3 @@
-import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import CompanyList from 'src/modules/company/components/CompanyList';
 import useQueryCompanyListByUser from 'src/modules/company/hook/useQueryCompanyListByUser';
 

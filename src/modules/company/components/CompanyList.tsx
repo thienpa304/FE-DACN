@@ -8,7 +8,7 @@ import { isTablet } from 'src/constants/reponsive';
 
 function CompanyList(props) {
   const { pageTitle, sx, queryCompanys } = props;
-  const pageSize = 14;
+  const pageSize = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const {
     companyList,
@@ -19,8 +19,6 @@ function CompanyList(props) {
     num: pageSize,
     page: currentPage
   });
-  // const totalResults = companyList?.length;
-  // const totalPages = Math.ceil(totalResults / pageSize) || 1;
 
   if (isLoading) return <SuspenseLoader />;
   return (
@@ -38,14 +36,14 @@ function CompanyList(props) {
           </Typography>
         </Box>
       </Box>
-      <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff' }}>
+      <Container sx={{ mb: 3, py: 3, bgcolor: '#fbfeff', minHeight: 1250 }}>
         <Typography fontSize={18} mb={2}>
           Danh sách công ty
           <Box sx={{ color: '#ce8b0e', display: 'inline', ml: 1 }}>
             ({totalResults ? totalResults : 0})
           </Box>
         </Typography>
-        <Grid container spacing={2} minHeight={300}>
+        <Grid container spacing={2}>
           {companyList?.length ? (
             companyList.map((company, index) => (
               <Grid key={company?.userId} item xs={12} sm={6} md={3}>
