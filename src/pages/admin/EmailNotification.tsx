@@ -9,11 +9,6 @@ import {
   Grid,
   TextField,
   Typography,
-  Select,
-  MenuItem,
-  InputLabel,
-  Checkbox,
-  FormControlLabel,
   Box
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
@@ -28,30 +23,22 @@ import { removeHTMLTag } from 'src/utils/formatData';
 import useMutateSendEmail from 'src/modules/admin/hooks/useMutateSendEmail';
 import useQueryAllUserByAdmin from 'src/modules/admin/hooks/useQueryAllUserByAdmin';
 import { Role } from 'src/modules/users/model';
+import useQueryAllEmailByAdmin from 'src/modules/admin/hooks/useQueryAllEmailByAdmin';
 
 const EmailNotification = () => {
   const [recipient, setRecipient] = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
-  const [priority, setPriority] = useState('normal');
-  const [isAttachmentIncluded, setIsAttachmentIncluded] = useState(false);
-  const [eventTypes, setEventTypes] = useState({
-    jobApplication: true,
-    applicationStatus: false,
-    newJobPosting: true
-  });
   const [uploadedFile, setUploadedFile] = useState(null);
   const [isEmpty, setIsEmpty] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const { emailList, inputRecipientKeywords } = useMutateGetEmail();
   const { onSendEmail, isLoading } = useMutateSendEmail();
-  const { userList } = useQueryAllUserByAdmin(
+  const { allEmailList } = useQueryAllEmailByAdmin(
     {
       role: selectedUser === 'ALL' ? null : selectedUser
     },
     Boolean(selectedUser)
   );
-  const selectedUserEmailList = userList?.map((item) => ({
+  const selectedUserEmailList = allEmailList?.map((item) => ({
     value: item.email,
     label: item.email
   }));
@@ -76,13 +63,6 @@ const EmailNotification = () => {
     onSendEmail(formatData);
   };
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0];
-    setUploadedFile(file);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   const handleGetUserByRole = (user) => {
     setSelectedUser(user);
   };
@@ -99,12 +79,6 @@ const EmailNotification = () => {
     recipient && inputRecipientKeywords({ keyword: recipient });
   }, [recipient]);
 
-  // const recipientOption = emailList?.map((item) => {
-  //   return {
-  //     value: item.email,
-  //     label: item.email
-  //   };
-  // });
   const recipientOption = useMemo(
     () =>
       emailList?.map((item) => {
@@ -173,7 +147,7 @@ const EmailNotification = () => {
                       setRecipient(e.target.value);
                     }}
                     freeSolo={true}
-                    limitTags={3}
+                    limitTags={4}
                   />
                 }
                 control={control}

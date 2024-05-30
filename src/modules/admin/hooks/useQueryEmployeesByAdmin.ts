@@ -9,7 +9,7 @@ const useQueryEmployeesByAdmin = (params?, isFetch?) => {
     ResponseData<PaginationType<Employee[]>>,
     AxiosError<ResponseData<Employee[]>>
   >(
-    ['get-AllEmployees', params?.page, params?.profession, params?.name],
+    ['get-AllEmployees', params],
     () => {
       if (params?.profession === 'Tất cả') params.profession = '';
       return AdminEmployeesService.get({ params });

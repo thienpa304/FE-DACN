@@ -124,7 +124,7 @@ export const matchProfileById = (
 };
 
 export const firstRoundForGeneralInfo = (job, profile) => {
-  console.log('profile', profile);
+  // console.log('profile', profile);
 
   const { personal_information, online_profile, attached_document } = profile;
 
@@ -132,7 +132,6 @@ export const firstRoundForGeneralInfo = (job, profile) => {
     ? dayjs(personal_information?.dob, 'YYYY-MM-DD')
     : dayjs(personal_information?.dob, 'DD-MM-YYYY');
   const age = dayjs().year() - birthday.year();
-  console.log(age);
 
   if (
     (job?.sex !== null &&
@@ -376,7 +375,7 @@ const handleRoundThree = async (
       })
     );
 
-    console.log('Profiles with keywords:', profilesWithKeywords);
+    // console.log('Profiles with keywords:', profilesWithKeywords);
 
     // Step 2: Calculate similarity scores between profiles and job requirements
     const response = await getEmbedding(
@@ -393,6 +392,8 @@ const handleRoundThree = async (
       response?.map(async (item) => {
         let score = item?.employee_Profile?.reduce((acc, profile) => {
           const hasMatch = item?.employer_Requirement?.some((requirement) => {
+            console.log('vector', profile.result, typeof profile.result);
+
             const cosineSimilarity = dot(profile.result, requirement.result);
             return cosineSimilarity > 0.6;
           });

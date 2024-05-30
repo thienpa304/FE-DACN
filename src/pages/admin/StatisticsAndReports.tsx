@@ -55,7 +55,14 @@ const CalendarStyles = {
 };
 
 const StatisticsAndReports = () => {
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#814289'];
+  const COLORS = [
+    '#0088FE',
+    '#00C49F',
+    '#FFBB28',
+    '#FF8042',
+    '#814289',
+    '#344C64'
+  ];
   const [selectedYear, setSelectedYear] = useState<Dayjs | null>(dayjs());
   const [selectedMonth, setSelectedMonth] = useState<Dayjs | null>(dayjs());
 
@@ -267,10 +274,7 @@ const StatisticsAndReports = () => {
                           endAngle={-270}
                         >
                           {candidateStatistics?.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
+                            <Cell key={`cell-${index}`} fill={COLORS[index]} />
                           ))}
                         </Pie>
                       </PieChart>

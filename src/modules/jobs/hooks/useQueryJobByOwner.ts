@@ -14,16 +14,12 @@ const useQueryJobByOwner = (params?) => {
   const { data, isLoading } = useQuery<
     ResponseData<PaginationType<Job[]>>,
     AxiosError<ResponseData<Job[]>>
-  >(
-    ['jobOwner-getList', params?.status, params?.page],
-    () => JobService.get({ params }),
-    {
-      retry: 1,
-      refetchOnWindowFocus: false,
-      keepPreviousData: true,
-      enabled: isEmployer
-    }
-  );
+  >(['jobOwner-getList', params], () => JobService.get({ params }), {
+    retry: 1,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    enabled: isEmployer
+  });
 
   return {
     jobs:

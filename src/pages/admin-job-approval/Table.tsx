@@ -31,13 +31,12 @@ import { checkIsJSON } from 'src/utils/formatData';
 import { ViewJobDetail } from '../company-review-profiles/Table';
 import ViewJobDialog from './ViewJobDialog';
 import useJob from 'src/modules/jobs/hooks/useJob';
+import { handleSort } from 'src/utils/sortData';
 
 const renderJobTitle = (data) => {
   const [selectedId, setSelectedId] = useState(null);
   const { itemDetail, setItemDetail } = useJob();
-  console.log(data);
 
-  const jobTitle = rewriteUrl(data?.row?.jobTitle);
   const handleOpenDetailModal = () => {
     const detailsData = {
       'Tên tin tuyển dụng': data?.row?.jobTitle,
@@ -98,12 +97,12 @@ const renderCompany = (data) => {
     <Grid container alignItems={'center'}>
       <Grid item xs={12} component={TypographyEllipsis}>
         <LinkText
-          to={`/company/${rewriteUrl(data.value?.companyName)}?id=${btoa(
-            data?.value?.userId
+          to={`/company/${rewriteUrl(data.value)}?id=${btoa(
+            data?.row?.employer?.userId
           )}`}
           state={{ id: data?.value?.userId }}
         >
-          {data.value?.companyName}
+          {data.value}
         </LinkText>
       </Grid>
     </Grid>
@@ -174,8 +173,6 @@ const renderCheckInvalid = [
 ];
 
 const renderCheck = (data) => {
-  // console.log(data);
-
   const { mutate } = useMutateJobStatus();
   const initCheckValue = renderCheckInvalid.find(
     (item) => item.value == data.value
@@ -246,13 +243,14 @@ const columns: GridColDef[] = [
     field: 'jobTitle',
     headerName: 'Tin tuyển dụng',
     minWidth: !isMobile ? 200 : 130,
-    renderCell: renderJobTitle
+    renderCell: renderJobTitle,
+    sortable: true
   },
   {
     field: 'name',
     headerName: 'Người đăng',
     minWidth: 120,
-    resizable: true,
+    sortable: true,
     renderCell: (data) => (
       <Box
         sx={{
@@ -270,10 +268,11 @@ const columns: GridColDef[] = [
     )
   },
   {
-    field: 'employer',
+    field: 'companyName',
     headerName: 'Tên công ty',
     minWidth: 200,
-    renderCell: renderCompany
+    renderCell: renderCompany,
+    sortable: true
   },
   {
     field: 'createAt',
@@ -313,8 +312,7 @@ const columns: GridColDef[] = [
     headerName: 'Trạng thái',
     minWidth: !isMobile ? 130 : 115,
     headerAlign: 'center',
-    renderCell: renderStatus,
-    sortable: true
+    renderCell: renderStatus
   },
   {
     field: 'check',
@@ -333,13 +331,15 @@ export default function Table({ statusFilter, selectedProfession }) {
   const [showList, setShowList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
   const pageSize = 9;
 
   const { jobs, isLoading, totalPages } = useQueryJobByAdmin({
     page: currentPage,
     num: pageSize,
     status: ApprovalStatus[statusFilter],
-    profession: selectedProfession
+    profession: selectedProfession,
+    ...sortModel
   });
 
   const preProcessData = (job: Job) => {
@@ -385,6 +385,8 @@ export default function Table({ statusFilter, selectedProfession }) {
   }, [start]);
 
   useEffect(() => {
+    console.log(jobs);
+
     if (jobs) {
       setShowList(() => jobs);
     }
@@ -523,7 +525,7 @@ export default function Table({ statusFilter, selectedProfession }) {
           columns: {
             columnVisibilityModel: {
               name: !isMobile,
-              employer: !isMobile,
+              companyName: !isMobile,
               createAt: !isMobile,
               submissionCount: !isMobile,
               view: !isMobile,
@@ -532,6 +534,9 @@ export default function Table({ statusFilter, selectedProfession }) {
           }
         }}
         disableRowSelectionOnClick={isMobile}
+        onSortModelChange={(newSortModel) => {
+          handleSort(newSortModel, setSortModel);
+        }}
       />
       <Pagination
         totalPages={totalPages}

@@ -5,19 +5,12 @@ import {
   Container,
   Divider,
   Grid,
-  Tab,
-  Tabs,
-  styled
+  Tab
 } from '@mui/material';
 import useQueryCandidateApplications from 'src/modules/application/hooks/useQueryCandidateApplications';
 import Table from './Table';
-import SuspenseLoader from 'src/components/SuspenseLoader';
-import { useEffect, useMemo, useState } from 'react';
-import useQueryTotalResultOfApplicationByEmployer from 'src/modules/application/hooks/useQueryTotalResultOfApplicationByEmployer';
+import { useMemo, useState } from 'react';
 import TabsWrapper from 'src/components/TabWrapper';
-import Pagination from 'src/components/Pagination';
-import useApplicationList from 'src/modules/jobs/hooks/useFollowJobList';
-import { deepEqual } from 'src/utils/formatData';
 import {
   ProfileApplicationType,
   getKeywords,
@@ -50,13 +43,15 @@ const matchJobAndProfile = (jobs: Job[], data): ProfileApplicationType[] =>
         matchingScore,
         employee,
         CV,
-        id
+        id,
+        createAt
       } = item;
       const { postId, jobTitle } = job;
       const keywords = getKeywords(item);
 
       const applicationInfo = {
         id: application_id,
+        createAt: createAt,
         employer_Requirement: preprocessJobData(job),
         employee_Profile: {
           online_profile: employee?.online_profile,
@@ -89,6 +84,10 @@ const CandidateProfiles = () => {
   const pageSize = 9;
   const [currentTab, setCurrentTab] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortModel, setSortModel] = useState({
+    orderBy: '',
+    sort: ''
+  });
   const {
     data,
     isLoading: isLoadingData,
@@ -96,7 +95,9 @@ const CandidateProfiles = () => {
   } = useQueryCandidateApplications({
     page: currentPage,
     num: pageSize,
-    status: currentTab
+    status: currentTab,
+    orderBy: sortModel.orderBy,
+    sort: sortModel.sort
   });
   const jobsIdList: number[] = useMemo(
     () => [...new Set<number>(data?.map((item) => item?.postId))],
@@ -155,6 +156,7 @@ const CandidateProfiles = () => {
                 totalPages={totalPages}
                 handlePageChange={setCurrentPage}
                 loading={isLoadingData || isLoadingJobs}
+                setSortModel={setSortModel}
               />
             </CardContent>
           </Card>

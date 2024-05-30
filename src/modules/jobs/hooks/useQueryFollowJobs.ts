@@ -9,8 +9,6 @@ import useFollowJobList from 'src/modules/jobs/hooks/useFollowJobList';
 import { useEffect } from 'react';
 
 const useQueryFollowJobs = (params?) => {
-  console.log(params);
-
   const { isEmployee } = useApp();
   const { setFollowJobList } = useFollowJobList();
   const { data, isLoading, refetch } = useQuery<

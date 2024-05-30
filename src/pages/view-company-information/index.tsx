@@ -12,7 +12,7 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 import JobList from 'src/modules/jobs/components/JobList';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
-import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyInfoById'; 
+import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyInfoById';
 import { useSearchParams } from 'react-router-dom';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { isMobile } from 'src/constants/reponsive';

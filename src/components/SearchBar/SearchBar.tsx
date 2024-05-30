@@ -23,7 +23,6 @@ const AddressOptions = [
 
 const buildSearchUrl = (
   baseUrl,
-  to,
   searchValue,
   selectedProfession,
   selectedAddress
@@ -57,7 +56,6 @@ export default function SearchBar({ to, sx }: { to: string; sx?: any }) {
 
   const searchUrl = buildSearchUrl(
     to,
-    'tim-kiem-nhanh',
     searchValue,
     selectedProfession,
     selectedAddress
