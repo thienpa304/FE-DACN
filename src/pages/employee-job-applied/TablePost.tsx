@@ -17,6 +17,7 @@ import { isMobile } from 'src/constants/reponsive';
 import { useMemo, useState } from 'react';
 import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQueryJobAppliedByEmployee';
 import Pagination from 'src/components/Pagination';
+import { handleSort } from 'src/utils/sortData';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
@@ -72,6 +73,7 @@ const columns: GridColDef[] = [
     headerName: 'Tên tin đăng',
     minWidth: isMobile ? 190 : 400,
     headerAlign: 'center',
+    sortable: true,
     renderCell: renderJobTitle
   },
   {
@@ -79,6 +81,7 @@ const columns: GridColDef[] = [
     headerName: 'Tên công ty',
     minWidth: 300,
     headerAlign: 'center',
+    sortable: true,
     renderCell: renderCompanyName
   },
   {
@@ -87,6 +90,7 @@ const columns: GridColDef[] = [
     minWidth: 150,
     headerAlign: 'center',
     align: 'center',
+    sortable: true,
     renderCell: rederDate
   },
   {
@@ -95,6 +99,7 @@ const columns: GridColDef[] = [
     minWidth: 150,
     headerAlign: 'center',
     align: 'center',
+    sortable: true,
     renderCell: rederDate
   },
   {
@@ -109,10 +114,12 @@ const columns: GridColDef[] = [
 
 export default function TablePost(props) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
   const pageSize = 8;
   const { data, isLoading, totalPages } = useQueryJobAppliedByEmployee({
     page: currentPage,
-    num: pageSize
+    num: pageSize,
+    ...sortModel
   });
 
   const flattenedApplications = useMemo(
@@ -126,6 +133,7 @@ export default function TablePost(props) {
       })),
     [data]
   );
+
   return (
     <Box>
       <TableData
@@ -143,6 +151,9 @@ export default function TablePost(props) {
         }}
         hideFooter
         loading={isLoading}
+        onSortModelChange={(newSortModel) => {
+          handleSort(newSortModel, setSortModel);
+        }}
       />
       <Pagination
         currentPage={currentPage}

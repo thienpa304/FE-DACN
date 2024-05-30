@@ -8,7 +8,7 @@ import {
   Grid
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Link from 'src/components/Link'; 
+import Link from 'src/components/Link';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {

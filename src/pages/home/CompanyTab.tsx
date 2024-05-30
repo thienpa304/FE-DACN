@@ -1,24 +1,15 @@
-import {
-  Box,
-  Card,
-  Grid,
-  Typography,
-  useTheme
-} from '@mui/material';
-import  { useState } from 'react';
+import { Box, Card, Grid, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
 import Link from 'src/components/Link';
 import Pagination from 'src/components/Pagination';
 import CompanyCard from 'src/modules/company/components/CompanyCard';
 import BusinessIcon from '@mui/icons-material/Business';
-import {
-  useResponsive
-} from 'src/utils/responsive';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
 
 export default function CompanyTab(props) {
   const { queryCompanys } = props;
-  const { isDesktop, isTablet } = useResponsive();
-  const pageSize = isMobile ? 1 : isTablet ? 2 : isDesktop ? 3 : 2;
+  const { isDesktop, isTablet, isMobile } = useResponsive();
+  const pageSize = isMobile ? 3 : isTablet ? 3 : isDesktop ? 3 : 4;
 
   const [currentPage, setCurrentPage] = useState(1);
   const { companyList, totalPages } = queryCompanys({
@@ -57,10 +48,10 @@ export default function CompanyTab(props) {
         </Link>
       </Box>
       <Box p={3}>
-        <Grid container spacing={1} height={400} mb={2}>
+        <Grid container spacing={1} height={!isMobile ? 400 : 1200} mb={2}>
           {companyList?.length ? (
             companyList.map((company) => (
-              <Grid key={company?.userId} item xs={12} sm={6} md={4} lg={3}>
+              <Grid key={company?.userId} item xs={12} sm={4} md={4} lg={3}>
                 <CompanyCard company={company} employerId={company?.userId} />
               </Grid>
             ))

@@ -29,6 +29,7 @@ import { isMobile } from 'src/constants/reponsive';
 import alertDialog from 'src/utils/alertDialog';
 import TabsWrapper from 'src/components/TabWrapper';
 import { tabs } from 'src/pages/company-job-list';
+import { handleSort } from 'src/utils/sortData';
 
 export default function RecommendProfile() {
   const jobPageSize = 9;
@@ -40,6 +41,7 @@ export default function RecommendProfile() {
   const [showProfile, setShowProfile] = useState([]);
   const [jobInfo, setJobInfo] = useState(null);
   const [filter, setFilter] = useState(null);
+  const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
   const {
     jobs,
     totalResults: totalJobResults,
@@ -48,7 +50,8 @@ export default function RecommendProfile() {
   } = useQueryJobByOwner({
     page: jobCurrentPage,
     num: jobPageSize,
-    status: currentTab
+    status: currentTab,
+    ...sortModel
   });
 
   const {
@@ -102,7 +105,8 @@ export default function RecommendProfile() {
       headerName: 'Tên tin đăng',
       minWidth: !isMobile ? 500 : 160,
       headerAlign: 'center',
-      renderCell: renderJobTitle
+      renderCell: renderJobTitle,
+      sortable: true
     },
     {
       field: 'status',
@@ -203,6 +207,9 @@ export default function RecommendProfile() {
                   mx: 'auto'
                 }}
                 hideFooter
+                onSortModelChange={(newSortModel) => {
+                  handleSort(newSortModel, setSortModel);
+                }}
               />
               <Pagination
                 currentPage={jobCurrentPage}

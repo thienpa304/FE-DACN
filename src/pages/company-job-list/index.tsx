@@ -29,10 +29,13 @@ const JobList = () => {
   const pageSize = 9;
   const [currentTab, setCurrentTab] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
   const { jobs, totalResults, isLoading, totalPages } = useQueryJobByOwner({
     status: currentTab,
     page: currentPage,
-    num: pageSize
+    num: pageSize,
+    orderBy: sortModel.orderBy,
+    sort: sortModel.sort
   });
 
   const handleTabsChange = (e, value) => {
@@ -82,7 +85,11 @@ const JobList = () => {
                   );
                 })}
               </TabsWrapper>
-              <TablePost data={jobs || []} pageSize={pageSize} />
+              <TablePost
+                data={jobs || []}
+                pageSize={pageSize}
+                setSortModel={setSortModel}
+              />
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

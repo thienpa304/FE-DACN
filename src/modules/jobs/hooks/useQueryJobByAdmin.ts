@@ -11,7 +11,7 @@ const useQueryJobByAdmin = (params?) => {
     ResponseData<PaginationType<Job[]>>,
     AxiosError<ResponseData<Job[]>>
   >(
-    ['get-AllJobsByAdmin', params?.page, params?.profession, params?.status],
+    ['get-AllJobsByAdmin', params],
     () => {
       for (const key in params) {
         if (params[key] === 'Tất cả') {
@@ -30,7 +30,11 @@ const useQueryJobByAdmin = (params?) => {
 
   return {
     jobs:
-      data?.data?.items?.map((item) => ({ ...item, id: item.postId })) || [],
+      data?.data?.items?.map((item) => ({
+        ...item,
+        id: item.postId,
+        companyName: item?.employer?.companyName
+      })) || [],
     totalItems: data?.data?.meta?.totalItems,
     itemCount: data?.data?.meta?.itemCount,
     itemPerPage: data?.data?.meta?.itemPerPage,

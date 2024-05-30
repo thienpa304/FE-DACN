@@ -6,10 +6,7 @@ import {
   Divider,
   Grid
 } from '@mui/material';
-import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQueryJobAppliedByEmployee';
 import TablePost from './TablePost';
-import SuspenseLoader from 'src/components/SuspenseLoader';
-import { useState } from 'react';
 
 const JobApplied = () => {
   return (

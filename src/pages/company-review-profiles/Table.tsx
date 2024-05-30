@@ -52,6 +52,8 @@ import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import useQueryJobByIdByOwner from 'src/modules/jobs/hooks/useQueryJobByIdByOwner';
 import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import useQueryJobByIdByAdmin from 'src/modules/jobs/hooks/useQueryJobByIdByAdmin';
+import { handleSort } from 'src/utils/sortData';
+import dayjs from 'dayjs';
 
 export const ViewJobDetail = (props) => {
   const { postId, setSelectedId, isAdmin } = props;
@@ -199,7 +201,7 @@ const renderStatus = (data) => {
     employee_Profile: { application }
   } = data?.row;
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
-  const [value, setValue] = useState(null); // Initialize value as null
+  const [value, setValue] = useState(null);
 
   useEffect(() => {
     if (!application.status || !APPROVAL_STATUS) return;
@@ -254,22 +256,32 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Tên hồ sơ',
-    minWidth: isMobile ? 110 : 220,
+    minWidth: isMobile ? 110 : 180,
     renderCell: renderProfileName,
     sortable: true
   },
   {
     field: 'jobTitle',
     headerName: 'Vị trí ứng tuyển',
-    minWidth: 400,
+    minWidth: 300,
     renderCell: renderJobTitle,
     sortable: true
+  },
+  {
+    field: 'createAt',
+    headerName: 'Ngày nộp',
+    minWidth: 150,
+    headerAlign: 'center',
+    align: 'center',
+    sortable: true,
+    renderCell: (data) => {
+      return dayjs(data?.value).format('DD/MM/YYYY');
+    }
   },
   {
     field: 'applicationType',
     headerName: 'Loại hồ sơ',
     minWidth: 150,
-    // sortable: true,
     headerAlign: 'center',
     align: 'center',
     renderCell: (data) =>
@@ -280,7 +292,6 @@ const columns: GridColDef[] = [
     headerName: 'Trạng thái',
     minWidth: isMobile ? 120 : 180,
     renderCell: renderStatus,
-    sortable: true,
     headerAlign: 'center',
     align: 'center'
   },
@@ -296,8 +307,15 @@ const columns: GridColDef[] = [
 ];
 
 export default function Table(props) {
-  const { pageSize, data, currentPage, totalPages, handlePageChange, loading } =
-    props;
+  const {
+    pageSize,
+    data,
+    currentPage,
+    totalPages,
+    handlePageChange,
+    loading,
+    setSortModel
+  } = props;
   // data : danh sách Application
   const [analyzedProfile, setAnalyzedProfile] = useState<
     ProfileApplicationType[]
@@ -380,7 +398,7 @@ export default function Table(props) {
       setPassRoundProfiles(passRoundData);
     }
 
-    console.log('updatedAnalyzedProfile,', updatedAnalyzedProfile);
+    // console.log('updatedAnalyzedProfile,', updatedAnalyzedProfile);
 
     setAnalyzedProfile(updatedAnalyzedProfile);
     setShowList((prev) =>
@@ -602,6 +620,9 @@ export default function Table(props) {
           setSelectedRows(ids);
         }}
         loading={loading}
+        onSortModelChange={(newSortModel) =>
+          handleSort(newSortModel, setSortModel)
+        }
       />
       <Pagination
         currentPage={currentPage}

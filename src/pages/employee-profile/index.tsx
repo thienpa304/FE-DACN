@@ -61,8 +61,6 @@ const ProfileSection = ({
     });
   };
 
-  const theme = useTheme();
-
   return (
     <>
       <Typography fontSize={18} fontWeight={700}>

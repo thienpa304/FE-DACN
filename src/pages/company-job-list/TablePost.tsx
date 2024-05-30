@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
 import LinkText from 'src/components/LinkText';
 import TableData from 'src/components/TableData';
@@ -11,7 +10,6 @@ import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
 import dayjs from 'dayjs';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import useDeleteJobById from 'src/modules/jobs/hooks/useDeleteJobById';
 import alertDialog from 'src/utils/alertDialog';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
@@ -20,6 +18,7 @@ import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import { useState } from 'react';
 import { ViewJobDetail } from '../company-review-profiles/Table';
+import { handleSort } from 'src/utils/sortData';
 
 export const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
@@ -119,7 +118,8 @@ const columns: GridColDef[] = [
     minWidth: isMobile ? 230 : 400,
     maxWidth: isMobile ? 280 : 450,
     headerAlign: 'center',
-    renderCell: renderJobTitle
+    renderCell: renderJobTitle,
+    sortable: true
   },
   {
     field: 'createAt',
@@ -161,8 +161,7 @@ const columns: GridColDef[] = [
     minWidth: 120,
     headerAlign: 'center',
     align: 'center',
-    renderCell: renderStatus,
-    sortable: true
+    renderCell: renderStatus
   },
   {
     field: 'action',
@@ -174,7 +173,7 @@ const columns: GridColDef[] = [
   }
 ];
 
-export default function TablePost({ data, pageSize }) {
+export default function TablePost({ data, pageSize, setSortModel }) {
   return (
     <TableData
       rows={data}
@@ -194,6 +193,9 @@ export default function TablePost({ data, pageSize }) {
             status: !isMobile
           }
         }
+      }}
+      onSortModelChange={(newSortModel) => {
+        handleSort(newSortModel, setSortModel);
       }}
       hideFooter
       sx={{ height: '74vh', width: '100%' }}

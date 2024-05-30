@@ -5,8 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/ThemeProvider';
 import Snackbar from './modules/app/Snackbar';
-import PreloadImages from './components/PreLoadImages'; 
-
+import PreloadImages from './components/PreLoadImages';
 
 function App() {
   const content = useRoutes(router);

@@ -21,3 +21,5 @@ export const DeleteUserService = new BaseService('users');
 export const SendEmailService = new BaseService('admin/send-email');
 
 export const GetEmailService = new BaseService('admin/search-email-or-name');
+
+export const GetAllEmailService = new BaseService('admin/get-all-email');

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Container, Typography } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import LinkText from 'src/components/LinkText';
@@ -15,23 +15,23 @@ import useFollowJobList from 'src/modules/jobs/hooks/useFollowJobList';
 function JobList(props) {
   const {
     pageTitle,
-    profession,
     queryJobs,
     sx,
     numOfJobPerPage,
     employerId,
+    profession,
     jobTitle,
     workAddress
   } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState({
     employerId: employerId,
-    profession: profession,
     employmentType: '',
     degree: '',
     experience: '',
     positionLevel: '',
     sex: '',
+    profession: profession,
     jobTitle: jobTitle,
     workAddress: workAddress
   });
@@ -45,6 +45,15 @@ function JobList(props) {
   const handleFilter = (data: any) => {
     setFilter((prev) => ({ ...prev, ...data }));
   };
+
+  useEffect(() => {
+    setFilter((prev) => ({
+      ...prev,
+      profession,
+      jobTitle,
+      workAddress
+    }));
+  }, [profession, jobTitle, workAddress]);
 
   useEffect(() => {
     refetch();

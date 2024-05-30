@@ -26,6 +26,7 @@ import { isMobile } from 'src/constants/reponsive';
 import { TypographyEllipsis } from 'src/components/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
+import { handleSort } from 'src/utils/sortData';
 
 const renderCellText = (params) => {
   const handleOpenDetailModal = () => {
@@ -89,7 +90,8 @@ const userManagementColumns: GridColDef[] = [
     field: 'name',
     headerName: 'Tên người dùng',
     minWidth: !isMobile ? 200 : 180,
-    renderCell: renderCellText
+    renderCell: renderCellText,
+    sortable: true
   },
   {
     field: 'email',
@@ -134,9 +136,11 @@ const userManagementColumns: GridColDef[] = [
 const UserManagement = () => {
   const pageSize = 8;
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
   const { userList, isLoading, totalPages } = useQueryAllUserByAdmin({
     page: currentPage,
-    num: pageSize
+    num: pageSize,
+    ...sortModel
   });
 
   return (
@@ -171,6 +175,9 @@ const UserManagement = () => {
                   }
                 }}
                 loading={isLoading}
+                onSortModelChange={(newSortModel) => {
+                  handleSort(newSortModel, setSortModel);
+                }}
               />
               <Pagination
                 totalPages={totalPages}

@@ -39,6 +39,7 @@ import { removeFileByUrl } from 'src/common/firebaseService';
 import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import { TypographyEllipsis } from 'src/components/Typography';
+import { handleSort } from 'src/utils/sortData';
 
 const ProfileManagement = () => {
   const [searchUserName, setSearchUserName] = useState('');
@@ -49,6 +50,7 @@ const ProfileManagement = () => {
     profile: null
   });
   const [viewProfessionMode, setViewProfessionMode] = useState(true);
+  const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
 
   const pageSize = 10;
   const { employeeList, isLoading, refetch, totalPages } =
@@ -57,7 +59,8 @@ const ProfileManagement = () => {
         profession: selectedProfession,
         page: currentPage,
         num: pageSize,
-        name: searchUserName
+        name: searchUserName,
+        ...sortModel
       },
       !viewProfessionMode
     );
@@ -194,7 +197,8 @@ const ProfileManagement = () => {
       field: 'name',
       headerName: 'Tên người dùng',
       minWidth: isMobile ? 180 : 200,
-      renderCell: renderName
+      renderCell: renderName,
+      sortable: true
     },
     {
       field: 'email',
@@ -328,6 +332,9 @@ const ProfileManagement = () => {
                               action: isMobile
                             }
                           }
+                        }}
+                        onSortModelChange={(newSortModel) => {
+                          handleSort(newSortModel, setSortModel);
                         }}
                       />
                       <Pagination
