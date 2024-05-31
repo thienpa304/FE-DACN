@@ -5,8 +5,6 @@ import { CheckApplied } from '../applicationService';
 import { useApp } from 'src/modules/app/hooks';
 
 const useQueryCheckApplied = (params?) => {
-  console.log(params);
-
   const { isEmployee } = useApp();
   const { data, isLoading } = useQuery<
     ResponseData<Boolean>,

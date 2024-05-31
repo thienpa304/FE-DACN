@@ -42,7 +42,7 @@ export default function FindProfiles() {
       </Typography>
       <SearchBar to="/employer/find-profiles" sx={{ my: 3 }} />
       <Box display={'flex'} columnGap={1}>
-        <Typography fontSize={20}>Kết quả việc làm:</Typography>
+        <Typography fontSize={20}>Kết quả hồ sơ:</Typography>
         <Typography fontWeight={700} fontSize={20}>
           {jobTitle ? jobTitle : ''}
         </Typography>

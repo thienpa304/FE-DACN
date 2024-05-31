@@ -124,7 +124,6 @@ export default function AnayzeProfileButton(props) {
 
   const handleGoToAnalyzeResult = (signal: boolean, resultData) => {
     setGoToAnalyzeResult({ signal: signal, resultData: resultData });
-    console.log('resultData', resultData);
   };
 
   const handleAnalyzeResult = async (result: any[]) => {
@@ -283,10 +282,6 @@ export default function AnayzeProfileButton(props) {
       finishedAll();
     }
   }, [roundOneFinished, roundTwoFinished, roundThreeFinished]);
-
-  useEffect(() => {
-    console.log(analyzeResult);
-  }, [analyzeResult]);
 
   return (
     <Box display="flex" sx={{ alignItems: 'center', gap: 1 }}>

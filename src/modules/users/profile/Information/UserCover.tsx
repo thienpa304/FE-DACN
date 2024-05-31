@@ -7,7 +7,6 @@ import {
   Container,
   Grid
 } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
@@ -24,6 +23,7 @@ import { avatarErrorText } from 'src/components/UploadError';
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import { useResponsive } from 'src/utils/responsive';
+import LazyLoadImage from 'src/components/LazyLoadImage';
 
 const Input = styled('input')({
   display: 'none'
@@ -128,13 +128,13 @@ export default function UserCover() {
             rowGap={0.5}
           >
             <IconButton component="label" sx={{ borderRadius: 10 }}>
-              <Avatar
+              <LazyLoadImage
                 alt={user.name}
                 src={userAvatar.avatar}
                 sx={{
                   width: 120,
                   height: 120,
-                  bgcolor: '#a0b9cfc2'
+                  borderRadius: '100%'
                 }}
               />
               <FormControl

@@ -299,7 +299,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
                 control={control}
                 errors={errors}
                 id="skills"
-                label="Kĩ năng bắt buộc"
+                label="Kĩ năng"
                 name="skills"
                 required
               />

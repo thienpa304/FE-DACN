@@ -90,8 +90,7 @@ const EmailNotification = () => {
 
   const recipientOption = useMemo(
     () =>
-      suggestEmailList?.map((item) => {
-        console.log(suggestEmailList);
+      suggestEmailList?.map((item) => { 
 
         return {
           value: item.email,

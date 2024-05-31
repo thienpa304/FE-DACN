@@ -16,12 +16,8 @@ import { Company } from 'src/modules/users/model';
 import FollowCompanyButton from './FollowCompanyButton';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import { TypographyEllipsis } from 'src/components/Typography';
-
-const CoverImage = styled('img')({
-  width: '100%',
-  height: '120px',
-  objectFit: 'cover'
-});
+import LazyLoadImage from 'src/components/LazyLoadImage';
+import { useResponsive } from 'src/utils/responsive';
 
 function CompanyCard({
   company,
@@ -33,6 +29,7 @@ function CompanyCard({
   const [companyAvatar, setCompanyAvatar] = useState(
     company?.logo || defaultImage.companyAvatar
   );
+  const { isMobile, isTablet, isLargeDesktop } = useResponsive();
 
   return (
     <Card
@@ -55,20 +52,22 @@ function CompanyCard({
         }}
         title={
           <Box>
-            <CoverImage
+            <LazyLoadImage
               src={company?.banner || defaultImage.companyCover}
-              alt="cover"
+              width={'100%'}
+              height={120}
+              borderRadius={'5px'}
+              objectFit="cover"
+              borderColor="#98E4FF"
             />
             <Box display={'flex'} gap={2}>
-              <Avatar
+              <LazyLoadImage
                 src={companyAvatar}
-                sx={{
-                  width: { md: 100, xs: 70 },
-                  height: { md: 100, xs: 70 },
-                  my: { md: '0', xs: 'auto' },
-                  borderRadius: '5px',
-                  objectFit: 'cover'
-                }}
+                width={isTablet ? 70 : 100}
+                height={isTablet ? 70 : 100}
+                my={isTablet ? 'auto' : 0}
+                borderRadius="5px"
+                objectFit="cover"
               />
               <Box
                 sx={{
