@@ -4,8 +4,7 @@ import {
   Box,
   Grid,
   Divider,
-  Avatar,
-  Button
+  Avatar
 } from '@mui/material';
 import CustomContainer from 'src/components/CustomContainer';
 import dayjs from 'dayjs';

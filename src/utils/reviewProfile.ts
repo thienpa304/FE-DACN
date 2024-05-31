@@ -2,8 +2,7 @@ import {
   RoundOneCheck,
   cvAnalysist,
   extractCommonInfo,
-  extractSkill,
-  translate
+  extractSkill
 } from 'src/GPT/roles';
 import { checkIsJSON, preProcessText } from './formatData';
 import sendChatGPTRequest, { getEmbedding } from 'src/GPT/sendChatGPTRequest';

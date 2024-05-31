@@ -1,10 +1,8 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Container, Grid, Typography } from '@mui/material';
+import { useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import FollowProfileCard from 'src/modules/getEmployee/components/FollowProfileCard';
-import ProfileCard from 'src/modules/getEmployee/components/ProfileCard';
-import useQueryEmployee from 'src/modules/getEmployee/hook/useQueryEmployee';
 import useQueryFollowEmployee from 'src/modules/getEmployee/hook/useQueryFollowEmployee';
 
 export default function EmployeeFollow() {

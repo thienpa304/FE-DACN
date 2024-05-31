@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -34,9 +34,6 @@ import { TypographyEllipsis } from 'src/components/Typography';
 const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
 const ACCEPTED_FILE_SIZE = CVFormat.acceptSize;
 const ACCEPTED_FILE_SIZE_MB = CVFormat.acceptSize / 1024 / 1024;
-
-const onlineRecommend = JobRecommendTab;
-const documentRecommend = JobRecommendTab;
 
 const AnalyzeProfile = (props) => {
   const { id } = props;

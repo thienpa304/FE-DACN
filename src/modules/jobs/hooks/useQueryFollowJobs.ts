@@ -1,12 +1,10 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { PaginationType, ResponseData } from 'src/common/http-request';
-import { FollowJobType, Job } from '../model';
+import { FollowJobType } from '../model';
 import { FollowJobService } from '../jobService';
 import { useApp } from 'src/modules/app/hooks';
-import { Company } from 'src/modules/users/model';
 import useFollowJobList from 'src/modules/jobs/hooks/useFollowJobList';
-import { useEffect } from 'react';
 
 const useQueryFollowJobs = (params?) => {
   const { isEmployee } = useApp();

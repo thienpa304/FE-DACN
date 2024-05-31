@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Container,
-  Grid,
-  Paper,
-  Typography,
-  styled
-} from '@mui/material';
+import { Avatar, Container, Paper, Typography, styled } from '@mui/material';
 import CustomContainer from 'src/components/CustomContainer';
 import { defaultImage } from 'src/constants/uploadFileRule';
 import JobList from 'src/modules/jobs/components/JobList';

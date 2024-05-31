@@ -1,22 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  Divider,
-  Grid,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Input,
-  FormControlLabel,
-  Checkbox
-} from '@mui/material';
-import useOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useOnlineProfile';
-import useDocumentHook from 'src/modules/jobProfile/attachedDocument/hooks/useDocumentHook';
+import { Container } from '@mui/material';
 import useQueryOnlineProfile from 'src/modules/jobProfile/onlineProfile/hooks/useQueryOnlineProfile';
 import useQueryAttachedDocument from 'src/modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 import AnalyzeProfile from './AnalyzeProfile';

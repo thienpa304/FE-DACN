@@ -1,16 +1,7 @@
-import React, { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-import {
-  DialogContent,
-  Divider,
-  IconButton,
-  Typography,
-  styled
-} from '@mui/material';
+import { DialogContent, Divider, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ViewCV from 'src/pages/view-candidate-profile/ViewCV';
 import ThemeProvider from '../theme/ThemeProvider';

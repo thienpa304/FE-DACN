@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
   selectJob,

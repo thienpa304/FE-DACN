@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Button,
   Card,
@@ -11,17 +11,13 @@ import {
   Typography,
   Box
 } from '@mui/material';
-import { useDropzone } from 'react-dropzone';
-import { EmailResponseType, EmailSendType } from 'src/modules/admin/model';
-import useMutateGetEmail from 'src/modules/admin/hooks/useMutateGetEmail';
+import { EmailSendType } from 'src/modules/admin/model';
 import Autocomplete from 'src/components/Autocomplete';
-import TagInput from 'src/components/TagInput';
 import { useForm } from 'react-hook-form';
 import FormControl from 'src/components/FormControl';
 import TextEditor from 'src/components/TextEditor';
 import { removeHTMLTag } from 'src/utils/formatData';
 import useMutateSendEmail from 'src/modules/admin/hooks/useMutateSendEmail';
-import useQueryAllUserByAdmin from 'src/modules/admin/hooks/useQueryAllUserByAdmin';
 import { Role } from 'src/modules/users/model';
 import useQueryAllEmailByAdmin, {
   useQuerySuggestEmailByAdmin
@@ -31,7 +27,6 @@ const EmailNotification = () => {
   const [recipient, setRecipient] = useState('');
   const [isEmpty, setIsEmpty] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
-  // const { emailList, inputRecipientKeywords } = useMutateGetEmail();
   const { onSendEmail, isLoading } = useMutateSendEmail();
   const { allEmailList } = useQueryAllEmailByAdmin(
     {
