@@ -12,7 +12,7 @@ import {
   styled
 } from '@mui/material';
 import ThemeProvider from '../theme/ThemeProvider';
-import { isMobile } from 'src/constants/reponsive';
+import { isMobile } from 'src/constants/responsiveSize';
 
 function alertDialog({
   selectedId,

@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import Dialog from '@mui/material/Dialog';
-import { Box, DialogContent, Modal, Typography, styled } from '@mui/material';
+import { Box, DialogContent } from '@mui/material';
 import ThemeProvider from '../theme/ThemeProvider';
 import { TypographyEllipsis } from 'src/components/Typography';
 

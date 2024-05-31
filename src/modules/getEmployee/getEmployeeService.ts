@@ -8,10 +8,6 @@ export const RecommendEmployeeService = new BaseService(
   'employer/employees/sortbykeywords'
 );
 export const FollowEmployeesService = new BaseService('employer/save-employee');
-
-export const GetEmployeeOnlineProfileService = new BaseService(
-  'user/online-profile'
-);
-export const GetEmployeeDocumentProfileService = new BaseService(
-  'user/attached-document'
+export const CheckEmployeeAppliedService = new BaseService(
+  'employer/employees/applied'
 );

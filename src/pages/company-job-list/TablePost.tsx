@@ -5,7 +5,6 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Chip, Grid, useTheme } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import { TypographyEllipsis } from 'src/components/Typography';
 import dayjs from 'dayjs';
@@ -14,16 +13,17 @@ import useDeleteJobById from 'src/modules/jobs/hooks/useDeleteJobById';
 import alertDialog from 'src/utils/alertDialog';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import { useState } from 'react';
 import { ViewJobDetail } from '../company-review-profiles/Table';
 import { handleSort } from 'src/utils/sortData';
+import { useResponsive } from 'src/utils/responsive';
+import EditIcon from '@mui/icons-material/Edit';
+import { useNavigate } from 'react-router-dom';
 
 export const renderJobTitle = (data) => {
-  const jobTitle = rewriteUrl(data?.row?.jobTitle);
-  const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(null);
+  const { isMobile } = useResponsive();
 
   const handleOpenDetailModal = () => {
     const detailsData = {
@@ -52,10 +52,7 @@ export const renderJobTitle = (data) => {
           </Tooltip>
         </Grid>
         <Grid item xs={10.5} sm={11}>
-          <LinkText
-            to={`/employer/recruitment/list/${rewriteUrl(data?.row?.jobTitle)}`}
-            state={{ postId: data?.row?.postId }}
-          >
+          <LinkText to="" onClick={() => setSelectedId(data?.row?.postId)}>
             <TypographyEllipsis>{data.value}</TypographyEllipsis>
           </LinkText>
         </Grid>
@@ -91,89 +88,118 @@ const rederDate = (data) => {
 
 const renderAtion = (data) => {
   const { onDeleteById } = useDeleteJobById();
+  const navigate = useNavigate();
 
   const handleConfirmDelete = (id) => {
     onDeleteById([id]);
   };
 
   const handleDelete = (data) => {
+    if (data?.row?.applications?.length > 0) {
+      alertDialog({
+        message: 'Tin tuyển đã có ứng viên, bạn không thể xóa tin đăng này!',
+        hideCancelButton: true
+      });
+      return;
+    }
     alertDialog({
       selectedId: data.id,
-      handleConfirm: handleConfirmDelete
+      handleConfirm: handleConfirmDelete,
+      message: `Bạn có chắc chắn muốn xóa tin đăng ${data?.row?.jobTitle}?`
     });
+  };
+
+  const handleEdit = (data) => {
+    if (data?.row?.applications?.length > 0) {
+      alertDialog({
+        message:
+          'Tin tuyển dụng đã có ứng viên, bạn không thể chỉnh sửa tin tuyển dụng này!',
+        hideCancelButton: true
+      });
+      return;
+    }
+    navigate(
+      `/employer/recruitment/list/${rewriteUrl(data?.row?.jobTitle)}?id=${btoa(
+        data?.id
+      )}`
+    );
   };
 
   return (
     <>
+      <IconButton onClick={() => handleEdit(data)}>
+        <EditIcon />
+      </IconButton>
       <IconButton onClick={() => handleDelete(data)}>
         <DeleteOutlineIcon />
       </IconButton>
     </>
   );
 };
-const columns: GridColDef[] = [
-  {
-    field: 'jobTitle',
-    headerName: 'Tên tin đăng',
-    minWidth: isMobile ? 230 : 400,
-    maxWidth: isMobile ? 280 : 450,
-    headerAlign: 'center',
-    renderCell: renderJobTitle,
-    sortable: true
-  },
-  {
-    field: 'createAt',
-    headerName: 'Ngày đăng tin',
-    minWidth: 150,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: rederDate,
-    sortable: true
-  },
-  {
-    field: 'applicationDeadline',
-    headerName: 'Hạn nộp hồ sơ',
-    minWidth: 150,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: rederDate,
-    sortable: true
-  },
-  {
-    field: 'submissionCount',
-    headerName: 'Lượt nộp',
-    minWidth: 100,
-    headerAlign: 'center',
-    align: 'center',
-    sortable: true
-  },
-  {
-    field: 'view',
-    headerName: 'Lượt xem',
-    minWidth: 100,
-    headerAlign: 'center',
-    align: 'center',
-    sortable: true
-  },
-  {
-    field: 'status',
-    headerName: 'Trạng thái',
-    minWidth: 120,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: renderStatus
-  },
-  {
-    field: 'action',
-    headerName: 'Xóa tin',
-    width: isMobile ? 65 : 120,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: renderAtion
-  }
-];
 
 export default function TablePost({ data, pageSize, setSortModel }) {
+  const { isMobile } = useResponsive();
+  const columns: GridColDef[] = [
+    {
+      field: 'jobTitle',
+      headerName: 'Tên tin đăng',
+      minWidth: isMobile ? 220 : 400,
+      maxWidth: isMobile ? 270 : 450,
+      headerAlign: 'center',
+      renderCell: renderJobTitle,
+      sortable: true
+    },
+    {
+      field: 'createAt',
+      headerName: 'Ngày đăng tin',
+      minWidth: 150,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: rederDate,
+      sortable: true
+    },
+    {
+      field: 'applicationDeadline',
+      headerName: 'Hạn nộp hồ sơ',
+      minWidth: 150,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: rederDate,
+      sortable: true
+    },
+    {
+      field: 'submissionCount',
+      headerName: 'Lượt nộp',
+      minWidth: 100,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: true
+    },
+    {
+      field: 'view',
+      headerName: 'Lượt xem',
+      minWidth: 100,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: true
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      minWidth: 120,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: renderStatus
+    },
+    {
+      field: 'action',
+      headerName: 'Thao tác',
+      width: isMobile ? 80 : 120,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: renderAtion
+    }
+  ];
   return (
     <TableData
       rows={data}

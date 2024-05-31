@@ -72,7 +72,7 @@ const GeneralViewUI = (props) => {
         <strong>Mục tiêu nghề nghiệp: </strong> {user?.careerGoal}
       </Typography>
       <Typography sx={bodyText}>
-        <strong>Kỹ năng: </strong> {user?.skills}
+        <strong>Kỹ năng: </strong> {user?.skills?.split(',').join(', ')}
       </Typography>
     </Box>
   );

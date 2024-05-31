@@ -39,7 +39,7 @@ import ButtonGroup from 'src/components/ButtonGroup';
 import { avatarErrorText } from 'src/components/UploadError';
 import useMutateAvatar from 'src/modules/users/hooks/useMutateAvatar';
 import PersonalViewUI from './PersonalViewUI';
-import { checkIsMobile, checkIsTablet } from 'src/utils/responsive';
+import { useResponsive } from 'src/utils/responsive';
 
 const Input = styled('input')({
   display: 'none'
@@ -146,10 +146,7 @@ export default function Personal() {
   } = useForm<User>({
     defaultValues: defaultUserValues
   });
-
-  const theme = useTheme();
-  const isMobile = checkIsMobile(theme);
-  const isTablet = checkIsTablet(theme);
+  const { isTablet } = useResponsive();
 
   return (
     <Container id="personal">

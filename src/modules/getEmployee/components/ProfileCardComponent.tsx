@@ -20,12 +20,14 @@ import SchoolIcon from '@mui/icons-material/School';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GradeIcon from '@mui/icons-material/Grade';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
-import { isMobile } from 'src/constants/reponsive';
 import { TypographyEllipsis } from 'src/components/Typography';
 import { useMemo } from 'react';
+import { useResponsive } from 'src/utils/responsive';
+import useQueryCheckEmployeeApplied from '../hook/useQueryCheckEmployeeApplied';
 
 const EmployeeCard = ({ profile, setSelectedProfile }) => {
   const isHidden = useMemo(() => Boolean(!profile?.jobTitle), [profile]);
+  const isApplied = useMemo(() => profile?.isApplied, [profile]);
 
   return (
     <Card
@@ -165,15 +167,37 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => {
           </Box>
           <Box display="flex">
             <GradeIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-            <TypographyEllipsis>Kỹ năng: {profile?.skills}</TypographyEllipsis>
+            <TypographyEllipsis>
+              Kỹ năng: {profile?.skills?.split(',').join(', ')}
+            </TypographyEllipsis>
           </Box>
         </Box>
       </CardContent>
+      <Typography
+        sx={{
+          display: !isApplied ? 'none' : 'flex',
+          position: 'relative',
+          transform: 'rotate(-45deg)',
+          bgcolor: '#FFBF00',
+          height: 40,
+          width: 200,
+          float: 'right',
+          color: 'black',
+          right: -50,
+          top: -40,
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontWeight: 700
+        }}
+      >
+        Đã nộp hồ sơ
+      </Typography>
     </Card>
   );
 };
 
 const ProfileCardDialog = ({ selectedProfile, setSelectedProfile }) => {
+  const { isMobile } = useResponsive();
   return (
     <Dialog
       open={Boolean(selectedProfile?.userId)}

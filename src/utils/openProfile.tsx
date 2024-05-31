@@ -14,7 +14,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import ViewCV from 'src/pages/view-candidate-profile/ViewCV';
 import ThemeProvider from '../theme/ThemeProvider';
-import { isMobile } from 'src/constants/reponsive';
+import { isMobile } from 'src/constants/responsiveSize';
 
 function openProfile({ profile }) {
   const domNode = document.createElement('div');

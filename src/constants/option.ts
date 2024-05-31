@@ -115,3 +115,22 @@ export const SKILLS = skills.map((item) => ({
 }));
 
 export const CAREER_FIELDS = careerFields.map((item) => item.value);
+
+export const USER_ROLE = [
+  {
+    value: '',
+    label: 'Tất cả'
+  },
+  {
+    value: 'ADMIN',
+    label: 'ADMIN'
+  },
+  {
+    value: 'EMPLOYEE',
+    label: 'EMPLOYEE'
+  },
+  {
+    value: 'EMPLOYER',
+    label: 'EMPLOYER'
+  }
+];

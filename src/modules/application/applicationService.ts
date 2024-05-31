@@ -8,3 +8,4 @@ export const UpdateStatusService = new BaseService('employer/applications');
 export const ApplicationTotalResults = new BaseService(
   'employer/applications/totalResults'
 );
+export const CheckApplied = new BaseService('employee/job-postings');

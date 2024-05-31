@@ -15,7 +15,7 @@ import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyInfoById';
 import { useSearchParams } from 'react-router-dom';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -57,6 +57,7 @@ export default function index() {
   const [searchParams, setSearchParams] = useSearchParams();
   const id = atob(searchParams.get('id'));
   const { company, isLoading } = useQueryCompanyInfoByUser({ employerId: id });
+  const { isMobile } = useResponsive();
 
   if (isLoading) return <SuspenseLoader />;
   return (

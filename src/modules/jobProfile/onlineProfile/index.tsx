@@ -32,7 +32,7 @@ import { OnlineProfile as OnlineProfileType } from '../model';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import { cvAnalysist, translate } from 'src/GPT/roles';
-import { checkIsMobile, useResponsive } from 'src/utils/responsive';
+import { useResponsive } from 'src/utils/responsive';
 
 const MyBox = ({ children }) => (
   <Box bgcolor="#ffff" sx={{ mb: 4, boxShadow: '2px 2px 6px #aae2f7' }}>

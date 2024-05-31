@@ -69,7 +69,7 @@ function JobList(props) {
       >
         <Box display="flex" justifyContent="space-between">
           <WorkIcon color="secondary" sx={{ fontSize: 40, mr: 1 }} />
-          <Typography variant="h3" display={'flex'} alignItems={'center'}>
+          <Typography fontSize={20} display={'flex'} alignItems={'center'}>
             {pageTitle}
           </Typography>
         </Box>

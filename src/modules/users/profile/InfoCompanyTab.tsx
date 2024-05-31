@@ -33,7 +33,12 @@ export default function CompanyTab() {
           user={company}
           data={CompanyData(company)}
           title="Thông tin công ty"
-          editIcon={<BusinessIcon color="primary" sx={{ fontSize: 56 }} />}
+          editIcon={
+            <BusinessIcon
+              color="primary"
+              sx={{ fontSize: { md: 56, xs: 40 } }}
+            />
+          }
           openForm={'Company'}
         />
       </CustomBox>

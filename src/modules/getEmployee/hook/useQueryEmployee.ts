@@ -6,6 +6,8 @@ import { GetEmployeeService } from '../getEmployeeService';
 import { useApp } from 'src/modules/app/hooks';
 import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 import { ProfileShowType } from '../model';
+import { useEffect, useState } from 'react';
+import useQueryCheckEmployeeApplied from './useQueryCheckEmployeeApplied';
 
 const useQueryEmployee = (params?) => {
   const { isEmployer } = useApp();
@@ -31,9 +33,27 @@ const useQueryEmployee = (params?) => {
       enabled: isEmployer
     }
   );
+  const [employeeIds, setEmployeeIds] = useState('');
+
+  const { isApplied } = useQueryCheckEmployeeApplied({ employeeIds });
+
+  useEffect(() => {
+    if (data?.data?.meta?.itemCount) {
+      setEmployeeIds(
+        data?.data?.items
+          .map((item: any) => {
+            return item.userId;
+          })
+          .join(',')
+      );
+    }
+  }, [data?.data?.items]);
 
   return {
-    profile: data?.data?.items || [],
+    profile:
+      data?.data?.items.map((item) => {
+        return { ...item, isApplied: isApplied?.includes(item.userId) };
+      }) || [],
     totalPages: data?.data?.meta?.totalPages,
     totalItems: data?.data?.meta?.totalItems,
     isLoading,

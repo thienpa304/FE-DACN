@@ -27,7 +27,7 @@ import { Role } from 'src/modules/users/model';
 import { useNavigate } from 'react-router';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { checkIsMobile } from 'src/utils/responsive';
+import { useResponsive } from 'src/utils/responsive';
 
 const HeaderWrapper = styled(Box)<{ showSideBar: boolean }>(
   ({ theme, showSideBar }) => `
@@ -167,7 +167,7 @@ function Header({ showSideBar }) {
     setMobileAnchorEl(null);
   };
 
-  const isMobile = checkIsMobile(theme);
+  const { isMobile } = useResponsive();
 
   return (
     <HeaderWrapper

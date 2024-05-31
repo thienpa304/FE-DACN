@@ -14,11 +14,9 @@ import useQueryOnlineProfile from '../../modules/jobProfile/onlineProfile/hooks/
 import useUpdateOnlineProfile from '../../modules/jobProfile/onlineProfile/hooks/useMutateUpdateOnlineProfile';
 import useQueryAttachedDocument from '../../modules/jobProfile/attachedDocument/hooks/useQueryAttachedDocument';
 import useMutateUpdateAttachedDocument from '../../modules/jobProfile/attachedDocument/hooks/useMutateUpdateAttachedDocument';
-import { useTheme } from '@mui/material/styles';
-import { checkIsMobile } from 'src/utils/responsive';
+import { useResponsive } from 'src/utils/responsive';
 import alertDialog from 'src/utils/alertDialog';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { isMobile, isTablet } from 'src/constants/reponsive';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -60,6 +58,7 @@ const ProfileSection = ({
         : 'Bạn đồng ý cho phép nhà tuyển dụng tìm kiếm hồ sơ này của bạn?'
     });
   };
+  const { isMobile, isTablet } = useResponsive();
 
   return (
     <>

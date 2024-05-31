@@ -25,20 +25,20 @@ import {
 import useQueryEmployeeByKeywords from '../hook/useQueryEmployeeByKeywords';
 import Pagination from 'src/components/Pagination';
 import JobFilter from 'src/modules/jobs/components/JobFilter';
-import { isMobile } from 'src/constants/reponsive';
 import alertDialog from 'src/utils/alertDialog';
 import TabsWrapper from 'src/components/TabWrapper';
 import { tabs } from 'src/pages/company-job-list';
 import { handleSort } from 'src/utils/sortData';
+import { useResponsive } from 'src/utils/responsive';
 
 export default function RecommendProfile() {
+  const { isMobile } = useResponsive();
   const jobPageSize = 9;
   const profilePageSize = 8;
   const [jobCurrentPage, setJobCurrentPage] = useState(1);
   const [currentTab, setCurrentTab] = useState('');
   const [profileCurrentPage, setProfleCurrentPage] = useState(1);
   const [keywords, setKeywords] = useState('');
-  const [showProfile, setShowProfile] = useState([]);
   const [jobInfo, setJobInfo] = useState(null);
   const [filter, setFilter] = useState(null);
   const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
@@ -120,7 +120,8 @@ export default function RecommendProfile() {
       field: 'keywords',
       headerName: 'Từ khóa',
       minWidth: 400,
-      headerAlign: 'center'
+      headerAlign: 'center',
+      renderCell: (params) => <>{params?.value?.split(',').join(', ')}</>
     },
     {
       field: 'action',
