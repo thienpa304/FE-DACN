@@ -1,4 +1,3 @@
-import { useParams, useLocation } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import FormCreate from 'src/modules/jobs/components/FormCreate';
 

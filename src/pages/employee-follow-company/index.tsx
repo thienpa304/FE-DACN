@@ -1,5 +1,5 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Container, Grid, Typography } from '@mui/material';
+import { useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import CompanyCard from 'src/modules/company/components/CompanyCard';

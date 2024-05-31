@@ -2,17 +2,14 @@ import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
 import LinkText from 'src/components/LinkText';
 import TableData from 'src/components/TableData';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useNavigate } from 'react-router';
 import { APPROVAL_STATUS } from 'src/constants';
 import SelectInput, { Option } from 'src/components/SelectInput';
 import { useEffect, useState } from 'react';
 import useMutateJobStatus from 'src/modules/jobs/hooks/useMutateJobStatus';
 import { ApprovalStatus } from 'src/constants/enum';
-import useQueryTotalResultOfJobsByAdmin from 'src/modules/jobs/hooks/useQueryTotalResultOfJobsByAdmin';
 import Pagination from 'src/components/Pagination';
 import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import dayjs from 'dayjs';
@@ -22,12 +19,10 @@ import { checkContent } from 'src/GPT/roles';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import alertDialog from 'src/utils/alertDialog';
 import CheckIcon from '@mui/icons-material/Check';
-import SuspenseLoader from 'src/components/SuspenseLoader';
 import { TypographyEllipsis } from 'src/components/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
 import { checkIsJSON } from 'src/utils/formatData';
-import { ViewJobDetail } from '../company-review-profiles/Table';
 import ViewJobDialog from './ViewJobDialog';
 import useJob from 'src/modules/jobs/hooks/useJob';
 import { handleSort } from 'src/utils/sortData';
@@ -35,7 +30,7 @@ import { useResponsive } from 'src/utils/responsive';
 
 const renderJobTitle = (data) => {
   const [selectedId, setSelectedId] = useState(null);
-  const { itemDetail, setItemDetail } = useJob();
+  const { setItemDetail } = useJob();
 
   const handleOpenDetailModal = () => {
     const detailsData = {

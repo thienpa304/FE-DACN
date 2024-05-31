@@ -41,16 +41,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import detailsModal from 'src/utils/detailsModal';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import useQueryJobByIdByOwner from 'src/modules/jobs/hooks/useQueryJobByIdByOwner';
-import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
-import useQueryJobByIdByAdmin from 'src/modules/jobs/hooks/useQueryJobByIdByAdmin';
 import { handleSort } from 'src/utils/sortData';
 import dayjs from 'dayjs';
 import { useResponsive } from 'src/utils/responsive';
 
 export const ViewJobDetail = (props) => {
-  const { postId, setSelectedId, isAdmin } = props;
+  const { postId, setSelectedId } = props;
   if (!postId) return;
-  const useQueryJob = isAdmin ? useQueryJobByIdByAdmin : useQueryJobByIdByOwner;
+  const useQueryJob = useQueryJobByIdByOwner;
   const { isMobile } = useResponsive();
 
   const { data, isLoading } = useQueryJob(postId);

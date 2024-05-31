@@ -23,8 +23,6 @@ function detailsModal(data) {
                 sx={{
                   WebkitLineClamp: 3,
                   mb: 2
-                  // alignItems: 'center',
-                  // display: 'flex'
                 }}
               >
                 <b>{key}: </b>

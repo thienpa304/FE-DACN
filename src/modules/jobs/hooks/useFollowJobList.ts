@@ -1,11 +1,9 @@
-import React from 'react';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
   selectFollowJobList,
   setFollowJobList as setFollowJobListAction,
   resetFollowJobList as reset
 } from '../followJobSlice';
-import { FollowJobType } from 'src/modules/jobs/model';
 
 const useFollowJobList = () => {
   const { data: followJobsList } = useAppSelector(selectFollowJobList);

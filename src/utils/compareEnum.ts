@@ -1,5 +1,4 @@
 import { Degree, Experience } from 'src/constants/enum';
-import { findObjectKey } from './formatData';
 
 export function compareExperience(
   employee: string,
@@ -10,7 +9,7 @@ export function compareExperience(
     employee as Experience
   );
   const requirementIndex = Object.values(Experience).indexOf(
-    employee as Experience
+    requirement as Experience
   );
   // So sánh giá trị enum
   if (employeeIndex > requirementIndex) {

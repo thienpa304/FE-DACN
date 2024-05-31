@@ -1,4 +1,3 @@
-import React, { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -8,8 +7,7 @@ import {
   DialogContent,
   DialogContentText,
   Divider,
-  Typography,
-  styled
+  Typography
 } from '@mui/material';
 import ThemeProvider from '../theme/ThemeProvider';
 import { isMobile } from 'src/constants/responsiveSize';
@@ -59,12 +57,7 @@ function alertDialog({
           </Typography>
         </DialogTitle>
         <Divider />
-        <DialogContent
-          // display="flex"
-          // justifyContent="center"
-          // alignItems="center"
-          sx={{ width: { xs: '100%' } }}
-        >
+        <DialogContent sx={{ width: { xs: '100%' } }}>
           <DialogContentText
             sx={{ fontSize: { sm: 16, xs: 14 }, textAlign: 'center' }}
             fontWeight={700}

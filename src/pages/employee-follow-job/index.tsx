@@ -1,14 +1,5 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  Divider,
-  Grid,
-  Typography
-} from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { Container, Grid, Typography } from '@mui/material';
+import { useMemo, useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';

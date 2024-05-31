@@ -1,14 +1,10 @@
-import { Box, Card, Grid, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import Link from 'src/components/Link';
+import { Box, Card, Grid, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import Pagination from 'src/components/Pagination';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import JobFilter from 'src/modules/jobs/components/JobFilter';
 import SmallJobCard from 'src/modules/jobs/components/SmallJobCard';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
-import useQueryTotalResultOfJobs from 'src/modules/jobs/hooks/useQueryTotalResultOfJobs';
-import { Job } from 'src/modules/jobs/model';
-import { compareDegrees, compareExperience } from 'src/utils/compareEnum';
 
 export default function JobRecommendTab(props) {
   const { id, profile } = props;

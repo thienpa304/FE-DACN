@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography, Card, Divider, Grid } from '@mui/material';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import ProfessionListDialog from 'src/pages/home/ProfessionListDialog';
 import professions from 'src/constants/professions';
 import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 import Link from 'src/components/Link';
-import SuspenseLoader from 'src/components/SuspenseLoader';
-import { useResponsive } from 'src/utils/responsive';
 
 function ProfessionType() {
   const [open, setOpen] = React.useState(false);
-  const { dataList, isLoading } = useQueryTotalJobsEachProfession();
-  const { isMobile, isTablet, isDesktop } = useResponsive();
+  const { dataList } = useQueryTotalJobsEachProfession();
 
   const matchProfessionWithCount = professions
     .map((profession) => {
