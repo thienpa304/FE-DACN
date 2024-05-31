@@ -390,8 +390,6 @@ const handleRoundThree = async (
       response?.map(async (item) => {
         let score = item?.employee_Profile?.reduce((acc, profile) => {
           const hasMatch = item?.employer_Requirement?.some((requirement) => {
-            console.log('vector', profile.result, typeof profile.result);
-
             const cosineSimilarity = dot(profile.result, requirement.result);
             return cosineSimilarity > 0.6;
           });

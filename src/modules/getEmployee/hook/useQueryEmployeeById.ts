@@ -29,10 +29,7 @@ const useQueryEmployeeById = (id, params?) => {
         isEmployer &&
         Boolean(id) &&
         params?.type !== null &&
-        params?.type !== undefined,
-      onSuccess(data) {
-        console.log('success');
-      }
+        params?.type !== undefined
     }
   );
 

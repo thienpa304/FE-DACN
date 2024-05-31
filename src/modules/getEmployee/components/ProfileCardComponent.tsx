@@ -23,7 +23,7 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import { TypographyEllipsis } from 'src/components/Typography';
 import { useMemo } from 'react';
 import { useResponsive } from 'src/utils/responsive';
-import useQueryCheckEmployeeApplied from '../hook/useQueryCheckEmployeeApplied';
+import LazyLoadImage from 'src/components/LazyLoadImage';
 
 const EmployeeCard = ({ profile, setSelectedProfile }) => {
   const isHidden = useMemo(() => Boolean(!profile?.jobTitle), [profile]);
@@ -85,15 +85,14 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => {
       />
       <CardContent sx={{ px: 2, py: 1 }}>
         <Box display={'flex'} gap={2} mb={2}>
-          <Avatar
+          <LazyLoadImage
             src={!isHidden && profile?.avatar}
-            sx={{
-              width: 100,
-              height: 100,
-              borderColor: '#98E4FF',
-              borderRadius: '5px',
-              objectFit: 'cover'
-            }}
+            width={100}
+            height={100}
+            borderRadius={'5px'}
+            objectFit="cover"
+            borderColor="#98E4FF"
+            effect="blur"
           />
           <Box
             sx={{

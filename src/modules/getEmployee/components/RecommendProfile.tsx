@@ -134,8 +134,7 @@ export default function RecommendProfile() {
   ];
 
   useEffect(() => {
-    if (totalProfileResults === undefined) return;
-    console.log('totalProfileResults', totalProfileResults);
+    if (!totalProfileResults) return;
     if (totalProfileResults <= 0) {
       alertDialog({
         title: 'Kết quả tìm kiếm',
@@ -143,7 +142,6 @@ export default function RecommendProfile() {
         hideCancelButton: true
       });
     } else {
-      // setShowProfile(profile);
       const section = document.getElementById('recommend-profile');
       section?.scrollIntoView({ behavior: 'smooth' });
     }

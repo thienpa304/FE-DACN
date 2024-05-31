@@ -29,12 +29,7 @@ import useMutateCompanyLogo from '../../hooks/useMutateCompanyLogo';
 import useMutateCompanyBanner from '../../hooks/useMutateCompanyBanner';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useResponsive } from 'src/utils/responsive';
-
-const CoverImage = styled('img')({
-  width: '100%',
-  height: '280px',
-  objectFit: 'cover'
-});
+import LazyLoadImage from 'src/components/LazyLoadImage';
 
 const ImagePaper = styled(Paper)({
   position: 'relative',
@@ -144,7 +139,13 @@ function CompanyCover() {
 
   const renderCoverImage = () => (
     <ImagePaper elevation={12}>
-      <CoverImage src={companyCover.img} alt="cover" />
+      <LazyLoadImage
+        src={companyCover.img}
+        alt="cover"
+        height={280}
+        width="100%"
+        objectFit="cover"
+      />
       <Button
         color="primary"
         variant="contained"
@@ -195,14 +196,15 @@ function CompanyCover() {
   const renderAvatar = () => (
     <Box display="flex" flexDirection="column" alignItems="center">
       <IconButton component="label" sx={{ borderRadius: 10, mt: -5 }}>
-        <Avatar
+        <LazyLoadImage
           src={companyAvatar.img}
           sx={{
             width: 120,
             height: 120,
-            bgcolor: '#fff',
+            backgroundColor: '#fff',
             border: 2,
-            borderColor: 'grey.300'
+            borderColor: 'grey.300',
+            borderRadius: '100%'
           }}
         />
         <Input

@@ -106,9 +106,7 @@ const renderCompany = (data) => {
   );
 };
 
-const renderStatus = (data) => {
-  console.log(data);
-
+const renderStatus = (data) => { 
   const { isMobile } = useResponsive();
   const initValue = APPROVAL_STATUS.find(
     (item) => item.label === data.value
@@ -543,9 +541,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         onSortModelChange={(newSortModel) => {
           handleSort(newSortModel, setSortModel);
         }}
-        isRowSelectable={(params) => {
-          console.log(params);
-
+        isRowSelectable={(params) => { 
           return params?.row?.applications?.length <= 0;
         }}
       />

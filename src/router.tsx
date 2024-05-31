@@ -9,14 +9,15 @@ import AuthRouteProvider from './modules/auth/components/AuthRouteProvider';
 import { Role } from './modules/users/model';
 
 import UserManagementTable from './pages/admin/UserManagement';
-import SecurityAndAccessManagement from './pages/admin/SecurityAndAccessManagement';
 import EmailNotification from './pages/admin/EmailNotification';
 import CandidateProfileAnalysis from './pages/admin/CandidateProfileAnalysis ';
 import ProfileManagement from './pages/admin/ProfileManagement';
+import ScrollToTop from './components/ScrollToTop';
 
 const Loader = (Component) => (props) =>
   (
     <Suspense fallback={<SuspenseLoader />}>
+      <ScrollToTop />
       <Component {...props} />
     </Suspense>
   );
@@ -348,10 +349,6 @@ const routes: RouteObject[] = [
       {
         path: 'statistic-report',
         element: <StatisticsAndReports />
-      },
-      {
-        path: 'manage-access',
-        element: <SecurityAndAccessManagement />
       },
       {
         path: 'mailer',

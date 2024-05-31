@@ -12,14 +12,12 @@ function CompanyList(props) {
   const {
     companyList,
     totalItems: totalResults,
-    isLoading,
     totalPages
   } = queryCompanys({
     num: pageSize,
     page: currentPage
   });
 
-  if (isLoading) return <SuspenseLoader />;
   return (
     <Container disableGutters maxWidth="lg" sx={{ py: 3, ...sx }}>
       <Box

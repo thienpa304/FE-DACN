@@ -3,4 +3,5 @@ export const handlePageChange = (
   setCurrentPage: (value: React.SetStateAction<number>) => void
 ) => {
   setCurrentPage(pageNumber);
+  window.scrollTo(0, 0);
 };

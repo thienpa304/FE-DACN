@@ -39,8 +39,7 @@ export const InputData = styled(Grid)(({ theme }) => {
 });
 
 export const InfoGrid = (props) => {
-  const { item } = props;
-  console.log(item);
+  const { item } = props; 
   const [more, setMore] = useState(false);
   return (
     <Grid container sx={{ borderTop: 1, borderColor: 'grey.300' }}>
