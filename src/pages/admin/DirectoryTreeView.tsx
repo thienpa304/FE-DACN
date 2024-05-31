@@ -7,7 +7,6 @@ import professions from 'src/constants/professions';
 import useQueryAllJob from 'src/modules/jobs/hooks/useQueryAllJob';
 import { Box, Button, Typography } from '@mui/material';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { isMobile } from 'src/constants/reponsive';
 
 const treeItemStyle = {
   '.MuiTreeItem-label': {

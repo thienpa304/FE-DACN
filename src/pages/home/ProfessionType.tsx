@@ -47,8 +47,15 @@ function ProfessionType() {
         sx={{ bgcolor: '#f0e9fe', borderTopRadius: 1, p: 2 }}
       >
         <Box display="flex" justifyContent="space-between">
-          <BusinessCenterIcon color="secondary" sx={{ fontSize: 35 }} />
-          <Typography fontWeight={700} fontSize={18} alignSelf="end">
+          <BusinessCenterIcon
+            color="secondary"
+            sx={{ fontSize: { md: 35, xs: 25 } }}
+          />
+          <Typography
+            fontWeight={700}
+            alignSelf="end"
+            sx={{ fontSize: { md: 20, xs: 18 } }}
+          >
             Nghề nghiệp nổi bật
           </Typography>
         </Box>
@@ -56,7 +63,7 @@ function ProfessionType() {
         <Link
           to="#"
           sx={{
-            fontSize: 16,
+            fontSize: { md: 16, xs: 14 },
             fontWeight: 700
           }}
           onClick={() => setOpen(true)}

@@ -32,15 +32,22 @@ export default function CompanyTab(props) {
         sx={{ bgcolor: '#f0e9fe', borderTopRadius: 1, px: 3, py: 2 }}
       >
         <Box display="flex" justifyContent="space-between">
-          <BusinessIcon color="secondary" sx={{ fontSize: 35 }} />
-          <Typography fontWeight={700} fontSize={20} alignSelf="end">
+          <BusinessIcon
+            color="secondary"
+            sx={{ fontSize: { md: 35, xs: 25 } }}
+          />
+          <Typography
+            fontWeight={700}
+            alignSelf="end"
+            sx={{ fontSize: { md: 20, xs: 18 } }}
+          >
             Danh sách công ty
           </Typography>
         </Box>
         <Link
           to="/company"
           sx={{
-            fontSize: 16,
+            fontSize: { md: 16, xs: 14 },
             fontWeight: 700
           }}
         >

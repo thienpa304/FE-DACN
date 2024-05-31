@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { EmployeeCard, ProfileCardDialog } from './ProfileCardComponent';
-import useQueryFollowOnlineProfileById from '../hook/useQueryFollowOnlineProfileById';
-import useQueryFollowDocumentProfileById from '../hook/useQueryFollowDocumentProfileById';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryEmployeeById from '../hook/useQueryEmployeeById';
 import { applicationType } from '../model';

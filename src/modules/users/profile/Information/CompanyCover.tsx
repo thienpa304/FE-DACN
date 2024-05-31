@@ -28,7 +28,7 @@ import { avatarErrorText, coverErrorText } from 'src/components/UploadError';
 import useMutateCompanyLogo from '../../hooks/useMutateCompanyLogo';
 import useMutateCompanyBanner from '../../hooks/useMutateCompanyBanner';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -54,6 +54,7 @@ function CompanyCover() {
   const { companyAvatarType, companyCoverType } = DocumentType;
   const { onSaveData } = useMutateCompanyLogo();
   const { onSaveData: onSaveBanner } = useMutateCompanyBanner();
+  const { isMobile } = useResponsive();
 
   const defaultAvatar = {
     img: '',

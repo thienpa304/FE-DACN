@@ -7,6 +7,8 @@ import { useApp } from 'src/modules/app/hooks';
 import { Job } from 'src/modules/jobs/model';
 import { ProfileShowType } from '../model';
 import { TotalResults } from 'src/modules/jobs/jobService';
+import { useEffect, useState } from 'react';
+import useQueryCheckEmployeeApplied from './useQueryCheckEmployeeApplied';
 
 type PropsType = {
   totalCount: number;
@@ -16,8 +18,8 @@ type PropsType = {
 const useQueryEmployeeByKeywords = (params?) => {
   const { isEmployer } = useApp();
   const { data, isLoading, refetch } = useQuery<
-    ResponseData<PaginationType<Partial<Job[]>>>,
-    AxiosError<ResponseData<Partial<Job[]>>>
+    ResponseData<PaginationType<ProfileShowType[]>>,
+    AxiosError<ResponseData<ProfileShowType[]>>
   >(
     ['get-ProfileByKeywords', params],
     () => {
@@ -38,8 +40,27 @@ const useQueryEmployeeByKeywords = (params?) => {
     }
   );
 
+  const [employeeIds, setEmployeeIds] = useState('');
+
+  const { isApplied } = useQueryCheckEmployeeApplied({ employeeIds });
+
+  useEffect(() => {
+    if (data?.data?.meta?.itemCount) {
+      setEmployeeIds(
+        data?.data?.items
+          .map((item: any) => {
+            return item.userId;
+          })
+          .join(',')
+      );
+    }
+  }, [data?.data?.items]);
+
   return {
-    profile: data?.data?.items || [],
+    profile:
+      data?.data?.items.map((item) => {
+        return { ...item, isApplied: isApplied?.includes(item.userId) };
+      }) || [],
     totalResults: data?.data?.meta?.totalItems,
     totalPages: data?.data?.meta?.totalPages,
     isLoading,

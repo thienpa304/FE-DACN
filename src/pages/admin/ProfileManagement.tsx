@@ -36,10 +36,10 @@ import alertDialog from 'src/utils/alertDialog';
 import useDeleteDocumentProfileByAdmin from 'src/modules/jobProfile/attachedDocument/hooks/useDeleteDocumentProfileByAdmin';
 import useDeleteOnlineProfileByAdmin from 'src/modules/jobProfile/onlineProfile/hooks/useDeleteOnlineProfileByAdmin';
 import { removeFileByUrl } from 'src/common/firebaseService';
-import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import { TypographyEllipsis } from 'src/components/Typography';
 import { handleSort } from 'src/utils/sortData';
+import { useResponsive } from 'src/utils/responsive';
 
 const ProfileManagement = () => {
   const [searchUserName, setSearchUserName] = useState('');
@@ -51,6 +51,7 @@ const ProfileManagement = () => {
   });
   const [viewProfessionMode, setViewProfessionMode] = useState(true);
   const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
+  const { isMobile } = useResponsive();
 
   const pageSize = 10;
   const { employeeList, isLoading, refetch, totalPages } =

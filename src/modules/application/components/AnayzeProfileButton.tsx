@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  IconButton,
-  Rating,
-  Typography
-} from '@mui/material';
+import { Box, Rating, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ApplicationType } from 'src/constants/enum';
 import { useApp } from 'src/modules/app/hooks';
@@ -19,7 +11,6 @@ import {
   review,
   firstRoundForGeneralInfo,
   preprocessJobData,
-  preprocessProfileData,
   ratingStar
 } from 'src/utils/reviewProfile';
 import { LoadingButton } from '@mui/lab';

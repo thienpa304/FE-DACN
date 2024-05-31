@@ -14,26 +14,33 @@ import {
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { CompanyForm, UserForm } from './EditForm';
 import EditButton from 'src/components/EditButton';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
 
-export const InputLabel = styled(Grid)(({ theme }) => ({
-  fontFamily: theme.typography.fontFamily,
-  fontWeight: 700,
-  minHeight: 50,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: isMobile ? 'center' : 'left'
-}));
+export const InputLabel = styled(Grid)(({ theme }) => {
+  const { isMobile } = useResponsive();
+  return {
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 700,
+    minHeight: isMobile ? 35 : 50,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: isMobile ? 'center' : 'left'
+  };
+});
 
-export const InputData = styled(Grid)(({ theme }) => ({
-  fontFamily: theme.typography.fontFamily,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: isMobile ? 'center' : 'left'
-}));
+export const InputData = styled(Grid)(({ theme }) => {
+  const { isMobile } = useResponsive();
+  return {
+    fontFamily: theme.typography.fontFamily,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: isMobile ? 'center' : 'left'
+  };
+});
 
 export const InfoGrid = (props) => {
   const { item } = props;
+  console.log(item);
   const [more, setMore] = useState(false);
   return (
     <Grid container sx={{ borderTop: 1, borderColor: 'grey.300' }}>
@@ -43,7 +50,14 @@ export const InfoGrid = (props) => {
             {item.label}
           </InputLabel>
           <InputData item xs={12} sm={6} md={8}>
-            <Typography lineHeight={2}>{item.value}</Typography>
+            <Typography
+              sx={{
+                textAlign: { xs: 'center', md: 'left' },
+                lineHeight: { xs: 1.5, md: 2 }
+              }}
+            >
+              {item.value}
+            </Typography>
           </InputData>
         </>
       )}
@@ -54,13 +68,17 @@ export const InfoGrid = (props) => {
           </InputLabel>
           <InputData item xs={12}>
             <Typography
-              lineHeight={2}
               sx={{
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 display: '-webkit-box',
                 WebkitLineClamp: more ? 100 : 3,
-                WebkitBoxOrient: 'vertical'
+                WebkitBoxOrient: 'vertical',
+                textAlign: { xs: 'center', md: 'left' },
+                lineHeight: {
+                  xs: 1.5,
+                  md: 2
+                }
               }}
             >
               {item.value}
@@ -82,6 +100,7 @@ export const InfoGrid = (props) => {
 };
 
 export default function InfoField(props) {
+  const { isMobile } = useResponsive();
   const { user, data, title, editIcon, openForm } = props;
   const [open, setOpen] = useState(false);
 
@@ -90,8 +109,6 @@ export default function InfoField(props) {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleData = (value) => (value === null ? null : value);
 
   const myForm =
     openForm === 'User' ? (
@@ -103,19 +120,17 @@ export default function InfoField(props) {
   return (
     <Container sx={{ paddingX: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box display="flex">
+        <Box display="flex" alignItems={'end'}>
           {editIcon}
-          <Box>
-            <Typography
-              fontWeight={700}
-              sx={{
-                fontSize: { md: 22, xs: 18 },
-                lineHeight: 2
-              }}
-            >
-              {title}
-            </Typography>
-          </Box>
+          <Typography
+            fontWeight={700}
+            sx={{
+              fontSize: { md: 22, xs: 18 },
+              lineHeight: { md: 2, xs: 1.5 }
+            }}
+          >
+            {title}
+          </Typography>
         </Box>
         <EditButton onClick={handleEdit} />
         <Dialog

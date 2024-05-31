@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, Box, Grid, Button } from '@mui/material';
+import { Avatar, Box, Grid, Button, Typography } from '@mui/material';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PaidIcon from '@mui/icons-material/Paid';
 import SendIcon from '@mui/icons-material/Send';
@@ -16,7 +16,8 @@ import FollowJobButton from './FollowJobButton';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import CustomContainer from 'src/components/CustomContainer';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
+import useQueryCheckApplied from 'src/modules/application/hooks/useQueryCheckApplied';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -44,6 +45,7 @@ type Props = {
   data: Partial<Job>;
 };
 const CardApply: React.FC<Props> = ({ data }) => {
+  const { isMobile } = useResponsive();
   const { isEmployee, isEmployer, isAdmin } = useApp();
   const [openFormApply, setOpenFormApply] = useState(false);
   const navigate = useNavigate();
@@ -53,6 +55,7 @@ const CardApply: React.FC<Props> = ({ data }) => {
   const handleOpenFormApply = () => {
     setOpenFormApply(true);
   };
+  const { isApplied } = useQueryCheckApplied({ postId: data?.postId });
 
   return (
     <CustomContainer
@@ -149,9 +152,13 @@ const CardApply: React.FC<Props> = ({ data }) => {
                   variant="contained"
                   startIcon={<SendIcon />}
                   color="info"
+                  sx={{ display: isApplied && 'none' }}
                 >
                   Nộp hồ sơ
                 </Button>
+                <Typography display={!isApplied && 'none'} color="red">
+                  Bạn đã nộp đơn ứng tuyển
+                </Typography>
                 <FollowJobButton job={data} />
               </Box>
             )}

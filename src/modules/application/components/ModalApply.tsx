@@ -30,7 +30,7 @@ import AnayzeProfileButton from './AnayzeProfileButton';
 import { Job } from 'src/modules/jobs/model';
 import { removeFileByUrl } from 'src/common/firebaseService';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
 
 const Title = styled('div')(() => ({
   fontWeight: 600,
@@ -52,7 +52,14 @@ type Props = {
   onClose: () => void;
 };
 
+const buttonStyle = {
+  width: '100%',
+  px: 1,
+  color: '#000'
+};
+
 export default function ModalApply(props: Props) {
+  const { isMobile } = useResponsive();
   const { onSaveData } = useMutateApplyJob();
   const { open, onClose, position, company, postId, job } = props;
   const { profile: user } = useProfileHook();
@@ -67,11 +74,6 @@ export default function ModalApply(props: Props) {
   const [showResult, setShowResult] = useState(false);
   const [url, setUrl] = useState('');
   const [hintsMessage, setHintsMessage] = useState('');
-  const buttonStyle = {
-    width: '100%',
-    px: 1,
-    color: '#000'
-  };
 
   const {
     control,
@@ -133,183 +135,177 @@ export default function ModalApply(props: Props) {
     }
   }, [isChecked]);
 
-  if (isLoadingOnline || isLoadingOnline) return <SuspenseLoader />;
+  if (isLoadingOnline || isLoadingDocument) return <SuspenseLoader />;
 
   return (
-    <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        maxWidth="md"
-        fullWidth
-        fullScreen={isMobile}
-      >
-        <DialogTitle>
-          <SubTitle> Vị trí ứng tuyển</SubTitle>
-          <Title>{position}</Title>
-          {company && <SubTitle>{company}</SubTitle>}
-        </DialogTitle>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
+      fullWidth
+      fullScreen={isMobile}
+    >
+      <DialogTitle>
+        <SubTitle> Vị trí ứng tuyển</SubTitle>
+        <Title>{position}</Title>
+        {company && <SubTitle>{company}</SubTitle>}
+      </DialogTitle>
 
-        <DialogContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
-              <Button
-                startIcon={<AddIcon />}
-                variant="contained"
-                disabled={onlineProfile ? false : true}
-                fullWidth
-                onClick={() => uploadProfile(ApplicationType.online_profile)}
-                sx={[
-                  buttonStyle,
-                  {
-                    bgcolor:
-                      isChecked === ApplicationType.online_profile
-                        ? '#f29c00'
-                        : '#fff6e5'
-                  }
-                ]}
-              >
-                {onlineProfile ? (
-                  'Hồ sơ trực tuyến'
-                ) : (
-                  <em>Chưa có hồ sơ trực tuyến</em>
-                )}
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Button
-                startIcon={<AddIcon />}
-                variant="contained"
-                fullWidth
-                disabled={attachedDocument ? false : true}
-                onClick={() => uploadProfile(ApplicationType.attached_document)}
-                sx={[
-                  buttonStyle,
-                  {
-                    bgcolor:
-                      isChecked === ApplicationType.attached_document
-                        ? '#f29c00'
-                        : '#fff6e5'
-                  }
-                ]}
-              >
-                {attachedDocument ? (
-                  'Hồ sơ đính kèm'
-                ) : (
-                  <em>Chưa có hồ sơ đính kèm</em>
-                )}
-              </Button>
-            </Grid>
-            <Grid item xs={12} lg={4}>
-              <FormControl
-                control={control}
-                errors={errors}
-                id="CV"
-                name="CV"
-                label="Tải lên hồ sơ có sẵn"
-              >
-                <UploadButton
-                  sx={[
-                    buttonStyle,
-                    {
-                      bgcolor:
-                        isChecked === ApplicationType.cv_enclosed
-                          ? '#f29c00'
-                          : '#fff6e5'
-                    }
-                  ]}
-                  setIsChecked={setIsChecked}
-                  setUrl={setUrl}
-                />
-              </FormControl>
-            </Grid>
-          </Grid>
-          {missInfo && (
-            <Typography
-              color="error"
-              mb={3}
-              fontWeight={700}
-              fontStyle="italic"
-            >
-              * Vui lòng chọn loại hồ sơ cần gửi !
-            </Typography>
-          )}
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                required
-                id="name"
-                label="Họ và tên"
-                name="name"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                required
-                id="email"
-                label="Email"
-                name="email"
-                pattern="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl
-                element={<TextField />}
-                control={control}
-                errors={errors}
-                required
-                id="phone"
-                label="Số điện thoại"
-                name="phone"
-                pattern="phone"
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions
-          sx={{
-            display: 'flex',
-            justifyContent: { sm: 'space-between', xs: 'center' },
-            flexWrap: 'wrap',
-            p: 2,
-            gap: 2
-          }}
-        >
-          <AnayzeProfileButton
-            job={job}
-            selectedProfile={selectedProfile}
-            profileType={isChecked}
-            setShowResult={setShowResult}
-            showResult={showResult}
-            fileUrl={url}
-            setHintsMessage={setHintsMessage}
-          />
-          <Box sx={{ display: 'flex', columnGap: 1 }}>
+      <DialogContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6} lg={4}>
             <Button
-              onClick={handleClose}
-              variant="outlined"
-              color="secondary"
-              sx={{ minWidth: 120 }}
-            >
-              Hủy
-            </Button>
-            <Button
-              onClick={handleSubmit(handleApply)}
+              startIcon={<AddIcon />}
               variant="contained"
-              color="info"
-              sx={{ minWidth: 120 }}
+              disabled={onlineProfile ? false : true}
+              fullWidth
+              onClick={() => uploadProfile(ApplicationType.online_profile)}
+              sx={[
+                buttonStyle,
+                {
+                  bgcolor:
+                    isChecked === ApplicationType.online_profile
+                      ? '#f29c00'
+                      : '#fff6e5'
+                }
+              ]}
             >
-              Nộp hồ sơ
+              {onlineProfile ? (
+                'Hồ sơ trực tuyến'
+              ) : (
+                <em>Chưa có hồ sơ trực tuyến</em>
+              )}
             </Button>
-          </Box>
-        </DialogActions>
-        {/* {hintsMessage && (
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <Button
+              startIcon={<AddIcon />}
+              variant="contained"
+              fullWidth
+              disabled={attachedDocument ? false : true}
+              onClick={() => uploadProfile(ApplicationType.attached_document)}
+              sx={[
+                buttonStyle,
+                {
+                  bgcolor:
+                    isChecked === ApplicationType.attached_document
+                      ? '#f29c00'
+                      : '#fff6e5'
+                }
+              ]}
+            >
+              {attachedDocument ? (
+                'Hồ sơ đính kèm'
+              ) : (
+                <em>Chưa có hồ sơ đính kèm</em>
+              )}
+            </Button>
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <FormControl
+              control={control}
+              errors={errors}
+              id="CV"
+              name="CV"
+              label="Tải lên hồ sơ có sẵn"
+            >
+              <UploadButton
+                sx={[
+                  buttonStyle,
+                  {
+                    bgcolor:
+                      isChecked === ApplicationType.cv_enclosed
+                        ? '#f29c00'
+                        : '#fff6e5'
+                  }
+                ]}
+                setIsChecked={setIsChecked}
+                setUrl={setUrl}
+              />
+            </FormControl>
+          </Grid>
+        </Grid>
+        {missInfo && (
+          <Typography color="error" mb={3} fontWeight={700} fontStyle="italic">
+            * Vui lòng chọn loại hồ sơ cần gửi !
+          </Typography>
+        )}
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <FormControl
+              element={<TextField />}
+              control={control}
+              errors={errors}
+              required
+              id="name"
+              label="Họ và tên"
+              name="name"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl
+              element={<TextField />}
+              control={control}
+              errors={errors}
+              required
+              id="email"
+              label="Email"
+              name="email"
+              pattern="email"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl
+              element={<TextField />}
+              control={control}
+              errors={errors}
+              required
+              id="phone"
+              label="Số điện thoại"
+              name="phone"
+              pattern="phone"
+            />
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: 'flex',
+          justifyContent: { sm: 'space-between', xs: 'center' },
+          flexWrap: 'wrap',
+          p: 2,
+          gap: 2
+        }}
+      >
+        <AnayzeProfileButton
+          job={job}
+          selectedProfile={selectedProfile}
+          profileType={isChecked}
+          setShowResult={setShowResult}
+          showResult={showResult}
+          fileUrl={url}
+          setHintsMessage={setHintsMessage}
+        />
+        <Box sx={{ display: 'flex', columnGap: 1 }}>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            color="secondary"
+            sx={{ minWidth: 120 }}
+          >
+            Hủy
+          </Button>
+          <Button
+            onClick={handleSubmit(handleApply)}
+            variant="contained"
+            color="info"
+            sx={{ minWidth: 120 }}
+          >
+            Nộp hồ sơ
+          </Button>
+        </Box>
+      </DialogActions>
+      {/* {hintsMessage && (
           <Box mb={1} p={2} gap={1} display="flex" flexDirection="column">
             <Divider sx={{ mb: 1, color: '#f29c00' }} />
             <Typography fontWeight={700} fontSize={18}>
@@ -320,7 +316,6 @@ export default function ModalApply(props: Props) {
             </Typography>
           </Box>
         )} */}
-      </Dialog>
-    </div>
+    </Dialog>
   );
 }

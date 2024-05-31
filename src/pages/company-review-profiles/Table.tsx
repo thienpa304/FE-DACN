@@ -17,21 +17,15 @@ import {
 } from '@mui/material';
 import { APPROVAL_STATUS } from 'src/constants';
 import useMutateApplicationStatus from 'src/modules/application/hooks/useMutateApplicatonStatus';
-import { useMemo, useState, forwardRef, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import SelectInput from 'src/components/SelectInput';
 import {
   ProfileApplicationType,
-  preprocessJobData,
-  preprocessProfileData,
   review,
   LOW_SCORE,
-  NORMAL_SCORE,
-  HIGH_SCORE,
-  firstRoundForGeneralInfo,
   parseResponseJSONData,
   ratingStar,
-  calculateMatchingScore,
-  getKeywords
+  calculateMatchingScore
 } from 'src/utils/reviewProfile';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import Pagination from 'src/components/Pagination';
@@ -43,10 +37,7 @@ import { TypographyEllipsis } from 'src/components/Typography';
 import CardApply from 'src/modules/jobs/components/CardApply';
 import TabContent from '../view-job-detail/TabContent';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
-import useApplicationList from 'src/modules/jobs/hooks/useFollowJobList';
-import useJob from 'src/modules/jobs/hooks/useJob';
 import CloseIcon from '@mui/icons-material/Close';
-import { isMobile } from 'src/constants/reponsive';
 import detailsModal from 'src/utils/detailsModal';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import useQueryJobByIdByOwner from 'src/modules/jobs/hooks/useQueryJobByIdByOwner';
@@ -54,11 +45,13 @@ import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import useQueryJobByIdByAdmin from 'src/modules/jobs/hooks/useQueryJobByIdByAdmin';
 import { handleSort } from 'src/utils/sortData';
 import dayjs from 'dayjs';
+import { useResponsive } from 'src/utils/responsive';
 
 export const ViewJobDetail = (props) => {
   const { postId, setSelectedId, isAdmin } = props;
   if (!postId) return;
   const useQueryJob = isAdmin ? useQueryJobByIdByAdmin : useQueryJobByIdByOwner;
+  const { isMobile } = useResponsive();
 
   const { data, isLoading } = useQueryJob(postId);
 
@@ -202,6 +195,7 @@ const renderStatus = (data) => {
   } = data?.row;
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
   const [value, setValue] = useState(null);
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
     if (!application.status || !APPROVAL_STATUS) return;
@@ -252,60 +246,6 @@ const renderMatchingScore = (data) => {
   );
 };
 
-const columns: GridColDef[] = [
-  {
-    field: 'name',
-    headerName: 'Tên hồ sơ',
-    minWidth: isMobile ? 110 : 180,
-    renderCell: renderProfileName,
-    sortable: true
-  },
-  {
-    field: 'jobTitle',
-    headerName: 'Vị trí ứng tuyển',
-    minWidth: 300,
-    renderCell: renderJobTitle,
-    sortable: true
-  },
-  {
-    field: 'createAt',
-    headerName: 'Ngày nộp',
-    minWidth: 150,
-    headerAlign: 'center',
-    align: 'center',
-    sortable: true,
-    renderCell: (data) => {
-      return dayjs(data?.value).format('DD/MM/YYYY');
-    }
-  },
-  {
-    field: 'applicationType',
-    headerName: 'Loại hồ sơ',
-    minWidth: 150,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: (data) =>
-      data?.row?.employee_Profile?.application?.applicationType
-  },
-  {
-    field: 'status',
-    headerName: 'Trạng thái',
-    minWidth: isMobile ? 120 : 180,
-    renderCell: renderStatus,
-    headerAlign: 'center',
-    align: 'center'
-  },
-  {
-    field: 'matchingScore',
-    headerName: 'Độ phù hợp',
-    minWidth: 140,
-    align: 'center',
-    headerAlign: 'center',
-    renderCell: renderMatchingScore,
-    sortable: true
-  }
-];
-
 export default function Table(props) {
   const {
     pageSize,
@@ -335,6 +275,61 @@ export default function Table(props) {
   });
   const [selectedRows, setSelectedRows] = useState([]);
   const [quickApproveValue, setQuickApproveValue] = useState(null);
+  const { isMobile } = useResponsive();
+
+  const columns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Tên hồ sơ',
+      minWidth: isMobile ? 110 : 180,
+      renderCell: renderProfileName,
+      sortable: true
+    },
+    {
+      field: 'jobTitle',
+      headerName: 'Vị trí ứng tuyển',
+      minWidth: 300,
+      renderCell: renderJobTitle,
+      sortable: true
+    },
+    {
+      field: 'createAt',
+      headerName: 'Ngày nộp',
+      minWidth: 150,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: true,
+      renderCell: (data) => {
+        return dayjs(data?.value).format('DD/MM/YYYY');
+      }
+    },
+    {
+      field: 'applicationType',
+      headerName: 'Loại hồ sơ',
+      minWidth: 150,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (data) =>
+        data?.row?.employee_Profile?.application?.applicationType
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      minWidth: isMobile ? 120 : 180,
+      renderCell: renderStatus,
+      headerAlign: 'center',
+      align: 'center'
+    },
+    {
+      field: 'matchingScore',
+      headerName: 'Độ phù hợp',
+      minWidth: 140,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: renderMatchingScore,
+      sortable: true
+    }
+  ];
 
   const { onSaveApplicationStatus } = useMutateApplicationStatus();
 
@@ -397,8 +392,6 @@ export default function Table(props) {
       );
       setPassRoundProfiles(passRoundData);
     }
-
-    // console.log('updatedAnalyzedProfile,', updatedAnalyzedProfile);
 
     setAnalyzedProfile(updatedAnalyzedProfile);
     setShowList((prev) =>
@@ -580,9 +573,9 @@ export default function Table(props) {
             >
               <Grid item xs={!isAnalyzing ? 12 : 9}>
                 {!selectedRows.length
-                  ? 'Chưa chọn hồ sơ'
+                  ? 'Phân tích hồ sơ'
                   : !start
-                  ? 'Phân tích nhanh'
+                  ? 'Phân tích hồ sơ'
                   : 'Đang phân tích'}
               </Grid>
               <Grid item xs={isAnalyzing ? 3 : 0}>

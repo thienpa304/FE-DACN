@@ -13,11 +13,11 @@ import dayjs from 'dayjs';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
-import { isMobile } from 'src/constants/reponsive';
 import { useMemo, useState } from 'react';
 import useQueryJobAppliedByEmployee from 'src/modules/application/hooks/useQueryJobAppliedByEmployee';
 import Pagination from 'src/components/Pagination';
 import { handleSort } from 'src/utils/sortData';
+import { useResponsive } from 'src/utils/responsive';
 
 const renderJobTitle = (data) => {
   const jobTitle = rewriteUrl(data?.row?.jobTitle);
@@ -67,51 +67,6 @@ const rederDate = (data) => {
   return <>{date}</>;
 };
 
-const columns: GridColDef[] = [
-  {
-    field: 'jobTitle',
-    headerName: 'Tên tin đăng',
-    minWidth: isMobile ? 190 : 400,
-    headerAlign: 'center',
-    sortable: true,
-    renderCell: renderJobTitle
-  },
-  {
-    field: 'companyName',
-    headerName: 'Tên công ty',
-    minWidth: 300,
-    headerAlign: 'center',
-    sortable: true,
-    renderCell: renderCompanyName
-  },
-  {
-    field: 'createAt',
-    headerName: 'Ngày nộp',
-    minWidth: 150,
-    headerAlign: 'center',
-    align: 'center',
-    sortable: true,
-    renderCell: rederDate
-  },
-  {
-    field: 'applicationDeadline',
-    headerName: 'Hạn nộp',
-    minWidth: 150,
-    headerAlign: 'center',
-    align: 'center',
-    sortable: true,
-    renderCell: rederDate
-  },
-  {
-    field: 'status',
-    headerName: 'Trạng thái',
-    minWidth: isMobile ? 50 : 150,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: renderStatus
-  }
-];
-
 export default function TablePost(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
@@ -121,6 +76,51 @@ export default function TablePost(props) {
     num: pageSize,
     ...sortModel
   });
+  const { isMobile } = useResponsive();
+  const columns: GridColDef[] = [
+    {
+      field: 'jobTitle',
+      headerName: 'Tên tin đăng',
+      minWidth: isMobile ? 190 : 400,
+      headerAlign: 'center',
+      sortable: true,
+      renderCell: renderJobTitle
+    },
+    {
+      field: 'companyName',
+      headerName: 'Tên công ty',
+      minWidth: 300,
+      headerAlign: 'center',
+      sortable: true,
+      renderCell: renderCompanyName
+    },
+    {
+      field: 'createAt',
+      headerName: 'Ngày nộp',
+      minWidth: 150,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: true,
+      renderCell: rederDate
+    },
+    {
+      field: 'applicationDeadline',
+      headerName: 'Hạn nộp',
+      minWidth: 150,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: true,
+      renderCell: rederDate
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      minWidth: isMobile ? 50 : 150,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: renderStatus
+    }
+  ];
 
   const flattenedApplications = useMemo(
     () =>

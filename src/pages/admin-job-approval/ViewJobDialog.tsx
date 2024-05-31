@@ -10,9 +10,10 @@ import CardApply from 'src/modules/jobs/components/CardApply';
 import TabContent from '../view-job-detail/TabContent';
 import CompanyInfoTab from 'src/modules/jobs/components/CompanyInfoTab';
 import CloseIcon from '@mui/icons-material/Close';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
 
 export default function ViewJobDialog({ data, postId, setSelectedId }) {
+  const { isMobile } = useResponsive();
   return (
     <Dialog
       open={Boolean(postId)}

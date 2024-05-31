@@ -8,6 +8,7 @@ import Select, { SelectChangeEvent, SelectProps } from '@mui/material/Select';
 export type Option = {
   value: number | string;
   label: string | React.ReactElement;
+  disabled?: boolean;
 };
 export type PropsSelectInput = SelectProps & {
   options?: Option[];
@@ -22,7 +23,12 @@ export default function SelectInput(props: PropsSelectInput) {
       </InputLabel>
       <Select size="small" {...props}>
         {options.map((item, idx) => (
-          <MenuItem key={idx} value={item.value}>
+          <MenuItem
+            key={idx}
+            value={item.value}
+            sx={{ display: item?.disabled && 'none' }}
+            disabled={item?.disabled}
+          >
             {item.label}
           </MenuItem>
         ))}

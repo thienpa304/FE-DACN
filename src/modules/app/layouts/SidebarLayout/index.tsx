@@ -6,7 +6,7 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import { SidebarContext } from 'src/contexts/SidebarContext';
 import Footer from './Footer';
-import { checkIsMobile } from 'src/utils/responsive';
+import { useResponsive } from 'src/utils/responsive';
 
 interface SidebarLayoutProps {
   children?: ReactNode;
@@ -15,7 +15,8 @@ interface SidebarLayoutProps {
 
 const SidebarLayout: FC<SidebarLayoutProps> = ({ showSideBar = true }) => {
   const theme = useTheme();
-  const isShowSideBar = checkIsMobile(theme) || showSideBar;
+  const { isMobile } = useResponsive();
+  const isShowSideBar = isMobile || showSideBar;
 
   return (
     <>

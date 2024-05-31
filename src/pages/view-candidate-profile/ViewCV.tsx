@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import PersonalViewUI from 'src/modules/jobProfile/PersonalViewUI';
 import GeneralViewUI from 'src/modules/jobProfile/GeneralViewUI';
 import { toOutputDateString } from 'src/utils/formatData';
-import { isMobile } from 'src/constants/reponsive';
+import { useResponsive } from 'src/utils/responsive';
 
 const bodyText = {
   fontSize: 14,
@@ -24,6 +24,7 @@ const bodyText = {
 
 const ViewCV = (props) => {
   const { user, bgcolor, showTitle = true } = props;
+  const { isMobile } = useResponsive();
 
   return (
     <>

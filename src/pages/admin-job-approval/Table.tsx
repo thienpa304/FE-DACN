@@ -26,12 +26,12 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import { TypographyEllipsis } from 'src/components/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
-import { isMobile } from 'src/constants/reponsive';
 import { checkIsJSON } from 'src/utils/formatData';
 import { ViewJobDetail } from '../company-review-profiles/Table';
 import ViewJobDialog from './ViewJobDialog';
 import useJob from 'src/modules/jobs/hooks/useJob';
 import { handleSort } from 'src/utils/sortData';
+import { useResponsive } from 'src/utils/responsive';
 
 const renderJobTitle = (data) => {
   const [selectedId, setSelectedId] = useState(null);
@@ -55,6 +55,11 @@ const renderJobTitle = (data) => {
     detailsModal(detailsData);
   };
 
+  const handleEditJob = () => {
+    setSelectedId(data.id);
+    setItemDetail(data?.row);
+  };
+
   return (
     <Grid container alignItems={'center'}>
       <Grid item xs={10.5} sm={12}>
@@ -67,10 +72,7 @@ const renderJobTitle = (data) => {
             },
             textDecoration: 'none'
           }}
-          onClick={() => {
-            setSelectedId(data.id);
-            setItemDetail(data?.row);
-          }}
+          onClick={handleEditJob}
         >
           {data.value}
         </TypographyEllipsis>
@@ -110,6 +112,9 @@ const renderCompany = (data) => {
 };
 
 const renderStatus = (data) => {
+  console.log(data);
+
+  const { isMobile } = useResponsive();
   const initValue = APPROVAL_STATUS.find(
     (item) => item.label === data.value
   ).value;
@@ -126,7 +131,7 @@ const renderStatus = (data) => {
         selectedId: data.id,
         handleConfirm: () => handleConfirm(data.id, e.target.value),
         message:
-          'Tin tuyển dụng đang ở trạng thái vi phạm, bạn có chắc muốn duyệt tin tuyển dụng này không?'
+          'Tin tuyển dụng đang ở trạng thái VI PHẠM, bạn có chắc chắn tin tuyển dụng này là hợp quy định và muốn duyệt tin tuyển dụng này?'
       });
     } else {
       mutate([data.id, { status: value }]);
@@ -143,13 +148,20 @@ const renderStatus = (data) => {
   return (
     <SelectInput
       value={initValue}
-      options={APPROVAL_STATUS}
+      options={APPROVAL_STATUS.map((item) => {
+        if (item.value === 'pending' || item.value === 'expired')
+          return { ...item, disabled: true };
+        return item;
+      })}
       onChange={handleChangeValue}
       size="small"
       sx={{
         fontSize: isMobile ? 10 : 13,
         color: displayColor()
       }}
+      disabled={
+        data?.value === 'Hết hạn' || data?.row?.applications?.length > 0
+      }
     />
   );
 };
@@ -238,93 +250,6 @@ const renderCheck = (data) => {
   );
 };
 
-const columns: GridColDef[] = [
-  {
-    field: 'jobTitle',
-    headerName: 'Tin tuyển dụng',
-    minWidth: !isMobile ? 200 : 130,
-    renderCell: renderJobTitle,
-    sortable: true
-  },
-  {
-    field: 'name',
-    headerName: 'Người đăng',
-    minWidth: 120,
-    sortable: true,
-    renderCell: (data) => (
-      <Box
-        sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'wrap',
-          lineHeight: '1.5',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical'
-        }}
-      >
-        {data.value}
-      </Box>
-    )
-  },
-  {
-    field: 'companyName',
-    headerName: 'Tên công ty',
-    minWidth: 200,
-    renderCell: renderCompany,
-    sortable: true
-  },
-  {
-    field: 'createAt',
-    headerName: 'Ngày đăng',
-    minWidth: 110,
-    sortable: true,
-    renderCell: (data) => (
-      <Box
-        sx={{
-          whiteSpace: 'wrap',
-          lineHeight: '1.5em'
-        }}
-      >
-        {dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')}
-      </Box>
-    )
-  },
-  {
-    field: 'submissionCount',
-    headerName: 'Lượt nộp',
-    minWidth: 90,
-    align: 'center',
-    headerAlign: 'center',
-    sortable: true
-  },
-  {
-    field: 'view',
-    headerName: 'Lượt xem',
-    minWidth: 90,
-    align: 'center',
-    headerAlign: 'center',
-    sortable: true,
-    resizable: true
-  },
-  {
-    field: 'status',
-    headerName: 'Trạng thái',
-    minWidth: !isMobile ? 130 : 115,
-    headerAlign: 'center',
-    renderCell: renderStatus
-  },
-  {
-    field: 'check',
-    headerName: 'Kiểm duyệt',
-    minWidth: 130,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: renderCheck,
-    sortable: true
-  }
-];
-
 export default function Table({ statusFilter, selectedProfession }) {
   const { mutate } = useMutateJobStatus();
   const [start, setStart] = useState(false);
@@ -341,6 +266,94 @@ export default function Table({ statusFilter, selectedProfession }) {
     profession: selectedProfession,
     ...sortModel
   });
+  const { isMobile } = useResponsive();
+
+  const columns: GridColDef[] = [
+    {
+      field: 'jobTitle',
+      headerName: 'Tin tuyển dụng',
+      minWidth: !isMobile ? 200 : 130,
+      renderCell: renderJobTitle,
+      sortable: true
+    },
+    {
+      field: 'name',
+      headerName: 'Người đăng',
+      minWidth: 120,
+      sortable: true,
+      renderCell: (data) => (
+        <Box
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'wrap',
+            lineHeight: '1.5',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical'
+          }}
+        >
+          {data.value}
+        </Box>
+      )
+    },
+    {
+      field: 'companyName',
+      headerName: 'Tên công ty',
+      minWidth: 200,
+      renderCell: renderCompany,
+      sortable: true
+    },
+    {
+      field: 'createAt',
+      headerName: 'Ngày đăng',
+      minWidth: 110,
+      sortable: true,
+      renderCell: (data) => (
+        <Box
+          sx={{
+            whiteSpace: 'wrap',
+            lineHeight: '1.5em'
+          }}
+        >
+          {dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')}
+        </Box>
+      )
+    },
+    {
+      field: 'submissionCount',
+      headerName: 'Lượt nộp',
+      minWidth: 90,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: true
+    },
+    {
+      field: 'view',
+      headerName: 'Lượt xem',
+      minWidth: 90,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: true,
+      resizable: true
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      minWidth: !isMobile ? 130 : 115,
+      headerAlign: 'center',
+      renderCell: renderStatus
+    },
+    {
+      field: 'check',
+      headerName: 'Kiểm duyệt',
+      minWidth: 130,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: renderCheck,
+      sortable: true
+    }
+  ];
 
   const preProcessData = (job: Job) => {
     return {
@@ -385,8 +398,6 @@ export default function Table({ statusFilter, selectedProfession }) {
   }, [start]);
 
   useEffect(() => {
-    console.log(jobs);
-
     if (jobs) {
       setShowList(() => jobs);
     }
@@ -536,6 +547,11 @@ export default function Table({ statusFilter, selectedProfession }) {
         disableRowSelectionOnClick={isMobile}
         onSortModelChange={(newSortModel) => {
           handleSort(newSortModel, setSortModel);
+        }}
+        isRowSelectable={(params) => {
+          console.log(params);
+
+          return params?.row?.applications?.length <= 0;
         }}
       />
       <Pagination

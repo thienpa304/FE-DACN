@@ -10,6 +10,7 @@ import {
   Grid,
   IconButton,
   Link,
+  TextField,
   Tooltip,
   Typography
 } from '@mui/material';
@@ -22,11 +23,15 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import Pagination from 'src/components/Pagination';
 import useDeleteUserById from 'src/modules/admin/hooks/useDeleteUserByAdmin';
 import alertDialog from 'src/utils/alertDialog';
-import { isMobile } from 'src/constants/reponsive';
 import { TypographyEllipsis } from 'src/components/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
 import { handleSort } from 'src/utils/sortData';
+import { useResponsive } from 'src/utils/responsive';
+import { useForm } from 'react-hook-form';
+import FormControl from 'src/components/FormControl';
+import SelectInput from 'src/components/SelectInput';
+import { USER_ROLE } from 'src/constants';
 
 const renderCellText = (params) => {
   const handleOpenDetailModal = () => {
@@ -38,6 +43,7 @@ const renderCellText = (params) => {
     };
     detailsModal(detailsData);
   };
+
   return (
     <Grid container>
       <Grid item xs={10} md={12}>
@@ -48,7 +54,17 @@ const renderCellText = (params) => {
           {params.value ? params.value : 'Chưa cập nhật'}
         </TypographyEllipsis>
       </Grid>
-      <Grid item xs={1.5} sm={0} sx={{ display: { sm: 'none', xs: 'inline' } }}>
+      <Grid
+        item
+        xs={1.5}
+        sm={0}
+        sx={{
+          display: {
+            sm: 'none',
+            xs: params.field === 'name' ? 'inline' : 'none'
+          }
+        }}
+      >
         <Tooltip title="Chi tiết">
           <IconButton size="small" onClick={handleOpenDetailModal}>
             <ReadMoreIcon fontSize="small" />
@@ -85,63 +101,82 @@ const renderActionsCell = (params) => {
   );
 };
 
-const userManagementColumns: GridColDef[] = [
-  {
-    field: 'name',
-    headerName: 'Tên người dùng',
-    minWidth: !isMobile ? 200 : 180,
-    renderCell: renderCellText,
-    sortable: true
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    minWidth: 200,
-    maxWidth: 250,
-    renderCell: renderCellText
-  },
-  {
-    field: 'phone',
-    headerName: 'Số điện thoại',
-    minWidth: 150,
-    renderCell: renderCellText
-  },
-  {
-    field: 'dob',
-    headerName: 'Ngày sinh',
-    minWidth: 150,
-    renderCell: renderCellText
-  },
-  {
-    field: 'sex',
-    headerName: 'Giới tính',
-    minWidth: 120,
-    renderCell: renderCellText
-  },
-  {
-    field: 'role',
-    headerName: 'Vai trò',
-    minWidth: 150
-  },
-  {
-    field: 'actions',
-    headerName: 'Hành động',
-    minWidth: !isMobile ? 150 : 50,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: renderActionsCell
-  }
-];
-
 const UserManagement = () => {
+  const { isMobile } = useResponsive();
   const pageSize = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [sortModel, setSortModel] = useState({ orderBy: '', sort: '' });
+  const [searchUser, setSearchUser] = useState({
+    keyword: '',
+    role: ''
+  });
   const { userList, isLoading, totalPages } = useQueryAllUserByAdmin({
     page: currentPage,
     num: pageSize,
+    ...searchUser,
     ...sortModel
   });
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {}
+  });
+
+  const userManagementColumns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Tên người dùng',
+      minWidth: !isMobile ? 200 : 180,
+      renderCell: renderCellText,
+      sortable: true
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      minWidth: 200,
+      maxWidth: 250,
+      renderCell: renderCellText,
+      sortable: true
+    },
+    {
+      field: 'phone',
+      headerName: 'Số điện thoại',
+      minWidth: 150,
+      renderCell: renderCellText
+    },
+    {
+      field: 'dob',
+      headerName: 'Ngày sinh',
+      minWidth: 150,
+      renderCell: renderCellText,
+      sortable: true
+    },
+    {
+      field: 'sex',
+      headerName: 'Giới tính',
+      minWidth: 120,
+      renderCell: renderCellText
+    },
+    {
+      field: 'role',
+      headerName: 'Vai trò',
+      minWidth: 150
+    },
+    {
+      field: 'actions',
+      headerName: 'Hành động',
+      minWidth: !isMobile ? 150 : 50,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: renderActionsCell
+    }
+  ];
+
+  const handleSearchUser = (data) => {
+    setSearchUser({ ...data });
+  };
 
   return (
     <Container maxWidth="xl">
@@ -155,9 +190,43 @@ const UserManagement = () => {
       >
         <Grid item xs={12}>
           <Card>
-            <CardHeader title="Quản lý tài khoản" />
+            <CardHeader title="Quản lý tài khoản người dùng" />
             <Divider />
             <CardContent>
+              <Grid container>
+                <Grid item xs={12} sm={9}>
+                  <FormControl
+                    element={<TextField />}
+                    label="Tên hoặc email người dùng"
+                    name="keyword"
+                    variant="outlined"
+                    size="small"
+                    control={control}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={1.5}>
+                  <FormControl
+                    element={<SelectInput />}
+                    name="role"
+                    control={control}
+                    options={USER_ROLE}
+                    label="Vai trò"
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={1.5}>
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={handleSubmit(handleSearchUser)}
+                    sx={{ height: 35 }}
+                    fullWidth
+                  >
+                    Tìm hồ sơ
+                  </Button>
+                </Grid>
+              </Grid>
               <TableData
                 sx={{ minHeight: '72vh', width: '100%' }}
                 rows={userList}

@@ -23,14 +23,15 @@ import { removeHTMLTag } from 'src/utils/formatData';
 import useMutateSendEmail from 'src/modules/admin/hooks/useMutateSendEmail';
 import useQueryAllUserByAdmin from 'src/modules/admin/hooks/useQueryAllUserByAdmin';
 import { Role } from 'src/modules/users/model';
-import useQueryAllEmailByAdmin from 'src/modules/admin/hooks/useQueryAllEmailByAdmin';
+import useQueryAllEmailByAdmin, {
+  useQuerySuggestEmailByAdmin
+} from 'src/modules/admin/hooks/useQueryAllEmailByAdmin';
 
 const EmailNotification = () => {
   const [recipient, setRecipient] = useState('');
-  const [uploadedFile, setUploadedFile] = useState(null);
   const [isEmpty, setIsEmpty] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
-  const { emailList, inputRecipientKeywords } = useMutateGetEmail();
+  // const { emailList, inputRecipientKeywords } = useMutateGetEmail();
   const { onSendEmail, isLoading } = useMutateSendEmail();
   const { allEmailList } = useQueryAllEmailByAdmin(
     {
@@ -38,10 +39,23 @@ const EmailNotification = () => {
     },
     Boolean(selectedUser)
   );
-  const selectedUserEmailList = allEmailList?.map((item) => ({
-    value: item.email,
-    label: item.email
-  }));
+  const selectedUserEmailList = useMemo(
+    () =>
+      allEmailList?.map((item) => ({
+        value: item.email,
+        label: item.email
+      })),
+    [JSON.stringify(allEmailList)]
+  );
+  const { suggestEmailList } = useQuerySuggestEmailByAdmin(
+    {
+      page: 1,
+      num: 6,
+      role: '',
+      keyword: recipient
+    },
+    Boolean(recipient)
+  );
 
   const {
     control,
@@ -75,19 +89,21 @@ const EmailNotification = () => {
     });
   }, [JSON.stringify(selectedUserEmailList)]);
 
-  useEffect(() => {
-    recipient && inputRecipientKeywords({ keyword: recipient });
-  }, [recipient]);
+  // useEffect(() => {
+  //   recipient && inputRecipientKeywords({ keyword: recipient });
+  // }, [recipient]);
 
   const recipientOption = useMemo(
     () =>
-      emailList?.map((item) => {
+      suggestEmailList?.map((item) => {
+        console.log(suggestEmailList);
+
         return {
           value: item.email,
           label: item.email
         };
       }),
-    [emailList]
+    [suggestEmailList]
   );
   return (
     <Container maxWidth="md" style={{ marginTop: 20, paddingBottom: 30 }}>

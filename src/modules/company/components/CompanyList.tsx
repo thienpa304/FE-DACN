@@ -4,7 +4,6 @@ import Pagination from 'src/components/Pagination';
 import CompanyCard from './CompanyCard';
 import BusinessIcon from '@mui/icons-material/Business';
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import { isTablet } from 'src/constants/reponsive';
 
 function CompanyList(props) {
   const { pageTitle, sx, queryCompanys } = props;

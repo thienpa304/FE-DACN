@@ -8,13 +8,11 @@ import {
   Divider,
   Grid
 } from '@mui/material';
-import useQueryJobByAdmin from 'src/modules/jobs/hooks/useQueryJobByAdmin';
 import Table from './Table';
 import SelectInput from 'src/components/SelectInput';
 import { APPROVAL_STATUS } from 'src/constants';
 import { useState } from 'react';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
-import useQueryTotalJobsEachProfession from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfession';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryTotalJobsEachProfessionByAdmin from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfessionByAdmin';
 

@@ -41,6 +41,22 @@ export default function FindProfiles() {
         Tìm kiếm ứng viên
       </Typography>
       <SearchBar to="/employer/find-profiles" sx={{ my: 3 }} />
+      <Box display={'flex'} columnGap={1}>
+        <Typography fontSize={20}>Kết quả việc làm:</Typography>
+        <Typography fontWeight={700} fontSize={20}>
+          {jobTitle ? jobTitle : ''}
+        </Typography>
+        {profession && (
+          <Typography fontSize={20}>
+            ngành <b>{profession}</b>
+          </Typography>
+        )}
+        {workAddress && (
+          <Typography fontSize={20}>
+            tại <b>{workAddress}</b>
+          </Typography>
+        )}
+      </Box>
       <JobFilter handleFilter={handleFilter} />
       <Container
         sx={{

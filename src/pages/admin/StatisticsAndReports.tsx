@@ -34,9 +34,9 @@ import useQueryJobPostingsReportByQuery from 'src/modules/admin/hooks/useQueryPo
 import useQueryCandidateStatisticsByQuery from 'src/modules/admin/hooks/useQueryCandidateStatisticsByQuery';
 import { MonthCalendar, YearCalendar } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
-import { isMobile, isTablet } from 'src/constants/reponsive';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import { useResponsive } from 'src/utils/responsive';
 
 const ChartWrapper = styled(Grid)({
   display: 'flex',
@@ -66,10 +66,7 @@ const StatisticsAndReports = () => {
   const [selectedYear, setSelectedYear] = useState<Dayjs | null>(dayjs());
   const [selectedMonth, setSelectedMonth] = useState<Dayjs | null>(dayjs());
 
-  // const { jobPostingData, isLoading: isLoadingJobData } =
-  //   useQueryJobPostingsReport();
-  // const { candidateStatistics, isLoading: isLoadingCandidate } =
-  //   useQueryCandidateStatistics();
+  const { isMobile, isTablet } = useResponsive();
 
   const { jobPostingData, isLoading: isLoadingJobData } =
     useQueryJobPostingsReportByQuery({

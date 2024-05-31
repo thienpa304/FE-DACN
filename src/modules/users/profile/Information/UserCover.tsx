@@ -22,8 +22,8 @@ import { avatarFormat } from 'src/constants/uploadFileRule';
 import useMutateAvatar from '../../hooks/useMutateAvatar';
 import { avatarErrorText } from 'src/components/UploadError';
 import { styled } from '@mui/material/styles';
-import { isMobile } from 'src/constants/reponsive';
 import { LoadingButton } from '@mui/lab';
+import { useResponsive } from 'src/utils/responsive';
 
 const Input = styled('input')({
   display: 'none'
@@ -31,6 +31,7 @@ const Input = styled('input')({
 
 export default function UserCover() {
   const { user } = useApp();
+  const { isMobile } = useResponsive();
   const { onSaveData, isLoading } = useMutateAvatar();
   const { acceptTypes, acceptSize } = avatarFormat;
   const [save, setSave] = useState(true);
