@@ -160,6 +160,7 @@ function HeaderNotifications() {
           handlePageChange={setCurrentPage}
           sx={{ my: 1 }}
           size={'small'}
+          scrollToTop={false}
         />
       </Popover>
     </Box>
