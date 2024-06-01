@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -27,8 +27,6 @@ import {
   Cell,
   ResponsiveContainer
 } from 'recharts';
-import useQueryJobPostingsReport from 'src/modules/admin/hooks/useQueryPostingsReport';
-import useQueryCandidateStatistics from 'src/modules/admin/hooks/useQueryCandidateStatistics';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryJobPostingsReportByQuery from 'src/modules/admin/hooks/useQueryPostingsReportByQuery';
 import useQueryCandidateStatisticsByQuery from 'src/modules/admin/hooks/useQueryCandidateStatisticsByQuery';
@@ -93,13 +91,10 @@ const StatisticsAndReports = () => {
       item.time
   }));
 
-  let XAxisInterval = 1;
-
-  if (!selectedMonth) {
-    XAxisInterval = 1;
-  } else {
-    XAxisInterval = isMobile ? 3 : isTablet ? 2 : 1;
-  }
+  const XAxisInterval = useMemo(() => {
+    if (!selectedMonth) return 0;
+    return isMobile ? 3 : isTablet ? 2 : 1;
+  }, [selectedMonth]);
 
   const handleDownloadExcel = () => {
     const statisticsData = [
