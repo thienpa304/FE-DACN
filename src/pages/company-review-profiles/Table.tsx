@@ -603,7 +603,7 @@ export default function Table(props) {
           }
         }}
         hideFooter
-        sx={{ minHeight: '74vh', width: '100%' }}
+        sx={{ height: '74vh', width: '100%' }}
         checkboxSelection
         disableRowSelectionOnClick={isMobile}
         rowSelection={true}

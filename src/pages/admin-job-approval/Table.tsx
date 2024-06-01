@@ -514,7 +514,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         </Grid>
       </Box>
       <TableData
-        sx={{ minHeight: '72vh', width: '100%' }}
+        sx={{ height: '72vh', width: '100%' }}
         rows={showList}
         columns={columns}
         hideFooter

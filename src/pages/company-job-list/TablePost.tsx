@@ -224,7 +224,7 @@ export default function TablePost({ data, pageSize, setSortModel }) {
         handleSort(newSortModel, setSortModel);
       }}
       hideFooter
-      sx={{ height: '74vh', width: '100%' }}
+      sx={{ minHeight: '74vh', width: '100%' }}
     />
   );
 }

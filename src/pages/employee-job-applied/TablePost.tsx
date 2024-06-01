@@ -133,9 +133,9 @@ export default function TablePost(props) {
   );
 
   return (
-    <Box>
+    <>
       <TableData
-        sx={{ minHeight: '72vh', width: '100%' }}
+        sx={{ height: '74vh', width: '100%' }}
         rows={flattenedApplications}
         columns={columns}
         initialState={{
@@ -158,6 +158,6 @@ export default function TablePost(props) {
         totalPages={totalPages}
         handlePageChange={setCurrentPage}
       />
-    </Box>
+    </>
   );
 }

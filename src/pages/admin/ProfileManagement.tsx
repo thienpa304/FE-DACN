@@ -321,7 +321,7 @@ const ProfileManagement = () => {
                         rows={employeeList}
                         hideFooter
                         sx={{
-                          minHeight: '65vh'
+                          height: '74vh'
                         }}
                         loading={isLoading}
                         initialState={{
