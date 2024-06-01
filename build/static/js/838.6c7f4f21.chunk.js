@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkFE_DACN=self.webpackChunkFE_DACN||[]).push([[838],{28838:(t,e,s)=>{s.r(e),s.d(e,{default:()=>d});var n=s(51318),u=s(86388),c=s(70579);const d=()=>{const[t,e]=(0,n.ok)(),s=atob(t.get("id"));return(0,c.jsx)(u.A,{title:"C\u1eadp Nh\xe2t tin tuy\u1ec3n d\u1ee5ng",selectedId:s})}}}]);
-//# sourceMappingURL=838.6c7f4f21.chunk.js.map
