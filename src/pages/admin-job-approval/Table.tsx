@@ -417,7 +417,6 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   const handleConfirm = () => {
     const handleConfirmApprove = () => {
-      debugger;
       Promise.all(
         selectedRows.map((id) => mutate([id, { status: quickApproveValue }]))
       );

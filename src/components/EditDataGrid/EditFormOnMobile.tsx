@@ -61,7 +61,6 @@ export default function EditGridInfo(props) {
       if (!data.hasOwnProperty(key)) continue;
 
       if (dateType.includes(key)) {
-        debugger;
         const dateString = toOutputDateString(data[key]);
         data[key] = dateString;
       }
