@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import LazyLoadImage from 'src/components/LazyLoadImage';
+import { useResponsive } from 'src/utils/responsive';
 
 export const casouselImages = [
   {
@@ -27,6 +28,7 @@ export const casouselImages = [
 ];
 
 function Casousel() {
+  const { isMobile, isTablet } = useResponsive();
   const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
   return (
     <Box>
@@ -36,7 +38,7 @@ function Casousel() {
             {index <= casouselImages.length ? (
               <LazyLoadImage
                 width="100%"
-                height="230px"
+                height={isMobile ? '120px' : isTablet ? '180px' : '230px'}
                 objectFit="cover"
                 src={step.lg}
                 srcSet={`
@@ -45,6 +47,7 @@ function Casousel() {
                   ${step.sm} 480w
                 `}
                 visibleByDefault={index === 0}
+                delayTime={index === 0 ? 0 : 300}
                 style={{ borderRadius: '0.5rem' }}
               />
             ) : null}

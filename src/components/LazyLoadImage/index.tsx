@@ -12,6 +12,8 @@ const LazyLoadImage = (props) => (
     placeholderSrc={props.placeholderSrc}
     visibleByDefault={props.visibleByDefault}
     style={{ backgroundColor: '#fff', ...props, ...props.sx, ...props.style }}
+    delayMethod={props.delayMethod}
+    delayTime={props.delayTime}
   />
 );
 export default LazyLoadImage;
