@@ -237,6 +237,21 @@ const randomList2 = [
   'Kỹ sư điện tử'
 ];
 
+const testList1 = [
+  'Thành tựu',
+  'Bất động sản',
+  'Công nghệ',
+  'Tiếng nói',
+  'Ngoại quốc'
+];
+const testList2 = [
+  'thành quả',
+  'Nhà đất',
+  'Kĩ thuật',
+  'ngôn ngữ',
+  'nước ngoài'
+];
+
 const columns: GridColDef[] = [
   {
     field: 'employer_Requirement',
@@ -268,8 +283,8 @@ export default function testGPT() {
     getEmbedding([
       {
         id: 1,
-        employer_Requirement: randomList1,
-        employee_Profile: randomList2
+        employer_Requirement: testList1,
+        employee_Profile: testList2
       }
     ]).then((response) => {
       const analyzedData = response.map((item: any) => {
