@@ -41,7 +41,7 @@ const renderBanner = (banner: string) => {
 
 const renderLogo = (avatar: string) => (
   <Avatar
-    src={avatar || defaultImage.companyAvatar}
+    src={avatar || defaultImage.companyAvatar_md}
     sx={{
       width: 120,
       height: 120,

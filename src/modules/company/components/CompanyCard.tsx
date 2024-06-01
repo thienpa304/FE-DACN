@@ -64,7 +64,7 @@ function CompanyCard({
             <Box display={'flex'} gap={2}>
               <LazyLoadImage
                 src={company?.logo || defaultImage.companyAvatar_md}
-                placeholderSrc={defaultImage.companyAvatar_md}
+                placeholderSrc={defaultImage.companyAvatar_sm}
                 width={isTablet ? 70 : 100}
                 height={isTablet ? 70 : 100}
                 my={isTablet ? 'auto' : 0}
