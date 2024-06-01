@@ -53,9 +53,6 @@ export default function Autocomplete(props) {
             return option?.trim() === value?.trim();
           } else return option === value;
         }}
-        // autoComplete
-        // autoSelect
-        // autoHighlight
         onChange={handleSelectChange}
         freeSolo={freeSolo}
         getOptionLabel={(option) => option?.label || option}
