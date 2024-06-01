@@ -194,7 +194,7 @@ const UserManagement = () => {
             <Divider />
             <CardContent>
               <Grid container>
-                <Grid item xs={12} sm={9}>
+                <Grid item xs={12} sm={7} md={9}>
                   <FormControl
                     element={<TextField />}
                     label="Tên hoặc email người dùng"
@@ -205,7 +205,7 @@ const UserManagement = () => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} sm={1.5}>
+                <Grid item xs={12} sm={2.5} md={1.5}>
                   <FormControl
                     element={<SelectInput />}
                     name="role"
@@ -215,7 +215,7 @@ const UserManagement = () => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} sm={1.5}>
+                <Grid item xs={12} sm={2.5} md={1.5}>
                   <Button
                     variant="contained"
                     color="info"

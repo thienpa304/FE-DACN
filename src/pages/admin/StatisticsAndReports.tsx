@@ -83,13 +83,32 @@ const StatisticsAndReports = () => {
     else setSelectedMonth(dayjs());
   };
 
-  const formattedJobPostingData = jobPostingData?.map((item) => ({
-    ...item,
-    time:
-      (dayjs(item?.time, 'MMM').isValid() &&
-        dayjs(item?.time, 'MMM').format('MM')) ||
-      item.time
-  }));
+  const formattedJobPostingData = jobPostingData?.map((item) => {
+    let data = item['Tin đăng'];
+    if (selectedMonth) {
+      const month = selectedMonth?.month() + 1;
+      const year = selectedYear?.year();
+      const today = dayjs();
+      const itemTimeString = `${year}-${month < 10 ? '0' + month : month}-${
+        item.time < 10 ? '0' + item.time : item.time
+      }`;
+      const itemTime = dayjs(itemTimeString, 'YYYY-MM-DD');
+      if (itemTime.isValid()) {
+        if (itemTime.isAfter(today)) {
+          data = null;
+        }
+      }
+    }
+
+    return {
+      ...item,
+      time:
+        (dayjs(item?.time, 'MMM').isValid() &&
+          dayjs(item?.time, 'MMM').format('MM')) ||
+        item.time,
+      'Tin đăng': data
+    };
+  });
 
   const XAxisInterval = useMemo(() => {
     if (!selectedMonth) return 0;
