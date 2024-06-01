@@ -111,6 +111,7 @@ function HeaderNotifications() {
           vertical: 'top',
           horizontal: 'right'
         }}
+        sx={{ width: 600 }}
       >
         <Box
           sx={{ p: 2 }}

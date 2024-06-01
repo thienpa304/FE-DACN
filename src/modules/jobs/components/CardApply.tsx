@@ -18,6 +18,7 @@ import CustomContainer from 'src/components/CustomContainer';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import { useResponsive } from 'src/utils/responsive';
 import useQueryCheckApplied from 'src/modules/application/hooks/useQueryCheckApplied';
+import LazyLoadImage from 'src/components/LazyLoadImage';
 
 const AvatarWrapper = styled(Avatar)(({ theme }) => ({
   width: 150,
@@ -59,7 +60,12 @@ const CardApply: React.FC<Props> = ({ data }) => {
 
   return (
     <CustomContainer
-      sx={{ px: 5, pb: 5, mb: 2, minHeight: !isEmployer && !isAdmin && 280 }}
+      sx={{
+        px: 5,
+        pb: 5,
+        mb: 2,
+        minHeight: !isEmployer && !isAdmin ? 280 : 260
+      }}
     >
       <Grid container>
         <Grid
@@ -70,8 +76,15 @@ const CardApply: React.FC<Props> = ({ data }) => {
           alignItems="center"
           sx={{ justifyContent: { xs: 'center', sm: 'normal' } }}
         >
-          <AvatarWrapper
-            src={data?.employer?.logo || defaultImage.companyAvatar}
+          <LazyLoadImage
+            src={data?.employer?.logo || defaultImage.companyAvatar_md}
+            placeholderSrc={defaultImage.companyAvatar_md}
+            style={{
+              width: 150,
+              height: 150,
+              objectFit: 'contain',
+              borderRadius: '5px'
+            }}
           />
         </Grid>
         <Grid item xs={12} md={10}>

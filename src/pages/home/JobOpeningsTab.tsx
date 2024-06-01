@@ -21,8 +21,7 @@ function JobOpeningsTab() {
       sx={{
         borderColor: '#98E4FF',
         borderRadius: '5px',
-        mt: 2,
-        pb: 3
+        mt: 2
       }}
     >
       <Box
@@ -39,7 +38,7 @@ function JobOpeningsTab() {
           <Typography
             fontWeight={700}
             alignSelf="end"
-            sx={{ fontSize: { md: 20, xs: 18 } }}
+            sx={{ fontSize: { md: 20, sm: 18, xs: 16 } }}
           >
             Việc làm đang tuyển
           </Typography>
@@ -47,36 +46,38 @@ function JobOpeningsTab() {
         <Link
           to="/hiring-job"
           sx={{
-            fontSize: { md: 16, xs: 14 },
             fontWeight: 700
           }}
         >
           Xem thêm
         </Link>
       </Box>
-      <Grid container mb={3} spacing={1} p={3} display={'flex'} height={550}>
-        {jobs.length > 0 ? (
-          jobs.map((job, index) => (
-            <Grid key={job.id} item xs={12} sm={6} md={4}>
-              <SmallJobCard key={index} job={job} />
-            </Grid>
-          ))
-        ) : (
-          <Typography
-            fontStyle={'italic'}
-            textAlign={'center'}
-            color={'gray'}
-            width={'100%'}
-            lineHeight={10}
-          >
-            Không có việc làm
-          </Typography>
-        )}
-      </Grid>
+      <Box minHeight={600}>
+        <Grid container spacing={1} p={3} display={'flex'}>
+          {jobs.length > 0 ? (
+            jobs?.map((job, index) => (
+              <Grid key={job.id} item xs={12} sm={6} md={4}>
+                <SmallJobCard key={index} job={job} />
+              </Grid>
+            ))
+          ) : (
+            <Typography
+              fontStyle={'italic'}
+              textAlign={'center'}
+              color={'gray'}
+              width={'100%'}
+              lineHeight={10}
+            >
+              Không có việc làm
+            </Typography>
+          )}
+        </Grid>
+      </Box>
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         handlePageChange={setCurrentPage}
+        scrollToTop={false}
       />
     </Card>
   );

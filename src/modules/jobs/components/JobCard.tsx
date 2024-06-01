@@ -22,10 +22,11 @@ import LinkText from 'src/components/LinkText';
 import { Job } from '../model';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import { TypographyEllipsis } from 'src/components/Typography';
+import LazyLoadImage from 'src/components/LazyLoadImage';
 
 function JobCard({ job }: { job: Job }) {
   const companyAvatar = useMemo(
-    () => job?.employer?.logo || defaultImage.companyAvatar,
+    () => job?.employer?.logo || defaultImage.companyAvatar_md,
     [job?.employer?.logo]
   );
 
@@ -79,15 +80,15 @@ function JobCard({ job }: { job: Job }) {
             // justifyContent="center"
             sx={{ justifyContent: (theme) => ({ xs: 'center', sm: 'left' }) }}
           >
-            <Avatar
+            <LazyLoadImage
               src={companyAvatar}
-              variant="rounded"
+              placeholderSrc={defaultImage.companyAvatar_sm}
               sx={{
-                bgcolor: '#fff',
                 maxWidth: 100,
                 width: 'auto',
-                maxHeight: 90,
-                height: 'auto'
+                maxHeight: 100,
+                height: 'auto',
+                borderRadius: 10
               }}
             />
           </Grid>

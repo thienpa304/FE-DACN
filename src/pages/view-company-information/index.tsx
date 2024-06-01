@@ -8,6 +8,7 @@ import useQueryCompanyInfoByUser from 'src/modules/company/hook/useQueryCompanyI
 import { useSearchParams } from 'react-router-dom';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { useResponsive } from 'src/utils/responsive';
+import LazyLoadImage from 'src/components/LazyLoadImage';
 
 const CoverImage = styled('img')({
   width: '100%',
@@ -26,7 +27,14 @@ const ImagePaper = styled(Paper)({
 const renderBanner = (banner: string) => {
   return (
     <ImagePaper elevation={12}>
-      <CoverImage src={banner || defaultImage.companyCover} alt="cover" />
+      <LazyLoadImage
+        src={banner}
+        placeholderSrc={defaultImage.companyCover}
+        alt="cover"
+        height={280}
+        width="100%"
+        objectFit="cover"
+      />
     </ImagePaper>
   );
 };

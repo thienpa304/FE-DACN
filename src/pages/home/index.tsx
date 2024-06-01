@@ -20,7 +20,7 @@ const Home = () => {
     <OverviewWrapper pb={2}>
       <Casousel />
       <Container>
-        <SearchBar to="profession" />
+        <SearchBar to="profession" sx={{ mt: -0.7 }} />
         <ProfessionType />
         <JobOpeningsTab />
         <CompanyTab

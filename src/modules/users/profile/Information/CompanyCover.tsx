@@ -141,6 +141,7 @@ function CompanyCover() {
     <ImagePaper elevation={12}>
       <LazyLoadImage
         src={companyCover.img}
+        placeholderSrc={defaultImage.companyCover}
         alt="cover"
         height={280}
         width="100%"
@@ -198,6 +199,7 @@ function CompanyCover() {
       <IconButton component="label" sx={{ borderRadius: 10, mt: -5 }}>
         <LazyLoadImage
           src={companyAvatar.img}
+          placeholderSrc={defaultImage.companyAvatar}
           sx={{
             width: 120,
             height: 120,

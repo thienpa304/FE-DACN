@@ -16,10 +16,11 @@ import { defaultImage } from 'src/constants/uploadFileRule';
 import FollowJobButton from './FollowJobButton';
 import { rewriteUrl } from 'src/utils/rewriteUrl';
 import { TypographyEllipsis } from 'src/components/Typography';
+import LazyLoadImage from 'src/components/LazyLoadImage';
 
 function SmallJobCard({ job }) {
   const [companyAvatar, setCompanyAvatar] = useState(
-    job?.employer?.logo || defaultImage.companyAvatar
+    job?.employer?.logo || defaultImage.companyAvatar_sm
   );
 
   return (
@@ -64,24 +65,22 @@ function SmallJobCard({ job }) {
           </Box>
         }
       />
-      <CardContent
-        sx={{ display: 'flex', flexDirection: 'row', gap: 4, pt: 1 }}
-      >
-        <Grid container spacing={2}>
-          <Grid item md={4} sm={6} xs={3}>
-            <Avatar
+      <CardContent sx={{ mt: -1 }}>
+        <Grid container sx={{ spacing: { md: 2, xs: 0 } }}>
+          <Grid item md={4} sm={5} xs={3}>
+            <LazyLoadImage
               src={companyAvatar}
-              variant="rounded"
+              placeholderSrc={defaultImage.companyAvatar_sm}
               sx={{
                 maxWidth: 100,
-                width: 'auto',
-                maxHeight: 90,
-                height: 'auto',
+                width: '100%',
+                maxHeight: 100,
+                height: '100%',
                 objectFit: 'cover'
               }}
             />
           </Grid>
-          <Grid item md={8} sm={6} xs={9}>
+          <Grid item md={8} sm={7} xs={9}>
             <Box display="flex" flexDirection="column" gap={1}>
               <Box display="flex">
                 <BusinessIcon sx={{ maxHeight: 20, color: 'grey.700' }} />

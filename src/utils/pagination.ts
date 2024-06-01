@@ -1,7 +1,8 @@
 export const handlePageChange = (
   pageNumber: number,
-  setCurrentPage: (value: React.SetStateAction<number>) => void
+  setCurrentPage: (value: React.SetStateAction<number>) => void,
+  scrollToTop = true
 ) => {
   setCurrentPage(pageNumber);
-  window.scrollTo(0, 0);
+  if (scrollToTop) window.scrollTo({ top: 0, behavior: 'smooth' });
 };
