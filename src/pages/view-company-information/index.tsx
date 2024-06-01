@@ -28,7 +28,7 @@ const renderBanner = (banner: string) => {
   return (
     <ImagePaper elevation={12}>
       <LazyLoadImage
-        src={banner}
+        src={banner || defaultImage.companyCover}
         placeholderSrc={defaultImage.companyCover}
         alt="cover"
         height={280}
@@ -41,7 +41,7 @@ const renderBanner = (banner: string) => {
 
 const renderLogo = (avatar: string) => (
   <Avatar
-    src={avatar || defaultImage.companyAvatar}
+    src={avatar || defaultImage.companyAvatar_md}
     sx={{
       width: 120,
       height: 120,
