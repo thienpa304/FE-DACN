@@ -38,7 +38,12 @@ import useMutateJob from '../hooks/useMutateJob';
 import useMutateJobById from '../hooks/useMutateJobById';
 import DatePicker from 'src/components/DatePicker';
 import _ from 'lodash';
-import { preProcessText, removeHTMLTag } from 'src/utils/formatData';
+import {
+  preProcessText,
+  removeHTMLTag,
+  toInputDateString,
+  toOutputDateString
+} from 'src/utils/formatData';
 import { loadKeywords } from 'src/utils/keywords';
 import useProfileHook from 'src/modules/users/hooks/useUserHook';
 import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
@@ -61,7 +66,8 @@ const defaultValues = {
   address: '',
   phone: '',
   contactAddress: '',
-  requiredSkills: ''
+  requiredSkills: '',
+  applicationDeadline: ''
 };
 type Props = {
   title?: string;
@@ -118,7 +124,13 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       sex: newData.sex === 'Tất cả' ? null : newData.sex,
       profession: Array.isArray(newData.profession)
         ? newData.profession.map((item) => item.value || item).join(',')
-        : newData.profession
+        : newData.profession,
+      // applicationDeadline: toOutputDateString(
+      //   newData?.applicationDeadline,
+      //   null,
+      //   'DD-MM-YYYY'
+      // )
+      applicationDeadline: newData?.applicationDeadline
     });
     handleAnalysis(newData);
   };
@@ -152,7 +164,10 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
 
   useEffect(() => {
     if (data) {
-      reset(data);
+      reset({
+        ...data,
+        applicationDeadline: toInputDateString(data?.applicationDeadline)
+      });
     } else if (!selectedId) {
       reset({
         name: profile?.name,
@@ -172,9 +187,21 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       if (selectedId)
         onSaveDataById([
           selectedId,
-          { ...onSaveNewData, keywords: keywordToStore }
+          {
+            ...onSaveNewData,
+            keywords: keywordToStore
+          }
         ]);
-      else onSaveData({ ...onSaveNewData, keywords: keywordToStore });
+      else
+        onSaveData({
+          ...onSaveNewData,
+          keywords: keywordToStore,
+          applicationDeadline: toOutputDateString(
+            onSaveNewData?.applicationDeadline,
+            null,
+            'DD-MM-YYYY'
+          )
+        });
     }
     setIsAnalyzing(false);
   }, [analysisResults]);
