@@ -8,7 +8,6 @@ import {
   DialogContent,
   CardHeader,
   CardContent,
-  Avatar,
   Card
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -24,6 +23,7 @@ import { TypographyEllipsis } from 'src/components/Typography';
 import { useMemo } from 'react';
 import { useResponsive } from 'src/utils/responsive';
 import LazyLoadImage from 'src/components/LazyLoadImage';
+import LockIcon from '@mui/icons-material/Lock';
 
 const EmployeeCard = ({ profile, setSelectedProfile }) => {
   const isHidden = useMemo(() => Boolean(!profile?.jobTitle), [profile]);
@@ -50,147 +50,165 @@ const EmployeeCard = ({ profile, setSelectedProfile }) => {
           whiteSpace: 'normal'
         }}
         title={
-          <>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                height: 55
-              }}
-            >
-              <TypographyEllipsis
-                sx={{
-                  ':hover': {
-                    color: !isHidden && '#ce8b0e',
-                    cursor: 'pointer'
-                  },
-                  flex: 1,
-                  //disable color
-                  color: isHidden && 'text.disabled'
-                }}
-                fontWeight={700}
-                fontSize={18}
-                onClick={() => {
-                  !isHidden && setSelectedProfile(profile);
-                }}
-                fontStyle={isHidden && 'italic'}
-              >
-                {!isHidden ? profile?.jobTitle : 'Hồ sơ đã ẩn'}
-              </TypographyEllipsis>
-              <FollowEmployeeButton employeeProfile={profile} />
-            </Box>
-          </>
-        }
-      />
-      <CardContent sx={{ px: 2, py: 1 }}>
-        <Box display={'flex'} gap={2} mb={2}>
-          <LazyLoadImage
-            src={!isHidden && profile?.avatar}
-            width={100}
-            height={100}
-            borderRadius={'5px'}
-            objectFit="cover"
-            borderColor="#98E4FF"
-            effect="blur"
-          />
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column',
-              pt: 2
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              height: 55
             }}
           >
             <TypographyEllipsis
               sx={{
-                height: 52
+                ':hover': {
+                  color: !isHidden && '#ce8b0e',
+                  cursor: 'pointer'
+                },
+                flex: 1,
+                color: isHidden && 'text.disabled'
               }}
               fontWeight={700}
-              fontSize={15}
+              fontSize={18}
+              onClick={() => {
+                !isHidden && setSelectedProfile(profile);
+              }}
+              fontStyle={isHidden && 'italic'}
             >
-              {!isHidden && profile?.name}
+              {!isHidden && profile?.jobTitle}
             </TypographyEllipsis>
-            <Box display="flex">
-              <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-              <TypographyEllipsis
+            <FollowEmployeeButton employeeProfile={profile} />
+          </Box>
+        }
+      />
+      {!isHidden ? (
+        <>
+          <CardContent sx={{ px: 2, py: 1 }}>
+            <Box display={'flex'} gap={2} mb={2}>
+              <LazyLoadImage
+                src={!isHidden && profile?.avatar}
+                width={100}
+                height={100}
+                objectFit="cover"
+                borderColor="#98E4FF"
+                effect="blur"
+                style={{ borderRadius: '5px' }}
+              />
+              <Box
                 sx={{
-                  WebkitLineClamp: 1,
-                  fontWeight: 700
+                  display: 'flex',
+                  flexDirection: 'column',
+                  pt: 2
                 }}
               >
-                {profile?.desiredSalary} Triệu
-              </TypographyEllipsis>
+                <TypographyEllipsis
+                  sx={{
+                    height: 52
+                  }}
+                  fontWeight={700}
+                  fontSize={15}
+                >
+                  {!isHidden && profile?.name}
+                </TypographyEllipsis>
+                <Box display="flex">
+                  <LocalAtmIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
+                  <TypographyEllipsis
+                    sx={{
+                      WebkitLineClamp: 1,
+                      fontWeight: 700
+                    }}
+                  >
+                    {profile?.desiredSalary} Triệu
+                  </TypographyEllipsis>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <Box display="flex">
-            <WorkHistoryIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-            <TypographyEllipsis
-              sx={{
-                WebkitLineClamp: 1
-              }}
-            >
-              {profile?.profession}
-            </TypographyEllipsis>
-          </Box>
-          <Box display="flex">
-            <PersonIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
-            <TypographyEllipsis
-              sx={{
-                WebkitLineClamp: 1
-              }}
-            >
-              {profile?.currentPosition}
-            </TypographyEllipsis>
-          </Box>
-          <Box display="flex">
-            <AccessTimeIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-            <TypographyEllipsis
-              sx={{
-                WebkitLineClamp: 1
-              }}
-            >
-              Kinh nghiệm: {profile?.experience}
-            </TypographyEllipsis>
-          </Box>
-          <Box display="flex">
-            <SchoolIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-            <TypographyEllipsis
-              sx={{
-                WebkitLineClamp: 1
-              }}
-            >
-              Trình độ: {profile?.degree}
-            </TypographyEllipsis>
-          </Box>
-          <Box display="flex">
-            <GradeIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
-            <TypographyEllipsis>
-              Kỹ năng: {profile?.skills?.split(',').join(', ')}
-            </TypographyEllipsis>
-          </Box>
-        </Box>
-      </CardContent>
-      <Typography
-        sx={{
-          display: !isApplied ? 'none' : 'flex',
-          position: 'relative',
-          transform: 'rotate(-45deg)',
-          bgcolor: '#FFBF00',
-          height: 40,
-          width: 200,
-          float: 'right',
-          color: 'black',
-          right: -50,
-          top: -40,
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontWeight: 700
-        }}
-      >
-        Đã nộp hồ sơ
-      </Typography>
+            <Box display="flex" flexDirection="column" gap={2}>
+              <Box display="flex">
+                <WorkHistoryIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
+                <TypographyEllipsis
+                  sx={{
+                    WebkitLineClamp: 1
+                  }}
+                >
+                  {profile?.profession}
+                </TypographyEllipsis>
+              </Box>
+              <Box display="flex">
+                <PersonIcon sx={{ maxHeight: 20, color: 'grey.700' }} />
+                <TypographyEllipsis
+                  sx={{
+                    WebkitLineClamp: 1
+                  }}
+                >
+                  {profile?.currentPosition}
+                </TypographyEllipsis>
+              </Box>
+              <Box display="flex">
+                <AccessTimeIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
+                <TypographyEllipsis
+                  sx={{
+                    WebkitLineClamp: 1
+                  }}
+                >
+                  Kinh nghiệm: {profile?.experience}
+                </TypographyEllipsis>
+              </Box>
+              <Box display="flex">
+                <SchoolIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
+                <TypographyEllipsis
+                  sx={{
+                    WebkitLineClamp: 1
+                  }}
+                >
+                  Trình độ: {profile?.degree}
+                </TypographyEllipsis>
+              </Box>
+              <Box display="flex">
+                <GradeIcon sx={{ maxHeight: 18, color: 'grey.700' }} />
+                <TypographyEllipsis>
+                  Kỹ năng: {profile?.skills?.split(',').join(', ')}
+                </TypographyEllipsis>
+              </Box>
+            </Box>
+          </CardContent>
+          <Typography
+            sx={{
+              display: !isApplied ? 'none' : 'flex',
+              position: 'relative',
+              transform: 'rotate(-45deg)',
+              bgcolor: '#FFBF00',
+              height: 40,
+              width: 200,
+              float: 'right',
+              color: 'black',
+              right: -50,
+              top: -40,
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontWeight: 700
+            }}
+          >
+            Đã nộp hồ sơ
+          </Typography>
+        </>
+      ) : (
+        <Typography
+          sx={{
+            display: 'flex',
+            bgcolor: '#DDDDDD',
+            height: 40,
+            width: '100%',
+            color: 'black',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontWeight: 700,
+            my: '50%'
+          }}
+        >
+          <LockIcon />
+          Hồ sơ đã ẩn
+        </Typography>
+      )}
     </Card>
   );
 };

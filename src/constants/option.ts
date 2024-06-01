@@ -16,6 +16,7 @@ type ApprovalStatusOption = {
   value: keyof typeof ApprovalStatus;
   color: Color;
   optionColor: string;
+  disabled?: boolean;
 };
 
 export const GENDER = [
@@ -63,7 +64,8 @@ export const APPROVAL_STATUS: ApprovalStatusOption[] = [
     value: 'expired',
     label: ApprovalStatus.expired,
     color: 'secondary',
-    optionColor: '#6E759F'
+    optionColor: '#6E759F',
+    disabled: true
   }
 ];
 

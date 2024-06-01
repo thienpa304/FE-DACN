@@ -39,7 +39,7 @@ export default function CompanyTab(props) {
           <Typography
             fontWeight={700}
             alignSelf="end"
-            sx={{ fontSize: { md: 20, xs: 18 } }}
+            sx={{ fontSize: { md: 20, sm: 18, xs: 16 } }}
           >
             Danh sách công ty
           </Typography>
@@ -47,15 +47,14 @@ export default function CompanyTab(props) {
         <Link
           to="/company"
           sx={{
-            fontSize: { md: 16, xs: 14 },
             fontWeight: 700
           }}
         >
           Xem thêm
         </Link>
       </Box>
-      <Box p={3}>
-        <Grid container spacing={1} height={!isMobile ? 400 : 1200} mb={2}>
+      <Box p={3} height={!isMobile ? 400 : 1150}>
+        <Grid container spacing={1} mb={2}>
           {companyList?.length ? (
             companyList.map((company) => (
               <Grid key={company?.userId} item xs={12} sm={4} md={4} lg={3}>
@@ -74,12 +73,13 @@ export default function CompanyTab(props) {
             </Typography>
           )}
         </Grid>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          handlePageChange={setCurrentPage}
-        />
       </Box>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={setCurrentPage}
+        scrollToTop={false}
+      />
     </Card>
   );
 }

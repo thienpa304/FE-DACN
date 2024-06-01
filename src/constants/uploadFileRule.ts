@@ -1,8 +1,14 @@
 export const defaultImage = {
-  companyAvatar:
-    'https://th.bing.com/th/id/OIP.EK1rvrib-MWNflZRM2XiDQHaH_?pid=ImgDet&w=183&h=197&c=7&dpr=1.3',
-  companyCover:
-    'https://png.pngtree.com/background/20210706/original/pngtree-business-background-white-collar-jobs-picture-image_216619.jpg'
+  companyAvatar: '/static/images/placeholders/logo/default-company-logo.jpg',
+  companyAvatar_md:
+    '/static/images/placeholders/logo/default-company-logo-md.jpg',
+  companyAvatar_sm:
+    '/static/images/placeholders/logo/default-company-logo-sm.jpg',
+  companyCover: '/static/images/placeholders/banner/default-company-banner.jpg',
+  companyCover_md:
+    '/static/images/placeholders/banner/default-company-banner-md.jpg',
+  companyCover_sm:
+    '/static/images/placeholders/banner/default-company-banner-sm.jpg'
 };
 
 export const avatarFormat = {

@@ -36,7 +36,14 @@ function ProfessionType() {
     setOpen(false);
   };
   return (
-    <Card sx={{ borderColor: '#98E4FF', borderRadius: '5px', mt: 2 }}>
+    <Card
+      sx={{
+        borderColor: '#98E4FF',
+        borderRadius: '5px',
+        mt: 2,
+        minHeight: 200
+      }}
+    >
       <Box
         display="flex"
         justifyContent="space-between"
@@ -51,7 +58,7 @@ function ProfessionType() {
           <Typography
             fontWeight={700}
             alignSelf="end"
-            sx={{ fontSize: { md: 20, xs: 18 } }}
+            sx={{ fontSize: { md: 20, sm: 18, xs: 16 } }}
           >
             Nghề nghiệp nổi bật
           </Typography>
@@ -60,7 +67,6 @@ function ProfessionType() {
         <Link
           to="#"
           sx={{
-            fontSize: { md: 16, xs: 14 },
             fontWeight: 700
           }}
           onClick={() => setOpen(true)}
@@ -75,7 +81,7 @@ function ProfessionType() {
         professionList={matchProfessionWithCount}
       />
 
-      <Grid container p={2} rowGap={2} minHeight={180}>
+      <Grid container p={2} rowGap={2}>
         {professionToShow?.map((profession, index) => (
           <Grid
             item
@@ -106,9 +112,13 @@ function ProfessionType() {
             <Box
               component={'img'}
               src={profession.icon}
-              alt="shopping-bag"
+              alt={profession.name}
               sx={{
                 width: {
+                  xs: '70px',
+                  sm: '90px'
+                },
+                height: {
                   xs: '70px',
                   sm: '90px'
                 },

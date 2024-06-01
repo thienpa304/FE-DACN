@@ -10,12 +10,7 @@ const LogoWrapper = styled(Link)(
         font-weight: ${theme.typography.fontWeightBold};
 `
 );
-const ImgWrapper = styled('img')(
-  ({ theme }) => `
-        width: 100px;
-        height: ${theme.header.height}
-`
-);
+const ImgWrapper = styled('img')({ width: '60px' });
 function Logo() {
   return (
     <Box
@@ -25,7 +20,7 @@ function Logo() {
       }}
     >
       <LogoWrapper to="/">
-        <ImgWrapper src="https://thuvienvector.com/upload/images/items/vector-logo-truong-dai-hoc-bach-khoa-hcm-file-cdr-coreldraw-ai-217.webp" />
+        <ImgWrapper src="/static/images/logo/web-logo.png" />
         <Typography
           sx={{
             display: { sm: 'flex', xs: 'none' },
@@ -34,8 +29,8 @@ function Logo() {
             color: '#b27300',
             textAlign: 'center',
             alignItems: 'center',
-            ml: -2,
-            mr: 2
+            ml: 1,
+            mr: 1
           }}
         >
           VN CareerHub
