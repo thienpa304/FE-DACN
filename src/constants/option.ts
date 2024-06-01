@@ -52,7 +52,8 @@ export const APPROVAL_STATUS: ApprovalStatusOption[] = [
     value: 'pending',
     label: ApprovalStatus.pending,
     color: 'warning',
-    optionColor: '#FFA319'
+    optionColor: '#FFA319',
+    disabled: true
   },
   {
     value: 'rejected',

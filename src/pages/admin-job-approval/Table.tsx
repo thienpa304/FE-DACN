@@ -542,7 +542,10 @@ export default function Table({ statusFilter, selectedProfession }) {
           handleSort(newSortModel, setSortModel);
         }}
         isRowSelectable={(params) => {
-          return params?.row?.applications?.length <= 0;
+          return (
+            params?.row?.applications?.length <= 0 &&
+            params?.row?.status != ApprovalStatus.expired
+          );
         }}
       />
       <Pagination

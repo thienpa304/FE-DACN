@@ -6,7 +6,8 @@ import {
   CardHeader,
   Container,
   Divider,
-  Grid
+  Grid,
+  Tab
 } from '@mui/material';
 import Table from './Table';
 import SelectInput from 'src/components/SelectInput';
@@ -15,6 +16,7 @@ import { useState } from 'react';
 import ProfessionList from 'src/modules/admin/components/ProfessionList';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import useQueryTotalJobsEachProfessionByAdmin from 'src/modules/jobs/hooks/useQueryTotalJobsEachProfessionByAdmin';
+import TabsWrapper from 'src/components/TabWrapper';
 
 const ApprovalStatusOption = [
   {
@@ -33,8 +35,8 @@ const JobApproval = () => {
 
   const { dataList, isLoading } = useQueryTotalJobsEachProfessionByAdmin();
 
-  const handleChangeStatusFilter = (e) => {
-    setStatus(e.target.value);
+  const handleChangeStatusFilter = (e, value) => {
+    setStatus(value);
   };
 
   const handleSelectProfession = (name: string) => {
@@ -76,21 +78,6 @@ const JobApproval = () => {
                   gap: 1
                 }}
               >
-                {!isProfessionView && (
-                  <Box sx={{ margin: 'auto', width: '120px' }}>
-                    <SelectInput
-                      label="Trạng thái"
-                      value={status}
-                      options={ApprovalStatusOption}
-                      onChange={(e) => handleChangeStatusFilter(e)}
-                      sx={{
-                        color: ApprovalStatusOption.find(
-                          (item) => item.value === status
-                        ).optionColor
-                      }}
-                    />
-                  </Box>
-                )}
                 <Button
                   variant="contained"
                   color={!isProfessionView ? 'primary' : 'info'}
@@ -112,10 +99,33 @@ const JobApproval = () => {
                 />
               )}
               {!isProfessionView && (
-                <Table
-                  statusFilter={status}
-                  selectedProfession={selectedProfession}
-                />
+                <>
+                  <TabsWrapper
+                    onChange={handleChangeStatusFilter}
+                    value={status}
+                    variant="scrollable"
+                    scrollButtons={false}
+                    sx={{
+                      display: { md: 'inline-block' },
+                      borderBottom: 1,
+                      borderColor: 'divider'
+                    }}
+                  >
+                    {ApprovalStatusOption.map((tab) => {
+                      return (
+                        <Tab
+                          key={tab.value}
+                          label={tab.label}
+                          value={tab.value}
+                        />
+                      );
+                    })}
+                  </TabsWrapper>
+                  <Table
+                    statusFilter={status}
+                    selectedProfession={selectedProfession}
+                  />
+                </>
               )}
             </CardContent>
           </Card>
