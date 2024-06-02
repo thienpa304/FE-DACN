@@ -127,3 +127,17 @@ export const parseResponseJSONData = async (result: any[]) => {
 };
 
 export const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+export function parseJsonString(jsonString) {
+  // Remove the triple backticks and newlines
+  const cleanedString = jsonString.replace(/```json|```/g, '').trim();
+
+  // Parse the cleaned string into a JSON object
+  try {
+    const jsonObject = JSON.parse(cleanedString);
+    return jsonObject;
+  } catch (error) {
+    console.error('Error parsing JSON string:', error);
+    return null;
+  }
+}

@@ -22,7 +22,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { TypographyEllipsis } from 'src/components/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import detailsModal from 'src/utils/detailsModal';
-import { checkIsJSON } from 'src/utils/formatData';
+import { checkIsJSON, parseJsonString } from 'src/utils/formatData';
 import ViewJobDialog from './ViewJobDialog';
 import useJob from 'src/modules/jobs/hooks/useJob';
 import { handleSort } from 'src/utils/sortData';
@@ -363,12 +363,10 @@ export default function Table({ statusFilter, selectedProfession }) {
 
   const handleCheck = async (dataToSend: Partial<Job>[]) => {
     const result = await sendChatGPTRequest(checkContent, dataToSend);
-
-    const jsonResult = result?.map(
-      (item) => checkIsJSON(item) && JSON.parse(item)
-    );
+    const jsonResult = result?.map((item) => parseJsonString(item));
     const resultList = jobs?.map((job) => {
       const found = jsonResult.find((item) => item.id === job.postId);
+
       if (found) {
         mutate([found.id, { check: found.result }]);
         return {
