@@ -30,6 +30,7 @@ import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import { TypographyEllipsis } from 'src/components/Typography';
+import { MODEL_4_O } from 'src/constants/gptModel';
 
 const ACCEPTED_FILE_TYPES = CVFormat.acceptTypes;
 const ACCEPTED_FILE_SIZE = CVFormat.acceptSize;
@@ -107,10 +108,16 @@ const AnalyzeProfile = (props) => {
 
     setIsAnalyzing(true);
     if (id === 'upload-cv') {
-      const result = await sendChatGPTRequest(cvAnalysist, message, null, {
-        '58': 5,
-        '60': 5
-      });
+      const result = await sendChatGPTRequest(
+        cvAnalysist,
+        message,
+        null,
+        {
+          '58': 5,
+          '60': 5
+        },
+        MODEL_4_O
+      );
       setAnalysisResults(result);
       return;
     }
@@ -134,7 +141,8 @@ const AnalyzeProfile = (props) => {
           {
             '58': 5,
             '60': 5
-          }
+          },
+          MODEL_4_O
         );
         setAnalysisResults([...skillsArray, ...result]);
       } catch (error) {
@@ -149,7 +157,8 @@ const AnalyzeProfile = (props) => {
         {
           '58': 5,
           '60': 5
-        }
+        },
+        MODEL_4_O
       );
       setAnalysisResults([...skillsArray, ...result]);
     }

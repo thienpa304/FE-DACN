@@ -50,6 +50,7 @@ import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import Autocomplete from 'src/components/Autocomplete';
 import { Job } from '../model';
 import useQueryJobByIdByOwner from '../hooks/useQueryJobByIdByOwner';
+import { MODEL_4_O } from 'src/constants/gptModel';
 
 const defaultValues = {
   sex: '',
@@ -156,10 +157,11 @@ const FormCreate: React.FC<Props> = ({ title, selectedId }) => {
       {
         '58': 5,
         '60': 5
-      }
+      },
+      MODEL_4_O
     );
-    const translatedKeywords = await sendChatGPTRequest(translate, result);
-    setAnalysisResults(translatedKeywords);
+    // const translatedKeywords = await sendChatGPTRequest(translate, result);
+    setAnalysisResults(result);
   };
 
   useEffect(() => {
