@@ -11,20 +11,21 @@ export default function FollowJobButton(props) {
   const { job, sx } = props;
   const { onFollowJobById } = useMutateFollowJobById();
   const { isEmployee } = useApp();
-  const [isFollow, setIsFollow] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
   const { followJobsList } = useFollowJobList();
   const { jobList } = useJobList();
   useQueryFollowJobs({ jobIds: jobList?.join(',') });
 
   const handleToggleFollow = (id) => {
     onFollowJobById([id]);
-    setIsFollow((prev) => !prev);
+    setIsFollowed((prev) => !prev);
   };
 
   useEffect(() => {
+    debugger;
     if (!job || !followJobsList?.length) return;
     const foundItem = followJobsList?.includes(job?.postId);
-    foundItem && setIsFollow(true);
+    foundItem && setIsFollowed(true);
   }, [JSON.stringify(followJobsList), JSON.stringify(job)]);
 
   if (!job || !isEmployee) return;
@@ -34,7 +35,7 @@ export default function FollowJobButton(props) {
       onClick={() => handleToggleFollow(job?.postId)}
       sx={{ display: 'flex', alignItem: 'center', ...sx }}
     >
-      <FollowButton isFollow={isFollow} />
+      <FollowButton isFollowed={isFollowed} />
     </Box>
   );
 }
