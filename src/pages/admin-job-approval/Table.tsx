@@ -302,14 +302,16 @@ export default function Table({ statusFilter, selectedProfession }) {
       headerName: 'Ngày đăng',
       minWidth: 110,
       sortable: true,
+      align: 'center',
       renderCell: (data) => (
         <Box
           sx={{
             whiteSpace: 'wrap',
-            lineHeight: '1.5em'
+            lineHeight: '1.5em',
+            textAlign: 'center'
           }}
         >
-          {dayjs(data.value).add(7, 'hours').format('DD-MM-YYYY HH:mm:ss')}
+          {dayjs(data.value).format('DD-MM-YYYY HH:mm:ss')}
         </Box>
       )
     },
@@ -514,7 +516,7 @@ export default function Table({ statusFilter, selectedProfession }) {
         </Grid>
       </Box>
       <TableData
-        sx={{ height: '72vh', width: '100%' }}
+        sx={{ height: '74vh', width: '100%' }}
         rows={showList}
         columns={columns}
         hideFooter
