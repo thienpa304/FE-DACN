@@ -29,7 +29,7 @@ const useQueryCheckEmployeeFollowed = (params?) => {
   );
 
   return {
-    employeeFollow: data?.data,
+    employeeFollow: data?.data || [],
     isLoading,
     refetch
   };

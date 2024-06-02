@@ -61,14 +61,15 @@ const useQueryEmployee = (params?) => {
   return {
     profile:
       data?.data?.items.map((item) => {
+        const foundItem = employeeFollow?.find(
+          (profile) =>
+            item.userId === profile?.employeeId &&
+            item.applicationType === profile?.applicationType
+        );
         return {
           ...item,
           isApplied: isApplied?.includes(item.userId),
-          isFollowed: employeeFollow?.find(
-            (profile) =>
-              item.userId === profile?.employeeId &&
-              item.applicationType === profile?.applicationType
-          ).exist
+          isFollowed: foundItem ? foundItem?.exist : false
         };
       }) || [],
     totalPages: data?.data?.meta?.totalPages,
