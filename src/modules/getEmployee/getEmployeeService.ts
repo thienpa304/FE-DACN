@@ -11,3 +11,6 @@ export const FollowEmployeesService = new BaseService('employer/save-employee');
 export const CheckEmployeeAppliedService = new BaseService(
   'employer/employees/applied'
 );
+export const CheckEmployeeFollowedService = new BaseService(
+  'employer/employees/saved'
+);

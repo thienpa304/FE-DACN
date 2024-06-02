@@ -4,15 +4,15 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Box } from '@mui/material';
 
 export default function FollowButton(props) {
-  const { isFollow: isFollowing } = props;
-  const [isFollow, setIsFollow] = useState(isFollowing);
+  const { isFollowed: isFollowing } = props;
+  const [isFollowed, setIsFollowed] = useState(isFollowing);
 
   const handleToggleFollow = (id) => {
-    setIsFollow((prev) => !prev);
+    setIsFollowed((prev) => !prev);
   };
 
   useEffect(() => {
-    setIsFollow(isFollowing);
+    setIsFollowed(isFollowing);
   }, [isFollowing]);
 
   return (
@@ -20,7 +20,7 @@ export default function FollowButton(props) {
       onClick={handleToggleFollow}
       sx={{ display: 'flex', alignItem: 'center' }}
     >
-      {isFollow ? (
+      {isFollowed ? (
         <FavoriteIcon
           sx={{
             display: 'flex',

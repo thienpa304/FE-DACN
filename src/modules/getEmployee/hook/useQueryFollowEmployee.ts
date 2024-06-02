@@ -39,7 +39,11 @@ const useQueryFollowEmployee = (params?) => {
 
   return {
     employeeFollow: data?.data?.items.map((item) => {
-      return { ...item, isApplied: isApplied?.includes(item.userId) };
+      return {
+        ...item,
+        isApplied: isApplied?.includes(item.userId),
+        isFollowed: true
+      };
     }),
     totalPages: data?.data?.meta?.totalPages,
     isLoading,
