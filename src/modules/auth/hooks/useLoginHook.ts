@@ -28,11 +28,11 @@ const useLogin = () => {
     defaultLocation = '/admin/statistic-report';
   } else if (userId && isEmployer) {
     defaultLocation = '/employer/candidate/profile';
-  } else if (userId)
-    navigate(locationState?.from || defaultLocation, {
-      state: state,
-      replace: true
-    });
+  }
+  navigate(locationState?.from || defaultLocation, {
+    state: state,
+    replace: true
+  });
 
   const { mutate: onLogin, isLoading } = useMutation<
     ResponseData<LoginResponse>,
@@ -48,8 +48,7 @@ const useLogin = () => {
         localStorage.setAccessToken(access_token);
         if (userData.role === Role.ADMIN) {
           defaultLocation = '/admin/statistic-report';
-        }
-        if (userData.role === Role.EMPLOYER) {
+        } else if (userData.role === Role.EMPLOYER) {
           defaultLocation = '/employer/candidate/profile';
         }
         navigate(locationState?.from || defaultLocation, {

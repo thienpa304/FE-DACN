@@ -8,6 +8,7 @@ import { AttachedDocument, OnlineProfile } from 'src/modules/jobProfile/model';
 import { ProfileShowType } from '../model';
 import { useEffect, useState } from 'react';
 import useQueryCheckEmployeeApplied from './useQueryCheckEmployeeApplied';
+import useQueryCheckEmployeeFollowed from './useQueryCheckEmployeeFollowed';
 
 const useQueryEmployee = (params?) => {
   const { isEmployer } = useApp();
@@ -34,25 +35,41 @@ const useQueryEmployee = (params?) => {
     }
   );
   const [employeeIds, setEmployeeIds] = useState('');
+  const [employeeProfile, setEmployeeProfile] = useState([]); // check is followed by employer
 
   const { isApplied } = useQueryCheckEmployeeApplied({ employeeIds });
+  const { employeeFollow } = useQueryCheckEmployeeFollowed({
+    resumes: employeeProfile
+  });
 
   useEffect(() => {
     if (data?.data?.meta?.itemCount) {
-      setEmployeeIds(
-        data?.data?.items
-          .map((item: any) => {
-            return item.userId;
-          })
-          .join(',')
-      );
+      const ids = [];
+      const profileList = [];
+      data?.data?.items.map((item: any) => {
+        ids.push(item.userId);
+        profileList.push({
+          employeeId: item?.userId,
+          applicationType: item?.applicationType
+        });
+      });
+      setEmployeeIds(ids.join(','));
+      setEmployeeProfile(() => profileList);
     }
   }, [data?.data?.items]);
 
   return {
     profile:
       data?.data?.items.map((item) => {
-        return { ...item, isApplied: isApplied?.includes(item.userId) };
+        return {
+          ...item,
+          isApplied: isApplied?.includes(item.userId),
+          isFollowed: employeeFollow?.find(
+            (profile) =>
+              item.userId === profile?.employeeId &&
+              item.applicationType === profile?.applicationType
+          ).exist
+        };
       }) || [],
     totalPages: data?.data?.meta?.totalPages,
     totalItems: data?.data?.meta?.totalItems,
