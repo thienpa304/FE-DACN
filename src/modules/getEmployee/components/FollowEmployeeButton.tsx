@@ -8,7 +8,7 @@ import useQueryCheckFollowEmployee from '../hook/useQueryCheckFollowEmployee';
 
 export default function FollowEmployeeButton(props) {
   const { employeeProfile, sx } = props;
-  const { employeeFollow } = useQueryCheckFollowEmployee({ page: 1, num: 120 });
+  const { employeeFollow } = useQueryCheckFollowEmployee({ page: 1, num: 100 });
   const { onFollowEmployeeById } = useMutateFollowEmployeeById();
   const { isEmployer } = useApp();
   const [isFollow, setIsFollow] = useState(false);
