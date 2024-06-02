@@ -14,7 +14,7 @@ Hãy đọc hồ sơ xin việc và yêu cầu tuyển dụng sau đó so sánh 
 - 2. Trình độ trong hồ sơ xin việc phải cao hơn hoặc bằng với trình độ trong yêu cầu tuyển dụng thì mới đạt yêu cầu.
 - 3. kinh nghiệm trong hồ sơ xin việc phải cao hơn kinh nghiệm trong yêu cầu tuyển dụng thì mới đạt yêu cầu.
 * result chỉ có thể là 1 trong 2 con số -10 hoặc 30.
-* Nếu đạt hết TẤT CẢ 4 tiêu chí trên thì result là con số 30. Ví dụ result là: 30
+* Nếu đạt hết TẤT CẢ 3 tiêu chí trên thì result là con số 30. Ví dụ result là: 30
 * Nếu có bất kì 1 tiêu chí nào không đạt yêu cầu thì dừng phân tích ngay, đồng thời trả ra result là con số -10. Ví dụ result là: -10
 ***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng Object bao gồm 2 thuộc tính là id (tương ứng với application_id) và result (là con số result sau khi phân tích, là 1 trong 2 con số 30 hoặc -10). Ngoài ra không kèm theo lời giải thích nào cả. Ví dụ nếu application.id = 1, hồ sơ xin việc đạt hết tất cả tiêu chí thì trả về:
 {

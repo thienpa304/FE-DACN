@@ -5,6 +5,9 @@ const FREE_GPT_API_KEY =
 const GPT_API_KEY =
   'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx';
 
+const MODEL_35_TURBO = 'gpt-3.5-turbo';
+const MODEL_4_O = 'gpt-4o-ca';
+
 const API_KEY = GPT_API_KEY || FREE_GPT_API_KEY;
 
 // Common function to handle API requests
@@ -72,7 +75,7 @@ const sendChatGPTRequest = async (
     if (!inputText.trim()) return;
 
     const body = {
-      model: 'gpt-3.5-turbo',
+      model: MODEL_4_O,
       messages: [
         { role: 'system', content: request },
         { role: 'user', content: inputText }

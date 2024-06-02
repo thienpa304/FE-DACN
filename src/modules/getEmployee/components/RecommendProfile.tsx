@@ -30,6 +30,7 @@ import TabsWrapper from 'src/components/TabWrapper';
 import { tabs } from 'src/pages/company-job-list';
 import { handleSort } from 'src/utils/sortData';
 import { useResponsive } from 'src/utils/responsive';
+import { TypographyEllipsis } from 'src/components/Typography';
 
 export default function RecommendProfile() {
   const { isMobile } = useResponsive();
@@ -121,7 +122,11 @@ export default function RecommendProfile() {
       headerName: 'Từ khóa',
       minWidth: 400,
       headerAlign: 'center',
-      renderCell: (params) => <>{params?.value?.split(',').join(', ')}</>
+      renderCell: (params) => (
+        <TypographyEllipsis sx={{ WebkitLineClamp: 1 }}>
+          {params?.value?.split(',').join(', ')}
+        </TypographyEllipsis>
+      )
     },
     {
       field: 'action',

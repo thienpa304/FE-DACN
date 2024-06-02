@@ -4,10 +4,11 @@ import { Box } from '@mui/material';
 import useMutateFollowEmployeeById from '../hook/useMutateFollowEmployeeById';
 import { useApp } from 'src/modules/app/hooks';
 import FollowButton from 'src/components/FollowButton';
+import useQueryCheckFollowEmployee from '../hook/useQueryCheckFollowEmployee';
 
 export default function FollowEmployeeButton(props) {
   const { employeeProfile, sx } = props;
-  const { employeeFollow } = useQueryFollowEmployee();
+  const { employeeFollow } = useQueryCheckFollowEmployee({ page: 1, num: 120 });
   const { onFollowEmployeeById } = useMutateFollowEmployeeById();
   const { isEmployer } = useApp();
   const [isFollow, setIsFollow] = useState(false);

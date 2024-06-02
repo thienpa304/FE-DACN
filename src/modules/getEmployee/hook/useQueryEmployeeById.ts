@@ -10,7 +10,6 @@ import useEmployee from './useEmployee';
 import { useEffect } from 'react';
 
 const useQueryEmployeeById = (id, params?) => {
-  const { setEmployeeDetail, employeeDetail } = useEmployee();
   const { isEmployer } = useApp();
 
   const { data, isLoading, refetch } = useQuery<
@@ -32,10 +31,6 @@ const useQueryEmployeeById = (id, params?) => {
         params?.type !== undefined
     }
   );
-
-  useEffect(() => {
-    if (data?.data) setEmployeeDetail(data?.data);
-  }, [JSON.stringify(data?.data)]);
 
   return {
     profile: data?.data,

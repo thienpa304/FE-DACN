@@ -44,8 +44,6 @@ export const formatProfile = (profile: ProfileShowType) => {
 };
 
 function ProfileCard({ profile }: { profile: ProfileShowType }) {
-  const { employeeDetail, setEmployeeDetail, resetEmployeeDetail } =
-    useEmployee();
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [formattedProfile, setFormattedProfile] = useState(null);
   const employeeProfile = {
@@ -64,7 +62,6 @@ function ProfileCard({ profile }: { profile: ProfileShowType }) {
   const onClose = () => {
     setSelectedProfile(null);
     setFormattedProfile(null);
-    resetEmployeeDetail();
   };
 
   useEffect(() => {
