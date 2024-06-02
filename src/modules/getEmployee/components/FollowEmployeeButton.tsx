@@ -5,6 +5,7 @@ import useMutateFollowEmployeeById from '../hook/useMutateFollowEmployeeById';
 import { useApp } from 'src/modules/app/hooks';
 import FollowButton from 'src/components/FollowButton';
 import useQueryCheckFollowEmployee from '../hook/useQueryCheckFollowEmployee';
+import { applicationType } from '../model';
 
 export default function FollowEmployeeButton(props) {
   const { employeeProfile, sx } = props;
@@ -20,16 +21,19 @@ export default function FollowEmployeeButton(props) {
 
   const isFollowedProfile = (followProfile, currentProfile) => {
     if (!followProfile) return false;
-
-    if (currentProfile.isOnlineProfile !== undefined)
+    debugger;
+    if (currentProfile.isOnlineProfile !== undefined) {
+      debugger;
       return (
         followProfile?.userId === currentProfile?.userId &&
         followProfile?.isOnlineProfile === currentProfile.isOnlineProfile
       );
-    else {
+    } else {
+      debugger;
       return (
         followProfile?.userId === currentProfile?.userId &&
-        followProfile?.isOnlineProfile === (currentProfile?.CV === undefined)
+        followProfile?.isOnlineProfile ===
+          (currentProfile?.applicationType === applicationType.online_profile)
       );
     }
   };
