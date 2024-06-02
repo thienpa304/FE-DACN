@@ -16,6 +16,7 @@ import { compareDegrees, compareExperience } from './compareEnum';
 import dayjs from 'dayjs';
 import { dot } from 'mathjs';
 import { loadKeywords } from './keywords';
+import { MODEL_4_O } from 'src/constants/gptModel';
 
 export const FAIL_SCORE = 0; // < 30
 export const LOW_SCORE = 30; // 30 - 80
@@ -240,7 +241,10 @@ const handleRoundOne = async (
 
   const response = await sendChatGPTRequest(
     RoundOneCheck,
-    messagesToSend
+    messagesToSend,
+    null,
+    null,
+    MODEL_4_O
   ).catch(() => []);
 
   const result = Array.isArray(response)
@@ -357,9 +361,13 @@ const handleRoundThree = async (
           return item;
         } else {
           const keywords = await loadKeywords(
-            await sendChatGPTRequest(cvAnalysist, [
-              item?.employee_Profile?.application?.CV
-            ])
+            await sendChatGPTRequest(
+              cvAnalysist,
+              [item?.employee_Profile?.application?.CV],
+              null,
+              null,
+              MODEL_4_O
+            )
           );
           return {
             ...item,

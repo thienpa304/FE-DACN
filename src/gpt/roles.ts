@@ -22,7 +22,7 @@ Hãy đọc hồ sơ xin việc và yêu cầu tuyển dụng sau đó so sánh 
     "result": 30
 }`;
 
-export const checkContent = `Bây giờ bạn là 1 chuyên gia kiểm duyệt văn bản. Hãy kiểm tra xem trong văn bản có chứa những từ ngữ nhạy cảm, thô tục, vi phạm pháp luật hay không. Kết quả lưu trong thuộc tính result. Nếu có vi phạm thì result = true, nếu không vi phạm thì result = false. 
+export const checkContent = `Bây giờ bạn là 1 chuyên gia kiểm duyệt văn bản. Hãy kiểm tra xem trong văn bản có chứa những từ ngữ nhạy cảm, thô tục, vi phạm pháp luật hay không (Ví dụ về từ khóa vi phạm: Chết, giết người, hiếp dâm, biến thái,... và các từ nhạy cảm khóa khác). Kết quả lưu trong thuộc tính result. Nếu có vi phạm thì result = true, nếu không vi phạm thì result = false. 
 ***Lưu ý quan trọng: câu trả lời của bạn (ChatGPT) không quá 25 kí tự, câu trả lời là ở dạng Object như ví dụ bên dưới bao gồm 2 thuộc tính là id (tương ứng với postId) và result (là true nếu vi phạm, false nếu không vi phạm). Ví dụ nếu văn bản có chứa từ ngữ nhạy cảm, thô tục, vi phạm pháp luật thì trả về:
 {
     "id": 1,

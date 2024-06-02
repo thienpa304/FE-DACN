@@ -33,6 +33,7 @@ import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import sendChatGPTRequest from 'src/GPT/sendChatGPTRequest';
 import { cvAnalysist, translate } from 'src/GPT/roles';
 import { useResponsive } from 'src/utils/responsive';
+import { MODEL_4_O } from 'src/constants/gptModel';
 
 const MyBox = ({ children }) => (
   <Box bgcolor="#ffff" sx={{ mb: 4, boxShadow: '2px 2px 6px #aae2f7' }}>
@@ -90,13 +91,14 @@ export default function OnlineProfile() {
         {
           '58': 5,
           '60': 5
-        }
+        },
+        MODEL_4_O
       );
-      const translatedResults = await sendChatGPTRequest(
-        translate,
-        analysisResults
-      );
-      const keywords = loadKeywords(translatedResults);
+      // const translatedResults = await sendChatGPTRequest(
+      //   translate,
+      //   analysisResults
+      // );
+      const keywords = loadKeywords(analysisResults);
       onUpdateData({
         ...profile,
         keywords: profile?.skills + ', ' + keywords

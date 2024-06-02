@@ -89,7 +89,7 @@ export default function AnayzeProfileButton(props) {
   const [roundOneFinished, setRoundOneFinished] = useState(false);
   const [roundTwoFinished, setRoundTwoFinished] = useState(false);
   const [roundThreeFinished, setRoundThreeFinished] = useState(false);
-  const [analyzeResult, setAnalyzeResult] = useState<number>(null);
+  const [analyzeResult, setAnalyzeResult] = useState<number>(0);
   const [goToAnalyzeResult, setGoToAnalyzeResult] = useState({
     signal: false,
     resultData: null
@@ -151,11 +151,20 @@ export default function AnayzeProfileButton(props) {
     } else {
       const response = JSON.parse(result[0]);
       const matchingScore: number = response?.result;
-      if (matchingScore + analyzeResult < LOW_SCORE) {
+      debugger;
+      const prevScore = analyzeResult || 0;
+      if (matchingScore + prevScore < LOW_SCORE) {
         setHints(
           'Hồ sơ của bạn có vẻ chưa đáp ứng các yêu cầu cơ bản như: Ngành nghề, trình độ, kinh nghiệm'
         );
-      } else setHints(response?.hints);
+      } else {
+        if (!roundOneFinished) setPassOneProfiles(() => [analyzedProfile]);
+        else
+          setHints(
+            response?.hints ||
+              'Để tăng tỉ lệ trúng tuyển, bạn nên bổ sung thêm các kỹ năng trong phần Kỹ năng bắt buộc'
+          );
+      }
       setAnalyzeResult((prev) => prev + matchingScore);
     }
 

@@ -28,6 +28,7 @@ import { cvAnalysist, translate } from 'src/GPT/roles';
 import pdfToText from 'react-pdftotext';
 import { loadKeywords, preProcessData } from 'src/utils/keywords';
 import { useResponsive } from 'src/utils/responsive';
+import { MODEL_4_O } from 'src/constants/gptModel';
 
 const CustomBox = styled(Box)(({ theme }) => ({
   background: '#ffff',
@@ -84,13 +85,14 @@ export default function AttachedDocument() {
         {
           '58': 5,
           '60': 5
-        }
+        },
+        MODEL_4_O
       );
-      const translatedResults = await sendChatGPTRequest(
-        translate,
-        analysisResults
-      );
-      const keywords = loadKeywords(translatedResults);
+      // const translatedResults = await sendChatGPTRequest(
+      //   translate,
+      //   analysisResults
+      // );
+      const keywords = loadKeywords(analysisResults);
 
       if (profile?.userId) {
         onUpdateData({

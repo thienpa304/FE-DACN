@@ -6,7 +6,7 @@ const GPT_API_KEY =
   'Bearer sk-ASMcBs6iBFaFfCxCizltjPPGTLCkB9tyESkmxxsQb9Tie4Fx';
 
 const MODEL_35_TURBO = 'gpt-3.5-turbo';
-// const MODEL_4_O = 'gpt-4o-ca';
+const MODEL_4_O = 'gpt-4o-ca';
 
 const API_KEY = GPT_API_KEY || FREE_GPT_API_KEY;
 
@@ -62,7 +62,8 @@ const sendChatGPTRequest = async (
   request,
   content,
   max_tokens = null,
-  logit_bias = null
+  logit_bias = null,
+  selectedModel = MODEL_35_TURBO
 ) => {
   if (!content || content.length === 0) return [];
 
@@ -75,7 +76,7 @@ const sendChatGPTRequest = async (
     if (!inputText.trim()) return;
 
     const body = {
-      model: MODEL_35_TURBO,
+      model: selectedModel || MODEL_35_TURBO,
       messages: [
         { role: 'system', content: request },
         { role: 'user', content: inputText }
