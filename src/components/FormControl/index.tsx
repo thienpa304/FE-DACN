@@ -47,7 +47,7 @@ const FormControl = forwardRef<HTMLDivElement, Partial<Props>>(
             ...props,
             label: required ? labelRequired : label,
             error: errors && !!errors[name],
-            helpertext: errors && errors[name] ? errors[name].message : '',
+            helperText: errors && errors[name] ? errors[name].message : '',
             ref // Forwarding ref
           })
         }

@@ -6,7 +6,6 @@ import { useApp } from 'src/modules/app/hooks';
 import { localStorage } from 'src/utils';
 import { LoginService } from '../authService';
 import { LoginRequest, LoginResponse } from '../model';
-import { USER_ROLE } from 'src/constants';
 import { Role } from 'src/modules/users/model';
 
 const useLogin = () => {
@@ -16,23 +15,20 @@ const useLogin = () => {
     setAccessTokenApp,
     user: { userId },
     isAdmin,
-    isEmployer
+    isEmployer,
+    isEmployee
   } = useApp();
 
   const navigate = useNavigate();
   const { state } = useLocation();
   const locationState = state as any;
 
-  let defaultLocation = '/';
+  let defaultLocation = '';
   if (userId && isAdmin) {
     defaultLocation = '/admin/statistic-report';
   } else if (userId && isEmployer) {
     defaultLocation = '/employer/candidate/profile';
-  }
-  navigate(locationState?.from || defaultLocation, {
-    state: state,
-    replace: true
-  });
+  } else if (userId && isEmployee) defaultLocation = '/';
 
   const { mutate: onLogin, isLoading } = useMutation<
     ResponseData<LoginResponse>,
@@ -50,7 +46,7 @@ const useLogin = () => {
           defaultLocation = '/admin/statistic-report';
         } else if (userData.role === Role.EMPLOYER) {
           defaultLocation = '/employer/candidate/profile';
-        }
+        } else defaultLocation = '/';
         navigate(locationState?.from || defaultLocation, {
           state: state,
           replace: true
